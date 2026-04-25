@@ -3813,7 +3813,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
         <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="7" cy="7" r="5.5"></circle><path d="M7 4v3l2 1.2"></path><path d="M4.8 2.2A5.5 5.5 0 0 1 12.5 7"></path><path d="M12.5 4.5v2.5H10"></path></svg>
         SofaScore
       </button>
-      <div class="top-badge" id="league-badge">Liga: <span>Todas</span></div>
+      <select id="league-select" onchange="setLeagueFromSelect(this.value)" style="font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.5px;background:var(--bg3);border:1px solid var(--border2);color:var(--accent);border-radius:4px;padding:4px 10px;cursor:pointer">
+        <option value="all">Liga: Todas</option>
+      </select>
       <div class="top-badge" id="pos-badge">Pos: <span>Todas</span></div>
       <div class="top-badge" id="count-badge">Jogadores: <span id="count-num">34</span></div>
     </div>
@@ -3863,6 +3865,11 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
           <div class="sf-flyout-title">País / Liga</div>
           <div class="country-search-wrap">
             <input class="country-search-input" type="text" id="league-search" placeholder="Pesquisar liga..." oninput="renderLeagueList(this.value)">
+          </div>
+          <div style="display:flex;gap:6px;padding:6px 12px;border-bottom:1px solid var(--border)">
+            <button onclick="selectAllLeagues()" style="flex:1;font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.4px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.25);color:var(--accent);border-radius:4px;padding:4px 0;cursor:pointer">Todas</button>
+            <button onclick="clearAllLeagues()" style="flex:1;font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.4px;background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.25);color:#ff4757;border-radius:4px;padding:4px 0;cursor:pointer">Limpar</button>
+            <button onclick="applyLeagueFilter()" style="flex:1;font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.4px;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.35);color:#00e5a0;border-radius:4px;padding:4px 0;cursor:pointer">✓ Aplicar</button>
           </div>
           <div class="country-chips" id="league-chips"></div>
           <div class="country-list" id="league-list"><div class="country-item" onclick="toggleLeague('Belgium1')">
@@ -6951,23 +6958,31 @@ async function loadPlayers() {
         offset += limit;
       }
 
-      // Normalise API fields to match app expectations
-      PLAYERS = allPlayers.map(p => ({
-        ...p,
-        mkt_value: p.mkt_value ? parseFloat(p.mkt_value) : 0,
-        contract_end: p.contract_end ? p.contract_end.slice(0, 10) : null,
-        score:         parseFloat(p.score)        || 0,
-        total_off:     parseFloat(p.total_off)    || 0,
-        total_def:     parseFloat(p.total_def)    || 0,
-        total_pass:    parseFloat(p.total_pass)   || 0,
-        total_physical:parseFloat(p.total_physical)|| 0,
-        total:         parseFloat(p.total)        || 0,
-        xg:            parseFloat(p.xg)           || 0,
-        xa:            parseFloat(p.xa)           || 0,
-        sf_rating:     p.sf_rating ? parseFloat(p.sf_rating) : null,
-      }));
+      // Normalise ALL numeric fields from API (strings → numbers)
+      const NUM_FIELDS = ['score','total_off','total_def','total_pass','total_physical','total',
+        'xg','xa','fouls','yellows','def_duels','def_duels_pct','adj_intercept','goals_np',
+        'shots90','goals_per_shot','crosses90','crosses_pct','dribles90','dribles_pct',
+        'box_touches','prog_carries','accels90','passes90','passes_pct','shot_assist',
+        'box_passes','box_passes_pct','recpt_depth','total_dist','hsr90','sprint_dist90',
+        'max_speed','sprints90','hsr_sprint_pct','mkt_value','age','size','weight',
+        'matches','minutes','sf_rating'];
+      PLAYERS = allPlayers.map(p => {
+        const out = {...p};
+        out.contract_end = p.contract_end ? p.contract_end.slice(0, 10) : null;
+        for (const f of NUM_FIELDS) {
+          if (p[f] === null || p[f] === undefined || p[f] === '') {
+            out[f] = null;
+          } else {
+            const v = parseFloat(p[f]);
+            out[f] = isNaN(v) ? null : v;
+          }
+        }
+        return out;
+      });
 
+      PLAYERS = PLAYERS.filter(p => p.name && p.name.trim() !== '');
       rebuildDerivedData();
+      populateLeagueSelect();
       _playersLoaded = true;
 
       if (loadEl) loadEl.style.display = 'none';
@@ -6992,11 +7007,40 @@ let selPos='all', selLeagues=[], filts={ageMin:16,ageMax:40,ctMin:2025,ctMax:203
 let ALL_LEAGUES = [];
 let ALL_POS = [];
 
+function setLeagueFromSelect(val) {
+  if (val === 'all') {
+    selLeagues = [];
+  } else {
+    selLeagues = [val];
+  }
+  renderLeagueList(document.getElementById('league-search')?.value || '');
+  updateTopBadges();
+  renderTable();
+}
+
+function populateLeagueSelect() {
+  const sel = document.getElementById('league-select');
+  if (!sel) return;
+  const current = selLeagues.length === 1 ? selLeagues[0] : 'all';
+  sel.innerHTML = '<option value="all">Liga: Todas</option>' +
+    ALL_LEAGUES.map(([l]) => {
+      const cfg2 = LEAGUE_CONFIG[l];
+      const name = cfg2 ? cfg2.display : l;
+      return `<option value="${l}"${l===current?' selected':''}>${name}</option>`;
+    }).join('');
+}
+
 function rebuildDerivedData() {
-  // Rebuild ALL_LEAGUES
+  // Rebuild ALL_LEAGUES — only leagues in LEAGUE_CONFIG
   const lm = {};
-  PLAYERS.forEach(p => { lm[p.league] = (lm[p.league]||0) + 1; });
-  ALL_LEAGUES = Object.entries(lm).sort((a,b) => a[0].localeCompare(b[0]));
+  PLAYERS.forEach(p => {
+    if(LEAGUE_CONFIG[p.league]) lm[p.league] = (lm[p.league]||0) + 1;
+  });
+  ALL_LEAGUES = Object.entries(lm).sort((a,b) => {
+    const da = LEAGUE_CONFIG[a[0]]?.display || a[0];
+    const db = LEAGUE_CONFIG[b[0]]?.display || b[0];
+    return da.localeCompare(db);
+  });
 
   // Rebuild ALL_POS
   const pm = {};
@@ -7043,43 +7087,59 @@ function getFlagImg(c) {
   return '<img src="https://flagcdn.com/16x12/' + code + '.png" width="16" height="12" style="border-radius:1px;flex-shrink:0;object-fit:cover" alt="' + c + '">';
 }
 
-const LEAGUE_COUNTRY_MAP = {
-  'Albania1':'Albania','Armenia1':'Armenia','Austria1':'Austria','Austria2':'Austria',
-  'Azerbaijan1':'Azerbaijan','Belgium1':'Belgium','Belgium2':'Belgium','Bosnia1':'Bosnia',
-  'Bulgaria1':'Bulgaria','CostaRica1':'Costa Rica','Croatia1':'Croatia','Cyprus1':'Cyprus',
-  'CzechRep1':'Czech Republic','Denmark1':'Denmark','Denmark2':'Denmark',
-  'England1':'England','England2':'England','England3':'England','England4':'England',
-  'France1':'France','France2':'France','France3':'France',
-  'Germany1':'Germany','Germany2':'Germany','Germany3':'Germany',
-  'Greece1':'Greece','Hungary1':'Hungary','Israel1':'Israel','Italy1':'Italy',
-  'Italy2':'Italy','Italy3':'Italy','Moldova1':'Moldova','Montenegro1':'Montenegro',
-  'Netherlands1':'Netherlands','Netherlands2':'Netherlands','Poland1':'Poland',
-  'Poland2':'Poland','Portugal1':'Portugal','Portugal2':'Portugal','Portugal3':'Portugal',
-  'Romania1':'Romania','Russia1':'Russia','Scotland1':'Scotland','Serbia1':'Serbia',
-  'Slovenia1':'Slovenia','Slovakia1':'Slovakia','Spain1':'Spain','Spain2':'Spain',
-  'Spain3':'Spain','Switzerland1':'Switzerland','Switzerland2':'Switzerland',
-  'Turkey1':'Turkey','Turkey2':'Turkey','Ukraine1':'Ukraine','Ukraine2':'Ukraine',
-  'Brazil1':'Brazil','Argentina1':'Argentina','United States':'United States',
-  // API league codes
-  'ALB1':'Albania','ARM1':'Armenia','AST1':'Austria','AST2':'Austria','AUS1':'Austria',
-  'AUS2':'Austria','AZE1':'Azerbaijan','BEL1':'Belgium','BEL2':'Belgium',
-  'BOS1':'Bosnia','BUL1':'Bulgaria','CRI1':'Costa Rica','CRO1':'Croatia',
-  'CYP1':'Cyprus','CZE1':'Czech Republic','DEN1':'Denmark','DEN2':'Denmark',
-  'ENG1':'England','ENG2':'England','ENG3':'England','ENG4':'England',
-  'FRA1':'France','FRA2':'France','FRA3':'France',
-  'GER1':'Germany','GER2':'Germany','GER3':'Germany',
-  'GRE1':'Greece','HUN1':'Hungary','ISR1':'Israel',
-  'ITA1':'Italy','ITA2':'Italy','ITA3':'Italy',
-  'MOL1':'Moldova','MON1':'Montenegro',
-  'NET1':'Netherlands','NET2':'Netherlands',
-  'POL1':'Poland','POL2':'Poland',
-  'POR1':'Portugal','POR2':'Portugal','POR3':'Portugal',
-  'ROM1':'Romania','RUS1':'Russia','SCO1':'Scotland','SER1':'Serbia',
-  'SLO1':'Slovenia','SLV1':'Slovakia',
-  'SPA1':'Spain','SPA2':'Spain','SPA3':'Spain',
-  'SWI1':'Switzerland','SWI2':'Switzerland',
-  'TUR1':'Turkey','TUR2':'Turkey','UKR1':'Ukraine','UKR2':'Ukraine',
+const LEAGUE_CONFIG = {
+  'Albania1':{country:'Albania',level:1,display:'Albania'},
+  'Armenia1':{country:'Armenia',level:1,display:'Armenia'},
+  'Australia1':{country:'Australia',level:1,display:'Australia'},
+  'Austria1':{country:'Austria',level:1,display:'Austria'},
+  'Austria2':{country:'Austria',level:2,display:'Austria 2'},
+  'Azerbaijan1':{country:'Azerbaijan',level:1,display:'Azerbaijan'},
+  'Belgium1':{country:'Belgium',level:1,display:'Belgium'},
+  'Belgium2':{country:'Belgium',level:2,display:'Belgium 2'},
+  'Bosnia1':{country:'Bosnia',level:1,display:'Bosnia'},
+  'Bulgary1':{country:'Bulgaria',level:1,display:'Bulgaria'},
+  'Costa Rica1':{country:'Costa Rica',level:1,display:'Costa Rica'},
+  'Croatia1':{country:'Croatia',level:1,display:'Croatia'},
+  'Cyprus1':{country:'Cyprus',level:1,display:'Cyprus'},
+  'Czech1':{country:'Czech Republic',level:1,display:'Czech Republic'},
+  'Denmark1':{country:'Denmark',level:1,display:'Denmark'},
+  'Denmark2':{country:'Denmark',level:2,display:'Denmark 2'},
+  'England1':{country:'England',level:1,display:'England'},
+  'England3':{country:'England',level:3,display:'England 3'},
+  'England4':{country:'England',level:4,display:'England 4'},
+  'France2':{country:'France',level:2,display:'France 2'},
+  'France3':{country:'France',level:3,display:'France 3'},
+  'Germany2':{country:'Germany',level:2,display:'Germany 2'},
+  'Germany3':{country:'Germany',level:3,display:'Germany 3'},
+  'Greece1':{country:'Greece',level:1,display:'Greece'},
+  'Hungary1':{country:'Hungary',level:1,display:'Hungary'},
+  'Israel1':{country:'Israel',level:1,display:'Israel'},
+  'Italy3':{country:'Italy',level:3,display:'Italy 3'},
+  'Moldavia1':{country:'Moldova',level:1,display:'Moldova'},
+  'Montenegro1':{country:'Montenegro',level:1,display:'Montenegro'},
+  'Netherlands1':{country:'Netherlands',level:1,display:'Netherlands'},
+  'Netherlands2':{country:'Netherlands',level:2,display:'Netherlands 2'},
+  'Poland1':{country:'Poland',level:1,display:'Poland'},
+  'Poland2':{country:'Poland',level:2,display:'Poland 2'},
+  'Portugal1':{country:'Portugal',level:1,display:'Portugal'},
+  'Portugal2':{country:'Portugal',level:2,display:'Portugal 2'},
+  'Portugal3':{country:'Portugal',level:3,display:'Portugal 3'},
+  'Romania1':{country:'Romania',level:1,display:'Romania'},
+  'Russia1':{country:'Russia',level:1,display:'Russia'},
+  'Scotland1':{country:'Scotland',level:1,display:'Scotland'},
+  'Serbia1':{country:'Serbia',level:1,display:'Serbia'},
+  'Slovakia1':{country:'Slovakia',level:1,display:'Slovakia'},
+  'Slovenia1':{country:'Slovenia',level:1,display:'Slovenia'},
+  'Spain2':{country:'Spain',level:2,display:'Spain 2'},
+  'Spain3':{country:'Spain',level:3,display:'Spain 3'},
+  'Switzerland1':{country:'Switzerland',level:1,display:'Switzerland'},
+  'Switzerland2':{country:'Switzerland',level:2,display:'Switzerland 2'},
+  'Turkey2':{country:'Turkey',level:2,display:'Turkey 2'},
+  'Ukraine1':{country:'Ukraine',level:1,display:'Ukraine'},
+  'Ukraine2':{country:'Ukraine',level:2,display:'Ukraine 2'},
 };
+// Backwards compat
+const LEAGUE_COUNTRY_MAP = Object.fromEntries(Object.entries(LEAGUE_CONFIG).map(([k,v])=>[k,v.country]));
 function getLeagueFlag(league) {
   const country = LEAGUE_COUNTRY_MAP[league];
   if (!country) return '<span style="font-size:13px">🏟️</span>';
@@ -7122,7 +7182,7 @@ function perfColor(val, avg, rank, inverse) {
   return 'var(--perf-bad)';
 }
 function scoreColor(s){return s>=68?'var(--green)':s>=58?'var(--amber)':'var(--muted)'}
-function contractColor(d){const y=parseInt(d.split('-')[0]);return y<=2026?'var(--red)':y<=2027?'var(--amber)':'var(--green)'}
+function contractColor(d){if(!d)return 'var(--muted)';const y=parseInt(d.split('-')[0]);return y<=2026?'var(--red)':y<=2027?'var(--amber)':'var(--green)'}
 function getHighlight(p){
   const yr=parseInt((p.contract_end||'2099').split('-')[0]);
   const avg=PLAYERS.reduce((s,x)=>s+x.score,0)/PLAYERS.length;
@@ -7221,10 +7281,8 @@ function renderLeagueList(q){
   el.innerHTML=filtered.map(([l,n])=>{
     const sel=selLeagues.includes(l);
     // Format league code to friendly name: BEL1 → Belgium 1
-    const country = LEAGUE_COUNTRY_MAP[l] || l;
-    const lvlMatch = l.match(/(\d+)$/);
-    const lvl = lvlMatch ? ' ' + lvlMatch[1] : '';
-    const displayName = country + lvl;
+    const cfg = LEAGUE_CONFIG[l];
+    const displayName = cfg ? cfg.display : l;
     const lc = LEAGUE_COLORS[l] || {};
     return`<div class="country-item${sel?' sel':''}" onclick="toggleLeague('${l}')" style="${sel?'background:'+( lc.bg||'rgba(0,200,255,0.08)'):''}">
       <span class="ci-name" style="color:${lc.col||'var(--muted)'}">${displayName}</span>
@@ -7253,6 +7311,27 @@ function toggleLeague(l){
   if(i>=0)selLeagues.splice(i,1); else selLeagues.push(l);
   renderLeagueChips();
   renderLeagueList(document.getElementById('league-search').value);
+  updateTopBadges();
+  // Don't render table yet — wait for Apply button
+}
+
+function applyLeagueFilter(){
+  renderTable();
+  updateTopBadges();
+}
+
+function selectAllLeagues(){
+  selLeagues = [];
+  renderLeagueChips();
+  renderLeagueList(document.getElementById('league-search')?.value || '');
+  updateTopBadges();
+  renderTable();
+}
+
+function clearAllLeagues(){
+  selLeagues = [];
+  renderLeagueChips();
+  renderLeagueList(document.getElementById('league-search')?.value || '');
   updateTopBadges();
   renderTable();
 }
@@ -7308,7 +7387,10 @@ function resetAll(){
 
 function updateTopBadges(){
   const filtered=getFiltered();
-  document.querySelector('#league-badge span').textContent=selLeagues.length?selLeagues.join(', '):'Todas';
+  // Sync league select
+  const sel = document.getElementById('league-select');
+  if(sel && selLeagues.length !== 1) sel.value = 'all';
+  else if(sel && selLeagues.length === 1) sel.value = selLeagues[0];
   document.querySelector('#pos-badge span').textContent=selPos==='all'?'Todas':selPos;
   document.getElementById('count-num').textContent=filtered.length;
 }
@@ -7389,7 +7471,7 @@ function renderTable(){
           <div>
             <div class="td-name">${p.name}</div>
             <div class="td-info-row">
-              <span class="td-pos-inline">${p.position.split(',')[0].trim()}</span>
+              <span class="td-pos-inline">${(p.position||'').split(',')[0].trim()}</span>
               <span class="td-club">${p.team}</span>
             </div>
           </div>
@@ -7397,49 +7479,49 @@ function renderTable(){
       </td>
       <td>
         <div class="td-score-bar-wrap">
-          <span class="td-score-num" style="color:${mc('score',p.name)}">${p.score.toFixed(1)}</span>
+          <span class="td-score-num" style="color:${mc('score',p.name)}">${(p.score!=null?p.score.toFixed(1):'—')}</span>
           <div class="td-score-track"><div class="td-score-fill" style="width:${bar}%;background:${sc==='var(--green)'?'linear-gradient(to right,#00c47a,#00e5a0)':sc==='var(--red)'?'linear-gradient(to right,#7a0010,#ff4757)':'linear-gradient(to right,#0a4a8a,#00d4ff)'}"></div></div>
         </div>
       </td>
       <td class="td-contract">${(()=>{
-        const yr=p.contract_end.split('-')[0];
-        const fmt=p.contract_end.split('-').reverse().join('/');
+        const yr=p.contract_end?(p.contract_end.split('-')[0]):'—';
+        const fmt=p.contract_end?p.contract_end.split('-').reverse().join('/'):'—';
         if(yr==='2026') return '<div class="td-contract-box">'+fmt+'</div>';
         return '<span style="color:var(--muted)">'+fmt+'</span>';
       })()}</td>
-      <td class="cat-total td-num" style="color:${mc('total_off',p.name)}">${p.total_off.toFixed(1)}</td>
-      <td class="cat-sub cat-off td-num" style="color:${mc('xg',p.name)}">${p.xg.toFixed(2)}</td>
-      <td class="cat-sub cat-off td-num" style="color:${mc('xa',p.name)}">${p.xa.toFixed(2)}</td>
+      <td class="cat-total td-num" style="color:${mc('total_off',p.name)}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
+      <td class="cat-sub cat-off td-num" style="color:${mc('xg',p.name)}">${(p.xg!=null?p.xg.toFixed(2):'—')}</td>
+      <td class="cat-sub cat-off td-num" style="color:${mc('xa',p.name)}">${(p.xa!=null?p.xa.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('goals_np',p.name)}">${p.goals_np||0}</td>
-      <td class="cat-sub cat-off td-num" style="color:${mc('shots90',p.name)}">${p.shots90.toFixed(2)}</td>
-      <td class="cat-sub cat-off td-num" style="color:${mc('goals_per_shot',p.name)}">${p.goals_per_shot.toFixed(1)}%</td>
-      <td class="cat-sub cat-off td-num" style="color:${mc('dribles90',p.name)}">${p.dribles90.toFixed(2)}</td>
-      <td class="cat-sub cat-off td-num" style="color:${mc('dribles_pct',p.name)}">${p.dribles_pct.toFixed(1)}%</td>
-      <td class="cat-sub cat-off td-num" style="color:${mc('crosses90',p.name)}">${p.crosses90.toFixed(2)}</td>
-      <td class="cat-sub cat-off td-num" style="color:${mc('crosses_pct',p.name)}">${p.crosses_pct.toFixed(1)}%</td>
-      <td class="cat-sub cat-off td-num" style="color:${mc('box_touches',p.name)}">${p.box_touches.toFixed(2)}</td>
-      <td class="cat-sub cat-off td-num" style="color:${mc('prog_carries',p.name)}">${p.prog_carries.toFixed(2)}</td>
-      <td class="cat-sub cat-off td-num" style="color:${mc('accels90',p.name)}">${p.accels90.toFixed(2)}</td>
-      <td class="cat-sub cat-off td-num" style="color:${mc('recpt_depth',p.name)}">${p.recpt_depth.toFixed(2)}</td>
-      <td class="cat-total td-num" style="color:${mc('total_def',p.name)}">${p.total_def.toFixed(1)}</td>
-      <td class="cat-sub cat-def td-num" style="color:${mc('def_duels',p.name)}">${p.def_duels.toFixed(2)}</td>
-      <td class="cat-sub cat-def td-num" style="color:${mc('def_duels_pct',p.name)}">${p.def_duels_pct.toFixed(1)}%</td>
-      <td class="cat-sub cat-def td-num" style="color:${mc('adj_intercept',p.name)}">${p.adj_intercept.toFixed(2)}</td>
-      <td class="cat-sub cat-def td-num" style="color:${mc('fouls',p.name)}">${p.fouls.toFixed(2)}</td>
-      <td class="cat-sub cat-def td-num" style="color:${mc('yellows',p.name)}">${p.yellows.toFixed(2)}</td>
-      <td class="cat-total td-num" style="color:${mc('total_pass',p.name)}">${p.total_pass.toFixed(1)}</td>
-      <td class="cat-sub cat-pass td-num" style="color:${mc('passes90',p.name)}">${p.passes90.toFixed(1)}</td>
-      <td class="cat-sub cat-pass td-num" style="color:${mc('passes_pct',p.name)}">${p.passes_pct.toFixed(1)}%</td>
-      <td class="cat-sub cat-pass td-num" style="color:${mc('shot_assist',p.name)}">${p.shot_assist.toFixed(2)}</td>
-      <td class="cat-sub cat-pass td-num" style="color:${mc('box_passes',p.name)}">${p.box_passes.toFixed(2)}</td>
-      <td class="cat-sub cat-pass td-num" style="color:${mc('box_passes_pct',p.name)}">${p.box_passes_pct.toFixed(1)}%</td>
-      <td class="cat-total td-num" style="color:${mc('total_physical',p.name)}">${p.total_physical.toFixed(1)}</td>
-      <td class="cat-sub cat-phys td-num" style="color:${mc('max_speed',p.name)}">${p.max_speed.toFixed(1)}</td>
-      <td class="cat-sub cat-phys td-num" style="color:${mc('hsr90',p.name)}">${Math.round(p.hsr90)}</td>
-      <td class="cat-sub cat-phys td-num" style="color:${mc('sprint_dist90',p.name)}">${Math.round(p.sprint_dist90)}</td>
-      <td class="cat-sub cat-phys td-num" style="color:${mc('sprints90',p.name)}">${p.sprints90.toFixed(1)}</td>
-      <td class="cat-sub cat-phys td-num" style="color:${mc('hsr_sprint_pct',p.name)}">${p.hsr_sprint_pct.toFixed(1)}%</td>
-      <td class="cat-sub cat-phys td-num" style="color:${mc('total_dist',p.name)}">${Math.round(p.total_dist).toLocaleString()}</td>
+      <td class="cat-sub cat-off td-num" style="color:${mc('shots90',p.name)}">${(p.shots90!=null?p.shots90.toFixed(2):'—')}</td>
+      <td class="cat-sub cat-off td-num" style="color:${mc('goals_per_shot',p.name)}">${(p.goals_per_shot!=null?p.goals_per_shot.toFixed(1):'—')}%</td>
+      <td class="cat-sub cat-off td-num" style="color:${mc('dribles90',p.name)}">${(p.dribles90!=null?p.dribles90.toFixed(2):'—')}</td>
+      <td class="cat-sub cat-off td-num" style="color:${mc('dribles_pct',p.name)}">${(p.dribles_pct!=null?p.dribles_pct.toFixed(1):'—')}%</td>
+      <td class="cat-sub cat-off td-num" style="color:${mc('crosses90',p.name)}">${(p.crosses90!=null?p.crosses90.toFixed(2):'—')}</td>
+      <td class="cat-sub cat-off td-num" style="color:${mc('crosses_pct',p.name)}">${(p.crosses_pct!=null?p.crosses_pct.toFixed(1):'—')}%</td>
+      <td class="cat-sub cat-off td-num" style="color:${mc('box_touches',p.name)}">${(p.box_touches!=null?p.box_touches.toFixed(2):'—')}</td>
+      <td class="cat-sub cat-off td-num" style="color:${mc('prog_carries',p.name)}">${(p.prog_carries!=null?p.prog_carries.toFixed(2):'—')}</td>
+      <td class="cat-sub cat-off td-num" style="color:${mc('accels90',p.name)}">${(p.accels90!=null?p.accels90.toFixed(2):'—')}</td>
+      <td class="cat-sub cat-off td-num" style="color:${mc('recpt_depth',p.name)}">${(p.recpt_depth!=null?p.recpt_depth.toFixed(2):'—')}</td>
+      <td class="cat-total td-num" style="color:${mc('total_def',p.name)}">${(p.total_def!=null?p.total_def.toFixed(1):'—')}</td>
+      <td class="cat-sub cat-def td-num" style="color:${mc('def_duels',p.name)}">${(p.def_duels!=null?p.def_duels.toFixed(2):'—')}</td>
+      <td class="cat-sub cat-def td-num" style="color:${mc('def_duels_pct',p.name)}">${(p.def_duels_pct!=null?p.def_duels_pct.toFixed(1):'—')}%</td>
+      <td class="cat-sub cat-def td-num" style="color:${mc('adj_intercept',p.name)}">${(p.adj_intercept!=null?p.adj_intercept.toFixed(2):'—')}</td>
+      <td class="cat-sub cat-def td-num" style="color:${mc('fouls',p.name)}">${(p.fouls!=null?p.fouls.toFixed(2):'—')}</td>
+      <td class="cat-sub cat-def td-num" style="color:${mc('yellows',p.name)}">${(p.yellows!=null?p.yellows.toFixed(2):'—')}</td>
+      <td class="cat-total td-num" style="color:${mc('total_pass',p.name)}">${(p.total_pass!=null?p.total_pass.toFixed(1):'—')}</td>
+      <td class="cat-sub cat-pass td-num" style="color:${mc('passes90',p.name)}">${(p.passes90!=null?p.passes90.toFixed(1):'—')}</td>
+      <td class="cat-sub cat-pass td-num" style="color:${mc('passes_pct',p.name)}">${(p.passes_pct!=null?p.passes_pct.toFixed(1):'—')}%</td>
+      <td class="cat-sub cat-pass td-num" style="color:${mc('shot_assist',p.name)}">${(p.shot_assist!=null?p.shot_assist.toFixed(2):'—')}</td>
+      <td class="cat-sub cat-pass td-num" style="color:${mc('box_passes',p.name)}">${(p.box_passes!=null?p.box_passes.toFixed(2):'—')}</td>
+      <td class="cat-sub cat-pass td-num" style="color:${mc('box_passes_pct',p.name)}">${(p.box_passes_pct!=null?p.box_passes_pct.toFixed(1):'—')}%</td>
+      <td class="cat-total td-num" style="color:${mc('total_physical',p.name)}">${(p.total_physical!=null?p.total_physical.toFixed(1):'—')}</td>
+      <td class="cat-sub cat-phys td-num" style="color:${mc('max_speed',p.name)}">${(p.max_speed!=null?p.max_speed.toFixed(1):'—')}</td>
+      <td class="cat-sub cat-phys td-num" style="color:${mc('hsr90',p.name)}">${(p.hsr90!=null?Math.round(p.hsr90):'—')}</td>
+      <td class="cat-sub cat-phys td-num" style="color:${mc('sprint_dist90',p.name)}">${(p.sprint_dist90!=null?Math.round(p.sprint_dist90):'—')}</td>
+      <td class="cat-sub cat-phys td-num" style="color:${mc('sprints90',p.name)}">${(p.sprints90!=null?p.sprints90.toFixed(1):'—')}</td>
+      <td class="cat-sub cat-phys td-num" style="color:${mc('hsr_sprint_pct',p.name)}">${(p.hsr_sprint_pct!=null?p.hsr_sprint_pct.toFixed(1):'—')}%</td>
+      <td class="cat-sub cat-phys td-num" style="color:${mc('total_dist',p.name)}">${(p.total_dist!=null?Math.round(p.total_dist):'—').toLocaleString()}</td>
       <td class="td-val">${fmtVal(p.mkt_value)}</td>
       <td style="text-align:center">${leagueBadge(p.league)}</td>
       <td class="td-sf">${(()=>{
@@ -8915,7 +8997,7 @@ function renderCompare(){
       + '<div class="photo-avatar-wrap round" style="display:inline-block;position:relative"><div class="cmp-avatar" id="avatar-' + p.name.replace(/[^a-z0-9]/gi,'_') + '" style="background:' + col + '22;border-color:' + col + ';color:' + col + ';position:relative;overflow:hidden">' + ini + '</div>'
       + '<div class="photo-upload-corner" onclick="event.stopPropagation();uploadPlayerPhoto(\'' + p.name.replace(/'/g,"\\'") + '\')"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;flex-shrink:0;margin-bottom:0.5mm;margin-left:0.1mm"><path d="M12 3v13" stroke="url(#dg)" stroke-width="2.5" stroke-linecap="round"/><path d="M6 11l6 7 6-7" stroke="url(#dg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="20" width="16" height="2" rx="1" fill="url(#dg)"/><defs><linearGradient id="dg" x1="12" y1="3" x2="12" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#a8d4ff"/><stop offset="100%" stop-color="#dceeff"/></linearGradient></defs></svg></div></div>'
       + '<div class="cmp-card-name" style="color:' + col + '">' + p.name + '</div>'
-      + '<div class="cmp-card-sub">' + p.position.split(',')[0].trim() + '</div>'
+      + '<div class="cmp-card-sub">' + (p.position||'').split(',')[0].trim() + '</div>'
       + '</div>'
 
       // ── SCORE circular ring
@@ -8962,7 +9044,7 @@ function renderCompare(){
       + hlRow('Market Value', fmtVal(p.mkt_value))
       + hlRow('Age',     p.age)
       + hlRow('Country', p.country.split(',')[0].trim())
-      + hlRow('Role',    p.position.split(',')[0].trim())
+      + hlRow('Role',    (p.position||'').split(',')[0].trim())
       + '</div>'
 
       // ── Physical block
@@ -9038,7 +9120,7 @@ function renderCompare(){
           <div class="photo-upload-corner" onclick="event.stopPropagation();uploadPlayerPhoto('${p.name.replace(/'/g,"\\'")}')"><svg width="9" height="9" viewBox="0 0 24 24" fill="none"><path d="M12 3v13" stroke="url(#dg4)" stroke-width="2.5" stroke-linecap="round"/><path d="M6 11l6 7 6-7" stroke="url(#dg4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="20" width="16" height="2" rx="1" fill="url(#dg4)"/><defs><linearGradient id="dg4" x1="12" y1="3" x2="12" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#a8d4ff"/><stop offset="100%" stop-color="#dceeff"/></linearGradient></defs></svg></div>
         </div>
         <div class="cmp-card-name" style="color:${col};font-size:16px">${p.name}</div>
-        <div class="cmp-card-sub">${p.position.split(',')[0].trim()}</div>
+        <div class="cmp-card-sub">${(p.position||'').split(',')[0].trim()}</div>
       </div>
       <div style="display:flex;justify-content:center;padding:10px 0 6px">
         <div style="position:relative;width:${r*2+stroke*2}px;height:${r*2+stroke*2}px">
@@ -9871,7 +9953,7 @@ function renderListSection(players, containerId, emptyMsg) {
     const col = getColor(PLAYERS.indexOf(p));
     return '<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid var(--border)">'
       + '<span style="font-family:var(--font-d);font-size:11px;color:' + col + ';flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + p.name + '">' + p.name + '</span>'
-      + '<span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">' + p.position.split(',')[0].trim() + '</span>'
+      + '<span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">' + (p.position||'').split(',')[0].trim() + '</span>'
       + '<span onclick="removeFromList(' + JSON.stringify(containerId) + ',' + i + ')" style="color:var(--muted2);cursor:pointer;font-size:12px;padding:0 2px;flex-shrink:0" title="Remover">✕</span>'
       + '</div>';
   }).join('');
@@ -9954,7 +10036,7 @@ function renderTalentCenter() {
           <div>
             <div class="td-name">${p.name}</div>
             <div class="td-info-row">
-              <span class="td-pos-inline">${p.position.split(',')[0].trim()}</span>
+              <span class="td-pos-inline">${(p.position||'').split(',')[0].trim()}</span>
               <span class="td-club">${p.team}</span>
             </div>
           </div>
