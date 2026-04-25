@@ -7178,17 +7178,19 @@ function leagueBadge(league) {
 // ── FILTERING ────────────────────────────────────────────────────────────────
 function matchPos(p){
   if(selPos==='all')return true;
-  return p.position.split(',').map(x=>x.trim()).includes(selPos);
+  return (p.position||'').split(',').map(x=>x.trim()).includes(selPos);
 }
 function matchLeague(p){
   if(!selLeagues.length)return true;
   return selLeagues.includes(p.league);
 }
 function matchFilts(p){
-  const yr=parseInt((p.contract_end||'2099').split('-')[0]);
-  return p.age>=filts.ageMin&&p.age<=filts.ageMax
+  const yr=p.contract_end ? parseInt(p.contract_end.split('-')[0]) : 2099;
+  const age=p.age||0;
+  const score=parseFloat(p.score)||0;
+  return age>=filts.ageMin&&age<=filts.ageMax
     &&yr>=filts.ctMin&&yr<=filts.ctMax
-    &&p.score>=filts.scMin;
+    &&score>=filts.scMin;
 }
 function getFiltered(){
   const q=document.getElementById('search-global')?.value.toLowerCase()||'';
