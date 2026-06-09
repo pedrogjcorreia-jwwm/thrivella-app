@@ -16754,19 +16754,37 @@ function renderMobileElite(){
   const potC=potS===2?'#00e5a0':potS===1?'rgba(180,195,215,.7)':'#ff6b6b';
 
   window._mobileCompare=function(simName,playerName){
-    // Navigate to compare first (this calls initCompare which populates selects)
-    if(typeof showView==='function'){
-      showView('compare',document.querySelector('.top-btn[onclick*="compare"]'));
-    }
-    // After initCompare runs, set the values
-    setTimeout(()=>{
-      const sa=document.getElementById('cmp-a');
-      const sb=document.getElementById('cmp-b');
-      if(sa) sa.value=simName;
-      if(sb) sb.value=playerName;
-      if(typeof renderCompare==='function') renderCompare();
-    },100);
-    if(typeof closeMobileElite==='function') closeMobileElite();
+    const pA=PLAYERS.find(x=>x.name===simName);
+    const pB=PLAYERS.find(x=>x.name===playerName);
+    if(!pA||!pB) return;
+    const ex=document.getElementById('mob-compare-overlay');if(ex)ex.remove();
+    const colA='#378ADD',colB='#00e5a0';
+    const fmtMv=p=>p.mkt_value>=1e6?'€'+(p.mkt_value/1e6).toFixed(1)+'M':p.mkt_value>=1e3?'€'+Math.round(p.mkt_value/1e3)+'K':'—';
+    const fmtPhoto=p=>photoCache[p.name]?`<img src="${photoCache[p.name]}" style="width:100%;height:100%;object-fit:cover;object-position:top center">`:`<span style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:rgba(255,255,255,.15)">${p.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</span>`;
+    // Radar SVG
+    const rm=[{k:'total_pass',lbl:'PASS'},{k:'total_off',lbl:'OFF'},{k:'total_physical',lbl:'PHYS'},{k:'total_def',lbl:'DEF'},{k:'score',lbl:'TALENT'}];
+    const mv={};rm.forEach(({k})=>{mv[k]=Math.max(...PLAYERS.map(p=>p[k]||0),0.001);});
+    const pts=(pl,r,cx,cy)=>rm.map(({k},i)=>{const a=(i/rm.length)*2*Math.PI-Math.PI/2;const pct=Math.min(1,(pl[k]||0)/mv[k]);return [cx+r*pct*Math.cos(a),cy+r*pct*Math.sin(a)];});
+    const tp=ps=>ps.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')+'Z';
+    const cx=130,cy=120,r=90;
+    const axes=rm.map(({lbl},i)=>{const a=(i/rm.length)*2*Math.PI-Math.PI/2;const lx=cx+(r+16)*Math.cos(a),ly=cy+(r+16)*Math.sin(a);return `<line x1="${cx}" y1="${cy}" x2="${(cx+r*Math.cos(a)).toFixed(1)}" y2="${(cy+r*Math.sin(a)).toFixed(1)}" stroke="rgba(255,255,255,.1)" stroke-width="1"/><text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="9" font-weight="700" fill="rgba(255,255,255,.35)" letter-spacing="1">${lbl}</text>`;}).join('');
+    const rings=[.25,.5,.75,1].map(f=>{const rp=rm.map((_,i)=>{const a=(i/rm.length)*2*Math.PI-Math.PI/2;return [cx+r*f*Math.cos(a),cy+r*f*Math.sin(a)];});return `<path d="${tp(rp)}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>`;}).join('');
+    const radar=`<svg width="260" height="240" viewBox="0 0 260 240">${rings}${axes}<path d="${tp(pts(pA,r,cx,cy))}" fill="${colA}33" stroke="${colA}" stroke-width="2" stroke-linejoin="round"/><path d="${tp(pts(pB,r,cx,cy))}" fill="${colB}33" stroke="${colB}" stroke-width="2" stroke-linejoin="round"/></svg>`;
+    // Metric rows
+    const rowData=[['Talent',pA.talent_index,pB.talent_index],['Physical',pA.total_physical,pB.total_physical],['Ofensivo',pA.total_off,pB.total_off],['Passe',pA.total_pass,pB.total_pass],['Defensivo',pA.total_def,pB.total_def],['Vel. Máx',pA.max_speed,pB.max_speed],['xG',pA.xg,pB.xg],['Jogos',pA.matches,pB.matches]];
+    const rows=rowData.map(([lbl,a,b])=>{const av=parseFloat(a)||0,bv=parseFloat(b)||0,aW=av>bv,bW=bv>av;return `<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)"><div style="text-align:right;font-family:'Barlow Condensed',sans-serif;font-size:${aW?'16px':'13px'};font-weight:${aW?800:400};color:${aW?colA:'rgba(255,255,255,.3)'}">${av||'—'}</div><div style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;color:rgba(255,255,255,.25);letter-spacing:.8px;padding:0 12px;text-transform:uppercase">${lbl}</div><div style="text-align:left;font-family:'Barlow Condensed',sans-serif;font-size:${bW?'16px':'13px'};font-weight:${bW?800:400};color:${bW?colB:'rgba(255,255,255,.3)'}">${bv||'—'}</div></div>`;}).join('');
+    const ov=document.createElement('div');
+    ov.id='mob-compare-overlay';
+    ov.style.cssText='position:fixed;inset:0;z-index:9999;background:#060c18;overflow-y:auto;-webkit-overflow-scrolling:touch';
+    ov.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;background:#060c18;z-index:2"><span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.4)">COMPARAR</span><button onclick="document.getElementById('mob-compare-overlay').remove()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:700">✕ Fechar</button></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.06)">
+      <div style="padding:12px 12px 12px 16px;border-right:1px solid rgba(255,255,255,.06)"><div style="width:56px;height:68px;border-radius:6px;background:${colA}15;border:1.5px solid ${colA}44;overflow:hidden;margin-bottom:6px;display:flex;align-items:center;justify-content:center">${fmtPhoto(pA)}</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:${colA};line-height:1">${pA.name}</div><div style="font-family:'Barlow',sans-serif;font-size:10px;color:rgba(255,255,255,.35);margin-top:3px">${pA.team||''}</div><div style="font-family:'Barlow',sans-serif;font-size:10px;color:rgba(0,212,255,.5);margin-top:1px">${pA.league||''} · ${pA.age||'—'}a · ${fmtMv(pA)}</div></div>
+      <div style="padding:12px 16px 12px 12px"><div style="width:56px;height:68px;border-radius:6px;background:${colB}15;border:1.5px solid ${colB}44;overflow:hidden;margin-bottom:6px;display:flex;align-items:center;justify-content:center">${fmtPhoto(pB)}</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:${colB};line-height:1">${pB.name}</div><div style="font-family:'Barlow',sans-serif;font-size:10px;color:rgba(255,255,255,.35);margin-top:3px">${pB.team||''}</div><div style="font-family:'Barlow',sans-serif;font-size:10px;color:rgba(0,212,255,.5);margin-top:1px">${pB.league||''} · ${pB.age||'—'}a · ${fmtMv(pB)}</div></div>
+    </div>
+    <div style="display:flex;justify-content:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06)">${radar}</div>
+    <div style="display:flex;justify-content:center;gap:24px;padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.06)"><div style="display:flex;align-items:center;gap:6px"><div style="width:18px;height:2px;background:${colA}"></div><span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:${colA}">${pA.name}</span></div><div style="display:flex;align-items:center;gap:6px"><div style="width:18px;height:2px;background:${colB}"></div><span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:${colB}">${pB.name}</span></div></div>
+    <div style="padding:0 16px 32px">${rows}</div>`;
+    document.body.appendChild(ov);
   };
   const allPhotoNames=[p.name,..._simNames];
   // Call fetchWikiPhoto for any missing — divs use id="avatar-NAME" so it injects directly
