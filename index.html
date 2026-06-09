@@ -16818,7 +16818,7 @@ function renderMobileElite(){
         <div style="flex:1;min-width:0;display:flex;flex-direction:column;height:124px">
             <!-- Nome + posições+comparar -->
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:6px">
-              <div style="font-family:'Barlow Condensed',sans-serif;font-size:25px;font-weight:800;color:#e8edf2;line-height:1">${s.name}</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:25px;font-weight:800;color:#e8edf2;line-height:1;max-width:55%">${s.name}</div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
                 <div style="display:flex;gap:3px">${(s.position||'').split(',').slice(0,3).map(x=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:#00d4ff;border:1px solid rgba(0,212,255,.35);background:rgba(0,212,255,.07);border-radius:3px;padding:2px 8px">${x.trim()}</span>`).join('')}</div>
                 <button onclick="event.stopPropagation();window._mobileCompare('${simName}','${refName}');" style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 0;border-radius:4px;border:1px solid rgba(155,127,255,.5);color:#9b7fff;background:rgba(155,127,255,.15);cursor:pointer;letter-spacing:.5px;width:100%;text-align:center">Comparar</button>
