@@ -5039,7 +5039,36 @@ window._photoMenu=function(name,evt){
   // Tag the input so the popup can find it
   inp.setAttribute('data-pmu','1');
   document.body.appendChild(pop);
-  setTimeout(()=>document.addEventListener('click',function h(e){if(!pop.contains(e.target)){pop.remove();document.removeEventListener('click',h);}},),50);
+  setTimeout(()=>document.addEventListener('click',function h(e){if(!pop.contains(e.target)){pop.remove();document.removeEventListener('click',h);}}),50);
+};
+
+window._mobAgentPopup=function(name,type){
+  const isWa=type==='wa';
+  const storageKey=(isWa?'agent_wa_':'agent_web_')+name;
+  const existing=localStorage.getItem(storageKey)||'';
+  const pop=document.createElement('div');
+  pop.style.cssText='position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center';
+  const box=document.createElement('div');
+  box.style.cssText='background:#0a1628;border:1px solid '+(isWa?'rgba(0,229,160,.2)':'rgba(0,180,255,.2)')+';border-radius:10px;padding:20px;width:300px;box-shadow:0 20px 60px rgba(0,0,0,.8)';
+  const accentCol=isWa?'#00e5a0':'#00d4ff';
+  const borderCol=isWa?'rgba(0,229,160,.35)':'rgba(0,212,255,.4)';
+  const bgCol=isWa?'rgba(0,229,160,.15)':'rgba(0,180,255,.15)';
+  const placeholder=isWa?'https://wa.me/351912345678':'https://agente.com';
+  const inp=document.createElement('input');
+  inp.type=isWa?'tel':'url';inp.value=existing;inp.placeholder=placeholder;
+  inp.id='mob-agent-inp';
+  inp.style.cssText='width:100%;box-sizing:border-box;font-family:Barlow Condensed,sans-serif;font-size:12px;background:#060c18;border:1px solid '+(isWa?'rgba(0,229,160,.25)':'rgba(0,180,255,.25)')+';border-radius:6px;color:#e8edf2;padding:10px 12px;outline:none;margin-bottom:12px';
+  const title=document.createElement('div');
+  title.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:12px';
+  title.innerHTML=(isWa?'<svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366"><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 01-4.243-1.222l-.305-.18-3.154.938.938-3.154-.18-.305A8 8 0 1112 20zm4.406-5.844c-.243-.122-1.437-.709-1.66-.79-.223-.08-.385-.12-.547.121-.162.242-.628.79-.77.951-.14.162-.283.182-.526.06-.243-.121-1.025-.378-1.952-1.205-.721-.644-1.208-1.44-1.35-1.683-.14-.242-.015-.373.106-.494.108-.108.242-.283.363-.424.12-.142.162-.243.242-.405.08-.162.04-.303-.02-.425-.06-.12-.547-1.318-.749-1.804-.197-.473-.397-.409-.547-.416H8.5c-.162 0-.425.06-.647.303-.223.242-.85.83-.85 2.024s.87 2.348.991 2.51c.12.162 1.71 2.611 4.146 3.66.58.25 1.031.4 1.384.512.582.185 1.112.159 1.53.097.466-.07 1.437-.587 1.64-1.153.202-.566.202-1.051.14-1.153-.06-.1-.222-.162-.465-.283z"/></svg>':'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#00d4ff" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>')+'<span style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:700;color:'+accentCol+'">'+(isWa?'Agent WhatsApp':'Agent Website')+'</span>';
+  const btns=document.createElement('div');
+  btns.style.cssText='display:flex;gap:8px;justify-content:space-between';
+  btns.innerHTML='<button onclick="(function(){const u=document.getElementById(\'mob-agent-inp\').value.trim();if(u)window.open(u,\'_blank\')})()" style="font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;padding:8px 12px;border-radius:5px;background:rgba(0,0,0,.3);border:1px solid '+borderCol+';color:'+accentCol+';cursor:pointer">↗ Abrir</button><div style="display:flex;gap:8px"><button onclick="this.closest(\'[style*=fixed]\').remove()" style="font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;padding:8px 16px;border-radius:5px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);cursor:pointer">Cancelar</button><button onclick="(function(){const u=document.getElementById(\'mob-agent-inp\').value.trim();if(u)localStorage.setItem(\''+storageKey+'\',u);else localStorage.removeItem(\''+storageKey+'\');this.closest(\'[style*=fixed]\').remove()})()" style="font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;padding:8px 16px;border-radius:5px;background:'+bgCol+';border:1px solid '+borderCol+';color:'+accentCol+';cursor:pointer">Guardar</button></div>';
+  box.appendChild(title);box.appendChild(inp);box.appendChild(btns);
+  pop.appendChild(box);
+  pop.addEventListener('click',e=>{if(e.target===pop)pop.remove();});
+  document.body.appendChild(pop);
+  setTimeout(()=>inp.focus(),50);
 };
 
 window.deletePlayerPhoto=function(name){
@@ -16784,22 +16813,22 @@ function renderMobileElite(){
     return `<div class="mob-e-card" style="margin-bottom:6px;overflow:hidden">
       <div style="display:flex;gap:0;padding:10px 12px;cursor:pointer" onclick="window.selectedPlayer=PLAYERS.find(x=>x.name==='${simName}');if(window.selectedPlayer)renderMobileElite()">
         <!-- FOTO -->
-        <div id="${sPhotoId}" style="width:78px;height:124px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-right:10px">${sPhoto}</div>
+        <div id="${sPhotoId}" style="width:94px;height:124px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-right:10px">${sPhoto}</div>
         <!-- INFO -->
         <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between">
           <div>
             <!-- Nome + posições+comparar -->
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:5px">
-              <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:#e8edf2;line-height:1">${s.name}</div>
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:6px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:#e8edf2;line-height:1">${s.name}</div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
                 <div style="display:flex;gap:3px">${(s.position||'').split(',').slice(0,3).map(x=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:#00d4ff;border:1px solid rgba(0,212,255,.35);background:rgba(0,212,255,.07);border-radius:3px;padding:2px 8px">${x.trim()}</span>`).join('')}</div>
                 <button onclick="event.stopPropagation();window._mobileCompare('${simName}','${refName}');" style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 0;border-radius:4px;border:1px solid rgba(155,127,255,.5);color:#9b7fff;background:rgba(155,127,255,.15);cursor:pointer;letter-spacing:.5px;width:100%;text-align:center">Comparar</button>
               </div>
             </div>
             <!-- Idade + altura -->
-            <div style="font-family:'Barlow',sans-serif;font-size:12px;color:rgba(255,255,255,.45);margin-bottom:5px">${s.age||'—'}a · ${s.size?s.size+' cm':'—'}</div>
+            <div style="font-family:'Barlow',sans-serif;font-size:12px;color:rgba(255,255,255,.45);margin-bottom:6px">${s.age||'—'}a · ${s.size?s.size+' cm':'—'}</div>
             <!-- Jogos / Mins / Golos -->
-            <div style="display:flex;gap:8px;margin-bottom:5px">
+            <div style="display:flex;gap:8px;margin-bottom:6px">
               ${[['J',s.matches],['M',s.minutes],['G',s.goals_np]].map(([l,v])=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(255,255,255,.35)"><span style="font-size:8px;color:rgba(255,255,255,.25)">${l} </span><span style="color:#00d4ff;font-weight:700">${v!=null?v:'—'}</span></span>`).join('<span style="color:rgba(255,255,255,.12);font-size:10px">·</span>')}
             </div>
             <!-- Clube + liga -->
@@ -16887,7 +16916,7 @@ function renderMobileElite(){
         ${[['Idade',p.age||'—'],['Altura',p.size?p.size+' cm':'—'],['Peso',p.weight?p.weight+' kg':'—'],['Pé',foot]].map(([l,v])=>`<div><div style="font-size:8.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px">${l}</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:rgba(255,255,255,.92)">${v}</div></div>`).join('')}
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:3px;padding:10px 0;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:10px">
-        ${[['Jogos',p.matches||'—',true],['Minutos',p.minutes||'—',true],['Golos',p.goals_np!=null?p.goals_np:'—',true],['Agent',p.agent||'—',false]].map(([l,v,blue])=>`<div><div style="font-size:8.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px">${l}</div>${l==='Agent'?`<div style="display:flex;align-items:center;gap:4px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:rgba(0,212,255,.7)">${v}</div><button onclick="event.stopPropagation();(function(){const wa=localStorage.getItem('agent_wa_'+'${p.name.replace(/'/g,"\\'")}');if(wa)window.open(wa.startsWith('http')?wa:'https://wa.me/'+wa.replace(/\\D/g,''),'_blank');else{const n=prompt('WhatsApp do agente:');if(n)localStorage.setItem('agent_wa_'+'${p.name.replace(/'/g,"\\'")}',n);}})()" style="width:18px;height:18px;border-radius:3px;border:1px solid rgba(0,200,80,.4);background:rgba(0,200,80,.1);color:rgba(0,220,100,.8);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">📱</button><button onclick="event.stopPropagation();(function(){const web=localStorage.getItem('agent_web_'+'${p.name.replace(/'/g,"\\'")}');if(web)window.open(web,'_blank');else{const u=prompt('Website do agente:');if(u)localStorage.setItem('agent_web_'+'${p.name.replace(/'/g,"\\'")}',u);}})()" style="width:18px;height:18px;border-radius:3px;border:1px solid rgba(0,180,255,.4);background:rgba(0,180,255,.1);color:rgba(0,200,255,.8);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">🌐</button></div>`:`<div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:${blue?'#00d4ff':'rgba(255,255,255,.92)'}">${v}</div>`}</div>`).join('')}
+        ${[['Jogos',p.matches||'—',true],['Minutos',p.minutes||'—',true],['Golos',p.goals_np!=null?p.goals_np:'—',true],['Agent','',false]].map(([l,v,blue])=>`<div><div style="font-size:8.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px">${l}</div>${l==='Agent'?`<div style="display:flex;align-items:center;gap:6px;padding-top:2px"><button onclick="event.stopPropagation();window._mobAgentPopup(${JSON.stringify(p.name)},'wa')" style="background:transparent;border:none;cursor:pointer;padding:0;display:flex;align-items:center"><svg viewBox="0 0 24 24" width="24" height="24" fill="#25D366"><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 01-4.243-1.222l-.305-.18-3.154.938.938-3.154-.18-.305A8 8 0 1112 20zm4.406-5.844c-.243-.122-1.437-.709-1.66-.79-.223-.08-.385-.12-.547.121-.162.242-.628.79-.77.951-.14.162-.283.182-.526.06-.243-.121-1.025-.378-1.952-1.205-.721-.644-1.208-1.44-1.35-1.683-.14-.242-.015-.373.106-.494.108-.108.242-.283.363-.424.12-.142.162-.243.242-.405.08-.162.04-.303-.02-.425-.06-.12-.547-1.318-.749-1.804-.197-.473-.397-.409-.547-.416H8.5c-.162 0-.425.06-.647.303-.223.242-.85.83-.85 2.024s.87 2.348.991 2.51c.12.162 1.71 2.611 4.146 3.66.58.25 1.031.4 1.384.512.582.185 1.112.159 1.53.097.466-.07 1.437-.587 1.64-1.153.202-.566.202-1.051.14-1.153-.06-.1-.222-.162-.465-.283z"/></svg></button><button onclick="event.stopPropagation();window._mobAgentPopup(${JSON.stringify(p.name)},'web')" style="background:transparent;border:none;cursor:pointer;padding:0;display:flex;align-items:center"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#00d4ff" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></button></div>`:`<div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:${blue?'#00d4ff':'rgba(255,255,255,.92)'}">${v}</div>`}</div>`).join('')}
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;padding-bottom:6px">
         <div><div style="font-size:8.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px">Market Value</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#e8edf2">${mv}</div></div>
