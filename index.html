@@ -16818,15 +16818,15 @@ function renderMobileElite(){
         <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between">
           <div>
             <!-- Nome + posições+comparar -->
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:0">
-              <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:#e8edf2;line-height:1">${s.name}</div>
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:6px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:25px;font-weight:800;color:#e8edf2;line-height:1">${s.name}</div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
                 <div style="display:flex;gap:3px">${(s.position||'').split(',').slice(0,3).map(x=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:#00d4ff;border:1px solid rgba(0,212,255,.35);background:rgba(0,212,255,.07);border-radius:3px;padding:2px 8px">${x.trim()}</span>`).join('')}</div>
                 <button onclick="event.stopPropagation();window._mobileCompare('${simName}','${refName}');" style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 0;border-radius:4px;border:1px solid rgba(155,127,255,.5);color:#9b7fff;background:rgba(155,127,255,.15);cursor:pointer;letter-spacing:.5px;width:100%;text-align:center">Comparar</button>
               </div>
             </div>
             <!-- Idade + altura -->
-            <div style="font-family:'Barlow',sans-serif;font-size:12px;color:rgba(255,255,255,.45);margin-bottom:6px;margin-top:6px">${s.age||'—'}a · ${s.size?s.size+' cm':'—'}</div>
+            <div style="font-family:'Barlow',sans-serif;font-size:12px;color:rgba(255,255,255,.45);margin-bottom:6px">${s.age||'—'}a · ${s.size?s.size+' cm':'—'}</div>
             <!-- Jogos / Mins / Golos -->
             <div style="display:flex;gap:8px;margin-bottom:6px">
               ${[['J',s.matches],['M',s.minutes],['G',s.goals_np]].map(([l,v])=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(255,255,255,.35)"><span style="font-size:8px;color:rgba(255,255,255,.25)">${l} </span><span style="color:#00d4ff;font-weight:700">${v!=null?v:'—'}</span></span>`).join('<span style="color:rgba(255,255,255,.12);font-size:10px;margin:0 2px">·</span>')}
