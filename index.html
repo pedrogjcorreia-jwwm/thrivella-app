@@ -16775,54 +16775,74 @@ function renderMobileElite(){
     if(!body||!isMobilePortrait()) return;
     const vw=window.innerWidth;
 
-    // 1. cmp-table: full width, no max-width
-    const table=body.querySelector('.cmp-table');
-    if(table) table.style.cssText='width:100%;max-width:100%;margin:0;display:flex;flex-direction:column;gap:0';
+    // Fix view-compare to not overflow
+    const viewCmp=document.getElementById('view-compare');
+    if(viewCmp) viewCmp.style.cssText='display:flex;flex-direction:column;padding:0;overflow-y:auto;gap:0;width:100%;box-sizing:border-box;overflow-x:hidden';
 
-    // 2. Reorder: radar (mid) FIRST, then player headers side by side
+    // 1. cmp-table: full width
+    const table=body.querySelector('.cmp-table');
+    if(table) table.style.cssText='width:100%;max-width:100%;margin:0;display:flex;flex-direction:column;gap:0;overflow-x:hidden';
+
+    // 2. Radar first, then players side by side
     const headerRow=body.querySelector('.cmp-header-row');
     const mid=headerRow&&headerRow.querySelector('.cmp-header-mid');
     if(headerRow&&mid){
-      // Move mid (radar) before header row
       headerRow.parentNode.insertBefore(mid,headerRow);
-      mid.style.cssText='width:100%;display:flex;flex-direction:column;align-items:center;padding:12px 0;background:var(--bg0);border-bottom:1px solid rgba(255,255,255,.06)';
-      // Resize radar canvas
+      mid.style.cssText='width:100%;display:flex;flex-direction:column;align-items:center;padding:10px 0 6px;background:var(--bg0);border-bottom:1px solid rgba(255,255,255,.06);box-sizing:border-box';
       const canvas=mid.querySelector('canvas');
-      if(canvas){canvas.style.width=(vw-32)+'px';canvas.style.height=(vw-32)+'px';canvas.style.maxWidth='320px';canvas.style.maxHeight='320px';}
-      // Header row: side by side, each 50%
-      headerRow.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:0';
-      // Make each player card compact
+      const sz=Math.min(vw-16,320);
+      if(canvas){canvas.style.width=sz+'px';canvas.style.height=sz+'px';}
+      // Players side by side, each exactly 50%
+      headerRow.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:0;width:100%;box-sizing:border-box;overflow:hidden';
       headerRow.querySelectorAll('.cmp-card').forEach((card,i)=>{
-        card.style.cssText='padding:10px 8px;'+(i===0?'border-right:1px solid rgba(255,255,255,.06)':'');
-        // Shrink avatar
+        card.style.cssText='padding:10px 8px;box-sizing:border-box;overflow:hidden;'+(i===0?'border-right:1px solid rgba(255,255,255,.06)':'');
+        const cardTop=card.querySelector('.cmp-card-top');
+        if(cardTop) cardTop.style.cssText='display:flex;flex-direction:column;align-items:center;text-align:center';
+        // Bigger avatar
         const av=card.querySelector('.photo-avatar-wrap');
-        if(av) av.style.cssText='display:inline-block;position:relative;width:64px;height:72px;border-radius:8px;overflow:hidden';
+        if(av) av.style.cssText='display:inline-block;position:relative;width:80px;height:90px;border-radius:8px;overflow:hidden';
         const avDiv=card.querySelector('.cmp-avatar-rect');
-        if(avDiv) avDiv.style.cssText='width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700';
-        // Shrink name
+        if(avDiv) avDiv.style.cssText='width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700';
+        // Bigger name
         const name=card.querySelector('.cmp-card-name');
-        if(name) name.style.cssText='font-size:13px;font-weight:800;margin-top:4px;line-height:1.1';
-        // Shrink score ring
-        const svg=card.querySelector('svg');
-        if(svg){svg.style.width='56px';svg.style.height='56px';}
+        if(name) name.style.cssText='font-size:15px;font-weight:800;margin-top:5px;line-height:1.1;text-align:center';
+        // Bigger position
+        const sub=card.querySelector('.cmp-card-sub');
+        if(sub) sub.style.cssText='font-size:11px;margin-top:2px;text-align:center';
+        // Compact score ring
+        const svgs=card.querySelectorAll('svg');
+        svgs.forEach(s=>{s.style.width='60px';s.style.height='60px';});
       });
     }
 
-    // 3. Metric rows: adjust grid columns for narrow screen
-    // col pattern: valA | barA | label | barB | valB
+    // 3. Remove xG/xA metric name suffixes — shorten labels
+    body.querySelectorAll('.cmp-bar-lbl').forEach(el=>{
+      el.style.fontSize='8px';
+      el.style.whiteSpace='normal';
+      el.style.lineHeight='1.1';
+      // Shorten long labels
+      const t=el.textContent.trim();
+      if(t==='xG (Expected Goals)') el.textContent='xG';
+      if(t==='xA (Expected Assists)') el.textContent='xA';
+      if(t==='xA /90') el.textContent='xA /90';
+    });
+
+    // 4. Metric rows: tighter columns
     body.querySelectorAll('.cmp-bar-row').forEach(row=>{
-      row.style.gridTemplateColumns='44px 1fr 80px 1fr 44px';
-      row.style.gap='3px';
-      row.style.padding='3px 8px';
+      row.style.gridTemplateColumns='38px 1fr 70px 1fr 38px';
+      row.style.gap='2px';
+      row.style.padding='3px 6px';
+      row.style.minHeight='24px';
     });
-    // Score bar rows
     body.querySelectorAll('.cmp-score-bar-row').forEach(row=>{
-      row.style.gridTemplateColumns='1fr 120px 1fr';
-      row.style.padding='6px 8px';
+      row.style.gridTemplateColumns='1fr 100px 1fr';
+      row.style.padding='5px 6px';
     });
-    // Score bar labels
-    body.querySelectorAll('.cmp-bar-lbl').forEach(el=>el.style.fontSize='8px');
     body.querySelectorAll('.cmp-bar-val').forEach(el=>el.style.fontSize='11px');
+
+    // 5. Hide swap button to save space
+    const swapBtn=body.querySelector('button[onclick*="swapCompare"]');
+    if(swapBtn&&swapBtn.parentElement) swapBtn.parentElement.style.display='none';
   }
   const allPhotoNames=[p.name,..._simNames];
   // Call fetchWikiPhoto for any missing — divs use id="avatar-NAME" so it injects directly
