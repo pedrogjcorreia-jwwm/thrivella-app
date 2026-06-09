@@ -16815,8 +16815,7 @@ function renderMobileElite(){
         <!-- FOTO -->
         <div id="${sPhotoId}" style="width:94px;height:124px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-right:10px">${sPhoto}</div>
         <!-- INFO -->
-        <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-start">
-          <div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;height:124px">
             <!-- Nome + posições+comparar -->
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:6px">
               <div style="font-family:'Barlow Condensed',sans-serif;font-size:25px;font-weight:800;color:#e8edf2;line-height:1">${s.name}</div>
@@ -16833,9 +16832,8 @@ function renderMobileElite(){
             </div>
             <!-- Clube + liga -->
             <div style="font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.55);margin-bottom:6px">${s.team||'—'} · <span style="color:rgba(0,212,255,.6);font-weight:400">${s.league||''}</span></div>
-          </div>
-          <!-- Frase descritiva no fundo -->
-          <div style="font-family:'Barlow',sans-serif;font-size:12px;color:rgba(255,255,255,.38);line-height:1.4;padding-top:4px">${sWhy}</div>
+            <!-- Frase descritiva — alinhada pelo fundo da foto -->
+            <div style="margin-top:auto;font-family:'Barlow',sans-serif;font-size:12px;color:rgba(255,255,255,.38);line-height:1.4">${sWhy}</div>
         </div>
       </div>
       <!-- ROW SCORES -->
