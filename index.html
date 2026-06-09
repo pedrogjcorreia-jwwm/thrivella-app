@@ -16782,23 +16782,29 @@ function renderMobileElite(){
     const simName=s.name.replace(/'/g,"\\'");
     const refName=ref.name.replace(/'/g,"\\'");
     return `<div class="mob-e-card" style="margin-bottom:6px;overflow:hidden">
-      <!-- ROW 1+2: foto | info+frase -->
-      <div style="display:flex;gap:0;padding:10px 12px 0;cursor:pointer" onclick="window.selectedPlayer=PLAYERS.find(x=>x.name==='${simName}');if(window.selectedPlayer)renderMobileElite()">
+      <div style="display:flex;gap:0;padding:10px 12px;cursor:pointer" onclick="window.selectedPlayer=PLAYERS.find(x=>x.name==='${simName}');if(window.selectedPlayer)renderMobileElite()">
         <!-- FOTO — altura cobre nome+info+frase -->
-        <div id="${sPhotoId}" style="width:68px;height:92px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-right:8px">${sPhoto}</div>
+        <div id="${sPhotoId}" style="width:72px;height:110px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-right:10px">${sPhoto}</div>
         <!-- INFO -->
-        <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-start;gap:1px">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px;margin-bottom:2px">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:#e8edf2;line-height:1">${s.name}</div>
-            <div style="display:flex;gap:3px;flex-shrink:0;padding-top:2px">${sPos}</div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <!-- Nome + botão comparar -->
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:3px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#e8edf2;line-height:1">${s.name}</div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0">
+                <div style="display:flex;gap:3px">${sPos}</div>
+                <button onclick="event.stopPropagation();window._mobileCompare('${simName}','${refName}');" style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:3px 10px;border-radius:4px;border:1px solid rgba(155,127,255,.5);color:#9b7fff;background:rgba(155,127,255,.15);cursor:pointer;letter-spacing:.5px;white-space:nowrap">Comparar</button>
+              </div>
+            </div>
+            <!-- Idade + altura -->
+            <div style="font-family:'Barlow',sans-serif;font-size:11px;color:rgba(255,255,255,.45);margin-bottom:2px">${s.age||'—'}a · ${s.size?s.size+' cm':'—'}</div>
+            <!-- Clube + liga -->
+            <div style="font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.55);margin-bottom:6px">${s.team||'—'} · <span style="color:rgba(0,212,255,.6);font-weight:400">${s.league||''}</span></div>
           </div>
-          <div style="font-family:'Barlow',sans-serif;font-size:10px;color:rgba(255,255,255,.4)">${s.age||'—'}a · ${s.size?s.size+' cm':'—'}</div>
-          <div style="font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,.5)">${s.team||'—'} · <span style="color:rgba(0,212,255,.6);font-weight:400">${s.league||''}</span></div>
-          <button onclick="event.stopPropagation();window._mobileCompare('${simName}','${refName}');" style="margin-top:5px;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:3px 0;border-radius:4px;border:1px solid rgba(155,127,255,.5);color:#9b7fff;background:rgba(155,127,255,.15);cursor:pointer;letter-spacing:.5px;width:100%;text-align:center">Comparar</button>
+          <!-- Frase descritiva alinhada com a base das rows -->
+          <div style="font-family:'Barlow',sans-serif;font-size:10px;color:rgba(255,255,255,.38);line-height:1.4">${sWhy}</div>
         </div>
       </div>
-      <!-- FRASE -->
-      <div style="padding:6px 12px 8px;font-family:'Barlow',sans-serif;font-size:10px;color:rgba(255,255,255,.38);border-bottom:1px solid rgba(255,255,255,.05)">${sWhy}</div>
       <!-- ROW SCORES -->
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;background:rgba(255,255,255,.025)">
         <div style="padding:8px 0;text-align:center;border-right:1px solid rgba(255,255,255,.06)"><div style="font-family:'Barlow Condensed',sans-serif;font-size:7px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">Match</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:${sMatchCol}">${sMatchPct}%</div></div>
