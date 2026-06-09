@@ -16784,12 +16784,12 @@ function renderMobileElite(){
     return `<div class="mob-e-card" style="margin-bottom:6px;overflow:hidden">
       <div style="display:flex;gap:0;padding:10px 12px;cursor:pointer" onclick="window.selectedPlayer=PLAYERS.find(x=>x.name==='${simName}');if(window.selectedPlayer)renderMobileElite()">
         <!-- FOTO -->
-        <div id="${sPhotoId}" style="width:78px;height:110px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-right:10px">${sPhoto}</div>
+        <div id="${sPhotoId}" style="width:78px;height:124px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-right:10px">${sPhoto}</div>
         <!-- INFO -->
         <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between">
           <div>
             <!-- Nome + posições+comparar -->
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:6px">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:5px">
               <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:#e8edf2;line-height:1">${s.name}</div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
                 <div style="display:flex;gap:3px">${(s.position||'').split(',').slice(0,3).map(x=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:#00d4ff;border:1px solid rgba(0,212,255,.35);background:rgba(0,212,255,.07);border-radius:3px;padding:2px 8px">${x.trim()}</span>`).join('')}</div>
@@ -16797,7 +16797,11 @@ function renderMobileElite(){
               </div>
             </div>
             <!-- Idade + altura -->
-            <div style="font-family:'Barlow',sans-serif;font-size:12px;color:rgba(255,255,255,.45);margin-bottom:6px">${s.age||'—'}a · ${s.size?s.size+' cm':'—'}</div>
+            <div style="font-family:'Barlow',sans-serif;font-size:12px;color:rgba(255,255,255,.45);margin-bottom:5px">${s.age||'—'}a · ${s.size?s.size+' cm':'—'}</div>
+            <!-- Jogos / Mins / Golos -->
+            <div style="display:flex;gap:8px;margin-bottom:5px">
+              ${[['J',s.matches],['M',s.minutes],['G',s.goals_np]].map(([l,v])=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(255,255,255,.35)"><span style="font-size:8px;color:rgba(255,255,255,.25)">${l} </span><span style="color:#00d4ff;font-weight:700">${v!=null?v:'—'}</span></span>`).join('<span style="color:rgba(255,255,255,.12);font-size:10px">·</span>')}
+            </div>
             <!-- Clube + liga -->
             <div style="font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.55)">${s.team||'—'} · <span style="color:rgba(0,212,255,.6);font-weight:400">${s.league||''}</span></div>
           </div>
@@ -16857,8 +16861,8 @@ function renderMobileElite(){
     <div style="padding:4px 14px 16px">
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.5px;text-transform:uppercase">${(p.name||'').split(' ')[0]||''}</div>
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:900;color:#e8edf2;line-height:1;letter-spacing:-1.5px;margin-bottom:6px">${(p.name||'').split(' ').slice(1).join(' ')||p.name}</div>
-      <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap">
-        ${((p.role&&['Winger','Wing','Ala','Extremo'].some(w=>p.role.toLowerCase().includes(w.toLowerCase())))||(p.position&&['W','WF','LW','RW','LWF','RWF'].some(x=>p.position.includes(x))))?'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:700;padding:3px 8px;border-radius:3px;border:1px solid rgba(180,120,255,.4);color:rgba(200,150,255,.85);background:rgba(140,80,255,.07)">WINGER</span>':''}
+      <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap;align-items:center">
+        ${((p.role&&['Winger','Wing','Ala','Extremo'].some(w=>p.role.toLowerCase().includes(w.toLowerCase())))||(p.position&&['W','WF','LW','RW','LWF','RWF'].some(x=>p.position.includes(x))))?'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:700;padding:3px 8px;border-radius:3px;border:1px solid rgba(180,120,255,.4);color:rgba(200,150,255,.85);background:rgba(140,80,255,.07);display:flex;align-items:center">WINGER</span>':''}
         ${pos}
       </div>
       <div style="font-family:'Barlow',sans-serif;font-size:12px;color:rgba(255,255,255,.4);margin-bottom:12px">${p.team||''} · <span style="color:rgba(0,212,255,.6)">${p.league||''}</span></div>
@@ -16883,7 +16887,7 @@ function renderMobileElite(){
         ${[['Idade',p.age||'—'],['Altura',p.size?p.size+' cm':'—'],['Peso',p.weight?p.weight+' kg':'—'],['Pé',foot]].map(([l,v])=>`<div><div style="font-size:8.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px">${l}</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:rgba(255,255,255,.92)">${v}</div></div>`).join('')}
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:3px;padding:10px 0;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:10px">
-        ${[['Jogos',p.matches||'—',true],['Minutos',p.minutes||'—',true],['Golos',p.goals_np!=null?p.goals_np:'—',true],['Agent',p.agent||'—',false]].map(([l,v,blue])=>`<div><div style="font-size:8.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px">${l}</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:${blue?'#00d4ff':l==='Agent'?'rgba(0,212,255,.7)':'rgba(255,255,255,.92)'}">${v}</div></div>`).join('')}
+        ${[['Jogos',p.matches||'—',true],['Minutos',p.minutes||'—',true],['Golos',p.goals_np!=null?p.goals_np:'—',true],['Agent',p.agent||'—',false]].map(([l,v,blue])=>`<div><div style="font-size:8.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px">${l}</div>${l==='Agent'?`<div style="display:flex;align-items:center;gap:4px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:rgba(0,212,255,.7)">${v}</div><button onclick="event.stopPropagation();(function(){const wa=localStorage.getItem('agent_wa_'+'${p.name.replace(/'/g,"\\'")}');if(wa)window.open(wa.startsWith('http')?wa:'https://wa.me/'+wa.replace(/\\D/g,''),'_blank');else{const n=prompt('WhatsApp do agente:');if(n)localStorage.setItem('agent_wa_'+'${p.name.replace(/'/g,"\\'")}',n);}})()" style="width:18px;height:18px;border-radius:3px;border:1px solid rgba(0,200,80,.4);background:rgba(0,200,80,.1);color:rgba(0,220,100,.8);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">📱</button><button onclick="event.stopPropagation();(function(){const web=localStorage.getItem('agent_web_'+'${p.name.replace(/'/g,"\\'")}');if(web)window.open(web,'_blank');else{const u=prompt('Website do agente:');if(u)localStorage.setItem('agent_web_'+'${p.name.replace(/'/g,"\\'")}',u);}})()" style="width:18px;height:18px;border-radius:3px;border:1px solid rgba(0,180,255,.4);background:rgba(0,180,255,.1);color:rgba(0,200,255,.8);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">🌐</button></div>`:`<div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:${blue?'#00d4ff':'rgba(255,255,255,.92)'}">${v}</div>`}</div>`).join('')}
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;padding-bottom:6px">
         <div><div style="font-size:8.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px">Market Value</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#e8edf2">${mv}</div></div>
