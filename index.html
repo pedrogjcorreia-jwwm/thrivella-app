@@ -5074,10 +5074,11 @@ window.deletePlayerPhoto=function(name){
   }
 };
 window.exportPhotoCache=function(){
-  // Get token from localStorage — never stored in HTML
-  let ghToken=localStorage.getItem('gh_token');
+  // Clear any old invalid token
+  const storedToken=localStorage.getItem('gh_token');
+  let ghToken=storedToken;
   if(!ghToken){
-    ghToken=prompt('Introduz o GitHub Personal Access Token (guardado localmente, nunca enviado para terceiros):');
+    ghToken=prompt('Introduz o GitHub Personal Access Token:');
     if(!ghToken) return;
     localStorage.setItem('gh_token',ghToken);
   }
@@ -5095,47 +5096,55 @@ window.exportPhotoCache=function(){
   if(!Object.keys(out).length){alert('Sem fotos para exportar.');return;}
   const btn=document.querySelector('[onclick*="exportPhotoCache"]');
   if(btn){btn.textContent='⏳ A sincronizar...';btn.disabled=true;}
-  // Fetch raw content and SHA simultaneously
-  Promise.all([
-    fetch('https://raw.githubusercontent.com/pedrogjcorreia-jwwm/thrivella-app/main/index.html?t='+Date.now()).then(r=>r.text()),
-    fetch('https://api.github.com/repos/pedrogjcorreia-jwwm/thrivella-app/contents/index.html',{
-      headers:{'Authorization':'token '+ghToken,'Accept':'application/vnd.github.v3+json'}
-    }).then(r=>r.json())
-  ])
-  .then(([current,meta])=>{
-    if(meta.message==='Bad credentials'){localStorage.removeItem('gh_token');throw new Error('Token inválido. Tenta novamente.');}
-    if(meta.message){throw new Error('GitHub: '+meta.message);}
-    const sha=meta.sha;
-    const newPhotos='window.STATIC_PHOTOS = '+JSON.stringify(out)+';';
-    const startMarker='window.STATIC_PHOTOS = {';
-    const startIdx=current.indexOf(startMarker);
-    if(startIdx===-1){throw new Error('STATIC_PHOTOS não encontrado no ficheiro.');}
-    let depth=0,endIdx=-1;
-    for(let i=startIdx+startMarker.length-1;i<current.length;i++){
-      if(current[i]==='{')depth++;
-      else if(current[i]==='}'){depth--;if(depth===0){endIdx=i;break;}}
-    }
-    if(endIdx===-1){throw new Error('Estrutura STATIC_PHOTOS inválida.');}
-    const endWithSemi=current[endIdx+1]===';'?endIdx+2:endIdx+1;
-    const updated=current.slice(0,startIdx)+newPhotos+current.slice(endWithSemi);
-    const encoded=btoa(unescape(encodeURIComponent(updated)));
-    return fetch('https://api.github.com/repos/pedrogjcorreia-jwwm/thrivella-app/contents/index.html',{
-      method:'PUT',
-      headers:{'Authorization':'token '+ghToken,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-      body:JSON.stringify({message:'Update photos [auto]',content:encoded,sha:sha})
+  const doSync=function(token){
+    Promise.all([
+      fetch('https://raw.githubusercontent.com/pedrogjcorreia-jwwm/thrivella-app/main/index.html?t='+Date.now()).then(r=>r.text()),
+      fetch('https://api.github.com/repos/pedrogjcorreia-jwwm/thrivella-app/contents/index.html',{
+        headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}
+      }).then(r=>r.json())
+    ])
+    .then(([current,meta])=>{
+      if(meta.message&&meta.message.includes('credentials')){
+        localStorage.removeItem('gh_token');
+        throw new Error('Token inválido. Clica Export novamente para introduzir um novo token.');
+      }
+      if(meta.message){throw new Error('GitHub: '+meta.message);}
+      const sha=meta.sha;
+      const newPhotos='window.STATIC_PHOTOS = '+JSON.stringify(out)+';';
+      const startMarker='window.STATIC_PHOTOS = {';
+      const startIdx=current.indexOf(startMarker);
+      if(startIdx===-1){throw new Error('STATIC_PHOTOS não encontrado.');}
+      let depth=0,endIdx=-1;
+      for(let i=startIdx+startMarker.length-1;i<current.length;i++){
+        if(current[i]==='{')depth++;
+        else if(current[i]==='}'){depth--;if(depth===0){endIdx=i;break;}}
+      }
+      if(endIdx===-1){throw new Error('Estrutura STATIC_PHOTOS inválida.');}
+      const endWithSemi=current[endIdx+1]===';'?endIdx+2:endIdx+1;
+      const updated=current.slice(0,startIdx)+newPhotos+current.slice(endWithSemi);
+      const encoded=btoa(unescape(encodeURIComponent(updated)));
+      return fetch('https://api.github.com/repos/pedrogjcorreia-jwwm/thrivella-app/contents/index.html',{
+        method:'PUT',
+        headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+        body:JSON.stringify({message:'Update photos [auto]',content:encoded,sha:sha})
+      });
+    })
+    .then(r=>r&&r.json())
+    .then(result=>{
+      if(result&&result.content){
+        alert('✅ Fotos sincronizadas! O site atualiza em ~30 segundos.');
+        Object.assign(window.STATIC_PHOTOS||{},out);
+      } else if(result){
+        throw new Error(result.message||'Erro desconhecido');
+      }
+      if(btn){btn.textContent='📷 Export';btn.disabled=false;}
+    })
+    .catch(e=>{
+      alert('Erro: '+e.message);
+      if(btn){btn.textContent='📷 Export';btn.disabled=false;}
     });
-  })
-  .then(r=>r&&r.json())
-  .then(result=>{
-    if(result&&result.content){
-      alert('✅ Fotos sincronizadas! O site atualiza em ~30 segundos.');
-      Object.assign(window.STATIC_PHOTOS||{},out);
-    } else if(result) {
-      alert('Erro: '+(result.message||'desconhecido'));
-    }
-    if(btn){btn.textContent='📷 Export';btn.disabled=false;}
-  })
-  .catch(e=>{alert('Erro: '+e.message);if(btn){btn.textContent='📷 Export';btn.disabled=false;}});
+  };
+  doSync(ghToken);
 };
 
 let PLAYERS = [];
