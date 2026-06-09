@@ -16810,7 +16810,8 @@ function renderMobileElite(){
     else sWhy='Perfil técnico semelhante.';
     const simName=s.name.replace(/'/g,"\\'");
     const refName=ref.name.replace(/'/g,"\\'");
-    return `<div class="mob-e-card" style="margin-bottom:6px;overflow:hidden">
+    return `<div class="mob-e-card" style="margin-bottom:6px;overflow:hidden;position:relative;border-left:3px solid ${sMatchCol}">
+      <div style="position:absolute;top:0;left:0;width:60px;height:100%;background:linear-gradient(to right,${sMatchCol}0d,transparent);pointer-events:none;z-index:0"></div>
       <div style="display:flex;gap:0;padding:10px 12px;cursor:pointer" onclick="window.selectedPlayer=PLAYERS.find(x=>x.name==='${simName}');if(window.selectedPlayer)renderMobileElite()">
         <!-- FOTO -->
         <div id="${sPhotoId}" style="width:94px;height:124px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-right:10px">${sPhoto}</div>
