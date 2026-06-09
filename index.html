@@ -16770,79 +16770,94 @@ function renderMobileElite(){
     if(typeof closeMobileElite==='function') closeMobileElite();
   };
 
+  window._mobileCompare=function(simName,playerName){
+    if(typeof showView==='function'){
+      showView('compare',document.querySelector('.top-btn[onclick*="compare"]'));
+    }
+    setTimeout(()=>{
+      const sa=document.getElementById('cmp-a');
+      const sb=document.getElementById('cmp-b');
+      if(sa) sa.value=simName;
+      if(sb) sb.value=playerName;
+      if(typeof renderCompare==='function') renderCompare();
+      setTimeout(_reflowMobileCompare, 120);
+    },100);
+    if(typeof closeMobileElite==='function') closeMobileElite();
+  };
+
   function _reflowMobileCompare(){
     const body=document.getElementById('compare-body');
-    if(!body||!isMobilePortrait()) return;
-    const vw=window.innerWidth;
+    if(!body) return;
+    const vw=Math.min(window.innerWidth, window.screen.width);
 
-    // Fix view-compare to not overflow
+    // Force view-compare to full width, no overflow
     const viewCmp=document.getElementById('view-compare');
-    if(viewCmp) viewCmp.style.cssText='display:flex;flex-direction:column;padding:0;overflow-y:auto;gap:0;width:100%;box-sizing:border-box;overflow-x:hidden';
+    if(viewCmp){
+      viewCmp.style.cssText='display:flex;flex-direction:column;padding:0;overflow-y:auto;overflow-x:hidden;gap:0;width:100vw;max-width:100vw;box-sizing:border-box';
+    }
+    body.style.cssText='overflow-x:hidden;width:100%;box-sizing:border-box';
 
-    // 1. cmp-table: full width
+    // cmp-table full width
     const table=body.querySelector('.cmp-table');
-    if(table) table.style.cssText='width:100%;max-width:100%;margin:0;display:flex;flex-direction:column;gap:0;overflow-x:hidden';
+    if(table) table.style.cssText='width:100%;max-width:100vw;margin:0;display:flex;flex-direction:column;gap:0;overflow-x:hidden;box-sizing:border-box';
 
-    // 2. Radar first, then players side by side
+    // Radar mid: move FIRST, center, square
     const headerRow=body.querySelector('.cmp-header-row');
     const mid=headerRow&&headerRow.querySelector('.cmp-header-mid');
     if(headerRow&&mid){
-      headerRow.parentNode.insertBefore(mid,headerRow);
-      mid.style.cssText='width:100%;display:flex;flex-direction:column;align-items:center;padding:10px 0 6px;background:var(--bg0);border-bottom:1px solid rgba(255,255,255,.06);box-sizing:border-box';
+      headerRow.parentNode.insertBefore(mid, headerRow);
+      mid.style.cssText='width:100%;display:flex;flex-direction:column;align-items:center;padding:8px 0;background:var(--bg0);border-bottom:1px solid rgba(255,255,255,.06)';
       const canvas=mid.querySelector('canvas');
-      const sz=Math.min(vw-16,320);
-      if(canvas){canvas.style.width=sz+'px';canvas.style.height=sz+'px';}
-      // Players side by side, each exactly 50%
-      headerRow.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:0;width:100%;box-sizing:border-box;overflow:hidden';
+      if(canvas){
+        const sz=Math.min(vw-8, 340);
+        canvas.style.cssText=`width:${sz}px!important;height:${sz}px!important;display:block`;
+        canvas.width=sz; canvas.height=sz;
+        // Re-render radar at new size
+        if(typeof drawCompareRadar==='function') try{drawCompareRadar();}catch(e){}
+      }
+
+      // Players: 2 cols, each exactly half
+      headerRow.style.cssText=`display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:0;width:100%;max-width:100vw;box-sizing:border-box;overflow:hidden`;
       headerRow.querySelectorAll('.cmp-card').forEach((card,i)=>{
-        card.style.cssText='padding:10px 8px;box-sizing:border-box;overflow:hidden;'+(i===0?'border-right:1px solid rgba(255,255,255,.06)':'');
+        card.style.cssText='padding:8px;box-sizing:border-box;overflow:hidden;min-width:0;'+(i===0?'border-right:1px solid rgba(255,255,255,.06)':'');
         const cardTop=card.querySelector('.cmp-card-top');
         if(cardTop) cardTop.style.cssText='display:flex;flex-direction:column;align-items:center;text-align:center';
-        // Bigger avatar
         const av=card.querySelector('.photo-avatar-wrap');
-        if(av) av.style.cssText='display:inline-block;position:relative;width:80px;height:90px;border-radius:8px;overflow:hidden';
+        if(av) av.style.cssText='display:inline-block;position:relative;width:80px;height:92px;border-radius:8px;overflow:hidden';
         const avDiv=card.querySelector('.cmp-avatar-rect');
-        if(avDiv) avDiv.style.cssText='width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700';
-        // Bigger name
+        if(avDiv) avDiv.style.cssText='width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700';
         const name=card.querySelector('.cmp-card-name');
-        if(name) name.style.cssText='font-size:15px;font-weight:800;margin-top:5px;line-height:1.1;text-align:center';
-        // Bigger position
+        if(name) name.style.cssText='font-size:14px;font-weight:800;margin-top:5px;line-height:1.1;text-align:center;word-break:break-word';
         const sub=card.querySelector('.cmp-card-sub');
         if(sub) sub.style.cssText='font-size:11px;margin-top:2px;text-align:center';
-        // Compact score ring
-        const svgs=card.querySelectorAll('svg');
-        svgs.forEach(s=>{s.style.width='60px';s.style.height='60px';});
+        // Score ring size
+        card.querySelectorAll('svg').forEach(s=>{s.style.width='60px';s.style.height='60px';});
       });
     }
 
-    // 3. Remove xG/xA metric name suffixes — shorten labels
+    // Shorten metric labels
     body.querySelectorAll('.cmp-bar-lbl').forEach(el=>{
-      el.style.fontSize='8px';
-      el.style.whiteSpace='normal';
-      el.style.lineHeight='1.1';
-      // Shorten long labels
+      el.style.cssText='text-align:center;font-size:7px;color:#fff;font-family:var(--font-b);line-height:1.1;letter-spacing:.3px;font-weight:600;white-space:normal;word-break:break-word';
       const t=el.textContent.trim();
-      if(t==='xG (Expected Goals)') el.textContent='xG';
-      if(t==='xA (Expected Assists)') el.textContent='xA';
-      if(t==='xA /90') el.textContent='xA /90';
+      if(t.startsWith('xG')) el.textContent='xG';
+      if(t.startsWith('xA')) el.textContent='xA';
     });
 
-    // 4. Metric rows: tighter columns
+    // Metric rows
     body.querySelectorAll('.cmp-bar-row').forEach(row=>{
-      row.style.gridTemplateColumns='38px 1fr 70px 1fr 38px';
-      row.style.gap='2px';
-      row.style.padding='3px 6px';
-      row.style.minHeight='24px';
+      row.style.cssText='display:grid;grid-template-columns:36px 1fr 64px 1fr 36px;align-items:center;gap:2px;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.03);min-height:22px;box-sizing:border-box;width:100%';
     });
     body.querySelectorAll('.cmp-score-bar-row').forEach(row=>{
-      row.style.gridTemplateColumns='1fr 100px 1fr';
-      row.style.padding='5px 6px';
+      row.style.cssText='display:grid;grid-template-columns:1fr 90px 1fr;align-items:center;padding:5px 4px;border-top:2px solid rgba(255,255,255,.08);box-sizing:border-box;width:100%';
     });
-    body.querySelectorAll('.cmp-bar-val').forEach(el=>el.style.fontSize='11px');
+    body.querySelectorAll('.cmp-bar-val').forEach(el=>el.style.fontSize='10px');
 
-    // 5. Hide swap button to save space
-    const swapBtn=body.querySelector('button[onclick*="swapCompare"]');
-    if(swapBtn&&swapBtn.parentElement) swapBtn.parentElement.style.display='none';
+    // Hide swap button
+    body.querySelectorAll('button').forEach(b=>{if(b.textContent.includes('INVERTER'))b.parentElement&&(b.parentElement.style.display='none');});
+
+    // Hide top nav bar overflow
+    const topBar=body.querySelector('div[style*="justify-content:flex-end"]');
+    if(topBar) topBar.style.display='none';
   }
   const allPhotoNames=[p.name,..._simNames];
   // Call fetchWikiPhoto for any missing — divs use id="avatar-NAME" so it injects directly
