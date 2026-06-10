@@ -16945,9 +16945,9 @@ function renderMobileElite(){
       const ch=Array.from(row.children);
       if(ch[0]){ch[0].style.paddingLeft='10px';ch[0].style.textAlign='right';ch[0].style.display='flex';ch[0].style.alignItems='center';ch[0].style.justifyContent='flex-end';}
       if(ch[ch.length-1]){ch[ch.length-1].style.paddingRight='10px';ch[ch.length-1].style.textAlign='left';ch[ch.length-1].style.display='flex';ch[ch.length-1].style.alignItems='center';ch[ch.length-1].style.justifyContent='flex-start';}
-      // Add gap on bar cells — only the side touching the value box
-      if(ch[1]) ch[1].style.paddingRight='8px';
-      if(ch[3]) ch[3].style.paddingLeft='8px';
+      // Symmetric padding on bar cells — equal gap from label and value box
+      if(ch[1]) ch[1].style.padding='0 6px';
+      if(ch[3]) ch[3].style.padding='0 6px';
     });
     // Bar val boxes: centered text
     body.querySelectorAll('.cmp-bar-val').forEach(el=>{
