@@ -7136,9 +7136,10 @@ function renderCompare(){
     + '<div id="cmp-metrics-anchor"></div>'
     + rows
     + '</div>'
-    + '<div class="sv7-ai-bar has-content" id="cmp-ai-section" style="margin-top:18px;margin-bottom:0">'
-    + '<span class="sv7-ai-bar-label" style="display:block;margin-bottom:6px">AI Scout — Análise Comparativa</span>'
-    + '<div class="sv7-ai-bar-out" id="cmp-ai-out"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
+    + '<div id="cmp-ai-section" style="flex-shrink:0;margin-top:18px;margin-bottom:0;background:#030c17;border:1px solid rgba(0,212,255,.13);border-radius:6px;display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:8px 14px 10px;box-sizing:border-box;position:relative;overflow:hidden">'
+    + '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(to right,transparent,rgba(0,212,255,.18),transparent)"></div>'
+    + '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:8px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(0,212,255,.5);margin-bottom:7px">AI Scout — Análise Comparativa</span>'
+    + '<div id="cmp-ai-out" style="font-family:\'Barlow\',sans-serif;font-size:12px;color:rgba(255,255,255,.65);line-height:1.75;width:100%"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
     + '</div>';
 
   // ── Compare Radar (canvas, same style as player detail radars) ──────────────
@@ -15211,9 +15212,10 @@ function renderCompare(){
     + '<div id="cmp-metrics-anchor"></div>'
     + rows
     + '</div>'
-    + '<div class="sv7-ai-bar has-content" id="cmp-ai-section" style="margin-top:18px;margin-bottom:0">'
-    + '<span class="sv7-ai-bar-label" style="display:block;margin-bottom:6px">AI Scout — Análise Comparativa</span>'
-    + '<div class="sv7-ai-bar-out" id="cmp-ai-out"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
+    + '<div id="cmp-ai-section" style="flex-shrink:0;margin-top:18px;margin-bottom:0;background:#030c17;border:1px solid rgba(0,212,255,.13);border-radius:6px;display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:8px 14px 10px;box-sizing:border-box;position:relative;overflow:hidden">'
+    + '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(to right,transparent,rgba(0,212,255,.18),transparent)"></div>'
+    + '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:8px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(0,212,255,.5);margin-bottom:7px">AI Scout — Análise Comparativa</span>'
+    + '<div id="cmp-ai-out" style="font-family:\'Barlow\',sans-serif;font-size:12px;color:rgba(255,255,255,.65);line-height:1.75;width:100%"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
     + '</div>';
 
   // ── Compare Radar (canvas, same style as player detail radars) ──────────────
@@ -16123,30 +16125,30 @@ function generateCompareAI(pA, pB) {
   else p4+=`um indicador que agrega técnica, físico e impacto coletivo. `;
   p4+=`${tiO.name} (<strong>${tiO.talent_index_pct||0}º percentil</strong>) é a escolha certa para quem privilegia ${cntA<3?'criatividade e presença na área':'velocidade e intensidade off-ball'} — dependendo do sistema, pode ser igualmente decisivo.`;
 
-  // ── Render — mesmo design que sv7-ai-bar do Player ID ─────────────────────
-  // .sv7-ai-bar-label: font-d 8px 700 uppercase teal faded
-  // .sv7-ai-bar-out p: font-b 12px rgba(255,255,255,.65) line-height 1.75 margin-bottom 6px
-  // <b> dentro: color:#c0d8e0 fw700 (via .sv7-ai-inline b ou inline style)
-  const lblStyle='display:block;font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(0,212,255,.55);margin-top:10px;margin-bottom:3px';
-  const lblStyle0=lblStyle.replace('margin-top:10px;','margin-top:0;');
+  // ── Render — 100% inline, mesmo visual que sv7-ai-bar do Player ID ──────────
+  const LBL = 'display:block;font-family:\'Barlow Condensed\',sans-serif;font-size:8px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(0,212,255,.5);white-space:nowrap;margin-bottom:3px;margin-top:11px';
+  const LBL0= 'display:block;font-family:\'Barlow Condensed\',sans-serif;font-size:8px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(0,212,255,.5);white-space:nowrap;margin-bottom:3px;margin-top:0';
+  const P   = 'margin:0 0 6px 0;font-family:\'Barlow\',sans-serif;font-size:12px;color:rgba(255,255,255,.65);line-height:1.75;text-align:justify;text-align-last:left';
 
   const labels=['Perfil & Transferência','Desempenho Chave','Capacidade Física','Conclusão'];
   const paras=[p1,p2,p3,p4];
 
-  // Highlight bold numbers/key terms in accent colour
   function hl(t) {
-    // bold tags already inserted as <strong> — style them
-    return t.replace(/<strong>(.*?)<\/strong>/g, '<b style="color:#c0d8e0;font-weight:700">$1</b>');
+    return t.replace(/<strong>(.*?)<\/strong>/g,'<b style="color:#c8dde8;font-weight:700">$1</b>');
   }
 
   let htmlOut='';
   paras.forEach((para,i)=>{
-    const ls = i===0 ? lblStyle0 : lblStyle;
-    htmlOut+=`<span style="${ls}">${labels[i]}</span><p>${hl(para)}</p>`;
+    htmlOut+=`<span style="${i===0?LBL0:LBL}">${labels[i]}</span><p style="${P}">${hl(para)}</p>`;
   });
+  // Remove last p margin
+  htmlOut=htmlOut.replace(/margin:0 0 6px 0;([^"]*)"([^>]*)>([\s\S]*?)<\/p>\s*$/, 'margin:0 0 0 0;$1"$2>$3</p>');
   aiCmpCache[cacheKey]=htmlOut;
   const el2=document.getElementById('cmp-ai-out');
-  if(el2) el2.innerHTML=htmlOut;
+  if(el2){
+    el2.style.cssText='font-family:\'Barlow\',sans-serif;font-size:12px;color:rgba(255,255,255,.65);line-height:1.75;width:100%';
+    el2.innerHTML=htmlOut;
+  }
 }
 // ── SHADOW TEAM & TALENT CENTER ──────────────────────────────────────────────
 const shadowTeam = [];
