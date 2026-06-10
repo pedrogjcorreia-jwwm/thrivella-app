@@ -16052,58 +16052,104 @@ function generateCompareAI(pA, pB) {
   if (!outEl) { setTimeout(()=>generateCompareAI(pA,pB), 600); return; }
   if (aiCmpCache[cacheKey]) { outEl.innerHTML = aiCmpCache[cacheKey]; return; }
 
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function pctLeague(p, key) {
+    const lg = PLAYERS.filter(x=>x.league===p.league&&x[key]!=null);
+    if (!lg.length) return null;
+    const rank = [...lg].sort((a,b)=>(b[key]||0)-(a[key]||0)).findIndex(x=>x.name===p.name)+1;
+    return Math.round((1 - rank/lg.length)*100);
+  }
+  function isTopLeague(p) {
+    const top = ['premier league','la liga','serie a','bundesliga','ligue 1','eredivisie','primeira liga','liga nos','liga portugal'];
+    return top.some(t=>(p.league||'').toLowerCase().includes(t));
+  }
   function better(key) {
-    const a = parseFloat(pA[key])||0, b = parseFloat(pB[key])||0;
+    const a=parseFloat(pA[key])||0, b=parseFloat(pB[key])||0;
     if (!a && !b) return null;
     return a > b ? pA : (b > a ? pB : null);
   }
   function fmtMv(p) { return p.mkt_value>=1e6?'€'+(p.mkt_value/1e6).toFixed(1)+'M':p.mkt_value>=1e3?'€'+Math.round(p.mkt_value/1e3)+'K':'—'; }
+  function boldF(t) { const s=t.split(' '); return '<strong>'+s[0]+'</strong> '+s.slice(1).join(' '); }
+  function boldN(t) { return t.replace(/(\d+\.?\d*)/g,'<strong>$1</strong>'); }
 
-  // Para1: Perfil & Transferência
+  // ── Para 1: Perfil & Transferência ─────────────────────────────────────
   const ageDiff = (pA.age||0)-(pB.age||0);
-  const ctExpA = pA.contract_end && new Date(pA.contract_end) < new Date(Date.now()+365*24*36e5);
-  const ctExpB = pB.contract_end && new Date(pB.contract_end) < new Date(Date.now()+365*24*36e5);
-  let p1 = `${pA.name} (${pA.age||'?'}a, ${pA.size||'?'}cm, ${fmtMv(pA)}) e ${pB.name} (${pB.age||'?'}a, ${pB.size||'?'}cm, ${fmtMv(pB)}) são dois ${(pA.position||'').split(',')[0].trim()}. `;
-  if (Math.abs(ageDiff) >= 3) p1 += `${ageDiff > 0 ? pB.name : pA.name} é ${Math.abs(ageDiff)} anos mais novo, representando ${ageDiff > 0 ? 'maior potencial de valorização' : 'mais experiência'}. `;
-  if (ctExpA && !ctExpB) p1 += `O contrato de ${pA.name} expira em breve (${pA.contract_end}), criando uma janela de aquisição favorável.`;
-  else if (ctExpB && !ctExpA) p1 += `O contrato de ${pB.name} expira em breve (${pB.contract_end}), criando uma janela de aquisição favorável.`;
-  else p1 += `Contratualmente, ${pA.name} está vinculado até ${pA.contract_end||'—'} e ${pB.name} até ${pB.contract_end||'—'}.`;
+  const ctExpA = pA.contract_end && new Date(pA.contract_end)<new Date(Date.now()+365*24*36e5);
+  const ctExpB = pB.contract_end && new Date(pB.contract_end)<new Date(Date.now()+365*24*36e5);
+  const younger = ageDiff>0?pB:pA, older = ageDiff>0?pA:pB;
+  let p1 = `${pA.name} e ${pB.name} são dois ${(pA.position||'').split(',')[0].trim()} com perfis complementares. `;
+  if (Math.abs(ageDiff)>=3) p1 += `Com ${younger.age} anos, ${younger.name} representa a aposta no potencial, enquanto ${older.name} (${older.age}a) traz a consistência de quem já navegou ciclos competitivos. `;
+  else p1 += `Com idades próximas — ${pA.age} e ${pB.age} anos — a diferença não está nos anos, mas no trajeto. `;
+  if (ctExpA&&!ctExpB) p1 += `O contrato de ${pA.name} com o ${pA.team} aproxima-se do fim em ${pA.contract_end}, o que pode representar uma oportunidade no mercado. ${pB.name} está vinculado até ${pB.contract_end||'—'}.`;
+  else if (ctExpB&&!ctExpA) p1 += `Com contrato a expirar em ${pB.contract_end}, ${pB.name} pode estar disponível a custo reduzido — algo que contrasta com a estabilidade contratual de ${pA.name} (${pA.contract_end||'—'}).`;
+  else p1 += `Em termos de mercado, ${pA.name} está avaliado em ${fmtMv(pA)} e ${pB.name} em ${fmtMv(pB)}.`;
 
-  // Para2: Produção ofensiva
-  const bGoals = better('goals_np'), bXg = better('xg'), bXa = better('xa'), bDrib = better('dribles90'), bBox = better('box_touches');
-  const prodVotes = [bGoals,bXg,bXa,bDrib,bBox].filter(Boolean);
-  const cntA = prodVotes.filter(x=>x.name===pA.name).length;
-  const prodL = cntA >= 3 ? pA : pB, prodO = cntA >= 3 ? pB : pA;
-  const highlights = [];
-  if (better('goals_np')?.name===prodL.name) highlights.push(`${prodL.goals_np||0} golos`);
-  if (better('xg')?.name===prodL.name) highlights.push(`xG de ${prodL.xg||0}`);
-  if (better('xa')?.name===prodL.name) highlights.push(`xA de ${prodL.xa||0}`);
-  if (better('dribles90')?.name===prodL.name) highlights.push(`${prodL.dribles90||0} dribles/90`);
-  let p2 = `Ofensivamente, ${prodL.name} destaca-se com ${highlights.slice(0,3).join(', ')||'métricas superiores'}. ${prodO.name} ${better('xa')?.name===prodO.name||better('box_touches')?.name===prodO.name ? 'compensa com maior capacidade criativa' : 'apresenta números mais modestos nas métricas ofensivas chave'}.`;
+  // ── Para 2: Desempenho Chave ─────────────────────────────────────────────
+  const bXg=better('xg'), bXa=better('xa'), bDrib=better('dribles90'), bBox=better('box_touches'), bGoals=better('goals_np');
+  const votes=[bXg,bXa,bDrib,bBox,bGoals].filter(Boolean);
+  const cntA=votes.filter(x=>x.name===pA.name).length;
+  const perfL=cntA>=3?pA:pB, perfO=cntA>=3?pB:pA;
+  const lgPctXg=pctLeague(perfL,'xg'), lgPctXa=pctLeague(perfL,'xa'), lgPctDrib=pctLeague(perfL,'dribles90');
+  const hlL=[], hlO=[];
+  if(better('goals_np')?.name===perfL.name) hlL.push(`<strong>${perfL.goals_np||0} golos</strong>`); else if(perfO.goals_np) hlO.push(`<strong>${perfO.goals_np||0} golos</strong>`);
+  if(better('xg')?.name===perfL.name) hlL.push(`xG <strong>${perfL.xg||0}</strong>`); else if(perfO.xg) hlO.push(`xG <strong>${perfO.xg||0}</strong>`);
+  if(better('xa')?.name===perfL.name) hlL.push(`xA <strong>${perfL.xa||0}</strong>`); else if(perfO.xa) hlO.push(`xA <strong>${perfO.xa||0}</strong>`);
+  if(better('dribles90')?.name===perfL.name) hlL.push(`<strong>${perfL.dribles90||0}</strong> dribles/90`); else if(perfO.dribles90) hlO.push(`<strong>${perfO.dribles90||0}</strong> dribles/90`);
+  if(better('box_touches')?.name===perfL.name) hlL.push(`<strong>${perfL.box_touches||0}</strong> box touches`); else if(perfO.box_touches) hlO.push(`<strong>${perfO.box_touches||0}</strong> box touches`);
+  let p2 = `${perfL.name} domina nas métricas que mais importam: ${hlL.slice(0,3).join(', ')||'produção individual superior'}. `;
+  if(lgPctXg!=null&&lgPctXg>=70) p2+=`O seu xG coloca-o no top <strong>${100-lgPctXg}%</strong> da ${perfL.league} — estes números refletem consistência real, não acidente. `;
+  else if(lgPctXa!=null&&lgPctXa>=70) p2+=`No plano criativo, situa-se no top <strong>${100-lgPctXa}%</strong> da ${perfL.league} em xA. `;
+  else if(lgPctDrib!=null&&lgPctDrib>=70) p2+=`Em condução e dribles, é top <strong>${100-lgPctDrib}%</strong> na ${perfL.league}. `;
+  if(hlO.length) p2+=`${perfO.name} responde com ${hlO.slice(0,2).join(' e ')}, sendo uma opção válida em sistemas que valorizam amplitude e envolvimento coletivo.`;
+  else p2+=`${perfO.name} fica aquém nas métricas individuais decisivas, embora possa afirmar-se noutros contextos táticos.`;
+  // Liga context
+  const lgCtx=(()=>{
+    if(isTopLeague(perfL)&&!isTopLeague(perfO)) return ` Vale referir que ${perfL.name} produz estes números na ${perfL.league}, reconhecidamente mais exigente.`;
+    if(isTopLeague(perfO)&&!isTopLeague(perfL)) return ` Note-se que ${perfO.name} opera na ${perfO.league}, liga de maior nível competitivo — o que acrescenta peso ao seu perfil.`;
+    return '';
+  })();
+  p2+=lgCtx;
 
-  // Para3: Físico
-  const bSpeed = better('max_speed'), bSprint = better('sprint_dist90'), bHsr = better('hsr90');
-  const physVotes = [bSpeed,bSprint,bHsr].filter(Boolean);
-  const physA = physVotes.filter(x=>x.name===pA.name).length;
-  const physL = physA >= 2 ? pA : pB, physO = physA >= 2 ? pB : pA;
-  let p3 = `Fisicamente, ${physL.name} é mais dominante: velocidade máxima de ${physL.max_speed||'—'} km/h e sprint dist/90 de ${Math.round(physL.sprint_dist90||0)}m. ${physO.name} regista ${physO.max_speed||'—'} km/h e ${Math.round(physO.sprint_dist90||0)}m de sprint/90.`;
+  // ── Para 3: Capacidade Física ─────────────────────────────────────────────
+  const bSpeed=better('max_speed'), bSprint=better('sprint_dist90'), bHsr=better('hsr90');
+  const physVotes=[bSpeed,bSprint,bHsr].filter(Boolean);
+  const physA=physVotes.filter(x=>x&&x.name===pA.name).length;
+  const physL=physA>=2?pA:pB, physO=physA>=2?pB:pA;
+  const lgPctSpeed=pctLeague(physL,'max_speed');
+  let p3 = `Do ponto de vista físico, ${physL.name} é o mais explosivo dos dois. `;
+  if(physL.max_speed) p3+=`Atinge <strong>${physL.max_speed} km/h</strong> de velocidade máxima`;
+  if(physL.sprint_dist90) p3+=` e cobre <strong>${Math.round(physL.sprint_dist90)}m</strong> de sprint por jogo`;
+  p3+=`. `;
+  if(lgPctSpeed!=null&&lgPctSpeed>=70) p3+=`Na ${physL.league}, isso coloca-o entre os mais rápidos — uma arma importante em transições. `;
+  p3+=`${physO.name} regista <strong>${physO.max_speed||'—'} km/h</strong> e <strong>${Math.round(physO.sprint_dist90||0)}m</strong> de sprint/90`;
+  if(physO.hsr90&&physL.hsr90&&(physO.hsr90||0)>(physL.hsr90||0)) p3+=`, mas compensa com maior distância em alta intensidade (<strong>${Math.round(physO.hsr90)}m</strong> HSR/90)`;
+  p3+=`.`;
 
-  // Para4: Conclusão
-  const tiA = pA.talent_index||0, tiB = pB.talent_index||0;
-  const tiL = tiA > tiB ? pA : pB, tiO = tiA > tiB ? pB : pA;
-  let p4 = `Globalmente, ${tiL.name} apresenta um Talent Index superior (${tiL.talent_index_pct||0}º percentil)`;
-  if ((ctExpA&&tiL.name===pA.name)||(ctExpB&&tiL.name===pB.name)) p4 += `, especialmente atrativo dado o contrato próximo do fim`;
-  p4 += `. ${tiO.name} é a opção adequada para sistemas que valorizam ${cntA < 3 ? 'criatividade e técnica' : 'capacidade física e explosividade'}.`;
+  // ── Para 4: Conclusão ─────────────────────────────────────────────────────
+  const tiA=pA.talent_index_pct||0, tiB=pB.talent_index_pct||0;
+  const tiL=tiA>tiB?pA:pB, tiO=tiA>tiB?pB:pA;
+  let p4 = `O Talent Index posiciona ${tiL.name} no <strong>${tiL.talent_index_pct||0}º percentil</strong> — `;
+  if ((ctExpA&&tiL.name===pA.name)||(ctExpB&&tiL.name===pB.name)) p4+=`e com o contrato a expirar, a janela para o contratar raramente será mais favorável. `;
+  else p4+=`um indicador que agrega técnica, físico e impacto coletivo. `;
+  p4+=`${tiO.name} (<strong>${tiO.talent_index_pct||0}º percentil</strong>) é a escolha certa para quem privilegia ${cntA<3?'criatividade e presença na área':'velocidade e intensidade off-ball'} — dependendo do sistema, pode ser igualmente decisivo.`;
 
-  const labels = ['Perfil & Transferência','Produção Ofensiva','Capacidade Física','Conclusão'];
-  const paras = [p1, p2, p3, p4];
-  let htmlOut = '';
-  paras.forEach((para,i) => {
-    htmlOut += `<div class="ai-section-title">${labels[i]}</div><p style="margin-bottom:10px;line-height:1.8">${para}</p>`;
+  // ── Render ────────────────────────────────────────────────────────────────
+  const fnt='font-family:var(--font-b);';
+  const pStyle0=fnt+'margin:0;line-height:1.75;font-size:13px;color:rgba(255,255,255,.65);text-align:justify;text-align-last:left';
+  const pStyle1=fnt+'margin:6px 0 0;line-height:1.75;font-size:13px;color:rgba(255,255,255,.58);text-align:justify;text-align-last:left';
+  const pStyle2=fnt+'margin:6px 0 0;line-height:1.75;font-size:13px;color:rgba(255,255,255,.52);text-align:justify;text-align-last:left';
+  const pStyle3=fnt+'margin:6px 0 0;line-height:1.75;font-size:13px;color:rgba(255,255,255,.46);text-align:justify;text-align-last:left';
+
+  const labels=['Perfil & Transferência','Desempenho Chave','Capacidade Física','Conclusão'];
+  const paras=[p1,p2,p3,p4], styles=[pStyle0,pStyle1,pStyle2,pStyle3];
+
+  let htmlOut='';
+  paras.forEach((para,i)=>{
+    htmlOut+=`<div class="ai-section-title">${labels[i]}</div><p style="${styles[i]}">${para}</p>`;
   });
-  aiCmpCache[cacheKey] = htmlOut;
-  const el2 = document.getElementById('cmp-ai-out');
-  if (el2) el2.innerHTML = htmlOut;
+  aiCmpCache[cacheKey]=htmlOut;
+  const el2=document.getElementById('cmp-ai-out');
+  if(el2) el2.innerHTML=htmlOut;
 }
 // ── SHADOW TEAM & TALENT CENTER ──────────────────────────────────────────────
 const shadowTeam = [];
