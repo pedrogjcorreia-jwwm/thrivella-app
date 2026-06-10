@@ -7969,7 +7969,10 @@ const aiCmpCache = {};
 async function generateCompareAI(pA, pB) {
   const cacheKey = pA.name + '||' + pB.name;
   const outEl = document.getElementById('cmp-ai-out');
-  if (!outEl) return;
+  if (!outEl) {
+    setTimeout(()=>generateCompareAI(pA,pB), 600);
+    return;
+  }
 
   if (aiCmpCache[cacheKey]) { outEl.innerHTML = aiCmpCache[cacheKey]; return; }
 
@@ -8025,7 +8028,7 @@ Sem títulos, sem bullet points, sem markdown. Máximo 220 palavras.`;
     const data = await res.json();
     const text = data.content.map(b=>b.text||'').join('');
     const paras = text.trim().split(String.fromCharCode(10)).map(s=>s.trim()).filter(Boolean);
-    const labels = [pA.name + ' é superior em...', pB.name + ' é superior em...', 'Conclusão'];
+    const labels = ['Perfil & Transferência', 'Produção Ofensiva', 'Capacidade Física', 'Conclusão'];
     let html = '';
     paras.forEach((para,i) => {
       if (i < labels.length) html += '<div class="ai-section-title">' + labels[i] + '</div>';
@@ -8034,7 +8037,9 @@ Sem títulos, sem bullet points, sem markdown. Máximo 220 palavras.`;
       html += '<p style="margin-bottom:10px;line-height:1.8">' + t + '</p>';
     });
     aiCmpCache[cacheKey] = html;
-    outEl.innerHTML = html;
+    // Try outEl again in case it was recreated by renderCompare
+    const el2 = document.getElementById('cmp-ai-out');
+    if(el2) el2.innerHTML = html;
   } catch(e) {
     outEl.innerHTML = '<p style="color:var(--amber);font-size:12px">Erro ao gerar análise.</p>';
   }
