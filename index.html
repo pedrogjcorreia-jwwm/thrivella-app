@@ -7136,11 +7136,10 @@ function renderCompare(){
     + '<div id="cmp-metrics-anchor"></div>'
     + rows
     + '</div>'
-    + '<div id="cmp-ai-section" style="flex-shrink:0;margin-top:18px;background:#030c17;border:1px solid rgba(0,212,255,.13);border-radius:6px;overflow:hidden;position:relative;padding:6px 14px 12px">'
-    + '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(to right,transparent,rgba(0,212,255,.18),transparent)"></div>'
-    + '<div style="display:inline-flex;align-items:center;gap:7px;background:rgba(0,100,180,.35);border:1px solid rgba(0,212,255,.45);border-radius:5px;padding:5px 14px;margin-bottom:10px;box-shadow:0 0 8px rgba(0,212,255,.08)">'
-    + '<svg width="10" height="10" viewBox="0 0 10 10"><polygon points="2,1.5 9,5 2,8.5" fill="#00d4ff"/></svg>'
-    + '<span style="font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:#00d4ff">AI Scout Comparison</span>'
+    + '<div id="cmp-ai-section" style="flex-shrink:0;margin-top:18px;background:#060c18;border:1px solid rgba(0,180,200,.12);border-radius:9px;overflow:hidden;padding:8px 12px 12px">'
+    + '<div class="pid3-ai-hdr">'
+    + '<span class="pid3-ai-badge">AI</span>'
+    + '<span class="pid3-ai-title">AI Scout Comparison</span>'
     + '</div>'
     + '<div id="cmp-ai-out" style="font-family:var(--font-b);font-size:12px;color:rgba(255,255,255,.65);line-height:1.75;width:100%"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
     + '</div>';
@@ -15215,11 +15214,10 @@ function renderCompare(){
     + '<div id="cmp-metrics-anchor"></div>'
     + rows
     + '</div>'
-    + '<div id="cmp-ai-section" style="flex-shrink:0;margin-top:18px;background:#030c17;border:1px solid rgba(0,212,255,.13);border-radius:6px;overflow:hidden;position:relative;padding:6px 14px 12px">'
-    + '<div style="position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(to right,transparent,rgba(0,212,255,.18),transparent)"></div>'
-    + '<div style="display:inline-flex;align-items:center;gap:7px;background:rgba(0,100,180,.35);border:1px solid rgba(0,212,255,.45);border-radius:5px;padding:5px 14px;margin-bottom:10px;box-shadow:0 0 8px rgba(0,212,255,.08)">'
-    + '<svg width="10" height="10" viewBox="0 0 10 10"><polygon points="2,1.5 9,5 2,8.5" fill="#00d4ff"/></svg>'
-    + '<span style="font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:#00d4ff">AI Scout Comparison</span>'
+    + '<div id="cmp-ai-section" style="flex-shrink:0;margin-top:18px;background:#060c18;border:1px solid rgba(0,180,200,.12);border-radius:9px;overflow:hidden;padding:8px 12px 12px">'
+    + '<div class="pid3-ai-hdr">'
+    + '<span class="pid3-ai-badge">AI</span>'
+    + '<span class="pid3-ai-title">AI Scout Comparison</span>'
     + '</div>'
     + '<div id="cmp-ai-out" style="font-family:var(--font-b);font-size:12px;color:rgba(255,255,255,.65);line-height:1.75;width:100%"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
     + '</div>';
@@ -16131,35 +16129,39 @@ function generateCompareAI(pA, pB) {
   else p4+=`um indicador que agrega técnica, físico e impacto coletivo. `;
   p4+=`${tiO.name} (<strong>${tiO.talent_index_pct||0}º percentil</strong>) é a escolha certa para quem privilegia ${cntA<3?'criatividade e presença na área':'velocidade e intensidade off-ball'} — dependendo do sistema, pode ser igualmente decisivo.`;
 
-  // ── Render ────────────────────────────────────────────────────────────────
-  // Identical style to generateAIReport Player ID:
-  // label = font-d 10px 700 uppercase teal; p = font-b 12px rgba(255,255,255,.65) justified 1.75
-  const LBL  = 'display:block;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(0,212,255,.65);margin-bottom:4px;margin-top:0';
-  const LBLn = 'display:block;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(0,212,255,.65);margin-bottom:4px;margin-top:14px';
-  const P    = 'margin:0;line-height:1.75;font-size:12px;color:rgba(255,255,255,.65);text-align:justify;text-align-last:left';
+  // ── Render — pid3-ai-card design ────────────────────────────────────────────
+  const LBL  = 'display:block;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6);margin-bottom:5px;margin-top:0';
+  const LBLn = 'display:block;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6);margin-bottom:5px;margin-top:14px';
+  const PS   = 'margin:0;line-height:1.75;font-size:12px;color:rgba(255,255,255,.65);text-align:justify;text-align-last:left';
+  const PSm  = 'margin:6px 0 0;line-height:1.75;font-size:12px;color:rgba(255,255,255,.65);text-align:justify;text-align-last:left';
 
   const labels=['Perfil & Transferência','Desempenho Chave','Capacidade Física','Conclusão'];
   const rawParas=[p1,p2,p3,p4];
 
-  function applyBold(t) { return t.replace(/<strong>(.*?)<\/strong>/g,'<b>$1</b>'); }
+  function applyBold(t){ return t.replace(/<strong>(.*?)<\/strong>/g,'<b>$1</b>'); }
 
-  // Split each para into sentences for natural paragraph breaks
-  function splitPara(text) {
-    // Split on '. ' followed by capital letter
-    const sentences = text.replace(/([.!?])\s+([A-ZÁÉÍÓÚÀÃ])/g,'$1\x0A$2').split('\x0A');
-    if(sentences.length <= 2) return `<p style="${P}">${text}</p>`;
-    // Group into max 2 sentences per visual paragraph
-    const groups = [];
-    for(let i=0;i<sentences.length;i+=2){
-      groups.push(sentences.slice(i,i+2).join(' '));
+  // Split long paragraphs into 2-sentence visual blocks.
+  // Only break on '. ' before an uppercase letter that starts a real sentence.
+  function formatPara(raw) {
+    const text = applyBold(raw);
+    // Use a sentinel that won't appear in text
+    const S = '|SPLIT|';
+    // Replace '. Capital' boundaries — but not digits or short tokens (xG, xA, etc.)
+    const marked = text.replace(/([a-záéíóúàãõçA-Z>])\.\s+([A-ZÁÉÍÓÚÀÃ][a-záéíóúàã])/g, (m,a,b)=>a+'.'+S+b);
+    const parts = marked.split(S).map(s=>s.trim()).filter(Boolean);
+    if(parts.length <= 2) return '<p style="'+PS+'">'+text+'</p>';
+    let out='';
+    for(let k=0;k<parts.length;k+=2){
+      const block=parts.slice(k,k+2).join(' ');
+      out+='<p style="'+(k===0?PS:PSm)+'">'+block+'</p>';
     }
-    return groups.map((g,gi)=>`<p style="${P}${gi>0?';margin-top:6px':''}">${g}</p>`).join('');
+    return out;
   }
 
   let htmlOut='';
   rawParas.forEach((para,i)=>{
-    htmlOut+=`<span style="${i===0?LBL:LBLn}">${labels[i]}</span>`;
-    htmlOut+=splitPara(applyBold(para));
+    htmlOut+='<span style="'+(i===0?LBL:LBLn)+'">'+labels[i]+'</span>';
+    htmlOut+=formatPara(para);
   });
   aiCmpCache[cacheKey]=htmlOut;
   const el2=document.getElementById('cmp-ai-out');
