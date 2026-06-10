@@ -17003,8 +17003,8 @@ function renderMobileElite(){
     else sWhy='Perfil técnico semelhante.';
     const simName=s.name.replace(/'/g,"\\'");
     const refName=ref.name.replace(/'/g,"\\'");
-    return `<div class="mob-e-card" style="margin-bottom:6px;overflow:hidden;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-top:1px solid rgba(255,255,255,.1)">
-      <div style="display:flex;gap:0;padding:10px 12px;cursor:pointer" onclick="window.selectedPlayer=PLAYERS.find(x=>x.name==='${simName}');if(window.selectedPlayer)renderMobileElite()">
+    return `<div class="mob-e-card" style="margin-bottom:6px;overflow:hidden;background:#060c18;border:1px solid rgba(255,255,255,.07);border-top:1px solid rgba(255,255,255,.1)">
+      <div style="display:flex;gap:0;padding:10px 12px;cursor:pointer;background:#060c18" onclick="window.selectedPlayer=PLAYERS.find(x=>x.name==='${simName}');if(window.selectedPlayer)renderMobileElite()">
         <!-- FOTO -->
         <div id="${sPhotoId}" style="width:94px;height:124px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-right:10px">${sPhoto}</div>
         <!-- INFO -->
