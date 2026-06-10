@@ -16781,11 +16781,13 @@ function renderMobileElite(){
       if(sa) sa.value=simName;
       if(sb) sb.value=playerName;
       if(typeof renderCompare==='function') renderCompare();
-      // Generate AI report for mobile
-      const pA=PLAYERS.find(x=>x.name===simName);
-      const pB=PLAYERS.find(x=>x.name===playerName);
-      if(pA&&pB&&typeof generateCompareAI==='function') generateCompareAI(pA,pB);
-      setTimeout(_reflowMobileCompare, 120);
+      setTimeout(()=>{
+        _reflowMobileCompare();
+        // Generate AI report after DOM is fully ready
+        const pA=PLAYERS.find(x=>x.name===simName);
+        const pB=PLAYERS.find(x=>x.name===playerName);
+        if(pA&&pB&&typeof generateCompareAI==='function') generateCompareAI(pA,pB);
+      }, 200);
     },100);
     if(typeof closeMobileElite==='function') closeMobileElite();
   };
