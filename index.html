@@ -7136,14 +7136,9 @@ function renderCompare(){
     + '<div id="cmp-metrics-anchor"></div>'
     + rows
     + '</div>'
-    + '<div class="cmp-ai-section" id="cmp-ai-section">'
-    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
-    + '<span style="display:flex;align-items:center;gap:8px">'
-    + '<span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;background:linear-gradient(135deg,#378ADD,#9b7fff);border-radius:5px"><svg width="12" height="12" viewBox="0 0 16 16" fill="#fff"><path d="M8 1a1 1 0 0 1 1 1v1h3a1 1 0 0 1 1 1v2a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V4a1 1 0 0 1 1-1h3V2a1 1 0 0 1 1-1zm0 3H5v2a3 3 0 0 0 3 3h1a3 3 0 0 0 3-3V4H8z"/></svg></span>'
-    + '<span style="font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--accent)">AI Scout Assistant — Análise Comparativa</span>'
-    + '</span>'
-    + '</div>'
-    + '<div class="ai-output" id="cmp-ai-out"><p style="font-size:12px;color:var(--muted2);line-height:1.6">A gerar análise comparativa...</p></div>'
+    + '<div class="sv7-ai-bar has-content" id="cmp-ai-section" style="margin-top:18px;margin-bottom:0">'
+    + '<span class="sv7-ai-bar-label" style="display:block;margin-bottom:6px">AI Scout — Análise Comparativa</span>'
+    + '<div class="sv7-ai-bar-out" id="cmp-ai-out"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
     + '</div>';
 
   // ── Compare Radar (canvas, same style as player detail radars) ──────────────
@@ -15216,14 +15211,9 @@ function renderCompare(){
     + '<div id="cmp-metrics-anchor"></div>'
     + rows
     + '</div>'
-    + '<div class="cmp-ai-section" id="cmp-ai-section">'
-    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
-    + '<span style="display:flex;align-items:center;gap:8px">'
-    + '<span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;background:linear-gradient(135deg,#378ADD,#9b7fff);border-radius:5px"><svg width="12" height="12" viewBox="0 0 16 16" fill="#fff"><path d="M8 1a1 1 0 0 1 1 1v1h3a1 1 0 0 1 1 1v2a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V4a1 1 0 0 1 1-1h3V2a1 1 0 0 1 1-1zm0 3H5v2a3 3 0 0 0 3 3h1a3 3 0 0 0 3-3V4H8z"/></svg></span>'
-    + '<span style="font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--accent)">AI Scout Assistant — Análise Comparativa</span>'
-    + '</span>'
-    + '</div>'
-    + '<div class="ai-output" id="cmp-ai-out"><p style="font-size:12px;color:var(--muted2);line-height:1.6">A gerar análise comparativa...</p></div>'
+    + '<div class="sv7-ai-bar has-content" id="cmp-ai-section" style="margin-top:18px;margin-bottom:0">'
+    + '<span class="sv7-ai-bar-label" style="display:block;margin-bottom:6px">AI Scout — Análise Comparativa</span>'
+    + '<div class="sv7-ai-bar-out" id="cmp-ai-out"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
     + '</div>';
 
   // ── Compare Radar (canvas, same style as player detail radars) ──────────────
@@ -16133,19 +16123,26 @@ function generateCompareAI(pA, pB) {
   else p4+=`um indicador que agrega técnica, físico e impacto coletivo. `;
   p4+=`${tiO.name} (<strong>${tiO.talent_index_pct||0}º percentil</strong>) é a escolha certa para quem privilegia ${cntA<3?'criatividade e presença na área':'velocidade e intensidade off-ball'} — dependendo do sistema, pode ser igualmente decisivo.`;
 
-  // ── Render ────────────────────────────────────────────────────────────────
-  const fnt='font-family:var(--font-b);';
-  const pStyle0=fnt+'margin:0;line-height:1.75;font-size:13px;color:rgba(255,255,255,.65);text-align:justify;text-align-last:left';
-  const pStyle1=fnt+'margin:6px 0 0;line-height:1.75;font-size:13px;color:rgba(255,255,255,.58);text-align:justify;text-align-last:left';
-  const pStyle2=fnt+'margin:6px 0 0;line-height:1.75;font-size:13px;color:rgba(255,255,255,.52);text-align:justify;text-align-last:left';
-  const pStyle3=fnt+'margin:6px 0 0;line-height:1.75;font-size:13px;color:rgba(255,255,255,.46);text-align:justify;text-align-last:left';
+  // ── Render — mesmo design que sv7-ai-bar do Player ID ─────────────────────
+  // .sv7-ai-bar-label: font-d 8px 700 uppercase teal faded
+  // .sv7-ai-bar-out p: font-b 12px rgba(255,255,255,.65) line-height 1.75 margin-bottom 6px
+  // <b> dentro: color:#c0d8e0 fw700 (via .sv7-ai-inline b ou inline style)
+  const lblStyle='display:block;font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(0,212,255,.55);margin-top:10px;margin-bottom:3px';
+  const lblStyle0=lblStyle.replace('margin-top:10px;','margin-top:0;');
 
   const labels=['Perfil & Transferência','Desempenho Chave','Capacidade Física','Conclusão'];
-  const paras=[p1,p2,p3,p4], styles=[pStyle0,pStyle1,pStyle2,pStyle3];
+  const paras=[p1,p2,p3,p4];
+
+  // Highlight bold numbers/key terms in accent colour
+  function hl(t) {
+    // bold tags already inserted as <strong> — style them
+    return t.replace(/<strong>(.*?)<\/strong>/g, '<b style="color:#c0d8e0;font-weight:700">$1</b>');
+  }
 
   let htmlOut='';
   paras.forEach((para,i)=>{
-    htmlOut+=`<div class="ai-section-title">${labels[i]}</div><p style="${styles[i]}">${para}</p>`;
+    const ls = i===0 ? lblStyle0 : lblStyle;
+    htmlOut+=`<span style="${ls}">${labels[i]}</span><p>${hl(para)}</p>`;
   });
   aiCmpCache[cacheKey]=htmlOut;
   const el2=document.getElementById('cmp-ai-out');
