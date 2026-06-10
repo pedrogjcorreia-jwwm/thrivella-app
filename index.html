@@ -16812,7 +16812,14 @@ function renderMobileElite(){
         playerRow.style.cssText='display:grid;grid-template-columns:1fr 1fr;width:100%;box-sizing:border-box';
         cards.forEach((card,i)=>{
           playerRow.appendChild(card);
-          card.style.cssText='padding:10px 6px;box-sizing:border-box;overflow:hidden;min-width:0;display:flex;flex-direction:column;align-items:center;'+(i===0?'border-right:1px solid rgba(255,255,255,.06)':'');
+          card.style.cssText='padding:0;box-sizing:border-box;overflow:hidden;min-width:0;width:100%;'+(i===0?'border-right:1px solid rgba(255,255,255,.06)':'');
+
+          // card-top: full width
+          const cardTop=card.querySelector('.cmp-card-top');
+          if(cardTop) cardTop.style.cssText='display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 6px 8px;border-bottom:1px solid rgba(255,255,255,.06);gap:6px;width:100%;box-sizing:border-box';
+
+          // hl-rows and plain-rows: full width
+          card.querySelectorAll('.cmp-hl-row,.cmp-plain-row').forEach(r=>{r.style.width='100%';r.style.boxSizing='border-box';});
 
           // Hide upload
           card.querySelectorAll('.photo-upload-corner').forEach(el=>el.style.display='none');
@@ -16836,7 +16843,7 @@ function renderMobileElite(){
             sub.style.cssText='margin-top:4px;display:flex;flex-wrap:wrap;gap:2px;justify-content:center';
           }
 
-          // Talent ring: percentil (no decimals, no %), raw below, TALENT INDEX label
+          // Talent ring
           const ringWrap=card.querySelector('[style*="position:relative;width"]')||card.querySelector('[style*="position: relative"]');
           if(ringWrap){
             ringWrap.style.cssText='position:relative;width:100px;height:100px;overflow:visible';
@@ -16845,18 +16852,14 @@ function renderMobileElite(){
             const inner=ringWrap.querySelector('[style*="position:absolute"]');
             if(inner){
               const ch=Array.from(inner.children);
-              // ch[0] = raw score (e.g. 55.5), ch[1] = percentil% (e.g. 87%)
               if(ch[0]&&ch[1]){
                 const rawVal=ch[0].textContent.trim();
                 const pctVal=ch[1].textContent.replace('%','').trim();
-                // Percentil large, no decimals, no %
                 ch[0].textContent=Math.round(parseFloat(pctVal))||pctVal;
                 ch[0].style.cssText='font-family:var(--font-d);font-size:28px;font-weight:900;color:inherit;line-height:1';
-                // Raw score small
                 ch[1].textContent=rawVal;
                 ch[1].style.cssText='font-family:var(--font-d);font-size:10px;color:var(--muted2);margin-top:1px';
               }
-              // Label: TALENT INDEX
               if(ch[2]) ch[2].style.cssText='font-family:var(--font-d);font-size:7px;font-weight:700;letter-spacing:1px;color:var(--muted2);margin-top:2px;text-transform:uppercase';
             }
           }
@@ -16876,22 +16879,18 @@ function renderMobileElite(){
       else if(t==='Preferred foot') el.textContent='Foot';
     });
 
-    // Score rows: center both words, pull values inward
+    // Score rows: center label, pull values inward
     body.querySelectorAll('.cmp-score-bar-row').forEach(row=>{
-      // Center the label (both words)
       const lbl=row.querySelector('.cmp-bar-lbl');
       if(lbl) lbl.style.textAlign='center';
-      // Pull score cells inward
-      Array.from(row.children).forEach((d,idx,arr)=>{
-        const t=d.textContent.trim();
-        if(idx===0) d.style.paddingLeft='10px';
-        if(idx===arr.length-1) d.style.paddingRight='10px';
-      });
+      const ch=Array.from(row.children);
+      if(ch[0]) ch[0].style.paddingLeft='12px';
+      if(ch[ch.length-1]) ch[ch.length-1].style.paddingRight='12px';
     });
 
-    // Metric rows
+    // Metric rows: wider label column, values with padding
     body.querySelectorAll('.cmp-bar-row').forEach(row=>{
-      row.style.cssText='display:grid;grid-template-columns:36px 1fr 64px 1fr 36px;align-items:center;gap:2px;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.03);min-height:22px;box-sizing:border-box;width:100%';
+      row.style.cssText='display:grid;grid-template-columns:40px 1fr 80px 1fr 40px;align-items:center;gap:2px;padding:3px 8px;border-bottom:1px solid rgba(255,255,255,.03);min-height:22px;box-sizing:border-box;width:100%';
     });
     body.querySelectorAll('.cmp-bar-val').forEach(el=>el.style.fontSize='10px');
 
