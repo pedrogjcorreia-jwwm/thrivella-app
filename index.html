@@ -16925,27 +16925,29 @@ function renderMobileElite(){
       else if(t==='Preferred foot') el.textContent='Foot';
     });
 
-    // Score rows: center label, center value cells
+    // Score rows: values toward edges, label centered
     body.querySelectorAll('.cmp-score-bar-row').forEach(row=>{
       const lbl=row.querySelector('.cmp-bar-lbl');
       if(lbl) lbl.style.textAlign='center';
-      // Center the score value cells (first and last child)
       const ch=Array.from(row.children);
-      [ch[0],ch[ch.length-1]].forEach(c=>{
+      [ch[0],ch[ch.length-1]].forEach((c,idx)=>{
         if(c&&c!==lbl){
-          c.style.display='flex';
-          c.style.alignItems='center';
-          c.style.justifyContent=c===ch[0]?'flex-end':'flex-start';
+          c.style.display='flex';c.style.alignItems='center';
+          c.style.justifyContent=idx===0?'flex-start':'flex-end';
+          c.style.padding=idx===0?'0 0 0 4px':'0 4px 0 0';
         }
       });
     });
 
-    // Metric rows: values pulled inward via padding on value cells
+    // Metric rows: values inward, bars with gap from value boxes
     body.querySelectorAll('.cmp-bar-row').forEach(row=>{
-      row.style.cssText='display:grid;grid-template-columns:40px 1fr 80px 1fr 40px;align-items:center;gap:2px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03);min-height:22px;box-sizing:border-box;width:100%';
+      row.style.cssText='display:grid;grid-template-columns:40px 1fr 80px 1fr 40px;align-items:center;gap:4px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03);min-height:22px;box-sizing:border-box;width:100%';
       const ch=Array.from(row.children);
       if(ch[0]){ch[0].style.paddingLeft='10px';ch[0].style.textAlign='right';ch[0].style.display='flex';ch[0].style.alignItems='center';ch[0].style.justifyContent='flex-end';}
       if(ch[ch.length-1]){ch[ch.length-1].style.paddingRight='10px';ch[ch.length-1].style.textAlign='left';ch[ch.length-1].style.display='flex';ch[ch.length-1].style.alignItems='center';ch[ch.length-1].style.justifyContent='flex-start';}
+      // Add gap on bar cells (col 1 and col 3)
+      if(ch[1]) ch[1].style.paddingRight='4px';
+      if(ch[3]) ch[3].style.paddingLeft='4px';
     });
     // Bar val boxes: centered text
     body.querySelectorAll('.cmp-bar-val').forEach(el=>{
