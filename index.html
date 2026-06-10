@@ -16869,7 +16869,7 @@ function renderMobileElite(){
     }
 
     // Metric bar labels: shorten xG, xA, Preferred foot
-    body.querySelectorAll('.cmp-bar-lbl').forEach(el=>{
+    body.querySelectorAll('.cmp-bar-lbl,.cmp-plain-lbl').forEach(el=>{
       const t=el.textContent.trim();
       if(t.startsWith('xG')) el.textContent='xG';
       else if(t.startsWith('xA')) el.textContent='xA';
@@ -16879,23 +16879,25 @@ function renderMobileElite(){
 
     // Score rows (TOTAL FÍSICO etc): title 2.5x bigger, centered; values aligned with metric cols
     body.querySelectorAll('.cmp-score-bar-row').forEach(row=>{
-      // grid: valA | empty | LABEL | empty | valB  → match metric cols: 36px 1fr 64px 1fr 36px
       row.style.cssText='display:grid;grid-template-columns:36px 1fr 64px 1fr 36px;align-items:center;border-top:2px solid rgba(255,255,255,.1);padding:8px 4px;box-sizing:border-box;width:100%';
-      // Find label and make it big
-      const lbl=row.querySelector('.cmp-bar-lbl,[style*="font-size:1"]');
-      if(lbl){
-        lbl.style.cssText='font-family:var(--font-d);font-size:18px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-align:center;color:#fff;line-height:1';
-        // col-span via grid: move to center column
-        lbl.style.gridColumn='3';
-      }
-      // Score cells: left (col 1) and right (col 5)
-      const cells=Array.from(row.children).filter(c=>c!==lbl);
-      if(cells.length>=2){
-        cells[0].style.gridColumn='1';
-        cells[0].style.textAlign='right';
-        cells[cells.length-1].style.gridColumn='5';
-        cells[cells.length-1].style.textAlign='left';
-      }
+      // Find label div — make it big and centered
+      const allDivs=Array.from(row.children);
+      allDivs.forEach(d=>{
+        const t=d.textContent.trim();
+        // Score cells (numbers): pull inward slightly
+        if(/^\d/.test(t)){
+          d.style.padding='0 6px';
+          d.style.overflow='hidden';
+          d.style.textOverflow='ellipsis';
+        }
+        // Label div (TOTAL FÍSICO etc) — 2 lines: TOTAL + FÍSICO both centered
+        if(t.startsWith('TOTAL')||t.startsWith('Total')){
+          d.style.cssText='text-align:center;grid-column:3;line-height:1.15';
+          // Force both lines centered
+          d.innerHTML=d.innerHTML.replace(/\s*<br\s*\/?>\s*/gi,'<br>')
+            .replace(/(TOTAL|Total)\s+(\w+)/,'<div style="font-size:7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.5)">$1</div><div style="font-size:18px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff">$2</div>');
+        }
+      });
     });
 
     // Metric rows
