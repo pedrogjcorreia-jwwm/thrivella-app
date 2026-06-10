@@ -7983,42 +7983,38 @@ async function generateCompareAI(pA, pB) {
 
   const prompt = `És um scout de futebol profissional. Compara estes dois jogadores de forma objetiva e concisa em português europeu.
 
-JOGADOR A: ${pA.name} | ${pA.team} | ${pA.position.split(',')[0]} | ${pA.age}a
-JOGADOR B: ${pB.name} | ${pB.team} | ${pB.position.split(',')[0]} | ${pB.age}a
+JOGADOR A: ${pA.name} | ${pA.team} | ${pA.league} | ${pA.position.split(',')[0]} | ${pA.age}a | ${pA.size||'—'}cm | MV: ${pA.mkt_value>=1e6?'€'+(pA.mkt_value/1e6).toFixed(1)+'M':pA.mkt_value>=1e3?'€'+Math.round(pA.mkt_value/1e3)+'K':'—'} | Contrato: ${pA.contract_end||'—'}
+JOGADOR B: ${pB.name} | ${pB.team} | ${pB.league} | ${pB.position.split(',')[0]} | ${pB.age}a | ${pB.size||'—'}cm | MV: ${pB.mkt_value>=1e6?'€'+(pB.mkt_value/1e6).toFixed(1)+'M':pB.mkt_value>=1e3?'€'+Math.round(pB.mkt_value/1e3)+'K':'—'} | Contrato: ${pB.contract_end||'—'}
 
-SCORES TOTAIS:
-Talent Index A: ${(pA.talent_index||0).toFixed(1)} (${(pA.talent_index_pct||0)}%) | Talent Index B: ${(pB.talent_index||0).toFixed(1)} (${(pB.talent_index_pct||0)}%)
-Ofensivo A: ${pA.total_off.toFixed(1)} | Ofensivo B: ${pB.total_off.toFixed(1)} → melhor: ${better('total_off')}
-Defensivo A: ${pA.total_def.toFixed(1)} | Defensivo B: ${pB.total_def.toFixed(1)} → melhor: ${better('total_def')}
-Passe A: ${pA.total_pass.toFixed(1)} | Passe B: ${pB.total_pass.toFixed(1)} → melhor: ${better('total_pass')}
-Físico A: ${pA.total_physical.toFixed(1)} | Físico B: ${pB.total_physical.toFixed(1)} → melhor: ${better('total_physical')}
+UTILIZAÇÃO (jogos/minutos/golos):
+A: ${pA.matches||0}j / ${pA.minutes||0}min / ${pA.goals_np||0}g | xG: ${pA.xg||0}
+B: ${pB.matches||0}j / ${pB.minutes||0}min / ${pB.goals_np||0}g | xG: ${pB.xg||0}
 
-MÉTRICAS FÍSICAS:
-Vel.Máx: ${pA.max_speed} vs ${pB.max_speed} → ${better('max_speed')}
-HSR/90: ${Math.round(pA.hsr90)} vs ${Math.round(pB.hsr90)} → ${better('hsr90')}
-Sprint/90: ${Math.round(pA.sprint_dist90)} vs ${Math.round(pB.sprint_dist90)} → ${better('sprint_dist90')}
+SCORES TOTAIS (melhor):
+Talent: ${(pA.talent_index||0).toFixed(1)} (${pA.talent_index_pct||0}%) vs ${(pB.talent_index||0).toFixed(1)} (${pB.talent_index_pct||0}%) → ${better('talent_index')}
+Ofensivo: ${(pA.total_off||0).toFixed(1)} vs ${(pB.total_off||0).toFixed(1)} → ${better('total_off')}
+Físico: ${(pA.total_physical||0).toFixed(1)} vs ${(pB.total_physical||0).toFixed(1)} → ${better('total_physical')}
+Passe: ${(pA.total_pass||0).toFixed(1)} vs ${(pB.total_pass||0).toFixed(1)} → ${better('total_pass')}
+Defensivo: ${(pA.total_def||0).toFixed(1)} vs ${(pB.total_def||0).toFixed(1)} → ${better('total_def')}
 
-MÉTRICAS OFENSIVAS:
-xG: ${pA.xg} vs ${pB.xg} → ${better('xg')}
-xA: ${pA.xa} vs ${pB.xa} → ${better('xa')}
-Dribles/90: ${pA.dribles90} vs ${pB.dribles90} → ${better('dribles90')}
-Box Touches: ${pA.box_touches} vs ${pB.box_touches} → ${better('box_touches')}
+MÉTRICAS FÍSICAS CHAVE:
+Vel.Máx: ${pA.max_speed||'—'} vs ${pB.max_speed||'—'} → ${better('max_speed')}
+Sprint Dist/90: ${Math.round(pA.sprint_dist90||0)} vs ${Math.round(pB.sprint_dist90||0)} → ${better('sprint_dist90')}
+HSR/90: ${Math.round(pA.hsr90||0)} vs ${Math.round(pB.hsr90||0)} → ${better('hsr90')}
 
-MÉTRICAS DEFENSIVAS:
-Duelos/90: ${pA.def_duels} vs ${pB.def_duels} → ${better('def_duels')}
-% Duelos: ${pA.def_duels_pct} vs ${pB.def_duels_pct} → ${better('def_duels_pct')}
-Interceções: ${pA.adj_intercept} vs ${pB.adj_intercept} → ${better('adj_intercept')}
+MÉTRICAS OFENSIVAS CHAVE:
+xA: ${pA.xa||0} vs ${pB.xa||0} → ${better('xa')}
+Dribles/90: ${pA.dribles90||0} vs ${pB.dribles90||0} → ${better('dribles90')}
+Box Touches: ${pA.box_touches||0} vs ${pB.box_touches||0} → ${better('box_touches')}
+Cond.Progressivas: ${pA.prog_carries||0} vs ${pB.prog_carries||0} → ${better('prog_carries')}
 
-MÉTRICAS DE PASSE:
-Passes/90: ${pA.passes90} vs ${pB.passes90} → ${better('passes90')}
-% Passes: ${pA.passes_pct} vs ${pB.passes_pct} → ${better('passes_pct')}
+Escreve 4 parágrafos curtos e diretos:
+1. Perfil geral: idade, valor de mercado, contrato e o que isso implica para uma transferência.
+2. Produção ofensiva: quem cria mais, marca mais, ameaça mais com bola.
+3. Capacidade física: quem é mais rápido, mais explosivo, cobre mais terreno.
+4. Conclusão: qual dos dois representa melhor investimento e em que sistema/contexto cada um se encaixa.
 
-Escreve 3 parágrafos curtos e diretos:
-1. Em que métricas ${pA.name} é claramente superior e porquê isso importa.
-2. Em que métricas ${pB.name} é claramente superior e porquê isso importa.
-3. Conclusão: qual dos dois tem mais valor para um treinador e em que contexto/sistema cada um encaixa melhor.
-
-Sem títulos, sem bullet points, sem markdown. Máximo 200 palavras.`;
+Sem títulos, sem bullet points, sem markdown. Máximo 220 palavras.`;
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -16780,6 +16776,10 @@ function renderMobileElite(){
       if(sa) sa.value=simName;
       if(sb) sb.value=playerName;
       if(typeof renderCompare==='function') renderCompare();
+      // Generate AI report for mobile
+      const pA=PLAYERS.find(x=>x.name===simName);
+      const pB=PLAYERS.find(x=>x.name===playerName);
+      if(pA&&pB&&typeof generateCompareAI==='function') generateCompareAI(pA,pB);
       setTimeout(_reflowMobileCompare, 120);
     },100);
     if(typeof closeMobileElite==='function') closeMobileElite();
