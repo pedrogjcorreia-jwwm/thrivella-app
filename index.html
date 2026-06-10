@@ -16824,7 +16824,11 @@ function renderMobileElite(){
             const lbl=r.querySelector('.cmp-hl-lbl');
             const val=r.querySelector('.cmp-hl-val');
             if(lbl) lbl.style.cssText='color:var(--muted);font-family:var(--font-b);font-size:11px';
-          card.querySelectorAll('.cmp-hl-val').forEach(el=>el.style.cssText='font-family:var(--font-d);font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;max-width:60%;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block');
+          card.querySelectorAll('.cmp-hl-val').forEach(el=>{
+            el.style.cssText='font-family:var(--font-d);font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;max-width:60%;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;color:#fff!important';
+            // Force white — override inline color:#000
+            el.setAttribute('style', el.style.cssText+';color:#fff');
+          });
           });
 
           // plain-rows: bigger font
@@ -16940,11 +16944,17 @@ function renderMobileElite(){
     body.querySelectorAll('.cmp-bar-row').forEach(row=>{
       row.style.cssText='display:grid;grid-template-columns:40px 1fr 80px 1fr 40px;align-items:center;gap:2px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03);min-height:22px;box-sizing:border-box;width:100%';
       const ch=Array.from(row.children);
-      // col 0 = val A, col 4 = val B — pull them inward
-      if(ch[0]) ch[0].style.cssText=(ch[0].style.cssText||'')+'padding-left:10px;text-align:right';
-      if(ch[ch.length-1]) ch[ch.length-1].style.cssText=(ch[ch.length-1].style.cssText||'')+'padding-right:10px;text-align:left';
+      if(ch[0]){ch[0].style.paddingLeft='10px';ch[0].style.textAlign='right';ch[0].style.display='flex';ch[0].style.alignItems='center';ch[0].style.justifyContent='flex-end';}
+      if(ch[ch.length-1]){ch[ch.length-1].style.paddingRight='10px';ch[ch.length-1].style.textAlign='left';ch[ch.length-1].style.display='flex';ch[ch.length-1].style.alignItems='center';ch[ch.length-1].style.justifyContent='flex-start';}
     });
-    body.querySelectorAll('.cmp-bar-val').forEach(el=>el.style.fontSize='10px');
+    // Bar val boxes: centered text
+    body.querySelectorAll('.cmp-bar-val').forEach(el=>{
+      el.style.fontSize='10px';
+      el.style.display='flex';
+      el.style.alignItems='center';
+      el.style.justifyContent='center';
+      el.style.minHeight='20px';
+    });
 
     // Hide top controls
     body.querySelectorAll('div[style*="justify-content:flex-end"]').forEach(el=>el.style.display='none');
