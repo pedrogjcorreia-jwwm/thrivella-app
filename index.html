@@ -7966,85 +7966,65 @@ function openTalentView() { toggleFlyout('talent'); }
 // ── AI COMPARE ───────────────────────────────────────────────────────────────
 const aiCmpCache = {};
 
-async function generateCompareAI(pA, pB) {
+function generateCompareAI(pA, pB) {
   const cacheKey = pA.name + '||' + pB.name;
   const outEl = document.getElementById('cmp-ai-out');
-  if (!outEl) {
-    setTimeout(()=>generateCompareAI(pA,pB), 600);
-    return;
-  }
-
+  if (!outEl) { setTimeout(()=>generateCompareAI(pA,pB), 600); return; }
   if (aiCmpCache[cacheKey]) { outEl.innerHTML = aiCmpCache[cacheKey]; return; }
 
-  outEl.innerHTML = '<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div>';
-
-  function better(key, inv) {
-    const a = pA[key]||0, b = pB[key]||0;
-    if (a === b) return 'empate';
-    return (inv ? a < b : a > b) ? pA.name : pB.name;
+  function better(key) {
+    const a = parseFloat(pA[key])||0, b = parseFloat(pB[key])||0;
+    if (!a && !b) return null;
+    return a > b ? pA : (b > a ? pB : null);
   }
+  function fmtMv(p) { return p.mkt_value>=1e6?'€'+(p.mkt_value/1e6).toFixed(1)+'M':p.mkt_value>=1e3?'€'+Math.round(p.mkt_value/1e3)+'K':'—'; }
 
-  const prompt = `És um scout de futebol profissional. Compara estes dois jogadores de forma objetiva e concisa em português europeu.
+  // Para1: Perfil & Transferência
+  const ageDiff = (pA.age||0)-(pB.age||0);
+  const ctExpA = pA.contract_end && new Date(pA.contract_end) < new Date(Date.now()+365*24*36e5);
+  const ctExpB = pB.contract_end && new Date(pB.contract_end) < new Date(Date.now()+365*24*36e5);
+  let p1 = `${pA.name} (${pA.age||'?'}a, ${pA.size||'?'}cm, ${fmtMv(pA)}) e ${pB.name} (${pB.age||'?'}a, ${pB.size||'?'}cm, ${fmtMv(pB)}) são dois ${(pA.position||'').split(',')[0].trim()}. `;
+  if (Math.abs(ageDiff) >= 3) p1 += `${ageDiff > 0 ? pB.name : pA.name} é ${Math.abs(ageDiff)} anos mais novo, representando ${ageDiff > 0 ? 'maior potencial de valorização' : 'mais experiência'}. `;
+  if (ctExpA && !ctExpB) p1 += `O contrato de ${pA.name} expira em breve (${pA.contract_end}), criando uma janela de aquisição favorável.`;
+  else if (ctExpB && !ctExpA) p1 += `O contrato de ${pB.name} expira em breve (${pB.contract_end}), criando uma janela de aquisição favorável.`;
+  else p1 += `Contratualmente, ${pA.name} está vinculado até ${pA.contract_end||'—'} e ${pB.name} até ${pB.contract_end||'—'}.`;
 
-JOGADOR A: ${pA.name} | ${pA.team} | ${pA.league} | ${pA.position.split(',')[0]} | ${pA.age}a | ${pA.size||'—'}cm | MV: ${pA.mkt_value>=1e6?'€'+(pA.mkt_value/1e6).toFixed(1)+'M':pA.mkt_value>=1e3?'€'+Math.round(pA.mkt_value/1e3)+'K':'—'} | Contrato: ${pA.contract_end||'—'}
-JOGADOR B: ${pB.name} | ${pB.team} | ${pB.league} | ${pB.position.split(',')[0]} | ${pB.age}a | ${pB.size||'—'}cm | MV: ${pB.mkt_value>=1e6?'€'+(pB.mkt_value/1e6).toFixed(1)+'M':pB.mkt_value>=1e3?'€'+Math.round(pB.mkt_value/1e3)+'K':'—'} | Contrato: ${pB.contract_end||'—'}
+  // Para2: Produção ofensiva
+  const bGoals = better('goals_np'), bXg = better('xg'), bXa = better('xa'), bDrib = better('dribles90'), bBox = better('box_touches');
+  const prodVotes = [bGoals,bXg,bXa,bDrib,bBox].filter(Boolean);
+  const cntA = prodVotes.filter(x=>x.name===pA.name).length;
+  const prodL = cntA >= 3 ? pA : pB, prodO = cntA >= 3 ? pB : pA;
+  const highlights = [];
+  if (better('goals_np')?.name===prodL.name) highlights.push(`${prodL.goals_np||0} golos`);
+  if (better('xg')?.name===prodL.name) highlights.push(`xG de ${prodL.xg||0}`);
+  if (better('xa')?.name===prodL.name) highlights.push(`xA de ${prodL.xa||0}`);
+  if (better('dribles90')?.name===prodL.name) highlights.push(`${prodL.dribles90||0} dribles/90`);
+  let p2 = `Ofensivamente, ${prodL.name} destaca-se com ${highlights.slice(0,3).join(', ')||'métricas superiores'}. ${prodO.name} ${better('xa')?.name===prodO.name||better('box_touches')?.name===prodO.name ? 'compensa com maior capacidade criativa' : 'apresenta números mais modestos nas métricas ofensivas chave'}.`;
 
-UTILIZAÇÃO (jogos/minutos/golos):
-A: ${pA.matches||0}j / ${pA.minutes||0}min / ${pA.goals_np||0}g | xG: ${pA.xg||0}
-B: ${pB.matches||0}j / ${pB.minutes||0}min / ${pB.goals_np||0}g | xG: ${pB.xg||0}
+  // Para3: Físico
+  const bSpeed = better('max_speed'), bSprint = better('sprint_dist90'), bHsr = better('hsr90');
+  const physVotes = [bSpeed,bSprint,bHsr].filter(Boolean);
+  const physA = physVotes.filter(x=>x.name===pA.name).length;
+  const physL = physA >= 2 ? pA : pB, physO = physA >= 2 ? pB : pA;
+  let p3 = `Fisicamente, ${physL.name} é mais dominante: velocidade máxima de ${physL.max_speed||'—'} km/h e sprint dist/90 de ${Math.round(physL.sprint_dist90||0)}m. ${physO.name} regista ${physO.max_speed||'—'} km/h e ${Math.round(physO.sprint_dist90||0)}m de sprint/90.`;
 
-SCORES TOTAIS (melhor):
-Talent: ${(pA.talent_index||0).toFixed(1)} (${pA.talent_index_pct||0}%) vs ${(pB.talent_index||0).toFixed(1)} (${pB.talent_index_pct||0}%) → ${better('talent_index')}
-Ofensivo: ${(pA.total_off||0).toFixed(1)} vs ${(pB.total_off||0).toFixed(1)} → ${better('total_off')}
-Físico: ${(pA.total_physical||0).toFixed(1)} vs ${(pB.total_physical||0).toFixed(1)} → ${better('total_physical')}
-Passe: ${(pA.total_pass||0).toFixed(1)} vs ${(pB.total_pass||0).toFixed(1)} → ${better('total_pass')}
-Defensivo: ${(pA.total_def||0).toFixed(1)} vs ${(pB.total_def||0).toFixed(1)} → ${better('total_def')}
+  // Para4: Conclusão
+  const tiA = pA.talent_index||0, tiB = pB.talent_index||0;
+  const tiL = tiA > tiB ? pA : pB, tiO = tiA > tiB ? pB : pA;
+  let p4 = `Globalmente, ${tiL.name} apresenta um Talent Index superior (${tiL.talent_index_pct||0}º percentil)`;
+  if ((ctExpA&&tiL.name===pA.name)||(ctExpB&&tiL.name===pB.name)) p4 += `, especialmente atrativo dado o contrato próximo do fim`;
+  p4 += `. ${tiO.name} é a opção adequada para sistemas que valorizam ${cntA < 3 ? 'criatividade e técnica' : 'capacidade física e explosividade'}.`;
 
-MÉTRICAS FÍSICAS CHAVE:
-Vel.Máx: ${pA.max_speed||'—'} vs ${pB.max_speed||'—'} → ${better('max_speed')}
-Sprint Dist/90: ${Math.round(pA.sprint_dist90||0)} vs ${Math.round(pB.sprint_dist90||0)} → ${better('sprint_dist90')}
-HSR/90: ${Math.round(pA.hsr90||0)} vs ${Math.round(pB.hsr90||0)} → ${better('hsr90')}
-
-MÉTRICAS OFENSIVAS CHAVE:
-xA: ${pA.xa||0} vs ${pB.xa||0} → ${better('xa')}
-Dribles/90: ${pA.dribles90||0} vs ${pB.dribles90||0} → ${better('dribles90')}
-Box Touches: ${pA.box_touches||0} vs ${pB.box_touches||0} → ${better('box_touches')}
-Cond.Progressivas: ${pA.prog_carries||0} vs ${pB.prog_carries||0} → ${better('prog_carries')}
-
-Escreve 4 parágrafos curtos e diretos:
-1. Perfil geral: idade, valor de mercado, contrato e o que isso implica para uma transferência.
-2. Produção ofensiva: quem cria mais, marca mais, ameaça mais com bola.
-3. Capacidade física: quem é mais rápido, mais explosivo, cobre mais terreno.
-4. Conclusão: qual dos dois representa melhor investimento e em que sistema/contexto cada um se encaixa.
-
-Sem títulos, sem bullet points, sem markdown. Máximo 220 palavras.`;
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
-    });
-    const data = await res.json();
-    const text = data.content.map(b=>b.text||'').join('');
-    const paras = text.trim().split(String.fromCharCode(10)).map(s=>s.trim()).filter(Boolean);
-    const labels = ['Perfil & Transferência', 'Produção Ofensiva', 'Capacidade Física', 'Conclusão'];
-    let html = '';
-    paras.forEach((para,i) => {
-      if (i < labels.length) html += '<div class="ai-section-title">' + labels[i] + '</div>';
-      let t = para.trim();
-      if (t && !t.match(/[.!?]$/)) t += '.';
-      html += '<p style="margin-bottom:10px;line-height:1.8">' + t + '</p>';
-    });
-    aiCmpCache[cacheKey] = html;
-    // Try outEl again in case it was recreated by renderCompare
-    const el2 = document.getElementById('cmp-ai-out');
-    if(el2) el2.innerHTML = html;
-  } catch(e) {
-    outEl.innerHTML = '<p style="color:var(--amber);font-size:12px">Erro ao gerar análise.</p>';
-  }
+  const labels = ['Perfil & Transferência','Produção Ofensiva','Capacidade Física','Conclusão'];
+  const paras = [p1, p2, p3, p4];
+  let htmlOut = '';
+  paras.forEach((para,i) => {
+    htmlOut += `<div class="ai-section-title">${labels[i]}</div><p style="margin-bottom:10px;line-height:1.8">${para}</p>`;
+  });
+  aiCmpCache[cacheKey] = htmlOut;
+  const el2 = document.getElementById('cmp-ai-out');
+  if (el2) el2.innerHTML = htmlOut;
 }
-
 // ── SHADOW TEAM & TALENT CENTER ──────────────────────────────────────────────
 const shadowTeam = [];
 const talentCenter = [];
