@@ -16818,8 +16818,13 @@ function renderMobileElite(){
           const cardTop=card.querySelector('.cmp-card-top');
           if(cardTop) cardTop.style.cssText='display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 6px 8px;border-bottom:1px solid rgba(255,255,255,.06);gap:6px;width:100%;box-sizing:border-box';
 
-          // hl-rows and plain-rows: full width
-          card.querySelectorAll('.cmp-hl-row,.cmp-plain-row').forEach(r=>{r.style.width='100%';r.style.boxSizing='border-box';});
+          // hl-rows and plain-rows: compact padding for mobile
+          card.querySelectorAll('.cmp-hl-row,.cmp-plain-row').forEach(r=>{
+            r.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:4px 8px;font-size:11px;width:100%;box-sizing:border-box;margin:1px 0';
+          });
+          card.querySelectorAll('.cmp-hl-lbl,.cmp-plain-lbl').forEach(el=>el.style.fontSize='10px');
+          card.querySelectorAll('.cmp-hl-val').forEach(el=>el.style.cssText='font-family:var(--font-d);font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;color:#000;max-width:55%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap');
+          card.querySelectorAll('.cmp-plain-val').forEach(el=>el.style.cssText='font-family:var(--font-d);font-size:11px;font-weight:700;color:var(--text);max-width:55%;text-align:right');
 
           // Hide upload
           card.querySelectorAll('.photo-upload-corner').forEach(el=>el.style.display='none');
@@ -16879,18 +16884,19 @@ function renderMobileElite(){
       else if(t==='Preferred foot') el.textContent='Foot';
     });
 
-    // Score rows: center label, pull values inward
+    // Score rows: center label only (no padding changes to values)
     body.querySelectorAll('.cmp-score-bar-row').forEach(row=>{
       const lbl=row.querySelector('.cmp-bar-lbl');
       if(lbl) lbl.style.textAlign='center';
-      const ch=Array.from(row.children);
-      if(ch[0]) ch[0].style.paddingLeft='12px';
-      if(ch[ch.length-1]) ch[ch.length-1].style.paddingRight='12px';
     });
 
-    // Metric rows: wider label column, values with padding
+    // Metric rows: values pulled inward via padding on value cells
     body.querySelectorAll('.cmp-bar-row').forEach(row=>{
-      row.style.cssText='display:grid;grid-template-columns:40px 1fr 80px 1fr 40px;align-items:center;gap:2px;padding:3px 8px;border-bottom:1px solid rgba(255,255,255,.03);min-height:22px;box-sizing:border-box;width:100%';
+      row.style.cssText='display:grid;grid-template-columns:40px 1fr 80px 1fr 40px;align-items:center;gap:2px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03);min-height:22px;box-sizing:border-box;width:100%';
+      const ch=Array.from(row.children);
+      // col 0 = val A, col 4 = val B — pull them inward
+      if(ch[0]) ch[0].style.cssText=(ch[0].style.cssText||'')+'padding-left:10px;text-align:right';
+      if(ch[ch.length-1]) ch[ch.length-1].style.cssText=(ch[ch.length-1].style.cssText||'')+'padding-right:10px;text-align:left';
     });
     body.querySelectorAll('.cmp-bar-val').forEach(el=>el.style.fontSize='10px');
 
