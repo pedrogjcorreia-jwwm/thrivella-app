@@ -16868,35 +16868,24 @@ function renderMobileElite(){
       }
     }
 
-    // Metric bar labels: shorten xG, xA, Preferred foot
-    body.querySelectorAll('.cmp-bar-lbl,.cmp-plain-lbl').forEach(el=>{
+    // Shorten plain row labels only
+    body.querySelectorAll('.cmp-plain-lbl').forEach(el=>{
       const t=el.textContent.trim();
-      if(t.startsWith('xG')) el.textContent='xG';
-      else if(t.startsWith('xA')) el.textContent='xA';
-      else if(t.toLowerCase().includes('preferred foot')) el.textContent='Foot';
-      el.style.cssText='text-align:center;font-size:7px;font-weight:600;line-height:1.2;white-space:normal;word-break:break-word;padding:0 2px';
+      if(t==='xG (expected goals)') el.textContent='xG';
+      else if(t==='xA (expected assists)') el.textContent='xA';
+      else if(t==='Preferred foot') el.textContent='Foot';
     });
 
-    // Score rows (TOTAL FÍSICO etc): title 2.5x bigger, centered; values aligned with metric cols
+    // Score rows: center both words, pull values inward
     body.querySelectorAll('.cmp-score-bar-row').forEach(row=>{
-      row.style.cssText='display:grid;grid-template-columns:36px 1fr 64px 1fr 36px;align-items:center;border-top:2px solid rgba(255,255,255,.1);padding:8px 4px;box-sizing:border-box;width:100%';
-      // Find label div — make it big and centered
-      const allDivs=Array.from(row.children);
-      allDivs.forEach(d=>{
+      // Center the label (both words)
+      const lbl=row.querySelector('.cmp-bar-lbl');
+      if(lbl) lbl.style.textAlign='center';
+      // Pull score cells inward
+      Array.from(row.children).forEach((d,idx,arr)=>{
         const t=d.textContent.trim();
-        // Score cells (numbers): pull inward slightly
-        if(/^\d/.test(t)){
-          d.style.padding='0 6px';
-          d.style.overflow='hidden';
-          d.style.textOverflow='ellipsis';
-        }
-        // Label div (TOTAL FÍSICO etc) — 2 lines: TOTAL + FÍSICO both centered
-        if(t.startsWith('TOTAL')||t.startsWith('Total')){
-          d.style.cssText='text-align:center;grid-column:3;line-height:1.15';
-          // Force both lines centered
-          d.innerHTML=d.innerHTML.replace(/\s*<br\s*\/?>\s*/gi,'<br>')
-            .replace(/(TOTAL|Total)\s+(\w+)/,'<div style="font-size:7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.5)">$1</div><div style="font-size:18px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff">$2</div>');
-        }
+        if(idx===0) d.style.paddingLeft='10px';
+        if(idx===arr.length-1) d.style.paddingRight='10px';
       });
     });
 
