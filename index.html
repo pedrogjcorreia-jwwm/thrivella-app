@@ -16818,13 +16818,21 @@ function renderMobileElite(){
           const cardTop=card.querySelector('.cmp-card-top');
           if(cardTop) cardTop.style.cssText='display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 6px 8px;border-bottom:1px solid rgba(255,255,255,.06);gap:6px;width:100%;box-sizing:border-box';
 
-          // hl-rows and plain-rows: compact padding for mobile
-          card.querySelectorAll('.cmp-hl-row,.cmp-plain-row').forEach(r=>{
+          // hl-rows (Season, Team, League, Contract): button-style, full visible
+          card.querySelectorAll('.cmp-hl-row').forEach(r=>{
             r.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:4px 8px;font-size:11px;width:100%;box-sizing:border-box;margin:1px 0';
+            const lbl=r.querySelector('.cmp-hl-lbl');
+            const val=r.querySelector('.cmp-hl-val');
+            if(lbl) lbl.style.cssText='color:var(--muted);font-family:var(--font-b);font-size:11px';
+            if(val) val.style.cssText='font-family:var(--font-d);font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#000;max-width:60%;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block';
           });
-          card.querySelectorAll('.cmp-hl-lbl,.cmp-plain-lbl').forEach(el=>el.style.fontSize='10px');
-          card.querySelectorAll('.cmp-hl-val').forEach(el=>el.style.cssText='font-family:var(--font-d);font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;color:#000;max-width:55%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap');
-          card.querySelectorAll('.cmp-plain-val').forEach(el=>el.style.cssText='font-family:var(--font-d);font-size:11px;font-weight:700;color:var(--text);max-width:55%;text-align:right');
+
+          // plain-rows: bigger font
+          card.querySelectorAll('.cmp-plain-row').forEach(r=>{
+            r.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:4px 8px;font-size:12px;width:100%;box-sizing:border-box;margin:1px 0';
+          });
+          card.querySelectorAll('.cmp-plain-lbl').forEach(el=>el.style.cssText='color:var(--muted);font-family:var(--font-b);font-size:11px');
+          card.querySelectorAll('.cmp-plain-val').forEach(el=>el.style.cssText='font-family:var(--font-d);font-size:12px;font-weight:700;color:var(--text);text-align:right');
 
           // Hide upload
           card.querySelectorAll('.photo-upload-corner').forEach(el=>el.style.display='none');
@@ -16873,6 +16881,35 @@ function renderMobileElite(){
         });
         headerRow.appendChild(playerRow);
         if(typeof drawCmpRadarCanvas==='function') setTimeout(drawCmpRadarCanvas,80);
+
+        // Highlight winner in plain rows (Appearances→xA): compare values between two cards
+        setTimeout(()=>{
+          const cardEls=playerRow.querySelectorAll('.cmp-card');
+          if(cardEls.length===2){
+            const rowsA=Array.from(cardEls[0].querySelectorAll('.cmp-plain-row'));
+            const rowsB=Array.from(cardEls[1].querySelectorAll('.cmp-plain-row'));
+            const n=Math.min(rowsA.length,rowsB.length);
+            for(let idx=0;idx<n;idx++){
+              const valA=rowsA[idx].querySelector('.cmp-plain-val');
+              const valB=rowsB[idx].querySelector('.cmp-plain-val');
+              if(!valA||!valB) continue;
+              const a=parseFloat(valA.textContent.replace(/[^0-9.]/g,''));
+              const b=parseFloat(valB.textContent.replace(/[^0-9.]/g,''));
+              if(isNaN(a)||isNaN(b)) continue;
+              const colA='#378ADD',colB='#00e5a0';
+              if(a>b){valA.style.color=colA;valA.style.textShadow='0 0 8px '+colA+'88';valB.style.color='rgba(255,255,255,.35)';}
+              else if(b>a){valB.style.color=colB;valB.style.textShadow='0 0 8px '+colB+'88';valA.style.color='rgba(255,255,255,.35)';}
+            }
+          }
+          // Separator before first .cmp-score-bar-row (Total Físico etc)
+          const firstScore=body.querySelector('.cmp-score-bar-row');
+          if(firstScore&&!firstScore.previousElementSibling?.classList?.contains('mob-sep')){
+            const sep=document.createElement('div');
+            sep.className='mob-sep';
+            sep.style.cssText='height:12px;background:#000;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);width:100%';
+            firstScore.parentNode.insertBefore(sep,firstScore);
+          }
+        },150);
       }
     }
 
