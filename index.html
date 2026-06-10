@@ -16824,7 +16824,7 @@ function renderMobileElite(){
             const lbl=r.querySelector('.cmp-hl-lbl');
             const val=r.querySelector('.cmp-hl-val');
             if(lbl) lbl.style.cssText='color:var(--muted);font-family:var(--font-b);font-size:11px';
-            if(val) val.style.cssText='font-family:var(--font-d);font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#000;max-width:60%;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block';
+          card.querySelectorAll('.cmp-hl-val').forEach(el=>el.style.cssText='font-family:var(--font-d);font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;max-width:60%;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block');
           });
 
           // plain-rows: bigger font
@@ -16921,10 +16921,19 @@ function renderMobileElite(){
       else if(t==='Preferred foot') el.textContent='Foot';
     });
 
-    // Score rows: center label only (no padding changes to values)
+    // Score rows: center label, center value cells
     body.querySelectorAll('.cmp-score-bar-row').forEach(row=>{
       const lbl=row.querySelector('.cmp-bar-lbl');
       if(lbl) lbl.style.textAlign='center';
+      // Center the score value cells (first and last child)
+      const ch=Array.from(row.children);
+      [ch[0],ch[ch.length-1]].forEach(c=>{
+        if(c&&c!==lbl){
+          c.style.display='flex';
+          c.style.alignItems='center';
+          c.style.justifyContent=c===ch[0]?'flex-end':'flex-start';
+        }
+      });
     });
 
     // Metric rows: values pulled inward via padding on value cells
