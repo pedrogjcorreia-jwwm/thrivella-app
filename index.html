@@ -1,6 +1,6 @@
 <html lang="pt"><head>
 <meta charset="UTF-8">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><!-- v20260611131738 -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <!-- v2 -->
@@ -8106,7 +8106,7 @@ function generateCompareAI(pA, pB) {
   if(el2) el2.innerHTML=htmlOut;
 }tml lang="pt"><head>
 <meta charset="UTF-8">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><!-- v20260611131738 -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <!-- v2 -->
@@ -24976,36 +24976,46 @@ function renderMobilePlayerID(){
   const filterBar = document.getElementById('mob-filter-bar');
   if(!content) return;
 
-  // Filter bar: search input
-  if(filterBar) filterBar.innerHTML = `
-    <input id="mob-pid-search" type="text" placeholder="🔍  Procurar jogador..." oninput="mobPidSearch(this.value)"
-      style="flex:1;background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:6px;padding:6px 10px;color:#e8edf2;font-family:'Barlow',sans-serif;font-size:12px;outline:none">
-    <div id="mob-pid-results" style="position:absolute;top:100%;left:12px;right:12px;background:#0d1824;border:1px solid rgba(0,212,255,.2);border-radius:8px;z-index:200;display:none;max-height:200px;overflow-y:auto"></div>`;
+  // Filter bar: search with fixed dropdown (same pattern as compare)
+  if(filterBar){
+    filterBar.style.overflow='visible';
+    filterBar.innerHTML=`
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(0,212,255,.6)" stroke-width="2" stroke-linecap="round" style="flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="mob-pid-search" type="text" placeholder="Procurar jogador..."
+        oninput="mobPidSearch(this.value)"
+        style="flex:1;background:transparent;border:none;outline:none;color:#e8edf2;font-family:'Barlow',sans-serif;font-size:13px">
+      <div id="mob-pid-drop" style="position:fixed;left:0;right:0;top:96px;background:#0d1824;border-bottom:1px solid rgba(0,212,255,.25);z-index:9999;display:none;max-height:240px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.8)"></div>`;
+  }
 
-  // Pick player — use selectedPlayer or first in list
   const p = window.selectedPlayer || (PLAYERS&&PLAYERS[0]);
-  if(p && (!window.selectedPlayer)) window.selectedPlayer = p;
+  if(p && !window.selectedPlayer) window.selectedPlayer = p;
 
   if(!p || !PLAYERS || !PLAYERS.length){
     content.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:60vh;font-family:\'Barlow Condensed\',sans-serif;font-size:13px;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase">A carregar...</div>';
-    setTimeout(renderMobilePlayerID,400);
+    setTimeout(renderMobilePlayerID,300);
     return;
   }
-  renderMobileElite(); // existing full player render
+  renderMobileElite();
 
-  // Attach search
-  window.mobPidSearch = function(q){
-    const res = document.getElementById('mob-pid-results');
-    if(!res) return;
-    if(q.length<2){ res.style.display='none'; return; }
-    const matches = (PLAYERS||[]).filter(x=>x.name.toLowerCase().includes(q.toLowerCase())).slice(0,6);
-    res.style.display='block';
-    res.innerHTML = matches.map(x=>`<div onclick="window.selectedPlayer=PLAYERS.find(p=>p.name==='${x.name.replace(/'/g,"\\'")}');document.getElementById('mob-pid-search').value='';document.getElementById('mob-pid-results').style.display='none';renderMobileElite()"
-      style="padding:9px 12px;cursor:pointer;font-family:'Barlow',sans-serif;font-size:13px;color:#e8edf2;border-bottom:1px solid rgba(255,255,255,.05)">
-      ${x.name} <span style="color:rgba(255,255,255,.3);font-size:10px">${x.team||''}</span>
+  window.mobPidSearch=function(q){
+    const drop=document.getElementById('mob-pid-drop');
+    if(!drop) return;
+    if(q.length<2){ drop.style.display='none'; return; }
+    const matches=(PLAYERS||[]).filter(x=>x.name.toLowerCase().includes(q.toLowerCase())).slice(0,8);
+    drop.style.display=matches.length?'block':'none';
+    drop.innerHTML=matches.map(x=>`<div onclick="window.selectedPlayer=PLAYERS.find(p=>p.name==='${x.name.replace(/'/g,"\\'")}');document.getElementById('mob-pid-search').value='';document.getElementById('mob-pid-drop').style.display='none';renderMobileElite()"
+      style="padding:12px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:#e8edf2">${x.name}</div>
+        <div style="font-family:'Barlow',sans-serif;font-size:10px;color:rgba(255,255,255,.35)">${x.team||''} · ${(x.position||'').split(',')[0]}</div>
+      </div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:#00d4ff">${x.league||''}</div>
     </div>`).join('');
+    // Close on tap outside
+    setTimeout(()=>{ document.addEventListener('click',function h(e){ if(!e.target.closest('#mob-pid-drop')&&!e.target.closest('#mob-pid-search')){ drop.style.display='none'; document.removeEventListener('click',h); } },true); },50);
   };
 }
+
 
 // ── Mobile Compare view ───────────────────────────────────────────────────────
 function renderMobileCompareView(nameA, nameB){
@@ -25107,31 +25117,38 @@ function renderMobileCompareView(nameA, nameB){
       if(n){n.textContent=p.name;n.style.color=col;}
       if(su) su.textContent=(p.position||'').split(',')[0]+' · '+(p.team||'');
     });
-    // Update legend
     const leg=document.getElementById('mob-cmp-legend');
     if(leg) leg.innerHTML=`<span style="color:${colA}">● ${pA.name.split(' ').slice(-1)[0]}</span><span style="color:rgba(255,255,255,.35)">╌ Liga</span><span style="color:${colB}">● ${pB.name.split(' ').slice(-1)[0]}</span>`;
-    // Run desktop compare engine silently
-    if(typeof showView==='function') showView('compare',null);
+
+    // Run the desktop compare engine
+    const sa=document.getElementById('cmp-a'), sb=document.getElementById('cmp-b');
+    if(sa) sa.value=pA.name;
+    if(sb) sb.value=pB.name;
+    if(typeof renderCompare==='function') renderCompare();
+
     setTimeout(()=>{
-      const sa=document.getElementById('cmp-a'), sb=document.getElementById('cmp-b');
-      if(sa) sa.value=pA.name;
-      if(sb) sb.value=pB.name;
-      if(typeof renderCompare==='function') renderCompare();
-      setTimeout(()=>{
-        if(typeof _reflowMobileCompare==='function') _reflowMobileCompare();
-        if(typeof generateCompareAI==='function') generateCompareAI(pA,pB);
-        // Copy radar
-        const src=document.getElementById('cmp-radar-combined'), dst=document.getElementById('mob-cmp-radar');
-        if(src&&dst){ const w=Math.min(260,window.innerWidth-40); dst.width=w; dst.height=w; dst.getContext('2d').drawImage(src,0,0,w,w); }
-        // Copy metrics rows
-        const rows=document.getElementById('cmp-metrics-anchor');
-        const body=document.getElementById('mob-cmp-body');
-        if(rows&&body){ body.innerHTML=''; const c=rows.parentElement.cloneNode(true); c.querySelectorAll('.cmp-card-top,.cmp-card>:not(.cmp-plain-row):not(.cmp-hl-row)').forEach(e=>e.remove()); body.appendChild(c); }
-        // Show AI section
-        const aiSec=document.getElementById('cmp-ai-section'), aiOut=document.getElementById('cmp-ai-out');
-        if(aiSec&&body){ body.appendChild(aiSec.cloneNode(true)); }
-      },350);
-    },100);
+      if(typeof _reflowMobileCompare==='function') _reflowMobileCompare();
+      if(typeof generateCompareAI==='function') generateCompareAI(pA,pB);
+
+      // Move the fully-reflowed view-compare output into mob-cmp-body
+      const body=document.getElementById('mob-cmp-body');
+      const viewCmp=document.getElementById('view-compare');
+      if(body&&viewCmp){
+        body.innerHTML='';
+        // Take only the compare-body (not the topbar/header of the desktop view)
+        const cmpBody=viewCmp.querySelector('#compare-body')||viewCmp;
+        const wrap=document.createElement('div');
+        wrap.style.cssText='width:100%;overflow-x:hidden;box-sizing:border-box';
+        // Move children into wrap
+        Array.from(cmpBody.children).forEach(child=>{
+          wrap.appendChild(child.cloneNode(true));
+        });
+        body.appendChild(wrap);
+        // Hide the skeleton radar/legend (desktop reflow already has them)
+        const skeletonRadar=document.getElementById('mob-cmp-radar-wrap');
+        if(skeletonRadar) skeletonRadar.style.display='none';
+      }
+    },400);
   };
 
   if(pA&&pB) setTimeout(mobCmpRun,100);
@@ -25142,67 +25159,52 @@ function renderMobileShadowView(){
   const filterBar = document.getElementById('mob-filter-bar');
   if(!content) return;
 
-  // Filter bar
-  if(filterBar) filterBar.innerHTML=`
-    <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6)">Shadow Team</span>
-    <span style="font-size:10px;color:rgba(255,255,255,.3);margin-left:4px">${(window.shadowTeam||[]).length} jogadores</span>
-    <button onclick="if(window.selectedPlayer&&window.addToShadowTeam)addToShadowTeam()" style="margin-left:auto;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);border-radius:5px;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:#00d4ff;cursor:pointer">+ Atual</button>`;
+  // Filter bar: formation selector + tabs
+  if(filterBar){
+    filterBar.style.overflow='visible';
+    filterBar.innerHTML=`
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.55);flex-shrink:0">Shadow</span>
+      <select onchange="document.getElementById('sh-formation').value=this.value;if(typeof shResetAndRender==='function')shResetAndRender()"
+        style="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:5px;padding:4px 8px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0">
+        <option value="3-4-3">3-4-3</option>
+        <option value="4-3-3">4-3-3</option>
+        <option value="4-4-2">4-4-2</option>
+        <option value="3-5-2">3-5-2</option>
+      </select>
+      <div style="display:flex;gap:4px;margin-left:auto">
+        <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this)" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);border-radius:4px;padding:3px 8px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:#00d4ff;cursor:pointer">My Shadow</button>
+        <button onclick="if(typeof shSelectTab==='function')shSelectTab('overall',this)" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:3px 8px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.5);cursor:pointer">Best</button>
+      </div>`;
+  }
 
-  // 3-4-3 formation with vertical pitch (portrait)
-  const slots=[
-    {pos:'GK', x:50, y:90},
-    {pos:'RB', x:80, y:72}, {pos:'CB', x:58, y:75}, {pos:'CB', x:42, y:75}, {pos:'LB', x:20, y:72},
-    {pos:'RM', x:82, y:52}, {pos:'CM', x:60, y:48}, {pos:'CM', x:40, y:48}, {pos:'LM', x:18, y:52},
-    {pos:'RW', x:80, y:25}, {pos:'ST', x:50, y:18}, {pos:'LW', x:20, y:25},
-  ];
-  const st=window.shadowTeam||[];
-  function findSlot(pos){ return st.find(p=>(p.position||'').toUpperCase().includes(pos.replace(/[LR]/,''))) || st.find(p=>p._shadowPos===pos); }
+  // Use the desktop shadow view directly — show it inside mob content
+  // First ensure the shadow view is rendered
+  if(typeof shResetAndRender==='function') shResetAndRender();
 
-  const svgLines=`
-    <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <rect x="3" y="2" width="94" height="96" fill="none" stroke="rgba(255,255,255,.14)" stroke-width=".5"/>
-      <line x1="3" y1="50" x2="97" y2="50" stroke="rgba(255,255,255,.1)" stroke-width=".4"/>
-      <circle cx="50" cy="50" r="9" fill="none" stroke="rgba(255,255,255,.1)" stroke-width=".4"/>
-      <rect x="25" y="2" width="50" height="16" fill="none" stroke="rgba(255,255,255,.08)" stroke-width=".4"/>
-      <rect x="35" y="2" width="30" height="7" fill="none" stroke="rgba(255,255,255,.07)" stroke-width=".4"/>
-      <rect x="25" y="82" width="50" height="16" fill="none" stroke="rgba(255,255,255,.08)" stroke-width=".4"/>
-      <rect x="35" y="91" width="30" height="7" fill="none" stroke="rgba(255,255,255,.07)" stroke-width=".4"/>
-      <ellipse cx="50" cy="13" rx="8" ry="3" fill="none" stroke="rgba(255,255,255,.06)" stroke-width=".4"/>
-      <ellipse cx="50" cy="87" rx="8" ry="3" fill="none" stroke="rgba(255,255,255,.06)" stroke-width=".4"/>
-    </svg>`;
-
-  const playerDots=slots.map(s=>{
-    const p=findSlot(s.pos);
-    const col=p?'rgba(0,212,255,.9)':'rgba(255,255,255,.08)';
-    const borderCol=p?'rgba(0,212,255,.7)':'rgba(255,255,255,.2)';
-    const label=p?p.name.split(' ').slice(-1)[0].substring(0,7):s.pos;
-    const labelCol=p?'#00d4ff':'rgba(255,255,255,.35)';
-    const fontSize=p?'7':'8';
-    return `<div style="position:absolute;left:${s.x}%;top:${s.y}%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;z-index:2">
-      <div style="width:${p?38:32}px;height:${p?38:32}px;border-radius:50%;background:${p?'rgba(0,30,60,.9)':'rgba(255,255,255,.04)'};border:1.5px solid ${borderCol};display:flex;align-items:center;justify-content:center;overflow:hidden" ${p?'':'onclick="mobGoToView(\'playerid\')"'}>
-        ${p&&window._photoCache&&window._photoCache[p.name]?`<img src="${window._photoCache[p.name]}" style="width:100%;height:100%;object-fit:cover;object-position:top">`:`<span style="font-family:'Barlow Condensed',sans-serif;font-size:${fontSize}px;font-weight:700;color:${labelCol}">${p?label.substring(0,5):s.pos}</span>`}
-      </div>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:7px;font-weight:700;color:${labelCol};white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,.8)">${p?label:''}</span>
-    </div>`;
-  }).join('');
-
-  // Pitch aspect ratio: football pitch ~68x105m → height ~154% of width
-  content.innerHTML=`<div style="padding:10px 14px 60px">
-    <div style="position:relative;width:100%;padding-bottom:154%;background:linear-gradient(180deg,#1a3d1a 0%,#1e4e1e 45%,#1a4a1a 55%,#163214 100%);border-radius:10px;overflow:hidden;border:1.5px solid rgba(255,255,255,.12);box-shadow:0 4px 24px rgba(0,0,0,.5)">
-      ${svgLines}
-      ${playerDots}
-    </div>
-    <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;font-family:'Barlow',sans-serif;font-size:11px">
-      ${st.length?st.map(p=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#060c18;border-radius:6px;border:1px solid rgba(0,212,255,.1)">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#e8edf2;flex:1">${p.name}</span>
-        <span style="color:rgba(255,255,255,.35);font-size:10px">${(p.position||'').split(',')[0]}</span>
-        <span style="color:rgba(0,212,255,.7);font-size:10px;font-weight:700">${p.team||''}</span>
-      </div>`).join(''):'<div style="padding:20px;text-align:center;color:rgba(255,255,255,.3);font-family:\'Barlow Condensed\',sans-serif;font-size:12px;letter-spacing:.8px;text-transform:uppercase">Shadow Team vazia<br><span style="font-size:10px;opacity:.6">Vai ao Player ID e adiciona jogadores</span></div>'}
-    </div>
-  </div>`;
+  // Get the pitch element from the desktop view and clone into mobile
+  setTimeout(()=>{
+    const shadowView = document.getElementById('view-shadow');
+    const pitchEl = shadowView && shadowView.querySelector('#sh-pitch-wrap, .sh-pitch-wrap, canvas[id*="shadow"], [id*="sh-pitch"], .sf-field, #shadow-field, .shadow-pitch');
+    // Fallback: take the whole inner content of view-shadow minus the topbar
+    if(shadowView){
+      content.innerHTML='<div style="height:100%;overflow-y:auto;padding-bottom:60px"></div>';
+      const wrap=content.firstChild;
+      // Get all children except the first (topbar)
+      const children=Array.from(shadowView.children);
+      children.slice(1).forEach(child=>{
+        const clone=child.cloneNode(true);
+        clone.style.cssText=(clone.style.cssText||'').replace(/display:\s*none/,'');
+        wrap.appendChild(clone);
+      });
+      // Make sure canvases are redrawn
+      setTimeout(()=>{ if(typeof shResetAndRender==='function') shResetAndRender(); },100);
+    } else {
+      content.innerHTML='<div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase">A carregar campo...</div>';
+      setTimeout(renderMobileShadowView,400);
+    }
+  },200);
 }
 
-document.addEventListener('DOMContentLoaded',()=>{
   if(isMobilePortrait()){
     // Always show popup on fresh load (sessionStorage cleared between deploys isn't guaranteed)
     sessionStorage.removeItem('thrivella_mobile_pref');
