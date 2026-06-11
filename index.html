@@ -4265,7 +4265,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   color:#1a3a5a; background-size:cover; background-position:top center;
 }
 .pid3-sim-name{
-  font-family:var(--font-d); font-size:11px; font-weight:600;
+  font-family:var(--font-d); font-size:9px; font-weight:700;
   color:#e8edf2; margin-bottom:2px;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
@@ -12371,7 +12371,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   color:#1a3a5a; background-size:cover; background-position:top center;
 }
 .pid3-sim-name{
-  font-family:var(--font-d); font-size:11px; font-weight:600;
+  font-family:var(--font-d); font-size:9px; font-weight:700;
   color:#e8edf2; margin-bottom:2px;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
@@ -25110,17 +25110,22 @@ function renderMobileCompareView(nameA, nameB){
   window.mobCmpRun=function(){
     const {pA,pB}=window._cmpMob;
     if(!pA||!pB) return;
-    // Update cards
+    const cA='#00d4ff', cB='#00e5a0';
+    // Update skeleton cards
     ['a','b'].forEach(s=>{
-      const p=s==='a'?pA:pB, col=s==='a'?colA:colB;
+      const p=s==='a'?pA:pB, col=s==='a'?cA:cB;
       const n=document.getElementById('mob-cmp-name-'+s), su=document.getElementById('mob-cmp-sub-'+s);
       if(n){n.textContent=p.name;n.style.color=col;}
       if(su) su.textContent=(p.position||'').split(',')[0]+' · '+(p.team||'');
     });
     const leg=document.getElementById('mob-cmp-legend');
-    if(leg) leg.innerHTML=`<span style="color:${colA}">● ${pA.name.split(' ').slice(-1)[0]}</span><span style="color:rgba(255,255,255,.35)">╌ Liga</span><span style="color:${colB}">● ${pB.name.split(' ').slice(-1)[0]}</span>`;
+    if(leg) leg.innerHTML=`<span style="color:${cA}">● ${pA.name.split(' ').slice(-1)[0]}</span><span style="color:rgba(255,255,255,.35)">╌ Liga</span><span style="color:${cB}">● ${pB.name.split(' ').slice(-1)[0]}</span>`;
 
-    // Run the desktop compare engine
+    // Show loading in body
+    const body=document.getElementById('mob-cmp-body');
+    if(body) body.innerHTML='<div class="ai-thinking" style="padding:20px 0"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
+
+    // Set compare inputs and run desktop engine
     const sa=document.getElementById('cmp-a'), sb=document.getElementById('cmp-b');
     if(sa) sa.value=pA.name;
     if(sb) sb.value=pB.name;
@@ -25130,25 +25135,19 @@ function renderMobileCompareView(nameA, nameB){
       if(typeof _reflowMobileCompare==='function') _reflowMobileCompare();
       if(typeof generateCompareAI==='function') generateCompareAI(pA,pB);
 
-      // Move the fully-reflowed view-compare output into mob-cmp-body
-      const body=document.getElementById('mob-cmp-body');
-      const viewCmp=document.getElementById('view-compare');
-      if(body&&viewCmp){
+      // Grab the reflowed output from compare-body and put it in mob-cmp-body
+      const cmpBody=document.getElementById('compare-body');
+      if(body&&cmpBody){
         body.innerHTML='';
-        // Take only the compare-body (not the topbar/header of the desktop view)
-        const cmpBody=viewCmp.querySelector('#compare-body')||viewCmp;
         const wrap=document.createElement('div');
         wrap.style.cssText='width:100%;overflow-x:hidden;box-sizing:border-box';
-        // Move children into wrap
-        Array.from(cmpBody.children).forEach(child=>{
-          wrap.appendChild(child.cloneNode(true));
-        });
+        Array.from(cmpBody.children).forEach(child=> wrap.appendChild(child.cloneNode(true)));
         body.appendChild(wrap);
-        // Hide the skeleton radar/legend (desktop reflow already has them)
-        const skeletonRadar=document.getElementById('mob-cmp-radar-wrap');
-        if(skeletonRadar) skeletonRadar.style.display='none';
+        // Hide skeleton radar — the cloned body already has the proper radar
+        const skRad=document.getElementById('mob-cmp-radar-wrap');
+        if(skRad) skRad.style.display='none';
       }
-    },400);
+    },500);
   };
 
   if(pA&&pB) setTimeout(mobCmpRun,100);
@@ -25184,19 +25183,21 @@ function renderMobileShadowView(){
   // Get the pitch element from the desktop view and clone into mobile
   setTimeout(()=>{
     const shadowView = document.getElementById('view-shadow');
-    const pitchEl = shadowView && shadowView.querySelector('#sh-pitch-wrap, .sh-pitch-wrap, canvas[id*="shadow"], [id*="sh-pitch"], .sf-field, #shadow-field, .shadow-pitch');
-    // Fallback: take the whole inner content of view-shadow minus the topbar
     if(shadowView){
-      content.innerHTML='<div style="height:100%;overflow-y:auto;padding-bottom:60px"></div>';
+      content.innerHTML='<div style="height:100%;overflow-y:auto;padding-bottom:20px"></div>';
       const wrap=content.firstChild;
-      // Get all children except the first (topbar)
       const children=Array.from(shadowView.children);
       children.slice(1).forEach(child=>{
         const clone=child.cloneNode(true);
         clone.style.cssText=(clone.style.cssText||'').replace(/display:\s*none/,'');
+        // Scale down the pitch canvas/container
+        const pitchWrap=clone.querySelector('[id*="sh-pitch"],[class*="sh-pitch"],[id*="shadow-pitch"],[class*="shadow-pitch"],canvas');
+        if(pitchWrap){
+          pitchWrap.style.maxHeight='55vh';
+          pitchWrap.style.overflow='hidden';
+        }
         wrap.appendChild(clone);
       });
-      // Make sure canvases are redrawn
       setTimeout(()=>{ if(typeof shResetAndRender==='function') shResetAndRender(); },100);
     } else {
       content.innerHTML='<div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase">A carregar campo...</div>';
