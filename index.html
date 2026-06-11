@@ -24956,49 +24956,110 @@ function renderMobileTable(){
   const filterBar = document.getElementById('mob-filter-bar');
   if(!content) return;
 
-  // Filter bar: Liga + Posição + Ordenar
-  const leagues = [...new Set((PLAYERS||[]).map(p=>p.league).filter(Boolean))].sort();
-  const positions = [...new Set((PLAYERS||[]).map(p=>(p.position||'').split(',')[0].trim()).filter(Boolean))].sort();
-  if(filterBar) filterBar.innerHTML = `
-    <select id="mob-f-league" onchange="renderMobileTable()" style="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:6px;padding:5px 8px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;max-width:110px">
-      <option value="">Todas as ligas</option>
-      ${leagues.map(l=>`<option value="${l}">${l}</option>`).join('')}
-    </select>
-    <select id="mob-f-pos" onchange="renderMobileTable()" style="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:6px;padding:5px 8px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;max-width:90px">
-      <option value="">Posição</option>
-      ${positions.map(p=>`<option value="${p}">${p}</option>`).join('')}
-    </select>
-    <select id="mob-f-sort" onchange="renderMobileTable()" style="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:6px;padding:5px 8px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;max-width:110px">
-      <option value="talent_index_pct">Talent Index</option>
-      <option value="total_off">Ofensivo</option>
-      <option value="total_def">Defensivo</option>
-      <option value="total_physical">Físico</option>
-      <option value="xg">xG</option>
-    </select>`;
+  // ── Filter bar ────────────────────────────────────────────────────────────
+  const sel = s=>`background:#0a1420;border:1px solid rgba(0,212,255,.3);border-radius:4px;padding:3px 6px;color:#c8e8ff;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;outline:none;${s||''}`;
+  const lbl = t=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6);white-space:nowrap">${t}</span>`;
+  const sep = `<span style="width:1px;height:16px;background:rgba(0,212,255,.2);flex-shrink:0"></span>`;
 
+  const leagues = [...new Set((PLAYERS||[]).map(p=>p.league).filter(Boolean))].sort();
+  const currYear = new Date().getFullYear();
+
+  if(filterBar) filterBar.innerHTML = `
+    <div style="display:flex;align-items:center;gap:5px;overflow-x:auto;width:100%;flex-wrap:nowrap">
+      ${lbl('Liga')}
+      <select id="mob-f-league" onchange="renderMobileTable()" style="${sel('max-width:100px')}">
+        <option value="">Todas</option>
+        ${leagues.map(l=>`<option value="${l}">${l.length>12?l.substring(0,12)+'…':l}</option>`).join('')}
+      </select>
+      ${sep}
+      ${lbl('Pos')}
+      <select id="mob-f-pos" onchange="renderMobileTable()" style="${sel('max-width:72px')}">
+        <option value="">Todas</option>
+        <option value="RB">RB</option>
+        <option value="CB">CB</option>
+        <option value="LB">LB</option>
+        <option value="DM">DM</option>
+        <option value="CM">CM</option>
+        <option value="WIN">WIN</option>
+        <option value="CF">CF</option>
+      </select>
+      ${sep}
+      ${lbl('Index')}
+      <select id="mob-f-sort" onchange="renderMobileTable()" style="${sel('max-width:90px')}">
+        <option value="talent_index_pct">Talent</option>
+        <option value="total_physical">Physical</option>
+        <option value="score">Transfer</option>
+      </select>
+      ${sep}
+      ${lbl('Idade')}
+      <select id="mob-f-age" onchange="renderMobileTable()" style="${sel('max-width:72px')}">
+        <option value="">Todas</option>
+        <option value="u21">Sub-21</option>
+        <option value="u23">Sub-23</option>
+        <option value="u25">Sub-25</option>
+        <option value="2529">25-29</option>
+        <option value="30p">30+</option>
+      </select>
+      ${sep}
+      ${lbl('Ctc')}
+      <select id="mob-f-ct" onchange="renderMobileTable()" style="${sel('max-width:80px')}">
+        <option value="">Todos</option>
+        <option value="exp">A expirar</option>
+        <option value="${currYear}">Fim ${currYear}</option>
+        <option value="${currYear+1}">Fim ${currYear+1}</option>
+        <option value="${currYear+2}">Fim ${currYear+2}</option>
+      </select>
+    </div>`;
+
+  // ── Filters ───────────────────────────────────────────────────────────────
   const leagueFil = document.getElementById('mob-f-league')?.value || '';
-  const posFil = document.getElementById('mob-f-pos')?.value || '';
-  const sortKey = document.getElementById('mob-f-sort')?.value || 'talent_index_pct';
+  const posFil    = document.getElementById('mob-f-pos')?.value || '';
+  const sortKey   = document.getElementById('mob-f-sort')?.value || 'talent_index_pct';
+  const ageFil    = document.getElementById('mob-f-age')?.value || '';
+  const ctFil     = document.getElementById('mob-f-ct')?.value || '';
 
   let players = [...(PLAYERS||[])];
   if(leagueFil) players = players.filter(p=>p.league===leagueFil);
-  if(posFil) players = players.filter(p=>(p.position||'').includes(posFil));
+  if(posFil)    players = players.filter(p=>{
+    const pos=(p.position||'').toUpperCase();
+    if(posFil==='WIN') return pos.includes('LW')||pos.includes('RW')||pos.includes('WF')||pos.includes('WIN');
+    return pos.includes(posFil);
+  });
+  if(ageFil==='u21') players=players.filter(p=>(p.age||99)<21);
+  else if(ageFil==='u23') players=players.filter(p=>(p.age||99)<23);
+  else if(ageFil==='u25') players=players.filter(p=>(p.age||99)<25);
+  else if(ageFil==='2529') players=players.filter(p=>(p.age||0)>=25&&(p.age||0)<=29);
+  else if(ageFil==='30p') players=players.filter(p=>(p.age||0)>=30);
+  if(ctFil==='exp') players=players.filter(p=>p.contract_end&&new Date(p.contract_end)<new Date(Date.now()+365*24*36e5));
+  else if(ctFil) players=players.filter(p=>p.contract_end&&p.contract_end.startsWith(ctFil));
   players.sort((a,b)=>(b[sortKey]||0)-(a[sortKey]||0));
+
+  // ── Row renderer ──────────────────────────────────────────────────────────
+  const isPhys = sortKey==='total_physical';
+  const isTrans = sortKey==='score';
 
   content.innerHTML = `<div style="padding:0 0 80px">` +
     players.map((p,i)=>{
-      const ti = Math.round(p.talent_index_pct||0);
+      const ti  = Math.round(p.talent_index_pct||0);
+      const ph  = Math.round((p.total_physical||0)/25*100);
       const col = ti>=80?'#00e5a0':ti>=55?'#00d4ff':'rgba(160,178,200,.5)';
+      const phCol = ph>=80?'#a78bfa':ph>=55?'#c4b5fd':'rgba(160,178,200,.5)';
       return `<div onclick="mobGoToView('playerid');window.selectedPlayer=PLAYERS.find(x=>x.name==='${p.name.replace(/'/g,"\\'")}');setTimeout(renderMobilePlayerID,50)"
-        style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;active:background:rgba(0,212,255,.06)">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.2);width:20px;flex-shrink:0">${i+1}</span>
+        style="display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.2);width:16px;flex-shrink:0;text-align:right">${i+1}</span>
         <div style="flex:1;min-width:0">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
-          <div style="font-family:'Barlow',sans-serif;font-size:10px;color:rgba(255,255,255,.35)">${(p.position||'').split(',')[0].trim()} · ${p.team||''}</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+          <div style="font-family:'Barlow',sans-serif;font-size:9px;color:rgba(255,255,255,.32);margin-top:1px">${(p.position||'').split(',')[0].trim()} · ${p.age||'—'}a · ${p.size?p.size+'cm':'—'}</div>
         </div>
-        <div style="text-align:right;flex-shrink:0">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:${col}">${ti}</div>
-          <div style="font-family:'Barlow',sans-serif;font-size:9px;color:rgba(255,255,255,.3)">TI %</div>
+        <div style="display:flex;gap:10px;flex-shrink:0;align-items:center">
+          <div style="text-align:center">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:${col};line-height:1">${ti}</div>
+            <div style="font-family:'Barlow',sans-serif;font-size:7px;color:rgba(255,255,255,.25);letter-spacing:.3px">TI</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:${phCol};line-height:1">${ph}</div>
+            <div style="font-family:'Barlow',sans-serif;font-size:7px;color:rgba(255,255,255,.25);letter-spacing:.3px">PHY</div>
+          </div>
         </div>
       </div>`;
     }).join('') + `</div>`;
