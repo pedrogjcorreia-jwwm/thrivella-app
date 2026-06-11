@@ -7139,7 +7139,7 @@ function renderCompare(){
     + '<div id="cmp-ai-section" class="pid3-card pid3-ai-card" style="flex-shrink:0;margin-top:18px;border-color:rgba(0,180,200,.12)">'
     + '<div class="pid3-ai-hdr" style="border-bottom:1px solid rgba(0,180,200,.1);padding-bottom:9px;margin-bottom:10px;margin-top:0">'
     + '<span class="pid3-ai-badge">AI</span>'
-    + '<span class="pid3-ai-title">AI Scout Comparison</span>'
+    + '<span class="pid3-ai-title" style="text-transform:uppercase">AI Scout Comparison</span>'
     + '</div>'
     + '<div id="cmp-ai-out" class="pid3-ai-body" style="overflow:visible"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
     + '</div>';
@@ -15217,7 +15217,7 @@ function renderCompare(){
     + '<div id="cmp-ai-section" class="pid3-card pid3-ai-card" style="flex-shrink:0;margin-top:18px;border-color:rgba(0,180,200,.12)">'
     + '<div class="pid3-ai-hdr" style="border-bottom:1px solid rgba(0,180,200,.1);padding-bottom:9px;margin-bottom:10px;margin-top:0">'
     + '<span class="pid3-ai-badge">AI</span>'
-    + '<span class="pid3-ai-title">AI Scout Comparison</span>'
+    + '<span class="pid3-ai-title" style="text-transform:uppercase">AI Scout Comparison</span>'
     + '</div>'
     + '<div id="cmp-ai-out" class="pid3-ai-body" style="overflow:visible"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
     + '</div>';
@@ -16132,41 +16132,78 @@ function generateCompareAI(pA, pB) {
   // ── Render — pid3-ai-card design ────────────────────────────────────────────
   const LBL  = 'display:block;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6);margin-bottom:5px;margin-top:0';
   const LBLn = 'display:block;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6);margin-bottom:5px;margin-top:14px';
-  const PS   = 'margin:0;line-height:1.75;font-size:12px;color:rgba(255,255,255,.65);text-align:justify;text-align-last:left';
-  const PSm  = 'margin:6px 0 0;line-height:1.75;font-size:12px;color:rgba(255,255,255,.65);text-align:justify;text-align-last:left';
+  const PS   = 'margin:0;line-height:1.75;font-size:12px;color:rgba(255,255,255,.82);text-align:justify;text-align-last:left';
+  const PSm  = 'margin:6px 0 0;line-height:1.75;font-size:12px;color:rgba(255,255,255,.82);text-align:justify;text-align-last:left';
 
   const labels=['Perfil & Transferência','Desempenho Chave','Capacidade Física','Conclusão'];
   const rawParas=[p1,p2,p3,p4];
 
   function applyBold(t){ return t.replace(/<strong>(.*?)<\/strong>/g,'<b>$1</b>'); }
 
-  // Split paragraph into visual blocks of ~2 sentences.
-  // Rules: only split on '. ' where the token BEFORE the dot is 2+ chars (not an initial like M. or L.)
-  // and the word AFTER starts with uppercase + lowercase (real sentence, not abbreviation).
-  function formatPara(raw) {
-    const text = applyBold(raw);
-    const S = '\x01'; // safe sentinel
-    // Regex: 2+ letter word ending, dot, space, uppercase+lowercase start
-    // Negative: single-letter initials (M. L. A. etc.) — excluded by requiring [a-záéíóúàã] before dot
-    const marked = text.replace(/([a-záéíóúàãõç]{2,}|>)\.\s+([A-ZÁÉÍÓÚÀÃ][a-záéíóúàã]{2,})/g,
+  // Bold the first REAL sentence — must end with '. ' or '! ' after a word of 3+ chars
+  // (excludes initials like "M." or "L.")
+  function boldFirstSentence(text) {
+    // Match: start, then chars until we hit [3+char word][.!] followed by space
+    return text.replace(/^(.*?[a-záéíóúàãõç]{3,}[.!])\s/, '<b>$1</b> ');
+  }
+
+  // Split on '. ' only when preceding token is 2+ lowercase letters (not initials)
+  // Returns array of sentence strings
+  function splitSentences(text) {
+    const S = '\x01';
+    const marked = text.replace(/([a-záéíóúàãõç]{2,})\.\s+([A-ZÁÉÍÓÚÀÃ])/g,
       (m,a,b) => a + '.' + S + b
     );
-    const parts = marked.split(S).map(s=>s.trim()).filter(Boolean);
-    if(parts.length <= 2) return '<p style="'+PS+'">'+text+'</p>';
-    let out='';
-    for(let k=0;k<parts.length;k+=2){
-      const block=parts.slice(k,k+2).join(' ');
-      out+='<p style="'+(k===0?PS:PSm)+'">'+block+'</p>';
-    }
-    return out;
+    return marked.split(S).map(s=>s.trim()).filter(Boolean);
+  }
+
+  // Build paragraphs from a list of split points specified by sentence index
+  // splitAt: array of sentence indices BEFORE which to break
+  function buildParas(sentences, splitAt) {
+    const groups = [];
+    let cur = [];
+    sentences.forEach((s,i) => {
+      if(i > 0 && splitAt.includes(i)) { groups.push(cur); cur = []; }
+      cur.push(s);
+    });
+    if(cur.length) groups.push(cur);
+    return groups.map((g,gi) =>
+      '<p style="'+(gi===0?PS:PSm)+'">'+ g.join(' ') +'</p>'
+    ).join('');
   }
 
   let htmlOut='';
   rawParas.forEach((para,i)=>{
     htmlOut+='<span style="'+(i===0?LBL:LBLn)+'">'+labels[i]+'</span>';
-    // Bold the first sentence of each section (like AI Scout Insight photo)
-    const boldFirst = para.replace(/^(.+?[.!])\s/, '<strong>$1</strong> ');
-    htmlOut+=formatPara(boldFirst);
+    const withBold = boldFirstSentence(applyBold(para));
+    const sents = splitSentences(withBold);
+    let html_p;
+    if(i===0) {
+      // Perfil: natural 2-sentence groups
+      html_p = buildParas(sents, [2,4]);
+    } else if(i===1) {
+      // Desempenho Chave: break before sentence about 2nd player & after "acidente"
+      // Find sentence containing "acidente" and sentence starting with 2nd player name
+      const acIdx = sents.findIndex(s => s.includes('acidente'));
+      const p2Idx = sents.findIndex(s => /^[A-Z][a-z]+\s+responde|^[A-Z][a-z]+\s+fica|^[A-Z][a-z]+\s+apresenta|^[A-Z][a-z]+\s+compensa/.test(s));
+      const breaks = new Set([2]);
+      if(acIdx >= 0 && acIdx+1 < sents.length) breaks.add(acIdx+1);
+      if(p2Idx > 0) breaks.add(p2Idx);
+      html_p = buildParas(sents, [...breaks].sort((a,b)=>a-b));
+    } else if(i===2) {
+      // Capacidade Física: break after sprint sentence (contains "sprint por jogo" or "sprint/90" before last sentence)
+      const sprintIdx = sents.findIndex(s => s.includes('sprint por jogo') || (s.includes('sprint') && s.includes('jogo')));
+      const breaks = sprintIdx >= 0 ? [sprintIdx+1] : [2];
+      html_p = buildParas(sents, breaks);
+    } else if(i===3) {
+      // Conclusão: break after "favorável"
+      const favIdx = sents.findIndex(s => s.includes('favor'));
+      const breaks = favIdx >= 0 ? [favIdx+1] : [1];
+      html_p = buildParas(sents, breaks);
+    } else {
+      html_p = buildParas(sents, [2]);
+    }
+    htmlOut+=html_p;
   });
   aiCmpCache[cacheKey]=htmlOut;
   const el2=document.getElementById('cmp-ai-out');
