@@ -7139,8 +7139,8 @@ function renderCompare(){
     + '<div id="cmp-ai-section" style="flex-shrink:0;margin-top:18px;border:1px solid rgba(0,180,200,.12);border-radius:9px;overflow:hidden">'
     + '<div style="background:#0c1822;padding:10px 14px 10px">'
     + '<div class="pid3-ai-hdr" style="margin:0">'
-    + '<span class="pid3-ai-badge">AI</span>'
-    + '<span class="pid3-ai-title" style="text-transform:uppercase">AI Scout Comparison</span>'
+    + '<span style="background:rgba(0,100,180,.4);border:1px solid rgba(0,212,255,.5);color:#00d4ff;font-family:var(--font-d);font-size:8px;font-weight:700;padding:2px 7px;border-radius:3px;letter-spacing:.3px;flex-shrink:0">AI</span>'
+    + '<span style="font-family:var(--font-d);font-size:11px;font-weight:700;letter-spacing:.4px;color:#00d4ff;text-transform:uppercase">AI Scout Comparison</span>'
     + '</div>'
     + '</div>'
     + '<div id="cmp-ai-out" style="background:#060c18;padding:10px 14px 12px;font-family:var(--font-b)"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
@@ -15219,8 +15219,8 @@ function renderCompare(){
     + '<div id="cmp-ai-section" style="flex-shrink:0;margin-top:18px;border:1px solid rgba(0,180,200,.12);border-radius:9px;overflow:hidden">'
     + '<div style="background:#0c1822;padding:10px 14px 10px">'
     + '<div class="pid3-ai-hdr" style="margin:0">'
-    + '<span class="pid3-ai-badge">AI</span>'
-    + '<span class="pid3-ai-title" style="text-transform:uppercase">AI Scout Comparison</span>'
+    + '<span style="background:rgba(0,100,180,.4);border:1px solid rgba(0,212,255,.5);color:#00d4ff;font-family:var(--font-d);font-size:8px;font-weight:700;padding:2px 7px;border-radius:3px;letter-spacing:.3px;flex-shrink:0">AI</span>'
+    + '<span style="font-family:var(--font-d);font-size:11px;font-weight:700;letter-spacing:.4px;color:#00d4ff;text-transform:uppercase">AI Scout Comparison</span>'
     + '</div>'
     + '</div>'
     + '<div id="cmp-ai-out" style="background:#060c18;padding:10px 14px 12px;font-family:var(--font-b)"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
@@ -16109,27 +16109,27 @@ function generateCompareAI(pA, pB) {
   const votesA = keyMetrics.filter(k=>{ const b=better(k); return b&&b.name===pA.name; }).length;
   const votesB = keyMetrics.filter(k=>{ const b=better(k); return b&&b.name===pB.name; }).length;
   const perfL = votesA>=votesB?pA:pB, perfO = votesA>=votesB?pB:pA;
-  // Build highlight list for leader
+  // Build highlight list for leader — value bold, label normal
   const hlL=[];
-  if(better('prog_carries')?.name===perfL.name && perfL.prog_carries) hlL.push(`${bv(parseFloat(perfL.prog_carries).toFixed(1))} conduções prog./90`);
+  if(better('prog_carries')?.name===perfL.name && perfL.prog_carries) hlL.push(`<b>${parseFloat(perfL.prog_carries).toFixed(1)}</b> conduções prog./90`);
   if(better('dribles90')?.name===perfL.name && perfL.dribles90) {
-    const pct = perfL.dribles_pct ? ` (${bv(Math.round(perfL.dribles_pct)+'%')} suc.)` : '';
-    hlL.push(`${bv(parseFloat(perfL.dribles90).toFixed(1))} dribles/90${pct}`);
+    const pct = perfL.dribles_pct ? ` (<b>${Math.round(perfL.dribles_pct)}%</b> suc.)` : '';
+    hlL.push(`<b>${parseFloat(perfL.dribles90).toFixed(1)}</b> dribles/90${pct}`);
   }
-  if(better('accels90')?.name===perfL.name && perfL.accels90) hlL.push(`${bv(parseFloat(perfL.accels90).toFixed(1))} acelerações/90`);
-  if(better('recpt_depth')?.name===perfL.name && perfL.recpt_depth) hlL.push(`${bv(parseFloat(perfL.recpt_depth).toFixed(1))} recep. profundidade`);
-  if(better('shot_assist')?.name===perfL.name && perfL.shot_assist) hlL.push(`${bv(parseFloat(perfL.shot_assist).toFixed(1))} shot assists/90`);
+  if(better('accels90')?.name===perfL.name && perfL.accels90) hlL.push(`<b>${parseFloat(perfL.accels90).toFixed(1)}</b> acelerações/90`);
+  if(better('recpt_depth')?.name===perfL.name && perfL.recpt_depth) hlL.push(`<b>${parseFloat(perfL.recpt_depth).toFixed(1)}</b> recep. profundidade`);
+  if(better('shot_assist')?.name===perfL.name && perfL.shot_assist) hlL.push(`<b>${parseFloat(perfL.shot_assist).toFixed(1)}</b> shot assists/90`);
   // xG/xA as context
   const lgPctXg=pctLeague(perfL,'xg'), lgPctXa=pctLeague(perfL,'xa');
   let p2 = `${bn(perfL.name)} domina nas métricas de criação e progressão: ${hlL.slice(0,3).join(', ')||'superioridade individual clara'}. `;
-  if(lgPctXg!=null&&lgPctXg>=70) p2+=`O xG de ${bv(perfL.xg)} coloca-o no top ${bv(100-lgPctXg+'%')} da ${perfL.league} — estes números refletem consistência real, não acidente. `;
-  else if(lgPctXa!=null&&lgPctXa>=70) p2+=`O xA de ${bv(perfL.xa)} posiciona-o no top ${bv(100-lgPctXa+'%')} da ${perfL.league} — estes números refletem consistência real, não acidente. `;
+  if(lgPctXg!=null&&lgPctXg>=70) p2+=`O xG de <b>${perfL.xg}</b> coloca-o no top <b>${100-lgPctXg}%</b> da ${perfL.league} — estes números refletem consistência real, não acidente. `;
+  else if(lgPctXa!=null&&lgPctXa>=70) p2+=`O xA de <b>${perfL.xa}</b> posiciona-o no top <b>${100-lgPctXa}%</b> da ${perfL.league} — estes números refletem consistência real, não acidente. `;
   else p2+=`Os números refletem consistência real, não acidente. `;
   // Build highlight list for the other player
   const hlO=[];
-  if(better('prog_carries')?.name===perfO.name && perfO.prog_carries) hlO.push(`${bv(parseFloat(perfO.prog_carries).toFixed(1))} conduções prog./90`);
-  if(better('dribles90')?.name===perfO.name && perfO.dribles90) hlO.push(`${bv(parseFloat(perfO.dribles90).toFixed(1))} dribles/90`);
-  if(better('shot_assist')?.name===perfO.name && perfO.shot_assist) hlO.push(`${bv(parseFloat(perfO.shot_assist).toFixed(1))} shot assists/90`);
+  if(better('prog_carries')?.name===perfO.name && perfO.prog_carries) hlO.push(`<b>${parseFloat(perfO.prog_carries).toFixed(1)}</b> conduções prog./90`);
+  if(better('dribles90')?.name===perfO.name && perfO.dribles90) hlO.push(`<b>${parseFloat(perfO.dribles90).toFixed(1)}</b> dribles/90`);
+  if(better('shot_assist')?.name===perfO.name && perfO.shot_assist) hlO.push(`<b>${parseFloat(perfO.shot_assist).toFixed(1)}</b> shot assists/90`);
   if(hlO.length) p2+=`${bn(perfO.name)} destaca-se com ${hlO.slice(0,2).join(' e ')}, sendo relevante em sistemas que exigem amplitude e envolvimento directo no jogo.`;
   else p2+=`${bn(perfO.name)} fica aquém nas métricas de criação directa, embora possa afirmar-se noutros contextos táticos.`;
   if(isTopLeague(perfL)&&!isTopLeague(perfO)) p2+=` Vale referir que ${bn(perfL.name)} produz estes números na ${perfL.league}, reconhecidamente mais exigente.`;
@@ -16142,21 +16142,25 @@ function generateCompareAI(pA, pB) {
   const physL=physA>=2?pA:pB, physO=physA>=2?pB:pA;
   const lgPctSpeed=pctLeague(physL,'max_speed');
   let p3 = `Do ponto de vista físico, ${bn(physL.name)} é o mais explosivo dos dois. `;
-  if(physL.max_speed) p3+=`Atinge ${bv(physL.max_speed+' km/h')} de velocidade máxima`;
-  if(physL.sprint_dist90) p3+=` e cobre ${bv(Math.round(physL.sprint_dist90)+'m')} de sprint por jogo`;
+  if(physL.max_speed) p3+=`Atinge <b>${physL.max_speed} km/h</b> de velocidade máxima`;
+  if(physL.sprint_dist90) p3+=` e cobre <b>${Math.round(physL.sprint_dist90)}m</b> de sprint por jogo`;
   p3+=`. `;
   if(lgPctSpeed!=null&&lgPctSpeed>=70) p3+=`Na ${physL.league}, isso coloca-o entre os mais rápidos — uma arma importante em transições. `;
-  p3+=`${bn(physO.name)} regista ${bv((physO.max_speed||'—')+' km/h')} e ${bv(Math.round(physO.sprint_dist90||0)+'m')} de sprint/90`;
-  if(physO.hsr90&&physL.hsr90&&(physO.hsr90||0)>(physL.hsr90||0)) p3+=`, mas compensa com maior distância em alta intensidade (${bv(Math.round(physO.hsr90)+'m')} HSR/90)`;
+  p3+=`${bn(physO.name)} regista <b>${physO.max_speed||'—'} km/h</b> e <b>${Math.round(physO.sprint_dist90||0)}m</b> de sprint/90`;
+  if(physO.hsr90&&physL.hsr90&&(physO.hsr90||0)>(physL.hsr90||0)) p3+=`, mas compensa com maior distância em alta intensidade (<b>${Math.round(physO.hsr90)}m</b> HSR/90)`;
   p3+=`.`;
 
   // ── Para 4: Conclusão ─────────────────────────────────────────────────────
+  // Format: "Nome com percentil 83" / "Nome percentil 63"
   const tiA=pA.talent_index_pct||0, tiB=pB.talent_index_pct||0;
   const tiL=tiA>tiB?pA:pB, tiO=tiA>tiB?pB:pA;
-  let p4 = `O Talent Index posiciona ${bn(tiL.name)} no ${bv(Math.round(tiL.talent_index_pct||0)+'º percentil')} — `;
+  // Short name (last name or abbreviated)
+  function shortN(p){ const parts=p.name.trim().split(' '); return parts.length>1?parts[0][0]+'. '+parts.slice(1).join(' '):p.name; }
+  let p4 = `${bn(shortN(tiL))} com <b>percentil ${Math.round(tiL.talent_index_pct||0)}</b> lidera o Talent Index — `;
   if ((ctExpA&&tiL.name===pA.name)||(ctExpB&&tiL.name===pB.name)) p4+=`e com o contrato a expirar, a janela para o contratar raramente será mais favorável. `;
   else p4+=`um indicador que agrega técnica, físico e impacto coletivo. `;
-  p4+=`${bn(tiO.name)} (${bv(Math.round(tiO.talent_index_pct||0)+'º percentil')}) é a escolha certa para quem privilegia ${votesA<votesB?'criatividade e presença na área':'velocidade e intensidade off-ball'} — dependendo do sistema, pode ser igualmente decisivo.`;
+  p4+=`${bn(shortN(tiO))} com <b>percentil ${Math.round(tiO.talent_index_pct||0)}</b> é a escolha certa para quem privilegia ${votesA<votesB?'criatividade e presença na área':'velocidade e intensidade off-ball'} — dependendo do sistema, pode ser igualmente decisivo.`;
+
 
   // ── Render — pid3-ai-card design ────────────────────────────────────────────
   const LBL  = 'display:block;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6);margin-bottom:5px;margin-top:0';
