@@ -24971,6 +24971,7 @@ function renderMobileTable(){
   const fLbl = t => `<span style="font-family:'Barlow Condensed',sans-serif;font-size:7px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.55);white-space:nowrap">${t}</span>`;
   const fSep = '<span style="width:1px;height:14px;background:rgba(0,212,255,.18);flex-shrink:0"></span>';
 
+  // Preserve current filter values
   const prev = {
     league: document.getElementById('mob-f-league')?.value||'',
     pos:    document.getElementById('mob-f-pos')?.value||'',
@@ -25021,7 +25022,11 @@ function renderMobileTable(){
   const metricKey = document.getElementById('mob-f-metric')?.value||'';
   const metricLbl = ALL_METRICS_LIST.find(m=>m.k===metricKey)?.l||'';
 
+  // Sort priority: metric > index (liga/age/ct only filter, don't change sort)
+  const activeSortKey = metricKey || sortKey;
+
   let players = [...(PLAYERS||[])];
+  // Filters (don't affect sort)
   if(leagueFil) players=players.filter(p=>p.league===leagueFil);
   if(posFil) players=players.filter(p=>{
     const pos=(p.position||'').toUpperCase();
@@ -25035,8 +25040,8 @@ function renderMobileTable(){
   else if(ageFil==='30p') players=players.filter(p=>(p.age||0)>=30);
   if(ctFil==='exp') players=players.filter(p=>p.contract_end&&new Date(p.contract_end)<new Date(Date.now()+365*24*36e5));
   else if(ctFil) players=players.filter(p=>p.contract_end&&p.contract_end.startsWith(ctFil));
-  if(metricKey) players.sort((a,b)=>(b[metricKey]||0)-(a[metricKey]||0));
-  else players.sort((a,b)=>(b[sortKey]||0)-(a[sortKey]||0));
+  // Sort by active key
+  players.sort((a,b)=>(b[activeSortKey]||0)-(a[activeSortKey]||0));
 
   function badges(p){
     const pos=(p.position||'').split(',').map(x=>x.trim()).filter(Boolean);
@@ -25054,41 +25059,41 @@ function renderMobileTable(){
       const tiC = ti>=80?'#00e5a0':ti>=55?'#00d4ff':'rgba(160,178,200,.4)';
       const phC = ph>=80?'#a78bfa':ph>=55?'#c4b5fd':'rgba(160,178,200,.4)';
       const trC = tr>=80?'#ffb340':tr>=55?'#ffd080':'rgba(160,178,200,.4)';
-      const metVal = metricKey&&p[metricKey]!=null?(typeof p[metricKey]==='number'?+(p[metricKey]).toFixed(1):p[metricKey]):'';
+      const metVal = metricKey&&p[metricKey]!=null?(+(p[metricKey])).toFixed(1):'';
       const foot = p.foot==='direito'?'R':p.foot==='esquerdo'?'L':'';
       const pName = p.name.replace(/'/g,"\\'");
       return '<div onclick="mobGoToView(\'playerid\');window.selectedPlayer=PLAYERS.find(x=>x.name===\''+pName+'\');setTimeout(renderMobilePlayerID,50)"'
-        +' style="display:flex;align-items:center;gap:7px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer">'
-        // rank
-        +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:700;color:rgba(255,255,255,.2);width:14px;flex-shrink:0;text-align:right">'+(i+1)+'</span>'
-        // name + badges + club/league
+        +' style="display:flex;align-items:center;gap:0;padding:8px 0 8px 8px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer">'
+        // rank number - larger, blue, flush left
+        +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:15px;font-weight:800;color:#00d4ff;width:22px;flex-shrink:0;text-align:right;margin-right:6px">'+(i+1)+'</span>'
+        // name + badges — tight left
         +'<div style="flex:1;min-width:0">'
-          +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2">'+p.name+'</div>'
+          +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25">'+p.name+'</div>'
           +'<div style="display:flex;align-items:center;gap:3px;margin-top:2px">'+badges(p)
           +'<span style="font-family:\'Barlow\',sans-serif;font-size:8px;color:rgba(255,255,255,.3);white-space:nowrap">'+(p.age||'—')+'a · '+(p.size?p.size+'cm':'—')+(foot?' · '+foot:'')+'</span></div>'
         +'</div>'
-        // club + league
-        +'<div style="text-align:right;min-width:0;max-width:80px;flex-shrink:1">'
+        // club + league — aligned to same row height
+        +'<div style="text-align:right;min-width:0;max-width:76px;flex-shrink:1;padding:0 8px;display:flex;flex-direction:column;justify-content:center;height:38px">'
           +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.team||'—')+'</div>'
           +'<div style="font-family:\'Barlow\',sans-serif;font-size:8px;color:rgba(0,212,255,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.league||'')+'</div>'
         +'</div>'
-        // 3 indexes + metric
-        +'<div style="display:flex;gap:5px;flex-shrink:0;align-items:center">'
+        // indexes + metric — aligned same height
+        +'<div style="display:flex;gap:5px;flex-shrink:0;align-items:center;height:38px;padding-right:10px">'
           +'<div style="text-align:center;min-width:22px">'
             +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:800;color:'+tiC+';line-height:1">'+ti+'</div>'
-            +'<div style="font-family:\'Barlow\',sans-serif;font-size:6px;color:rgba(255,255,255,.2)">TAL</div>'
+            +'<div style="font-family:\'Barlow\',sans-serif;font-size:6px;color:#fff;letter-spacing:.3px">TAL</div>'
           +'</div>'
           +'<div style="text-align:center;min-width:22px">'
             +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:800;color:'+phC+';line-height:1">'+ph+'</div>'
-            +'<div style="font-family:\'Barlow\',sans-serif;font-size:6px;color:rgba(255,255,255,.2)">PHY</div>'
+            +'<div style="font-family:\'Barlow\',sans-serif;font-size:6px;color:#fff;letter-spacing:.3px">PHY</div>'
           +'</div>'
           +'<div style="text-align:center;min-width:22px">'
             +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:800;color:'+trC+';line-height:1">'+tr+'</div>'
-            +'<div style="font-family:\'Barlow\',sans-serif;font-size:6px;color:rgba(255,255,255,.2)">TRA</div>'
+            +'<div style="font-family:\'Barlow\',sans-serif;font-size:6px;color:#fff;letter-spacing:.3px">TRA</div>'
           +'</div>'
           +'<div style="text-align:center;min-width:26px;border-left:1px solid rgba(255,255,255,.08);padding-left:5px">'
-            +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:800;color:rgba(255,255,255,.38);line-height:1">'+(metVal||'—')+'</div>'
-            +'<div style="font-family:\'Barlow\',sans-serif;font-size:6px;color:rgba(255,255,255,.2);overflow:hidden;max-width:26px">'+(metricKey?metricLbl.slice(0,4).toUpperCase():'MET')+'</div>'
+            +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:800;color:rgba(255,255,255,.5);line-height:1">'+(metVal||'—')+'</div>'
+            +'<div style="font-family:\'Barlow\',sans-serif;font-size:6px;color:#fff;max-width:26px;overflow:hidden;white-space:nowrap">'+(metricKey?metricLbl.slice(0,4).toUpperCase():'MET')+'</div>'
           +'</div>'
         +'</div>'
       +'</div>';
@@ -25096,7 +25101,6 @@ function renderMobileTable(){
     +'</div>';
 }
 
-// ── Mobile Player ID view ─────────────────────────────────────────────────────
 function renderMobilePlayerID(){
   const content = document.getElementById('mob-elite-content');
   const filterBar = document.getElementById('mob-filter-bar');
