@@ -6971,8 +6971,8 @@ function renderCompare(){
       // Winner gets player colour, loser gets grey (like the totals bars)
       let valColor = 'color:rgba(160,175,195,.55)';
       if(otherVal !== undefined && otherVal !== null) {
-        const n = parseFloat(String(val).replace(/[^0-9.-]/g,''));
-        const o = parseFloat(String(otherVal).replace(/[^0-9.-]/g,''));
+        const n = parseFloat((String(val).match(/^-?[0-9.]+/)||[''])[0]);
+        const o = parseFloat((String(otherVal).match(/^-?[0-9.]+/)||[''])[0]);
         if(!isNaN(n) && !isNaN(o)) {
           const wins = higherIsBetter ? n > o : n < o;
           if(wins) valColor = 'color:' + col + ';font-weight:700';
@@ -15065,8 +15065,8 @@ function renderCompare(){
       // Winner gets player colour, loser gets grey (like the totals bars)
       let valColor = 'color:rgba(160,175,195,.55)';
       if(otherVal !== undefined && otherVal !== null) {
-        const n = parseFloat(String(val).replace(/[^0-9.-]/g,''));
-        const o = parseFloat(String(otherVal).replace(/[^0-9.-]/g,''));
+        const n = parseFloat((String(val).match(/^-?[0-9.]+/)||[''])[0]);
+        const o = parseFloat((String(otherVal).match(/^-?[0-9.]+/)||[''])[0]);
         if(!isNaN(n) && !isNaN(o)) {
           const wins = higherIsBetter ? n > o : n < o;
           if(wins) valColor = 'color:' + col + ';font-weight:700';
@@ -25246,7 +25246,7 @@ function renderMobileShadowView(){
     const screenW = window.innerWidth;
     const availH = window.innerHeight - 120;
     // Reduce by 15% from full size, and ensure no overflow
-    const pitchH = Math.round(Math.min(availH - 40, screenW / 0.805) * 0.85);
+    const pitchH = Math.round(Math.min(availH - 40, screenW / 0.805) * 0.80);
     const pitchW = Math.round(pitchH * 0.805);
 
     // Temporarily set the pitch area size so shRenderPitch uses our dimensions
