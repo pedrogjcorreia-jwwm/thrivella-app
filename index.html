@@ -25244,9 +25244,12 @@ function renderMobileShadowView(){
     }
 
     const screenW = window.innerWidth;
-    const availH = window.innerHeight - 120;
-    // Reduce by 15% from full size, and ensure no overflow
-    const pitchH = Math.round(Math.min(availH - 40, screenW / 0.805) * 0.80);
+    const screenH = window.innerHeight;
+    // Available height: minus topbar (~44px) + filterbar (~46px) + safety margin
+    const availH = screenH - 44 - 46 - 20;
+    // Pitch ratio: width/height ≈ 0.805 (358/445)
+    // Size to fit in available height, capped at screen width
+    const pitchH = Math.round(Math.min(availH, screenW / 0.805) * 0.75);
     const pitchW = Math.round(pitchH * 0.805);
 
     // Temporarily set the pitch area size so shRenderPitch uses our dimensions
