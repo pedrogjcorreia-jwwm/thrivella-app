@@ -4310,15 +4310,14 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   height:58px;
 }
 .mob-nav-btn{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;background:none;border:none;cursor:pointer;
-  font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;
-  letter-spacing:.5px;text-transform:uppercase;color:rgba(255,255,255,.35);
-  transition:color .15s;padding:0
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;background:none;border:none;cursor:pointer;
+  font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;
+  letter-spacing:.4px;text-transform:uppercase;color:rgba(255,255,255,.35);
+  transition:all .15s;padding:4px 6px;border-radius:6px;flex:1
 }
-.mob-nav-btn span{ font-size:9px; }
-.mob-nav-btn:active,.mob-nav-btn.active{ color:#00d4ff; }
-.mob-nav-btn:first-child{ font-size:18px; }
+.mob-nav-btn span{ font-size:8px;line-height:1 }
+.mob-nav-btn:active,.mob-nav-btn.active{ color:#00d4ff;background:rgba(0,212,255,.08) }
 </style>
 </head>
 <body>
@@ -24770,44 +24769,24 @@ function sfDownload() {
 <div id="mobile-popup">
   <div class="mob-sheet" style="border-radius:16px;margin:auto;width:calc(100% - 40px);max-width:360px">
     <div class="mob-logo" style="text-align:center;display:block;margin-bottom:4px">thrivella</div>
-    <div class="mob-title" style="text-align:center;margin-bottom:20px">Para onde vamos?</div>
-    <div class="mob-options">
-      <div class="mob-btn" onclick="setMobileMode('table')" style="border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.05)">
-        <div class="mob-btn-icon" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25)">📊</div>
+    <div class="mob-title" style="text-align:center;margin-bottom:20px">Vista Mobile Detetada</div>
+    <div class="mob-options" id="mob-popup-options">
+      <div class="mob-btn" onclick="mobShowProMenu()" style="border-color:rgba(0,212,255,.35);background:rgba(0,212,255,.06)">
+        <div class="mob-btn-icon" style="background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.3)">⚡</div>
         <div class="mob-btn-text">
-          <div class="mob-btn-name">Rankings</div>
-          <div class="mob-btn-desc">Tabela completa com filtros e rankings por liga.</div>
-        </div>
-      </div>
-      <div class="mob-btn" onclick="setMobileMode('playerid')" style="border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.05)">
-        <div class="mob-btn-icon" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25)">🪪</div>
-        <div class="mob-btn-text">
-          <div class="mob-btn-name">Player ID</div>
-          <div class="mob-btn-desc">Perfil detalhado, métricas e análise AI.</div>
-        </div>
-      </div>
-      <div class="mob-btn" onclick="setMobileMode('compare')" style="border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.05)">
-        <div class="mob-btn-icon" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25)">⚖️</div>
-        <div class="mob-btn-text">
-          <div class="mob-btn-name">Comparar</div>
-          <div class="mob-btn-desc">Compara dois atletas lado a lado.</div>
-        </div>
-      </div>
-      <div class="mob-btn" onclick="setMobileMode('shadow')" style="border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.05)">
-        <div class="mob-btn-icon" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25)">👁️</div>
-        <div class="mob-btn-text">
-          <div class="mob-btn-name">Shadow Team</div>
-          <div class="mob-btn-desc">Equipa de observação e scouting.</div>
+          <div class="mob-btn-name" style="color:#00d4ff">Versão Pro</div>
+          <div class="mob-btn-desc">Design completo adaptado a mobile. Toda a interatividade.</div>
         </div>
       </div>
       <div class="mob-btn" onclick="setMobileMode('desktop')">
         <div class="mob-btn-icon" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)">🖥️</div>
         <div class="mob-btn-text">
           <div class="mob-btn-name">Versão Desktop</div>
-          <div class="mob-btn-desc">Layout original de desktop.</div>
+          <div class="mob-btn-desc">Continuar com o layout original de desktop.</div>
         </div>
       </div>
     </div>
+    <div class="mob-skip" onclick="closeMobilePopup()">Decidir mais tarde</div>
   </div>
 </div>
 
@@ -24832,18 +24811,21 @@ function sfDownload() {
 
 <!-- ═══ MOBILE ELITE VIEW ═══ -->
 <div id="mobile-elite-view">
-  <div class="mob-elite-topbar">
-    <span style="font-family:Georgia,serif;font-size:14px;letter-spacing:2px;background:linear-gradient(90deg,#00c4ff,#00e5a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">thrivella</span>
-    <div id="mob-topbar-extra" style="flex:1;display:flex;align-items:center;padding:0 8px"></div>
-    <span class="mob-elite-back" onclick="closeMobileElite()">← Desktop</span>
+  <!-- topbar: logo + nav tabs + back -->
+  <div class="mob-elite-topbar" style="gap:0;padding:0 10px 0 12px">
+    <span style="font-family:Georgia,serif;font-size:13px;letter-spacing:2px;background:linear-gradient(90deg,#00c4ff,#00e5a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex-shrink:0">thrivella</span>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:2px;padding:0 4px">
+      <button class="mob-nav-btn" data-view="table" onclick="mobGoToView('table')">📊<span>Rankings</span></button>
+      <button class="mob-nav-btn" data-view="playerid" onclick="mobGoToView('playerid')">🪪<span>Player ID</span></button>
+      <button class="mob-nav-btn" data-view="compare" onclick="mobGoToView('compare')">⚖️<span>Comparar</span></button>
+      <button class="mob-nav-btn" data-view="shadow" onclick="mobGoToView('shadow')">👁️<span>Shadow</span></button>
+    </div>
+    <span class="mob-elite-back" onclick="closeMobileElite()" style="flex-shrink:0">← Desktop</span>
   </div>
-  <div class="mob-elite-content" id="mob-elite-content" style="padding-bottom:64px"></div>
-  <div class="mob-bottom-nav">
-    <button class="mob-nav-btn" data-view="table" onclick="mobGoToView('table')">📊<span>Rankings</span></button>
-    <button class="mob-nav-btn" data-view="playerid" onclick="mobGoToView('playerid')">🪪<span>Player ID</span></button>
-    <button class="mob-nav-btn" data-view="compare" onclick="mobGoToView('compare')">⚖️<span>Comparar</span></button>
-    <button class="mob-nav-btn" data-view="shadow" onclick="mobGoToView('shadow')">👁️<span>Shadow</span></button>
-  </div>
+  <!-- filter bar — content changes per view -->
+  <div id="mob-filter-bar" style="background:#060c14;border-bottom:1px solid rgba(0,212,255,.1);padding:8px 12px;min-height:46px;display:flex;align-items:center;gap:8px;overflow-x:auto"></div>
+  <!-- main content -->
+  <div class="mob-elite-content" id="mob-elite-content"></div>
 </div>
 
 <script>
@@ -24864,238 +24846,271 @@ function setMobileMode(mode){
   sessionStorage.setItem('thrivella_mobile_pref', mode);
   document.getElementById('mobile-popup').classList.remove('show');
   if(mode==='desktop') return;
-  // Lock to portrait
-  if(screen.orientation && screen.orientation.lock) {
-    screen.orientation.lock('portrait').catch(()=>{});
-  }
-  mobGoToView(mode);
+  if(screen.orientation && screen.orientation.lock) screen.orientation.lock('portrait').catch(()=>{});
+}
+
+function mobShowProMenu(){
+  // Replace popup options with 4 nav buttons
+  const opts = document.getElementById('mob-popup-options');
+  if(!opts) return;
+  opts.innerHTML = `
+    <div class="mob-btn" onclick="mobPickView('table')" style="border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.05)">
+      <div class="mob-btn-icon" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25)">📊</div>
+      <div class="mob-btn-text"><div class="mob-btn-name">Rankings</div><div class="mob-btn-desc">Tabela completa com rankings por liga.</div></div>
+    </div>
+    <div class="mob-btn" onclick="mobPickView('playerid')" style="border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.05)">
+      <div class="mob-btn-icon" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25)">🪪</div>
+      <div class="mob-btn-text"><div class="mob-btn-name">Player ID</div><div class="mob-btn-desc">Perfil detalhado, métricas e análise AI.</div></div>
+    </div>
+    <div class="mob-btn" onclick="mobPickView('compare')" style="border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.05)">
+      <div class="mob-btn-icon" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25)">⚖️</div>
+      <div class="mob-btn-text"><div class="mob-btn-name">Comparar</div><div class="mob-btn-desc">Compara dois atletas lado a lado.</div></div>
+    </div>
+    <div class="mob-btn" onclick="mobPickView('shadow')" style="border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.05)">
+      <div class="mob-btn-icon" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25)">👁️</div>
+      <div class="mob-btn-text"><div class="mob-btn-name">Shadow Team</div><div class="mob-btn-desc">Equipa de observação e scouting.</div></div>
+    </div>`;
+  // Hide skip
+  const skip = document.querySelector('.mob-skip');
+  if(skip) skip.style.display='none';
+  // Update title
+  const title = document.querySelector('#mobile-popup .mob-title');
+  if(title) title.textContent='Para onde vamos?';
+  if(screen.orientation && screen.orientation.lock) screen.orientation.lock('portrait').catch(()=>{});
+}
+
+function mobPickView(view){
+  sessionStorage.setItem('thrivella_mobile_pref', view);
+  document.getElementById('mobile-popup').classList.remove('show');
+  mobGoToView(view);
 }
 
 function mobGoToView(view){
-  // Hide splash if showing
-  const splash=document.getElementById('mob-pro-splash');
-  if(splash) splash.style.display='none';
-  // Show elite container
-  const el=document.getElementById('mobile-elite-view');
-  if(el) el.style.display='block';
   window._mobCurrentView = view;
-  // Update topbar active tab if exists
+  const el = document.getElementById('mobile-elite-view');
+  if(el) el.style.display='block';
+  // Update active nav btn
   document.querySelectorAll('.mob-nav-btn').forEach(b=>{
     b.classList.toggle('active', b.dataset.view===view);
   });
-  // Render the right view
-  if(view==='playerid'){
-    let tries=0;
-    function tryP(){ tries++;
-      const p=window.selectedPlayer||window._sv7CurrentPlayer&&PLAYERS&&PLAYERS.find(x=>x.name===window._sv7CurrentPlayer);
-      if(p){ window.selectedPlayer=p; renderMobileElite(); }
-      else if(tries<20) setTimeout(tryP,200);
-      else renderMobileElite(); // show "select player" state
-    }
-    tryP();
-  } else if(view==='table'){
-    renderMobileTable();
-  } else if(view==='compare'){
-    renderMobileCompareView();
-  } else if(view==='shadow'){
-    renderMobileShadowView();
-  }
+  if(view==='table') renderMobileTable();
+  else if(view==='playerid') renderMobilePlayerID();
+  else if(view==='compare') renderMobileCompareView();
+  else if(view==='shadow') renderMobileShadowView();
 }
 
-function showMobProSplash(){
-  const splash = document.getElementById('mob-pro-splash');
-  if(!splash) return;
-  splash.style.display='flex';
-  // Typewriter animation for "thrivella"
-  const logoEl = document.getElementById('mob-splash-logo');
-  const word = 'thrivella';
-  logoEl.textContent='';
-  let idx=0;
-  function typeNext(){
-    if(idx<word.length){
-      logoEl.textContent+=word[idx++];
-      setTimeout(typeNext, idx===1?0:220);
-    } else {
-      // Show menu after slight pause
-      setTimeout(()=>{
-        const menu=document.getElementById('mob-splash-menu');
-        if(menu){ menu.style.display='flex'; menu.style.animation='fadeIn .3s ease'; }
-      }, 400);
-    }
-  }
-  setTimeout(typeNext, 300);
+// ── Mobile Rankings view ─────────────────────────────────────────────────────
+function renderMobileTable(){
+  const content = document.getElementById('mob-elite-content');
+  const filterBar = document.getElementById('mob-filter-bar');
+  if(!content) return;
+
+  // Filter bar: Liga + Posição + Ordenar
+  const leagues = [...new Set((PLAYERS||[]).map(p=>p.league).filter(Boolean))].sort();
+  const positions = [...new Set((PLAYERS||[]).map(p=>(p.position||'').split(',')[0].trim()).filter(Boolean))].sort();
+  if(filterBar) filterBar.innerHTML = `
+    <select id="mob-f-league" onchange="renderMobileTable()" style="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:6px;padding:5px 8px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;max-width:110px">
+      <option value="">Todas as ligas</option>
+      ${leagues.map(l=>`<option value="${l}">${l}</option>`).join('')}
+    </select>
+    <select id="mob-f-pos" onchange="renderMobileTable()" style="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:6px;padding:5px 8px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;max-width:90px">
+      <option value="">Posição</option>
+      ${positions.map(p=>`<option value="${p}">${p}</option>`).join('')}
+    </select>
+    <select id="mob-f-sort" onchange="renderMobileTable()" style="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:6px;padding:5px 8px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;max-width:110px">
+      <option value="talent_index_pct">Talent Index</option>
+      <option value="total_off">Ofensivo</option>
+      <option value="total_def">Defensivo</option>
+      <option value="total_physical">Físico</option>
+      <option value="xg">xG</option>
+    </select>`;
+
+  const leagueFil = document.getElementById('mob-f-league')?.value || '';
+  const posFil = document.getElementById('mob-f-pos')?.value || '';
+  const sortKey = document.getElementById('mob-f-sort')?.value || 'talent_index_pct';
+
+  let players = [...(PLAYERS||[])];
+  if(leagueFil) players = players.filter(p=>p.league===leagueFil);
+  if(posFil) players = players.filter(p=>(p.position||'').includes(posFil));
+  players.sort((a,b)=>(b[sortKey]||0)-(a[sortKey]||0));
+
+  content.innerHTML = `<div style="padding:0 0 80px">` +
+    players.map((p,i)=>{
+      const ti = Math.round(p.talent_index_pct||0);
+      const col = ti>=80?'#00e5a0':ti>=55?'#00d4ff':'rgba(160,178,200,.5)';
+      return `<div onclick="mobGoToView('playerid');window.selectedPlayer=PLAYERS.find(x=>x.name==='${p.name.replace(/'/g,"\\'")}');setTimeout(renderMobilePlayerID,50)"
+        style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;active:background:rgba(0,212,255,.06)">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.2);width:20px;flex-shrink:0">${i+1}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+          <div style="font-family:'Barlow',sans-serif;font-size:10px;color:rgba(255,255,255,.35)">${(p.position||'').split(',')[0].trim()} · ${p.team||''}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:${col}">${ti}</div>
+          <div style="font-family:'Barlow',sans-serif;font-size:9px;color:rgba(255,255,255,.3)">TI %</div>
+        </div>
+      </div>`;
+    }).join('') + `</div>`;
 }
 
-function mobSplashGo(view){
-  // Hide splash
-  const splash=document.getElementById('mob-pro-splash');
-  if(splash) splash.style.display='none';
-  // Show mobile elite view
-  const el=document.getElementById('mobile-elite-view');
-  if(el) el.style.display='block';
-  // Set the view, then render
-  window._mobProView = view;
-  let tries=0;
-  function tryRender(){
-    tries++;
-    if(typeof renderMobileElite==='function'){
-      renderMobileElite(view);
-    } else if(tries<15){
-      setTimeout(tryRender,200);
-    }
-  }
-  tryRender();
-}
+// ── Mobile Player ID view ─────────────────────────────────────────────────────
+function renderMobilePlayerID(){
+  const content = document.getElementById('mob-elite-content');
+  const filterBar = document.getElementById('mob-filter-bar');
+  if(!content) return;
 
-// Re-check: if mode=elite and no splash shown yet, show splash (not direct render)
-function checkMobileOrientationPro(){
-  if(!isMobilePortrait()) return;
-  const pref=sessionStorage.getItem('thrivella_mobile_pref');
-  if(pref==='elite'){
-    // Already chose Pro — go straight to splash menu
-    showMobProSplash();
+  // Filter bar: search input
+  if(filterBar) filterBar.innerHTML = `
+    <input id="mob-pid-search" type="text" placeholder="🔍  Procurar jogador..." oninput="mobPidSearch(this.value)"
+      style="flex:1;background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:6px;padding:6px 10px;color:#e8edf2;font-family:'Barlow',sans-serif;font-size:12px;outline:none">
+    <div id="mob-pid-results" style="position:absolute;top:100%;left:12px;right:12px;background:#0d1824;border:1px solid rgba(0,212,255,.2);border-radius:8px;z-index:200;display:none;max-height:200px;overflow-y:auto"></div>`;
+
+  // Pick player — use selectedPlayer or first in list
+  const p = window.selectedPlayer || (PLAYERS&&PLAYERS[0]);
+  if(p && (!window.selectedPlayer)) window.selectedPlayer = p;
+
+  if(!p || !PLAYERS || !PLAYERS.length){
+    content.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:60vh;font-family:\'Barlow Condensed\',sans-serif;font-size:13px;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase">A carregar...</div>';
+    setTimeout(renderMobilePlayerID,400);
     return;
   }
-  if(pref==='desktop') return;
-  document.getElementById('mobile-popup').classList.add('show');
+  renderMobileElite(); // existing full player render
+
+  // Attach search
+  window.mobPidSearch = function(q){
+    const res = document.getElementById('mob-pid-results');
+    if(!res) return;
+    if(q.length<2){ res.style.display='none'; return; }
+    const matches = (PLAYERS||[]).filter(x=>x.name.toLowerCase().includes(q.toLowerCase())).slice(0,6);
+    res.style.display='block';
+    res.innerHTML = matches.map(x=>`<div onclick="window.selectedPlayer=PLAYERS.find(p=>p.name==='${x.name.replace(/'/g,"\\'")}');document.getElementById('mob-pid-search').value='';document.getElementById('mob-pid-results').style.display='none';renderMobileElite()"
+      style="padding:9px 12px;cursor:pointer;font-family:'Barlow',sans-serif;font-size:13px;color:#e8edf2;border-bottom:1px solid rgba(255,255,255,.05)">
+      ${x.name} <span style="color:rgba(255,255,255,.3);font-size:10px">${x.team||''}</span>
+    </div>`).join('');
+  };
 }
 
-function closeMobilePopup(){
-  document.getElementById('mobile-popup').classList.remove('show');
-}
-
-function closeMobileElite(){
-  document.getElementById('mobile-elite-view').style.display='none';
-  sessionStorage.removeItem('thrivella_mobile_pref');
-}
-
-// ── Mobile Rankings view ───────────────────────────────────────────────────
-function renderMobileTable(){
-  const content=document.getElementById('mob-elite-content');
-  const extra=document.getElementById('mob-topbar-extra');
-  if(!content) return;
-  if(extra) extra.innerHTML='';
-  // Show desktop table inside mobile view — just clone it
-  const tbl=document.getElementById('view-table');
-  if(tbl){
-    content.innerHTML='<div style="overflow-x:hidden;width:100%">'
-      +'<div style="padding:12px 0 6px 14px;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6)">Rankings</div>'
-      +'</div>';
-    // Clone the table content
-    const clone=tbl.cloneNode(true);
-    clone.style.cssText='display:block;position:relative;overflow-x:auto;font-size:11px';
-    content.appendChild(clone);
-  } else {
-    content.innerHTML='<div style="padding:20px;color:rgba(255,255,255,.4);font-family:\'Barlow\',sans-serif;font-size:13px">A carregar rankings...</div>';
-    setTimeout(renderMobileTable,400);
-  }
-}
-
-// ── Mobile Compare view ────────────────────────────────────────────────────
+// ── Mobile Compare view ───────────────────────────────────────────────────────
 function renderMobileCompareView(){
-  const content=document.getElementById('mob-elite-content');
-  const extra=document.getElementById('mob-topbar-extra');
+  const content = document.getElementById('mob-elite-content');
+  const filterBar = document.getElementById('mob-filter-bar');
   if(!content) return;
-  if(extra) extra.innerHTML='';
-  // Reset compare state — no players selected
-  window._cmpPlayers={pA:null,pB:null};
-  content.innerHTML=`
-    <div style="padding:12px 14px 0">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6);margin-bottom:12px">Comparar atletas</div>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
-        <div style="background:#060c18;border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:10px 12px">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.5);margin-bottom:8px">Atleta A</div>
-          <input id="mob-cmp-search-a" type="text" placeholder="Procurar jogador..." oninput="mobCmpSearch(this,'a')"
-            style="width:100%;background:#0a1420;border:1px solid rgba(0,212,255,.2);border-radius:6px;padding:8px 10px;color:#e8edf2;font-family:'Barlow',sans-serif;font-size:12px;outline:none;box-sizing:border-box">
-          <div id="mob-cmp-results-a" style="margin-top:6px"></div>
-          <div id="mob-cmp-selected-a" style="margin-top:6px"></div>
-        </div>
-        <div style="background:#060c18;border:1px solid rgba(0,229,160,.15);border-radius:8px;padding:10px 12px">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,229,160,.5);margin-bottom:8px">Atleta B</div>
-          <input id="mob-cmp-search-b" type="text" placeholder="Procurar jogador..." oninput="mobCmpSearch(this,'b')"
-            style="width:100%;background:#0a1420;border:1px solid rgba(0,229,160,.2);border-radius:6px;padding:8px 10px;color:#e8edf2;font-family:'Barlow',sans-serif;font-size:12px;outline:none;box-sizing:border-box">
-          <div id="mob-cmp-results-b" style="margin-top:6px"></div>
-          <div id="mob-cmp-selected-b" style="margin-top:6px"></div>
-        </div>
-      </div>
-      <button id="mob-cmp-go-btn" onclick="mobCmpGo()" disabled
-        style="width:100%;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);border-radius:8px;padding:12px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.4);cursor:default;transition:all .15s">
-        Comparar
-      </button>
-    </div>
-    <div id="mob-cmp-output" style="padding:0 14px 14px;margin-top:12px"></div>`;
+  if(!window._cmpMob) window._cmpMob={pA:null,pB:null};
 
-  window.mobCmpSearch=function(inp,slot){
+  // Filter bar: A input + B input
+  if(filterBar) filterBar.innerHTML = `
+    <div style="flex:1;position:relative">
+      <input id="mob-cmp-fa" type="text" placeholder="Atleta A..." oninput="mobCmpFilter(this,'a')"
+        style="width:100%;background:#0a1420;border:1px solid rgba(0,212,255,.3);border-radius:6px;padding:5px 8px;color:#00d4ff;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;outline:none;box-sizing:border-box">
+      <div id="mob-cmp-ra" style="position:absolute;top:calc(100%+2px);left:0;right:0;background:#0d1824;border:1px solid rgba(0,212,255,.2);border-radius:6px;z-index:300;display:none;max-height:160px;overflow-y:auto"></div>
+    </div>
+    <div style="color:rgba(255,255,255,.3);font-family:'Barlow Condensed',sans-serif;font-size:11px;flex-shrink:0">VS</div>
+    <div style="flex:1;position:relative">
+      <input id="mob-cmp-fb" type="text" placeholder="Atleta B..." oninput="mobCmpFilter(this,'b')"
+        style="width:100%;background:#0a1420;border:1px solid rgba(0,229,160,.3);border-radius:6px;padding:5px 8px;color:#00e5a0;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;outline:none;box-sizing:border-box">
+      <div id="mob-cmp-rb" style="position:absolute;top:calc(100%+2px);left:0;right:0;background:#0d1824;border:1px solid rgba(0,229,160,.2);border-radius:6px;z-index:300;display:none;max-height:160px;overflow-y:auto"></div>
+    </div>`;
+
+  window.mobCmpFilter=function(inp,slot){
     const q=inp.value.trim().toLowerCase();
-    const results=document.getElementById('mob-cmp-results-'+slot);
-    if(!results) return;
-    if(q.length<2){ results.innerHTML=''; return; }
+    const res=document.getElementById('mob-cmp-r'+slot);
+    if(!res) return;
+    if(q.length<2){res.style.display='none';return;}
+    const col=slot==='a'?'#00d4ff':'#00e5a0';
     const matches=(PLAYERS||[]).filter(p=>p.name.toLowerCase().includes(q)).slice(0,5);
-    results.innerHTML=matches.map(p=>`
-      <div onclick="mobCmpSelect('${p.name.replace(/'/g,"\\'")}','${slot}')"
-        style="padding:7px 10px;cursor:pointer;border-radius:5px;font-family:'Barlow',sans-serif;font-size:12px;color:#e8edf2;background:rgba(255,255,255,.04);margin-bottom:3px">
-        ${p.name} <span style="color:rgba(255,255,255,.35);font-size:10px">${p.team||''}</span>
-      </div>`).join('');
+    res.style.display='block';
+    res.innerHTML=matches.map(p=>`<div onclick="mobCmpPick('${p.name.replace(/'/g,"\\'")}','${slot}')"
+      style="padding:8px 10px;cursor:pointer;font-family:'Barlow',sans-serif;font-size:12px;color:#e8edf2;border-bottom:1px solid rgba(255,255,255,.05)">
+      ${p.name} <span style="color:rgba(255,255,255,.3);font-size:10px">${p.team||''}</span>
+    </div>`).join('');
   };
 
-  window.mobCmpSelect=function(name,slot){
+  window.mobCmpPick=function(name,slot){
     const p=PLAYERS.find(x=>x.name===name);
     if(!p) return;
-    if(!window._cmpPlayers) window._cmpPlayers={};
-    window._cmpPlayers[slot==='a'?'pA':'pB']=p;
-    // Show selected
-    const selEl=document.getElementById('mob-cmp-selected-'+slot);
-    const col=slot==='a'?'#00d4ff':'#00e5a0';
-    if(selEl) selEl.innerHTML=`<div style="display:flex;align-items:center;gap:8px;padding:6px 0">
-      <div style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0"></div>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:${col}">${p.name}</span>
-      <span style="font-size:10px;color:rgba(255,255,255,.3)">${p.team||''}</span>
-    </div>`;
-    // Clear search
-    const inp=document.getElementById('mob-cmp-search-'+slot);
-    if(inp){ inp.value=''; }
-    document.getElementById('mob-cmp-results-'+slot).innerHTML='';
-    // Enable compare button if both selected
-    const {pA,pB}=window._cmpPlayers;
-    const btn=document.getElementById('mob-cmp-go-btn');
-    if(pA&&pB&&btn){
-      btn.disabled=false;
-      btn.style.cssText=btn.style.cssText.replace('rgba(0,212,255,.08)','rgba(0,212,255,.15)').replace('rgba(0,212,255,.4)','#00d4ff').replace('cursor:default','cursor:pointer');
-    }
+    window._cmpMob[slot==='a'?'pA':'pB']=p;
+    const inp=document.getElementById('mob-cmp-f'+slot);
+    if(inp) inp.value=p.name;
+    const res=document.getElementById('mob-cmp-r'+slot);
+    if(res) res.style.display='none';
+    // If both selected, trigger compare
+    if(window._cmpMob.pA && window._cmpMob.pB) mobCmpRun();
   };
 
-  window.mobCmpGo=function(){
-    const {pA,pB}=window._cmpPlayers||{};
+  // Build the compare skeleton (empty state — players shown when both picked)
+  const colA='#00d4ff', colB='#00e5a0';
+  content.innerHTML = `<div style="padding:12px 14px 80px">
+    <div id="mob-cmp-state" style="text-align:center;padding:40px 20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase">Seleciona dois atletas acima para comparar</div>
+    <div id="mob-cmp-cards" style="display:flex;gap:10px;margin-bottom:12px">
+      <div style="flex:1;background:#060c18;border:1px solid ${colA}33;border-radius:8px;padding:12px;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:${colA}88;margin-bottom:6px">Atleta A</div>
+        <div id="mob-cmp-name-a" style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:${colA};text-align:center">—</div>
+      </div>
+      <div style="flex:1;background:#060c18;border:1px solid ${colB}33;border-radius:8px;padding:12px;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:${colB}88;margin-bottom:6px">Atleta B</div>
+        <div id="mob-cmp-name-b" style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:${colB};text-align:center">—</div>
+      </div>
+    </div>
+    <div id="mob-cmp-body"></div>
+  </div>`;
+
+  window.mobCmpRun=function(){
+    const {pA,pB}=window._cmpMob;
     if(!pA||!pB) return;
-    // Use existing desktop compare logic
+    document.getElementById('mob-cmp-name-a').textContent=pA.name;
+    document.getElementById('mob-cmp-name-b').textContent=pB.name;
+    document.getElementById('mob-cmp-state').style.display='none';
+    // Trigger the existing mobile compare
     window.comparePlayerA=pA; window.comparePlayerB=pB;
-    const out=document.getElementById('mob-cmp-output');
-    if(out) out.innerHTML='<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A preparar comparação...</span></div>';
-    // Trigger mobile compare
-    if(window._mobileCompare) window._mobileCompare(pB.name,pA.name);
-    setTimeout(()=>{
-      const mobEl=document.getElementById('mob-cmp-area');
-      if(mobEl&&out){ out.innerHTML=''; out.appendChild(mobEl.cloneNode(true)); }
-    },800);
+    window.selectedPlayer=pA;
+    if(typeof window._mobileCompare==='function') window._mobileCompare(pB.name,pA.name);
   };
 }
 
-// ── Mobile Shadow Team view ────────────────────────────────────────────────
+// ── Mobile Shadow Team view ───────────────────────────────────────────────────
 function renderMobileShadowView(){
-  const content=document.getElementById('mob-elite-content');
-  const extra=document.getElementById('mob-topbar-extra');
+  const content = document.getElementById('mob-elite-content');
+  const filterBar = document.getElementById('mob-filter-bar');
   if(!content) return;
-  if(extra) extra.innerHTML='';
-  const shadowEl=document.getElementById('view-shadow');
-  if(shadowEl){
-    content.innerHTML='<div style="padding:12px 0 6px 14px;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6)">Shadow Team</div>';
-    const clone=shadowEl.cloneNode(true);
-    clone.style.cssText='display:block;position:relative';
-    content.appendChild(clone);
-  } else {
-    content.innerHTML='<div style="padding:20px;color:rgba(255,255,255,.4);font-family:\'Barlow\',sans-serif;font-size:13px">A carregar Shadow Team...</div>';
-  }
+
+  // Filter bar
+  if(filterBar) filterBar.innerHTML = `
+    <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.5)">Shadow Team</span>
+    <button onclick="addToShadowTeam&&addToShadowTeam()" style="margin-left:auto;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);border-radius:5px;padding:4px 10px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:#00d4ff;cursor:pointer">+ Adicionar</button>`;
+
+  // Render a vertical pitch with positions
+  const formations = {
+    GK:  [{pos:'GK', x:50, y:88}],
+    DEF: [{pos:'CB',x:25,y:72},{pos:'CB',x:50,y:72},{pos:'CB',x:75,y:72}],
+    MID: [{pos:'CM',x:20,y:52},{pos:'CM',x:50,y:45},{pos:'CM',x:80,y:52}],
+    ATT: [{pos:'LW',x:15,y:25},{pos:'ST',x:50,y:18},{pos:'RW',x:85,y:25}],
+  };
+  const allSlots=[...formations.GK,...formations.DEF,...formations.MID,...formations.ATT];
+
+  const pitch=`<div style="position:relative;width:100%;padding-bottom:150%;background:linear-gradient(180deg,#1a3a1a 0%,#1e4a1e 50%,#1a3a1a 100%);border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.1)">
+    <!-- pitch markings -->
+    <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 100 150" preserveAspectRatio="none">
+      <rect x="2" y="2" width="96" height="146" fill="none" stroke="rgba(255,255,255,.15)" stroke-width=".5"/>
+      <line x1="2" y1="75" x2="98" y2="75" stroke="rgba(255,255,255,.12)" stroke-width=".4"/>
+      <circle cx="50" cy="75" r="10" fill="none" stroke="rgba(255,255,255,.12)" stroke-width=".4"/>
+      <rect x="25" y="2" width="50" height="18" fill="none" stroke="rgba(255,255,255,.1)" stroke-width=".4"/>
+      <rect x="35" y="2" width="30" height="8" fill="none" stroke="rgba(255,255,255,.1)" stroke-width=".4"/>
+      <rect x="25" y="130" width="50" height="18" fill="none" stroke="rgba(255,255,255,.1)" stroke-width=".4"/>
+      <rect x="35" y="140" width="30" height="8" fill="none" stroke="rgba(255,255,255,.1)" stroke-width=".4"/>
+    </svg>
+    ${allSlots.map(s=>{
+      const shadow=(window.shadowTeam||[]).find(x=>(x.position||'').includes(s.pos));
+      return `<div style="position:absolute;left:${s.x}%;top:${s.y}%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px">
+        <div style="width:36px;height:36px;border-radius:50%;background:${shadow?'rgba(0,212,255,.25)':'rgba(255,255,255,.06)'};border:1.5px solid ${shadow?'rgba(0,212,255,.6)':'rgba(255,255,255,.2)'};display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:${shadow?'#00d4ff':'rgba(255,255,255,.3)'}">
+          ${shadow?shadow.name.split(' ').slice(-1)[0].substring(0,6):s.pos}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  content.innerHTML=`<div style="padding:12px 14px 80px">${pitch}</div>`;
 }
+
 
 // Show popup immediately on load if mobile and no preference saved
 document.addEventListener('DOMContentLoaded',()=>{
