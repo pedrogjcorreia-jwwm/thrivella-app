@@ -5,7 +5,7 @@
   <meta http-equiv="Expires" content="0">
   <!-- v2 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thrivella-185321</title>
+<title>Thrivella-190254</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&amp;family=Barlow:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -6997,9 +6997,10 @@ function renderCompare(){
             + '<circle cx="' + (r+stroke) + '" cy="' + (r+stroke) + '" r="' + r + '" fill="none" stroke="' + col + '" stroke-width="' + stroke + '" stroke-linecap="round" stroke-dasharray="' + fill.toFixed(1) + ' ' + norm.toFixed(1) + '" style="filter:drop-shadow(0 0 6px ' + col + '88)"/>'
             + '</svg>'
             + '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;line-height:1">'
-            + '<div style="font-family:var(--font-d);font-size:28px;font-weight:700;color:' + col + ';line-height:1">' + (p.talent_index||0).toFixed(1) + '</div>'
-            + '<div style="font-family:var(--font-d);font-size:11px;color:var(--muted2)">' + (p.talent_index_pct||0) + '%</div>'
-            + '<div style="font-family:var(--font-d);font-size:9px;font-weight:600;letter-spacing:1.5px;color:var(--muted2);margin-top:1px">TALENT INDEX</div>'
+            + '<div style="font-family:var(--font-d);font-size:28px;font-weight:700;color:' + col + ';line-height:1">' + Math.round(p.talent_index_pct||0) + '</div>'
+            + '<div style="font-family:var(--font-d);font-size:9px;color:var(--muted2);margin-top:1px">pct</div>'
+            + '<div style="font-family:var(--font-d);font-size:10px;font-weight:600;color:' + col + ';margin-top:2px">' + (p.talent_index||0).toFixed(1) + '</div>'
+            + '<div style="font-family:var(--font-d);font-size:7px;font-weight:600;letter-spacing:1.5px;color:var(--muted2);margin-top:1px">TALENT INDEX</div>'
             + '</div>'
             + '</div>'
             + '</div>';
@@ -7045,9 +7046,11 @@ function renderCompare(){
   }
 
   const GAP = '<div style="height:20px"></div>';
+  const BIG_GAP = '<div style="height:40px;border-top:1px solid rgba(255,255,255,.06);margin-top:4px"></div>';
 
   const rows = [
 
+    BIG_GAP,
     // Físico
     scoreRow('TOTAL FÍSICO', pA ? pA.total_physical : 0, pB ? pB.total_physical : 0, 'var(--purple)'),
     GAP,
@@ -7115,7 +7118,7 @@ function renderCompare(){
             <circle cx="${r+stroke}" cy="${r+stroke}" r="${r}" fill="none" stroke="${col}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${fill2.toFixed(1)} ${circ.toFixed(1)}" style="filter:drop-shadow(0 0 6px ${col}88)"/>
           </svg>
           <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;line-height:1">
-            <div style="font-family:var(--font-d);font-size:22px;font-weight:700;color:${col};line-height:1">${(p.talent_index||0).toFixed(1)}</div><div style="font-family:var(--font-d);font-size:11px;color:var(--muted2)">${(p.talent_index_pct||0)}%</div>
+            <div style="font-family:var(--font-d);font-size:22px;font-weight:700;color:${col};line-height:1">${Math.round(p.talent_index_pct||0)}</div><div style="font-family:var(--font-d);font-size:9px;color:var(--muted2);margin-top:1px">pct</div><div style="font-family:var(--font-d);font-size:10px;font-weight:600;color:${col};margin-top:2px">${(p.talent_index||0).toFixed(1)}</div>
             <div style="font-family:var(--font-d);font-size:7px;font-weight:600;letter-spacing:1.5px;color:var(--muted2);margin-top:2px">TALENT INDEX</div>
           </div>
         </div>
@@ -8111,7 +8114,7 @@ function generateCompareAI(pA, pB) {
   <meta http-equiv="Expires" content="0">
   <!-- v2 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thrivella-185321</title>
+<title>Thrivella-190254</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&amp;family=Barlow:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -15077,9 +15080,10 @@ function renderCompare(){
             + '<circle cx="' + (r+stroke) + '" cy="' + (r+stroke) + '" r="' + r + '" fill="none" stroke="' + col + '" stroke-width="' + stroke + '" stroke-linecap="round" stroke-dasharray="' + fill.toFixed(1) + ' ' + norm.toFixed(1) + '" style="filter:drop-shadow(0 0 6px ' + col + '88)"/>'
             + '</svg>'
             + '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;line-height:1">'
-            + '<div style="font-family:var(--font-d);font-size:28px;font-weight:700;color:' + col + ';line-height:1">' + (p.talent_index||0).toFixed(1) + '</div>'
-            + '<div style="font-family:var(--font-d);font-size:11px;color:var(--muted2)">' + (p.talent_index_pct||0) + '%</div>'
-            + '<div style="font-family:var(--font-d);font-size:9px;font-weight:600;letter-spacing:1.5px;color:var(--muted2);margin-top:1px">TALENT INDEX</div>'
+            + '<div style="font-family:var(--font-d);font-size:28px;font-weight:700;color:' + col + ';line-height:1">' + Math.round(p.talent_index_pct||0) + '</div>'
+            + '<div style="font-family:var(--font-d);font-size:9px;color:var(--muted2);margin-top:1px">pct</div>'
+            + '<div style="font-family:var(--font-d);font-size:10px;font-weight:600;color:' + col + ';margin-top:2px">' + (p.talent_index||0).toFixed(1) + '</div>'
+            + '<div style="font-family:var(--font-d);font-size:7px;font-weight:600;letter-spacing:1.5px;color:var(--muted2);margin-top:1px">TALENT INDEX</div>'
             + '</div>'
             + '</div>'
             + '</div>';
@@ -15125,9 +15129,11 @@ function renderCompare(){
   }
 
   const GAP = '<div style="height:20px"></div>';
+  const BIG_GAP = '<div style="height:40px;border-top:1px solid rgba(255,255,255,.06);margin-top:4px"></div>';
 
   const rows = [
 
+    BIG_GAP,
     // Físico
     scoreRow('TOTAL FÍSICO', pA ? pA.total_physical : 0, pB ? pB.total_physical : 0, 'var(--purple)'),
     GAP,
@@ -15195,7 +15201,7 @@ function renderCompare(){
             <circle cx="${r+stroke}" cy="${r+stroke}" r="${r}" fill="none" stroke="${col}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${fill2.toFixed(1)} ${circ.toFixed(1)}" style="filter:drop-shadow(0 0 6px ${col}88)"/>
           </svg>
           <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;line-height:1">
-            <div style="font-family:var(--font-d);font-size:22px;font-weight:700;color:${col};line-height:1">${(p.talent_index||0).toFixed(1)}</div><div style="font-family:var(--font-d);font-size:11px;color:var(--muted2)">${(p.talent_index_pct||0)}%</div>
+            <div style="font-family:var(--font-d);font-size:22px;font-weight:700;color:${col};line-height:1">${Math.round(p.talent_index_pct||0)}</div><div style="font-family:var(--font-d);font-size:9px;color:var(--muted2);margin-top:1px">pct</div><div style="font-family:var(--font-d);font-size:10px;font-weight:600;color:${col};margin-top:2px">${(p.talent_index||0).toFixed(1)}</div>
             <div style="font-family:var(--font-d);font-size:7px;font-weight:600;letter-spacing:1.5px;color:var(--muted2);margin-top:2px">TALENT INDEX</div>
           </div>
         </div>
@@ -16493,7 +16499,7 @@ function exportSimplePDF() {
   const aiText = (localStorage.getItem(cacheKey)||'<p>Análise não gerada.</p>').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
   const metrics = [['Talent Index',((p.total_off||0)+(p.total_def||0)+(p.total_pass||0)).toFixed(1)],['Off',(p.total_off||0).toFixed(1)],['Def',(p.total_def||0).toFixed(1)],['Pass',(p.total_pass||0).toFixed(1)],['xG',p.xg?.toFixed(2)||'—'],['xA',p.xa?.toFixed(2)||'—'],['Dribles/90',p.dribles90?.toFixed(1)||'—'],['% Dribles',p.dribles_pct!=null?p.dribles_pct.toFixed(0)+'%':'—'],['Acelerações/90',p.accels90?.toFixed(1)||'—'],['Shot Assists/90',p.shot_assist?.toFixed(1)||'—'],['Vel. Máx',p.max_speed!=null?p.max_speed.toFixed(1)+' km/h':'—'],['Sprints/90',p.sprints90?.toFixed(0)||'—']];
   const rows = (arr) => arr.map(([k])=>'<th>'+k+'</th>').join('')+'</tr><tr>'+arr.map(([,v])=>'<td>'+v+'</td>').join('');
-  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Thrivella-185321</title>'
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Thrivella-190254</title>'
     +'<style>body{font-family:Georgia,serif;max-width:800px;margin:0 auto;padding:30px;color:#111}'
     +'h1{font-size:22px;font-weight:400;letter-spacing:1px;margin:0 0 4px}.logo{font-size:14px;color:#00a0c4;letter-spacing:2px;margin-bottom:20px}'
     +'.meta{font-size:12px;color:#555;margin-bottom:20px;display:flex;gap:20px;flex-wrap:wrap}'
@@ -25200,9 +25206,7 @@ function renderMobileShadowView(){
   // First ensure the shadow view is rendered
   if(typeof shResetAndRender==='function') shResetAndRender();
 
-  // For mobile, show the desktop shadow view scaled to fit
-  // The key insight: shResetAndRender draws on the actual canvas in view-shadow
-  // We clone the pitch area and apply zoom to fit the screen width
+  // For mobile: resize the shadow pitch area to fill the screen, render, then capture
   setTimeout(()=>{
     const shadowView = document.getElementById('view-shadow');
     if(!shadowView){
@@ -25211,62 +25215,66 @@ function renderMobileShadowView(){
       return;
     }
 
-    // First render the desktop pitch so the canvas is populated
-    if(typeof shResetAndRender==='function') shResetAndRender();
+    const screenW = window.innerWidth;
+    const availH = window.innerHeight - 120; // minus topbar + filterbar
+    // Pitch ratio 358/445 ≈ 0.805 (width/height)
+    const pitchH = Math.round(Math.min(availH - 40, screenW / 0.805));
+    const pitchW = Math.round(pitchH * 0.805);
+
+    // Temporarily set the pitch area size so shRenderPitch uses our dimensions
+    const pitchArea = document.getElementById('sh-pitch-area');
+    const pitchWrap = document.getElementById('sh-pitch-wrap');
+    if(pitchArea){
+      pitchArea._savedStyle = pitchArea.style.cssText;
+      pitchArea.style.cssText = `position:fixed;left:-9999px;top:0;width:${pitchW+40}px;height:${pitchH+40}px;display:flex;align-items:center;justify-content:center;overflow:visible`;
+    }
+
+    // Render the pitch
+    if(typeof shRender==='function') shRender();
 
     setTimeout(()=>{
-      // Now capture the pitch canvas as an image and display it scaled
-      const pitchCanvas=shadowView.querySelector('canvas');
-      const pitchWrap=shadowView.querySelector('#sh-pitch-wrap,[id*="sh-pitch-wrap"]');
-
+      // Capture the SVG pitch as an image
+      const svg = pitchWrap && pitchWrap.querySelector('svg');
       content.innerHTML='<div style="overflow-y:auto;height:100%;padding-bottom:20px"></div>';
       const wrap=content.firstChild;
 
-      if(pitchCanvas){
-        // Capture canvas as image — scales perfectly to any size
-        const img=document.createElement('img');
-        img.src=pitchCanvas.toDataURL();
-        const screenW=window.innerWidth;
-        const screenH=window.innerHeight - 120; // minus topbar + filterbar
-        // Keep pitch aspect ratio, fill as much height as possible
-        const pitchRatio=pitchCanvas.height/Math.max(1,pitchCanvas.width);
-        const imgW=Math.min(screenW, Math.round(screenH/pitchRatio));
-        const imgH=Math.round(imgW*pitchRatio);
-        img.style.cssText=`display:block;width:${imgW}px;height:${imgH}px;margin:0 auto;border-radius:6px`;
+      if(svg){
+        // Serialise SVG and show as image
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const svgBlob = new Blob([svgData], {type:'image/svg+xml'});
+        const url = URL.createObjectURL(svgBlob);
+        const img = document.createElement('img');
+        img.style.cssText = `display:block;width:${pitchW}px;height:${pitchH}px;margin:8px auto;border-radius:6px`;
+        img.onload = ()=> URL.revokeObjectURL(url);
+        img.src = url;
         wrap.appendChild(img);
-
-        // Below: player list from shadow team
-        const shadowTeam=window.shadowTeam||[];
-        if(shadowTeam.length){
-          const list=document.createElement('div');
-          list.style.cssText='padding:0 12px;display:flex;flex-direction:column;gap:6px;margin-top:4px';
-          shadowTeam.forEach(p=>{
-            const row=document.createElement('div');
-            row.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 12px;background:#060c18;border-radius:6px;border:1px solid rgba(0,212,255,.1)';
-            row.innerHTML=`<span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#e8edf2;flex:1">${p.name}</span><span style="color:rgba(255,255,255,.35);font-size:10px">${(p.position||'').split(',')[0]}</span><span style="color:#00d4ff;font-size:10px;font-weight:700">${p.team||''}</span>`;
-            list.appendChild(row);
-          });
-          wrap.appendChild(list);
-        } else {
-          const empty=document.createElement('div');
-          empty.style.cssText='padding:16px;text-align:center;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.3)';
-          empty.innerHTML='Shadow Team vazia<br><span style="font-size:10px;opacity:.6">Adiciona jogadores no Player ID</span>';
-          wrap.appendChild(empty);
-        }
-      } else {
-        // Fallback: show the shadow view children with zoom
-        const children=Array.from(shadowView.children);
-        children.slice(1).forEach(child=>{
-          const clone=child.cloneNode(true);
-          const pa=clone.querySelector('#sh-pitch-area,[id*="sh-pitch-area"]');
-          if(pa) pa.style.cssText='padding:0;overflow:hidden;display:flex;justify-content:center;width:100%';
-          const pw=clone.querySelector('#sh-pitch-wrap,[id*="sh-pitch-wrap"]');
-          if(pw){ pw.style.zoom='0.5'; pw.style.transformOrigin='top center'; }
-          wrap.appendChild(clone);
-        });
+      } else if(pitchWrap){
+        // Fallback: show a cloned pitch wrap directly
+        const clone = pitchWrap.cloneNode(true);
+        clone.style.cssText = `width:${pitchW}px;height:${pitchH}px;display:block;margin:8px auto;position:relative`;
+        wrap.appendChild(clone);
       }
-    },300);
-  },100);
+
+      // Restore pitch area
+      if(pitchArea && pitchArea._savedStyle !== undefined){
+        pitchArea.style.cssText = pitchArea._savedStyle;
+      }
+
+      // Player list
+      const shadowTeam=window.shadowTeam||[];
+      if(shadowTeam.length){
+        const list=document.createElement('div');
+        list.style.cssText='padding:0 12px;display:flex;flex-direction:column;gap:6px;margin-top:8px';
+        shadowTeam.forEach(p=>{
+          const row=document.createElement('div');
+          row.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 12px;background:#060c18;border-radius:6px;border:1px solid rgba(0,212,255,.1)';
+          row.innerHTML=`<span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#e8edf2;flex:1">${p.name}</span><span style="color:rgba(255,255,255,.35);font-size:10px">${(p.position||'').split(',')[0]}</span><span style="color:#00d4ff;font-size:10px;font-weight:700">${p.team||''}</span>`;
+          list.appendChild(row);
+        });
+        wrap.appendChild(list);
+      }
+    }, 250);
+  }, 100);
 }
 
 // ── Mobile init on page load ──────────────────────────────────────────────────
