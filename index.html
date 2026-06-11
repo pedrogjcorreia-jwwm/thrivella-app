@@ -6950,12 +6950,12 @@ function renderCompare(){
 
       // ── Top: avatar centred, name below
       + '<div class="cmp-card-top">'
-      + '<div class="photo-avatar-wrap rect" style="display:inline-block;position:relative;width:110px;height:120px;border-radius:10px;overflow:hidden;background:'+col+'18;border:1.5px solid '+col+'44">'
+      + '<div class="photo-avatar-wrap rect" style="display:inline-block;position:relative;width:110px;height:120px;border-radius:10px;overflow:hidden;background:'+col+'18;border:1.5px solid '+col+'44;cursor:pointer" onclick="openPlayerFromCompare(\''+p.name.replace(/'/g,"\\'")+'\')">'
       +   '<div class="cmp-avatar-rect" id="avatar-' + p.name.replace(/[^a-z0-9]/gi,'_') + '" style="width:100%;height:100%;background:'+col+'22;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:22px;font-weight:700;color:'+col+';position:relative;overflow:hidden">' + ini + '</div>'
       +   '<div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(to top,'+col+'22,transparent);pointer-events:none"></div>'
       +   '<div class="photo-upload-corner" onclick="event.stopPropagation();uploadPlayerPhoto(\'' + p.name.replace(/'/g,"\\'") + '\')"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;flex-shrink:0;margin-bottom:0.5mm;margin-left:0.1mm"><path d="M12 3v13" stroke="url(#dg)" stroke-width="2.5" stroke-linecap="round"/><path d="M6 11l6 7 6-7" stroke="url(#dg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="20" width="16" height="2" rx="1" fill="url(#dg)"/><defs><linearGradient id="dg" x1="12" y1="3" x2="12" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#a8d4ff"/><stop offset="100%" stop-color="#dceeff"/></linearGradient></defs></svg></div>'
       + '</div>'
-      + '<div class="cmp-card-name" style="color:' + col + ';margin-top:8px">' + p.name + '</div>'
+      + '<div class="cmp-card-name" style="color:' + col + ';margin-top:8px;cursor:pointer" onclick="openPlayerFromCompare(\''+p.name.replace(/'/g,"\\'")+'\')"> ' + p.name + '</div>'
       + '<div class="cmp-card-sub">' + (p.position||'').split(',')[0].trim() + '</div>'
       + '</div>'
 
@@ -7122,11 +7122,13 @@ function renderCompare(){
     + playerHeader(pA, colA)
     + '<div class="cmp-header-mid" style="display:flex;flex-direction:column;align-items:center;padding:16px 12px;background:var(--bg0)">'
     + '<canvas id="cmp-radar-combined"></canvas>'
-    + '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;justify-content:center;padding-bottom:12px">'
+    + '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;justify-content:center">'
     + '<button class="cmp-tog active" id="ctog-a" onclick="toggleCmpLayer(&quot;a&quot;)" style="border-color:' + colA + ';color:' + colA + ';border-style:solid">' + (pA ? pA.name.split(' ').slice(-1)[0] : 'A') + '</button>'
-    + '<button class="cmp-tog active" id="ctog-avg" onclick="toggleCmpLayer(&quot;avg&quot;)" style="border-color:rgba(160,160,160,0.5);color:rgba(160,160,160,0.7);border-style:dashed">Liga</button>'
     + '<button class="cmp-tog active" id="ctog-b" onclick="toggleCmpLayer(&quot;b&quot;)" style="border-color:' + colB + ';color:' + colB + ';border-style:solid">' + (pB ? pB.name.split(' ').slice(-1)[0] : 'B') + '</button>'
     + togBtnsExtra
+    + '</div>'
+    + '<div style="display:flex;justify-content:center;margin-top:5px;padding-bottom:12px">'
+    + '<button class="cmp-tog active" id="ctog-avg" onclick="toggleCmpLayer(&quot;avg&quot;)" style="border-color:rgba(160,160,160,0.5);color:rgba(160,160,160,0.7);border-style:dashed">Liga</button>'
     + '</div>'
     + '</div>'
     + playerHeader(pB, colB)
@@ -15030,12 +15032,12 @@ function renderCompare(){
 
       // ── Top: avatar centred, name below
       + '<div class="cmp-card-top">'
-      + '<div class="photo-avatar-wrap rect" style="display:inline-block;position:relative;width:110px;height:120px;border-radius:10px;overflow:hidden;background:'+col+'18;border:1.5px solid '+col+'44">'
+      + '<div class="photo-avatar-wrap rect" style="display:inline-block;position:relative;width:110px;height:120px;border-radius:10px;overflow:hidden;background:'+col+'18;border:1.5px solid '+col+'44;cursor:pointer" onclick="openPlayerFromCompare(\''+p.name.replace(/'/g,"\\'")+'\')">'
       +   '<div class="cmp-avatar-rect" id="avatar-' + p.name.replace(/[^a-z0-9]/gi,'_') + '" style="width:100%;height:100%;background:'+col+'22;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:22px;font-weight:700;color:'+col+';position:relative;overflow:hidden">' + ini + '</div>'
       +   '<div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(to top,'+col+'22,transparent);pointer-events:none"></div>'
       +   '<div class="photo-upload-corner" onclick="event.stopPropagation();uploadPlayerPhoto(\'' + p.name.replace(/'/g,"\\'") + '\')"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;flex-shrink:0;margin-bottom:0.5mm;margin-left:0.1mm"><path d="M12 3v13" stroke="url(#dg)" stroke-width="2.5" stroke-linecap="round"/><path d="M6 11l6 7 6-7" stroke="url(#dg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="20" width="16" height="2" rx="1" fill="url(#dg)"/><defs><linearGradient id="dg" x1="12" y1="3" x2="12" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#a8d4ff"/><stop offset="100%" stop-color="#dceeff"/></linearGradient></defs></svg></div>'
       + '</div>'
-      + '<div class="cmp-card-name" style="color:' + col + ';margin-top:8px">' + p.name + '</div>'
+      + '<div class="cmp-card-name" style="color:' + col + ';margin-top:8px;cursor:pointer" onclick="openPlayerFromCompare(\''+p.name.replace(/'/g,"\\'")+'\')"> ' + p.name + '</div>'
       + '<div class="cmp-card-sub">' + (p.position||'').split(',')[0].trim() + '</div>'
       + '</div>'
 
@@ -15202,11 +15204,13 @@ function renderCompare(){
     + playerHeader(pA, colA)
     + '<div class="cmp-header-mid" style="display:flex;flex-direction:column;align-items:center;padding:16px 12px;background:var(--bg0)">'
     + '<canvas id="cmp-radar-combined"></canvas>'
-    + '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;justify-content:center;padding-bottom:12px">'
+    + '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;justify-content:center">'
     + '<button class="cmp-tog active" id="ctog-a" onclick="toggleCmpLayer(&quot;a&quot;)" style="border-color:' + colA + ';color:' + colA + ';border-style:solid">' + (pA ? pA.name.split(' ').slice(-1)[0] : 'A') + '</button>'
-    + '<button class="cmp-tog active" id="ctog-avg" onclick="toggleCmpLayer(&quot;avg&quot;)" style="border-color:rgba(160,160,160,0.5);color:rgba(160,160,160,0.7);border-style:dashed">Liga</button>'
     + '<button class="cmp-tog active" id="ctog-b" onclick="toggleCmpLayer(&quot;b&quot;)" style="border-color:' + colB + ';color:' + colB + ';border-style:solid">' + (pB ? pB.name.split(' ').slice(-1)[0] : 'B') + '</button>'
     + togBtnsExtra
+    + '</div>'
+    + '<div style="display:flex;justify-content:center;margin-top:5px;padding-bottom:12px">'
+    + '<button class="cmp-tog active" id="ctog-avg" onclick="toggleCmpLayer(&quot;avg&quot;)" style="border-color:rgba(160,160,160,0.5);color:rgba(160,160,160,0.7);border-style:dashed">Liga</button>'
     + '</div>'
     + '</div>'
     + playerHeader(pB, colB)
@@ -16044,6 +16048,14 @@ function toggleSidebar() {}
 function openTalentView() { toggleFlyout('talent'); }
 
 // ── AI COMPARE ───────────────────────────────────────────────────────────────
+// Open Player ID view from compare — click on photo or name
+function openPlayerFromCompare(name) {
+  const p = PLAYERS.find(x=>x.name===name);
+  if(!p) return;
+  window.selectedPlayer = p;
+  if(typeof renderMobileElite==='function') renderMobileElite();
+}
+
 const aiCmpCache = {};
 
 function generateCompareAI(pA, pB) {
@@ -16117,7 +16129,7 @@ function generateCompareAI(pA, pB) {
     hlL.push(`<b>${parseFloat(perfL.dribles90).toFixed(1)}</b> dribles/90${pct}`);
   }
   if(better('accels90')?.name===perfL.name && perfL.accels90) hlL.push(`<b>${parseFloat(perfL.accels90).toFixed(1)}</b> acelerações/90`);
-  if(better('recpt_depth')?.name===perfL.name && perfL.recpt_depth) hlL.push(`<b>${parseFloat(perfL.recpt_depth).toFixed(1)}</b> recep. profundidade`);
+  if(better('recpt_depth')?.name===perfL.name && perfL.recpt_depth) hlL.push(`<b>${parseFloat(perfL.recpt_depth).toFixed(1)} recepções em profundidade</b>`);
   if(better('shot_assist')?.name===perfL.name && perfL.shot_assist) hlL.push(`<b>${parseFloat(perfL.shot_assist).toFixed(1)}</b> shot assists/90`);
   // xG/xA as context
   const lgPctXg=pctLeague(perfL,'xg'), lgPctXa=pctLeague(perfL,'xa');
