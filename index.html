@@ -2282,10 +2282,10 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 }
 
 /* ═══ MOBILE PORTRAIT POPUP ═══ */
-#mobile-popup{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+#mobile-popup{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 #mobile-popup.show{display:flex}
-.mob-sheet{background:#0d1520;border:1px solid rgba(0,212,255,.2);border-radius:16px 16px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;animation:slideUp .25s ease}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mob-sheet{background:#0d1520;border:1px solid rgba(0,212,255,.2);border-radius:16px;padding:24px 20px 32px;width:100%;max-width:480px;animation:fadeIn .2s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}} @keyframes fadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
 .mob-logo{font-family:Georgia,serif;font-size:22px;letter-spacing:2px;background:linear-gradient(90deg,#00c4ff,#00e5a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;display:inline-block}
 .mob-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
 .mob-options{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
@@ -4287,6 +4287,20 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .pid3-sim-v.phy{ color:#9b7fff; }
 .pid3-sim-l{ font-size:8px; color:rgba(255,255,255,.25); }
 
+
+/* ── Mobile Pro Splash ── */
+.mob-menu-btn{
+  display:flex;align-items:center;gap:16px;
+  background:rgba(0,180,200,.06);border:1px solid rgba(0,180,200,.18);
+  border-radius:12px;padding:16px 20px;cursor:pointer;
+  font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;
+  letter-spacing:.6px;color:#e8edf2;text-transform:uppercase;
+  transition:all .15s;text-align:left;width:100%
+}
+.mob-menu-btn:hover,.mob-menu-btn:active{
+  border-color:rgba(0,212,255,.5);background:rgba(0,212,255,.1);color:#00d4ff
+}
+.mob-menu-icon{font-size:20px;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -10362,10 +10376,10 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 }
 
 /* ═══ MOBILE PORTRAIT POPUP ═══ */
-#mobile-popup{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+#mobile-popup{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 #mobile-popup.show{display:flex}
-.mob-sheet{background:#0d1520;border:1px solid rgba(0,212,255,.2);border-radius:16px 16px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;animation:slideUp .25s ease}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mob-sheet{background:#0d1520;border:1px solid rgba(0,212,255,.2);border-radius:16px;padding:24px 20px 32px;width:100%;max-width:480px;animation:fadeIn .2s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}} @keyframes fadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
 .mob-logo{font-family:Georgia,serif;font-size:22px;letter-spacing:2px;background:linear-gradient(90deg,#00c4ff,#00e5a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;display:inline-block}
 .mob-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
 .mob-options{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
@@ -24736,22 +24750,15 @@ function sfDownload() {
 
 <!-- ═══ MOBILE PORTRAIT POPUP ═══ -->
 <div id="mobile-popup">
-  <div class="mob-sheet">
-    <div class="mob-logo">thrivella</div>
-    <div class="mob-title">Vista Mobile Detetada</div>
+  <div class="mob-sheet" style="border-radius:16px;margin:auto;width:calc(100% - 40px);max-width:360px">
+    <div class="mob-logo" style="text-align:center;display:block;margin-bottom:4px">thrivella</div>
+    <div class="mob-title" style="text-align:center;margin-bottom:24px">Escolhe a tua experiência</div>
     <div class="mob-options">
-      <div class="mob-btn" onclick="setMobileMode('elite')">
-        <div class="mob-btn-icon" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2)">⚡</div>
+      <div class="mob-btn" onclick="setMobileMode('elite')" style="border-color:rgba(0,212,255,.35);background:rgba(0,212,255,.06)">
+        <div class="mob-btn-icon" style="background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.3)">⚡</div>
         <div class="mob-btn-text">
-          <div class="mob-btn-name">Versão Pro</div>
-          <div class="mob-btn-desc">Design completo do site adaptado a coluna única. Toda a interatividade.</div>
-        </div>
-      </div>
-      <div class="mob-btn" onclick="setMobileMode('lite')">
-        <div class="mob-btn-icon" style="background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2)">📄</div>
-        <div class="mob-btn-text">
-          <div class="mob-btn-name">Versão Lite</div>
-          <div class="mob-btn-desc">Layout limpo inspirado no PDF Report. Leve e rápido.</div>
+          <div class="mob-btn-name" style="color:#00d4ff">Versão Pro</div>
+          <div class="mob-btn-desc">Design completo adaptado a mobile. Toda a interatividade.</div>
         </div>
       </div>
       <div class="mob-btn" onclick="setMobileMode('desktop')">
@@ -24762,7 +24769,25 @@ function sfDownload() {
         </div>
       </div>
     </div>
-    <div class="mob-skip" onclick="closeMobilePopup()">Decidir mais tarde</div>
+  </div>
+</div>
+
+<!-- ═══ MOBILE PRO SPLASH ═══ -->
+<div id="mob-pro-splash" style="display:none;position:fixed;inset:0;z-index:9997;background:#060c12;flex-direction:column;align-items:center;justify-content:center;gap:40px">
+  <div id="mob-splash-logo" style="font-family:Georgia,serif;font-size:36px;letter-spacing:4px;background:linear-gradient(90deg,#00c4ff,#00e5a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;min-height:48px"></div>
+  <div id="mob-splash-menu" style="display:none;flex-direction:column;gap:14px;width:calc(100% - 60px);max-width:300px">
+    <button class="mob-menu-btn" onclick="mobSplashGo('table')">
+      <span class="mob-menu-icon">📊</span><span>Rankings</span>
+    </button>
+    <button class="mob-menu-btn" onclick="mobSplashGo('playerid')">
+      <span class="mob-menu-icon">🪪</span><span>Player ID</span>
+    </button>
+    <button class="mob-menu-btn" onclick="mobSplashGo('compare')">
+      <span class="mob-menu-icon">⚖️</span><span>Comparar</span>
+    </button>
+    <button class="mob-menu-btn" onclick="mobSplashGo('shadow')">
+      <span class="mob-menu-icon">👁️</span><span>Shadow Team</span>
+    </button>
   </div>
 </div>
 
@@ -24784,8 +24809,7 @@ function isMobilePortrait(){
 function checkMobileOrientation(){
   if(!isMobilePortrait()) return;
   const pref=sessionStorage.getItem('thrivella_mobile_pref');
-  if(pref==='elite'){if(window.selectedPlayer) renderMobileElite(); return;}
-  if(pref==='lite') return;
+  if(pref==='elite'){ showMobProSplash(); return; }
   if(pref==='desktop') return;
   document.getElementById('mobile-popup').classList.add('show');
 }
@@ -24794,28 +24818,66 @@ function setMobileMode(mode){
   sessionStorage.setItem('thrivella_mobile_pref',mode);
   document.getElementById('mobile-popup').classList.remove('show');
   if(mode==='elite'){
-    const el=document.getElementById('mobile-elite-view');
-    if(el) el.style.display='block';
-    // Retry until selectedPlayer is set (max 3s)
-    let tries=0;
-    function tryRender(){
-      tries++;
-      if(window.selectedPlayer||tries>15){
-        renderMobileElite();
-      } else {
-        setTimeout(tryRender,200);
-      }
-    }
-    tryRender();
-  } else if(mode==='lite'){
-    let tries=0;
-    function tryLite(){
-      tries++;
-      if(window.selectedPlayer) pid3PdfMobile(window.selectedPlayer.name);
-      else if(tries<15) setTimeout(tryLite,200);
-    }
-    tryLite();
+    showMobProSplash();
   }
+}
+
+function showMobProSplash(){
+  const splash = document.getElementById('mob-pro-splash');
+  if(!splash) return;
+  splash.style.display='flex';
+  // Typewriter animation for "thrivella"
+  const logoEl = document.getElementById('mob-splash-logo');
+  const word = 'thrivella';
+  logoEl.textContent='';
+  let idx=0;
+  function typeNext(){
+    if(idx<word.length){
+      logoEl.textContent+=word[idx++];
+      setTimeout(typeNext, idx===1?0:220);
+    } else {
+      // Show menu after slight pause
+      setTimeout(()=>{
+        const menu=document.getElementById('mob-splash-menu');
+        if(menu){ menu.style.display='flex'; menu.style.animation='fadeIn .3s ease'; }
+      }, 400);
+    }
+  }
+  setTimeout(typeNext, 300);
+}
+
+function mobSplashGo(view){
+  // Hide splash
+  const splash=document.getElementById('mob-pro-splash');
+  if(splash) splash.style.display='none';
+  // Show mobile elite view
+  const el=document.getElementById('mobile-elite-view');
+  if(el) el.style.display='block';
+  // Set the view, then render
+  window._mobProView = view;
+  let tries=0;
+  function tryRender(){
+    tries++;
+    if(typeof renderMobileElite==='function'){
+      renderMobileElite(view);
+    } else if(tries<15){
+      setTimeout(tryRender,200);
+    }
+  }
+  tryRender();
+}
+
+// Re-check: if mode=elite and no splash shown yet, show splash (not direct render)
+function checkMobileOrientationPro(){
+  if(!isMobilePortrait()) return;
+  const pref=sessionStorage.getItem('thrivella_mobile_pref');
+  if(pref==='elite'){
+    // Already chose Pro — go straight to splash menu
+    showMobProSplash();
+    return;
+  }
+  if(pref==='desktop') return;
+  document.getElementById('mobile-popup').classList.add('show');
 }
 
 function closeMobilePopup(){
