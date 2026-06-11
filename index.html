@@ -7136,12 +7136,14 @@ function renderCompare(){
     + '<div id="cmp-metrics-anchor"></div>'
     + rows
     + '</div>'
-    + '<div id="cmp-ai-section" class="pid3-card pid3-ai-card" style="flex-shrink:0;margin-top:18px;border-color:rgba(0,180,200,.12)">'
-    + '<div class="pid3-ai-hdr" style="border-bottom:1px solid rgba(0,180,200,.1);padding-bottom:9px;margin-bottom:10px;margin-top:0">'
+    + '<div id="cmp-ai-section" style="flex-shrink:0;margin-top:18px;border:1px solid rgba(0,180,200,.12);border-radius:9px;overflow:hidden">'
+    + '<div style="background:#0c1822;padding:10px 14px 10px">'
+    + '<div class="pid3-ai-hdr" style="margin:0">'
     + '<span class="pid3-ai-badge">AI</span>'
     + '<span class="pid3-ai-title" style="text-transform:uppercase">AI Scout Comparison</span>'
     + '</div>'
-    + '<div id="cmp-ai-out" class="pid3-ai-body" style="overflow:visible"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
+    + '</div>'
+    + '<div id="cmp-ai-out" style="background:#060c18;padding:10px 14px 12px;font-family:var(--font-b)"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
     + '</div>';
 
   // ── Compare Radar (canvas, same style as player detail radars) ──────────────
@@ -15214,12 +15216,14 @@ function renderCompare(){
     + '<div id="cmp-metrics-anchor"></div>'
     + rows
     + '</div>'
-    + '<div id="cmp-ai-section" class="pid3-card pid3-ai-card" style="flex-shrink:0;margin-top:18px;border-color:rgba(0,180,200,.12)">'
-    + '<div class="pid3-ai-hdr" style="border-bottom:1px solid rgba(0,180,200,.1);padding-bottom:9px;margin-bottom:10px;margin-top:0">'
+    + '<div id="cmp-ai-section" style="flex-shrink:0;margin-top:18px;border:1px solid rgba(0,180,200,.12);border-radius:9px;overflow:hidden">'
+    + '<div style="background:#0c1822;padding:10px 14px 10px">'
+    + '<div class="pid3-ai-hdr" style="margin:0">'
     + '<span class="pid3-ai-badge">AI</span>'
     + '<span class="pid3-ai-title" style="text-transform:uppercase">AI Scout Comparison</span>'
     + '</div>'
-    + '<div id="cmp-ai-out" class="pid3-ai-body" style="overflow:visible"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
+    + '</div>'
+    + '<div id="cmp-ai-out" style="background:#060c18;padding:10px 14px 12px;font-family:var(--font-b)"><div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div></div>'
     + '</div>';
 
   // ── Compare Radar (canvas, same style as player detail radars) ──────────────
@@ -16068,43 +16072,68 @@ function generateCompareAI(pA, pB) {
   function boldF(t) { const s=t.split(' '); return '<strong>'+s[0]+'</strong> '+s.slice(1).join(' '); }
   function boldN(t) { return t.replace(/(\d+\.?\d*)/g,'<strong>$1</strong>'); }
 
-  // ── Para 1: Perfil & Transferência ─────────────────────────────────────
+  // ── Helper: bold player name wherever it appears ────────────────────────────
+  function bn(name) { return `<strong>${name}</strong>`; }
+  function bv(v)    { return `<strong>${v}</strong>`; }
+
+  // ── Para 1: Perfil & Transferência ───────────────────────────────────────
   const ageDiff = (pA.age||0)-(pB.age||0);
   const ctExpA = pA.contract_end && new Date(pA.contract_end)<new Date(Date.now()+365*24*36e5);
   const ctExpB = pB.contract_end && new Date(pB.contract_end)<new Date(Date.now()+365*24*36e5);
   const younger = ageDiff>0?pB:pA, older = ageDiff>0?pA:pB;
-  let p1 = `${pA.name} e ${pB.name} são dois ${(pA.position||'').split(',')[0].trim()} com perfis complementares. `;
-  if (Math.abs(ageDiff)>=3) p1 += `Com ${younger.age} anos, ${younger.name} representa a aposta no potencial, enquanto ${older.name} (${older.age}a) traz a consistência de quem já navegou ciclos competitivos. `;
+  let p1 = `${bn(pA.name)} e ${bn(pB.name)} são dois ${(pA.position||'').split(',')[0].trim()} com perfis complementares. `;
+  if (Math.abs(ageDiff)>=3) p1 += `Com ${younger.age} anos, ${bn(younger.name)} representa a aposta no potencial, enquanto ${bn(older.name)} (${older.age}a) traz a consistência de quem já navegou ciclos competitivos. `;
   else p1 += `Com idades próximas — ${pA.age} e ${pB.age} anos — a diferença não está nos anos, mas no trajeto. `;
-  if (ctExpA&&!ctExpB) p1 += `O contrato de ${pA.name} com o ${pA.team} aproxima-se do fim em ${pA.contract_end}, o que pode representar uma oportunidade no mercado. ${pB.name} está vinculado até ${pB.contract_end||'—'}.`;
-  else if (ctExpB&&!ctExpA) p1 += `Com contrato a expirar em ${pB.contract_end}, ${pB.name} pode estar disponível a custo reduzido — algo que contrasta com a estabilidade contratual de ${pA.name} (${pA.contract_end||'—'}).`;
-  else p1 += `Em termos de mercado, ${pA.name} está avaliado em ${fmtMv(pA)} e ${pB.name} em ${fmtMv(pB)}.`;
+  if (ctExpA&&!ctExpB) p1 += `O contrato de ${bn(pA.name)} com o ${pA.team} aproxima-se do fim em ${pA.contract_end}, o que pode representar uma oportunidade no mercado. ${bn(pB.name)} está vinculado até ${pB.contract_end||'—'}.`;
+  else if (ctExpB&&!ctExpA) p1 += `Com contrato a expirar em ${pB.contract_end}, ${bn(pB.name)} pode estar disponível a custo reduzido — algo que contrasta com a estabilidade contratual de ${bn(pA.name)} (${pA.contract_end||'—'}).`;
+  else p1 += `Em termos de mercado, ${bn(pA.name)} está avaliado em ${pA.mkt_value>=1e6?'€'+(pA.mkt_value/1e6).toFixed(1)+'M':pA.mkt_value>=1e3?'€'+Math.round(pA.mkt_value/1e3)+'K':'—'} e ${bn(pB.name)} em ${pB.mkt_value>=1e6?'€'+(pB.mkt_value/1e6).toFixed(1)+'M':pB.mkt_value>=1e3?'€'+Math.round(pB.mkt_value/1e3)+'K':'—'}.`;
 
-  // ── Para 2: Desempenho Chave ─────────────────────────────────────────────
-  const bXg=better('xg'), bXa=better('xa'), bDrib=better('dribles90'), bBox=better('box_touches'), bGoals=better('goals_np');
-  const votes=[bXg,bXa,bDrib,bBox,bGoals].filter(Boolean);
-  const cntA=votes.filter(x=>x.name===pA.name).length;
-  const perfL=cntA>=3?pA:pB, perfO=cntA>=3?pB:pA;
-  const lgPctXg=pctLeague(perfL,'xg'), lgPctXa=pctLeague(perfL,'xa'), lgPctDrib=pctLeague(perfL,'dribles90');
-  const hlL=[], hlO=[];
-  if(better('goals_np')?.name===perfL.name) hlL.push(`<strong>${perfL.goals_np||0} golos</strong>`); else if(perfO.goals_np) hlO.push(`<strong>${perfO.goals_np||0} golos</strong>`);
-  if(better('xg')?.name===perfL.name) hlL.push(`xG <strong>${perfL.xg||0}</strong>`); else if(perfO.xg) hlO.push(`xG <strong>${perfO.xg||0}</strong>`);
-  if(better('xa')?.name===perfL.name) hlL.push(`xA <strong>${perfL.xa||0}</strong>`); else if(perfO.xa) hlO.push(`xA <strong>${perfO.xa||0}</strong>`);
-  if(better('dribles90')?.name===perfL.name) hlL.push(`<strong>${perfL.dribles90||0}</strong> dribles/90`); else if(perfO.dribles90) hlO.push(`<strong>${perfO.dribles90||0}</strong> dribles/90`);
-  if(better('box_touches')?.name===perfL.name) hlL.push(`<strong>${perfL.box_touches||0}</strong> box touches`); else if(perfO.box_touches) hlO.push(`<strong>${perfO.box_touches||0}</strong> box touches`);
-  let p2 = `${perfL.name} domina nas métricas que mais importam: ${hlL.slice(0,3).join(', ')||'produção individual superior'}. `;
-  if(lgPctXg!=null&&lgPctXg>=70) p2+=`O seu xG coloca-o no top <strong>${100-lgPctXg}%</strong> da ${perfL.league} — estes números refletem consistência real, não acidente. `;
-  else if(lgPctXa!=null&&lgPctXa>=70) p2+=`No plano criativo, situa-se no top <strong>${100-lgPctXa}%</strong> da ${perfL.league} em xA. `;
-  else if(lgPctDrib!=null&&lgPctDrib>=70) p2+=`Em condução e dribles, é top <strong>${100-lgPctDrib}%</strong> na ${perfL.league}. `;
-  if(hlO.length) p2+=`${perfO.name} responde com ${hlO.slice(0,2).join(' e ')}, sendo uma opção válida em sistemas que valorizam amplitude e envolvimento coletivo.`;
-  else p2+=`${perfO.name} fica aquém nas métricas individuais decisivas, embora possa afirmar-se noutros contextos táticos.`;
-  // Liga context
-  const lgCtx=(()=>{
-    if(isTopLeague(perfL)&&!isTopLeague(perfO)) return ` Vale referir que ${perfL.name} produz estes números na ${perfL.league}, reconhecidamente mais exigente.`;
-    if(isTopLeague(perfO)&&!isTopLeague(perfL)) return ` Note-se que ${perfO.name} opera na ${perfO.league}, liga de maior nível competitivo — o que acrescenta peso ao seu perfil.`;
-    return '';
-  })();
-  p2+=lgCtx;
+  // ── Para 2: Desempenho Chave — métricas: prog_carries, dribles90+dribles_pct, accels90, recpt_depth, shot_assist ──
+  function better(key) {
+    const a=parseFloat(pA[key])||0, b=parseFloat(pB[key])||0;
+    if(!a&&!b) return null;
+    return a>b?pA:(b>a?pB:null);
+  }
+  function pctLeague(p, key) {
+    const lg=PLAYERS.filter(x=>x.league===p.league&&x[key]!=null);
+    if(!lg.length) return null;
+    const rank=[...lg].sort((a,b)=>(b[key]||0)-(a[key]||0)).findIndex(x=>x.name===p.name)+1;
+    return Math.round((1-rank/lg.length)*100);
+  }
+  function isTopLeague(p) {
+    const top=['premier league','la liga','serie a','bundesliga','ligue 1','eredivisie','primeira liga','liga nos','liga portugal'];
+    return top.some(t=>(p.league||'').toLowerCase().includes(t));
+  }
+  // Score each player on the 5 key metrics
+  const keyMetrics = ['prog_carries','dribles90','accels90','recpt_depth','shot_assist'];
+  const votesA = keyMetrics.filter(k=>{ const b=better(k); return b&&b.name===pA.name; }).length;
+  const votesB = keyMetrics.filter(k=>{ const b=better(k); return b&&b.name===pB.name; }).length;
+  const perfL = votesA>=votesB?pA:pB, perfO = votesA>=votesB?pB:pA;
+  // Build highlight list for leader
+  const hlL=[];
+  if(better('prog_carries')?.name===perfL.name && perfL.prog_carries) hlL.push(`${bv(parseFloat(perfL.prog_carries).toFixed(1))} conduções prog./90`);
+  if(better('dribles90')?.name===perfL.name && perfL.dribles90) {
+    const pct = perfL.dribles_pct ? ` (${bv(Math.round(perfL.dribles_pct)+'%')} suc.)` : '';
+    hlL.push(`${bv(parseFloat(perfL.dribles90).toFixed(1))} dribles/90${pct}`);
+  }
+  if(better('accels90')?.name===perfL.name && perfL.accels90) hlL.push(`${bv(parseFloat(perfL.accels90).toFixed(1))} acelerações/90`);
+  if(better('recpt_depth')?.name===perfL.name && perfL.recpt_depth) hlL.push(`${bv(parseFloat(perfL.recpt_depth).toFixed(1))} recep. profundidade`);
+  if(better('shot_assist')?.name===perfL.name && perfL.shot_assist) hlL.push(`${bv(parseFloat(perfL.shot_assist).toFixed(1))} shot assists/90`);
+  // xG/xA as context
+  const lgPctXg=pctLeague(perfL,'xg'), lgPctXa=pctLeague(perfL,'xa');
+  let p2 = `${bn(perfL.name)} domina nas métricas de criação e progressão: ${hlL.slice(0,3).join(', ')||'superioridade individual clara'}. `;
+  if(lgPctXg!=null&&lgPctXg>=70) p2+=`O xG de ${bv(perfL.xg)} coloca-o no top ${bv(100-lgPctXg+'%')} da ${perfL.league} — estes números refletem consistência real, não acidente. `;
+  else if(lgPctXa!=null&&lgPctXa>=70) p2+=`O xA de ${bv(perfL.xa)} posiciona-o no top ${bv(100-lgPctXa+'%')} da ${perfL.league} — estes números refletem consistência real, não acidente. `;
+  else p2+=`Os números refletem consistência real, não acidente. `;
+  // Build highlight list for the other player
+  const hlO=[];
+  if(better('prog_carries')?.name===perfO.name && perfO.prog_carries) hlO.push(`${bv(parseFloat(perfO.prog_carries).toFixed(1))} conduções prog./90`);
+  if(better('dribles90')?.name===perfO.name && perfO.dribles90) hlO.push(`${bv(parseFloat(perfO.dribles90).toFixed(1))} dribles/90`);
+  if(better('shot_assist')?.name===perfO.name && perfO.shot_assist) hlO.push(`${bv(parseFloat(perfO.shot_assist).toFixed(1))} shot assists/90`);
+  if(hlO.length) p2+=`${bn(perfO.name)} destaca-se com ${hlO.slice(0,2).join(' e ')}, sendo relevante em sistemas que exigem amplitude e envolvimento directo no jogo.`;
+  else p2+=`${bn(perfO.name)} fica aquém nas métricas de criação directa, embora possa afirmar-se noutros contextos táticos.`;
+  if(isTopLeague(perfL)&&!isTopLeague(perfO)) p2+=` Vale referir que ${bn(perfL.name)} produz estes números na ${perfL.league}, reconhecidamente mais exigente.`;
+  else if(isTopLeague(perfO)&&!isTopLeague(perfL)) p2+=` Note-se que ${bn(perfO.name)} opera na ${perfO.league}, liga de maior nível competitivo.`;
 
   // ── Para 3: Capacidade Física ─────────────────────────────────────────────
   const bSpeed=better('max_speed'), bSprint=better('sprint_dist90'), bHsr=better('hsr90');
@@ -16112,98 +16141,123 @@ function generateCompareAI(pA, pB) {
   const physA=physVotes.filter(x=>x&&x.name===pA.name).length;
   const physL=physA>=2?pA:pB, physO=physA>=2?pB:pA;
   const lgPctSpeed=pctLeague(physL,'max_speed');
-  let p3 = `Do ponto de vista físico, ${physL.name} é o mais explosivo dos dois. `;
-  if(physL.max_speed) p3+=`Atinge <strong>${physL.max_speed} km/h</strong> de velocidade máxima`;
-  if(physL.sprint_dist90) p3+=` e cobre <strong>${Math.round(physL.sprint_dist90)}m</strong> de sprint por jogo`;
+  let p3 = `Do ponto de vista físico, ${bn(physL.name)} é o mais explosivo dos dois. `;
+  if(physL.max_speed) p3+=`Atinge ${bv(physL.max_speed+' km/h')} de velocidade máxima`;
+  if(physL.sprint_dist90) p3+=` e cobre ${bv(Math.round(physL.sprint_dist90)+'m')} de sprint por jogo`;
   p3+=`. `;
   if(lgPctSpeed!=null&&lgPctSpeed>=70) p3+=`Na ${physL.league}, isso coloca-o entre os mais rápidos — uma arma importante em transições. `;
-  p3+=`${physO.name} regista <strong>${physO.max_speed||'—'} km/h</strong> e <strong>${Math.round(physO.sprint_dist90||0)}m</strong> de sprint/90`;
-  if(physO.hsr90&&physL.hsr90&&(physO.hsr90||0)>(physL.hsr90||0)) p3+=`, mas compensa com maior distância em alta intensidade (<strong>${Math.round(physO.hsr90)}m</strong> HSR/90)`;
+  p3+=`${bn(physO.name)} regista ${bv((physO.max_speed||'—')+' km/h')} e ${bv(Math.round(physO.sprint_dist90||0)+'m')} de sprint/90`;
+  if(physO.hsr90&&physL.hsr90&&(physO.hsr90||0)>(physL.hsr90||0)) p3+=`, mas compensa com maior distância em alta intensidade (${bv(Math.round(physO.hsr90)+'m')} HSR/90)`;
   p3+=`.`;
 
   // ── Para 4: Conclusão ─────────────────────────────────────────────────────
   const tiA=pA.talent_index_pct||0, tiB=pB.talent_index_pct||0;
   const tiL=tiA>tiB?pA:pB, tiO=tiA>tiB?pB:pA;
-  let p4 = `O Talent Index posiciona ${tiL.name} no <strong>${tiL.talent_index_pct||0}º percentil</strong> — `;
+  let p4 = `O Talent Index posiciona ${bn(tiL.name)} no ${bv(Math.round(tiL.talent_index_pct||0)+'º percentil')} — `;
   if ((ctExpA&&tiL.name===pA.name)||(ctExpB&&tiL.name===pB.name)) p4+=`e com o contrato a expirar, a janela para o contratar raramente será mais favorável. `;
   else p4+=`um indicador que agrega técnica, físico e impacto coletivo. `;
-  p4+=`${tiO.name} (<strong>${tiO.talent_index_pct||0}º percentil</strong>) é a escolha certa para quem privilegia ${cntA<3?'criatividade e presença na área':'velocidade e intensidade off-ball'} — dependendo do sistema, pode ser igualmente decisivo.`;
+  p4+=`${bn(tiO.name)} (${bv(Math.round(tiO.talent_index_pct||0)+'º percentil')}) é a escolha certa para quem privilegia ${votesA<votesB?'criatividade e presença na área':'velocidade e intensidade off-ball'} — dependendo do sistema, pode ser igualmente decisivo.`;
 
   // ── Render — pid3-ai-card design ────────────────────────────────────────────
   const LBL  = 'display:block;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6);margin-bottom:5px;margin-top:0';
   const LBLn = 'display:block;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6);margin-bottom:5px;margin-top:14px';
-  const PS   = 'margin:0;line-height:1.75;font-size:12px;color:rgba(255,255,255,.82);text-align:justify;text-align-last:left';
-  const PSm  = 'margin:6px 0 0;line-height:1.75;font-size:12px;color:rgba(255,255,255,.82);text-align:justify;text-align-last:left';
-
+  const PS  = 'margin:0;line-height:1.75;font-size:12px;color:rgba(255,255,255,.82);text-align:justify;text-align-last:left';
+  const PSm = 'margin:6px 0 0;line-height:1.75;font-size:12px;color:rgba(255,255,255,.82);text-align:justify;text-align-last:left';
   const labels=['Perfil & Transferência','Desempenho Chave','Capacidade Física','Conclusão'];
-  const rawParas=[p1,p2,p3,p4];
 
-  function applyBold(t){ return t.replace(/<strong>(.*?)<\/strong>/g,'<b>$1</b>'); }
+  // Convert <strong> → <b>
+  function ab(t){ return t.replace(/<strong>([\s\S]*?)<\/strong>/g,'<b>$1</b>'); }
 
-  // Bold the first REAL sentence — must end with '. ' or '! ' after a word of 3+ chars
-  // (excludes initials like "M." or "L.")
-  function boldFirstSentence(text) {
-    // Match: start, then chars until we hit [3+char word][.!] followed by space
-    return text.replace(/^(.*?[a-záéíóúàãõç]{3,}[.!])\s/, '<b>$1</b> ');
+  // Strip HTML tags to get plain text for sentence detection
+  function strip(t){ return t.replace(/<[^>]+>/g,''); }
+
+  // Split into sentences: find '. ' in plain text where preceding word has 2+ chars
+  // Map back to original HTML by scanning char by char
+  function splitSents(html) {
+    const plain = strip(html);
+    // Find sentence boundaries in plain text (index positions)
+    const breaks = []; // indices in plain text where a new sentence starts
+    const re = /([a-záéíóúàãõç]{2,})\.\s+(?=[A-ZÁÉÍÓÚÀÃ])/g;
+    let m;
+    while((m=re.exec(plain))!==null) {
+      // Position after '. '
+      breaks.push(m.index + m[0].length);
+    }
+    if(!breaks.length) return [html];
+    // Now map plain-text breaks back to HTML positions
+    const parts = [];
+    let htmlIdx=0, plainIdx=0, lastCut=0, lastHtmlCut=0;
+    let bIdx=0;
+    while(htmlIdx < html.length && bIdx < breaks.length) {
+      const ch = html[htmlIdx];
+      if(ch==='<') {
+        // skip tag
+        const end = html.indexOf('>',htmlIdx);
+        htmlIdx = end>=0 ? end+1 : html.length;
+      } else {
+        if(plainIdx === breaks[bIdx]) {
+          parts.push(html.slice(lastHtmlCut, htmlIdx).trim());
+          lastHtmlCut = htmlIdx;
+          bIdx++;
+        }
+        plainIdx++;
+        htmlIdx++;
+      }
+    }
+    parts.push(html.slice(lastHtmlCut).trim());
+    return parts.filter(Boolean);
   }
 
-  // Split on '. ' only when preceding token is 2+ lowercase letters (not initials)
-  // Returns array of sentence strings
-  function splitSentences(text) {
-    const S = '\x01';
-    const marked = text.replace(/([a-záéíóúàãõç]{2,})\.\s+([A-ZÁÉÍÓÚÀÃ])/g,
-      (m,a,b) => a + '.' + S + b
-    );
-    return marked.split(S).map(s=>s.trim()).filter(Boolean);
-  }
-
-  // Build paragraphs from a list of split points specified by sentence index
-  // splitAt: array of sentence indices BEFORE which to break
-  function buildParas(sentences, splitAt) {
-    const groups = [];
-    let cur = [];
-    sentences.forEach((s,i) => {
-      if(i > 0 && splitAt.includes(i)) { groups.push(cur); cur = []; }
-      cur.push(s);
-    });
+  // Build paragraph groups; splitAt = sentence indices to break before
+  function mkParas(sents, splitAt) {
+    const groups=[]; let cur=[];
+    sents.forEach((s,i)=>{ if(i>0&&splitAt.includes(i)){groups.push(cur);cur=[];} cur.push(s); });
     if(cur.length) groups.push(cur);
-    return groups.map((g,gi) =>
-      '<p style="'+(gi===0?PS:PSm)+'">'+ g.join(' ') +'</p>'
-    ).join('');
+    return groups.map((g,gi)=>'<p style="'+(gi===0?PS:PSm)+'">'+g.join(' ')+'</p>').join('');
+  }
+
+  // Bold the first real sentence (ends with word of 3+ letters + period)
+  function boldFirst(html) {
+    // Find first sentence boundary in plain text
+    const plain = strip(html);
+    const m = plain.match(/^(.*?[a-záéíóúàãõç]{3,}[.!])\s/);
+    if(!m) return '<b>'+html+'</b>';
+    const endPlain = m[1].length; // length of first sentence in plain
+    // Find corresponding HTML end position
+    let hi=0, pi=0;
+    while(hi<html.length && pi<endPlain) {
+      if(html[hi]==='<'){ const e=html.indexOf('>',hi); hi=e>=0?e+1:html.length; }
+      else { pi++; hi++; }
+    }
+    // Skip any closing tags
+    while(hi<html.length && html[hi]==='<') { const e=html.indexOf('>',hi); hi=e>=0?e+1:html.length; }
+    return '<b>'+html.slice(0,hi).trim()+'</b> '+html.slice(hi).trim();
   }
 
   let htmlOut='';
-  rawParas.forEach((para,i)=>{
+  [p1,p2,p3,p4].forEach((para,i)=>{
+    const processed = boldFirst(ab(para));
+    const sents = splitSents(processed);
     htmlOut+='<span style="'+(i===0?LBL:LBLn)+'">'+labels[i]+'</span>';
-    const withBold = boldFirstSentence(applyBold(para));
-    const sents = splitSentences(withBold);
-    let html_p;
+    let hp;
     if(i===0) {
-      // Perfil: natural 2-sentence groups
-      html_p = buildParas(sents, [2,4]);
+      // Perfil: break after "competitivos" sentence
+      const compIdx = sents.findIndex(s=>strip(s).includes('competitivos'));
+      hp = mkParas(sents, compIdx>=0?[compIdx+1]:[2]);
     } else if(i===1) {
-      // Desempenho Chave: break before sentence about 2nd player & after "acidente"
-      // Find sentence containing "acidente" and sentence starting with 2nd player name
-      const acIdx = sents.findIndex(s => s.includes('acidente'));
-      const p2Idx = sents.findIndex(s => /^[A-Z][a-z]+\s+responde|^[A-Z][a-z]+\s+fica|^[A-Z][a-z]+\s+apresenta|^[A-Z][a-z]+\s+compensa/.test(s));
-      const breaks = new Set([2]);
-      if(acIdx >= 0 && acIdx+1 < sents.length) breaks.add(acIdx+1);
-      if(p2Idx > 0) breaks.add(p2Idx);
-      html_p = buildParas(sents, [...breaks].sort((a,b)=>a-b));
+      // Desempenho: break after "acidente" sentence
+      const acIdx = sents.findIndex(s=>strip(s).includes('acidente'));
+      hp = mkParas(sents, acIdx>=0?[acIdx+1]:[2]);
     } else if(i===2) {
-      // Capacidade Física: break after sprint sentence (contains "sprint por jogo" or "sprint/90" before last sentence)
-      const sprintIdx = sents.findIndex(s => s.includes('sprint por jogo') || (s.includes('sprint') && s.includes('jogo')));
-      const breaks = sprintIdx >= 0 ? [sprintIdx+1] : [2];
-      html_p = buildParas(sents, breaks);
-    } else if(i===3) {
-      // Conclusão: break after "favorável"
-      const favIdx = sents.findIndex(s => s.includes('favor'));
-      const breaks = favIdx >= 0 ? [favIdx+1] : [1];
-      html_p = buildParas(sents, breaks);
+      // Físico: break after "sprint por jogo" sentence
+      const spIdx = sents.findIndex(s=>strip(s).includes('sprint por jogo'));
+      hp = mkParas(sents, spIdx>=0?[spIdx+1]:[1]);
     } else {
-      html_p = buildParas(sents, [2]);
+      // Conclusão: break after "favorável" sentence
+      const favIdx = sents.findIndex(s=>strip(s).includes('favor'));
+      hp = mkParas(sents, favIdx>=0?[favIdx+1]:[1]);
     }
-    htmlOut+=html_p;
+    htmlOut+=hp;
   });
   aiCmpCache[cacheKey]=htmlOut;
   const el2=document.getElementById('cmp-ai-out');
