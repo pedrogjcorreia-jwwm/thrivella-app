@@ -7122,13 +7122,11 @@ function renderCompare(){
     + playerHeader(pA, colA)
     + '<div class="cmp-header-mid" style="display:flex;flex-direction:column;align-items:center;padding:16px 12px;background:var(--bg0)">'
     + '<canvas id="cmp-radar-combined"></canvas>'
-    + '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;justify-content:center">'
+    + '<div style="display:flex;gap:6px;margin-top:10px;padding-bottom:12px;justify-content:center;align-items:center">'
     + '<button class="cmp-tog active" id="ctog-a" onclick="toggleCmpLayer(&quot;a&quot;)" style="border-color:' + colA + ';color:' + colA + ';border-style:solid">' + (pA ? pA.name.split(' ').slice(-1)[0] : 'A') + '</button>'
+    + '<button class="cmp-tog active" id="ctog-avg" onclick="toggleCmpLayer(&quot;avg&quot;)" style="border-color:rgba(160,160,160,0.5);color:rgba(160,160,160,0.7);border-style:dashed">Liga</button>'
     + '<button class="cmp-tog active" id="ctog-b" onclick="toggleCmpLayer(&quot;b&quot;)" style="border-color:' + colB + ';color:' + colB + ';border-style:solid">' + (pB ? pB.name.split(' ').slice(-1)[0] : 'B') + '</button>'
     + togBtnsExtra
-    + '</div>'
-    + '<div style="display:flex;justify-content:center;margin-top:5px;padding-bottom:12px">'
-    + '<button class="cmp-tog active" id="ctog-avg" onclick="toggleCmpLayer(&quot;avg&quot;)" style="border-color:rgba(160,160,160,0.5);color:rgba(160,160,160,0.7);border-style:dashed">Liga</button>'
     + '</div>'
     + '</div>'
     + playerHeader(pB, colB)
