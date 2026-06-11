@@ -25205,14 +25205,19 @@ function renderMobileShadowView(){
   },200);
 }
 
-  if(isMobilePortrait()){
-    // Always show popup on fresh load (sessionStorage cleared between deploys isn't guaranteed)
+// ── Mobile init on page load ──────────────────────────────────────────────────
+(function initMobile(){
+  function run(){
+    if(!isMobilePortrait()) return;
     sessionStorage.removeItem('thrivella_mobile_pref');
-    document.getElementById('mobile-popup').classList.add('show');
+    const popup = document.getElementById('mobile-popup');
+    if(popup) popup.classList.add('show');
+    if(typeof mobResetPopup==='function') mobResetPopup();
   }
-});
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
+})();
 
-// On orientation change — always ask again
 window.addEventListener('orientationchange',()=>{
   setTimeout(()=>{
     if(!isMobilePortrait()) return;
