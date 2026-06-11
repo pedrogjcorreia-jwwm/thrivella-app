@@ -2314,12 +2314,12 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .mob-e-mrow{padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.03)}
 .mob-e-mrow:last-child{border-bottom:none}
 .mob-e-mrow:hover,.mob-e-mrow:active{background:rgba(0,212,255,.06)}
-.mob-e-mrow-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+.mob-e-mrow-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;gap:8px}
 .mob-e-mrow-lbl{font-family:'Barlow',sans-serif;font-size:10px;font-weight:600;color:rgba(200,220,245,.5);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
 .mob-e-mrow-right{display:flex;align-items:center;gap:5px}
 .mob-e-mrow-val{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800}
 .mob-e-mrow-rnk{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid}
-.mob-e-bar-wrap{height:2px;background:rgba(255,255,255,.06);border-radius:1px;overflow:hidden;max-width:60%}
+.mob-e-bar-wrap{height:2px;background:rgba(255,255,255,.06);border-radius:1px;overflow:hidden}
 .mob-e-bar{height:100%;border-radius:2px}
 .mob-e-sim-card{padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06)}
 .mob-e-sim-card:last-child{border-bottom:none}
@@ -10436,12 +10436,12 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .mob-e-mrow{padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.03)}
 .mob-e-mrow:last-child{border-bottom:none}
 .mob-e-mrow:hover,.mob-e-mrow:active{background:rgba(0,212,255,.06)}
-.mob-e-mrow-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+.mob-e-mrow-inner{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;gap:8px}
 .mob-e-mrow-lbl{font-family:'Barlow',sans-serif;font-size:10px;font-weight:600;color:rgba(200,220,245,.5);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
 .mob-e-mrow-right{display:flex;align-items:center;gap:5px}
 .mob-e-mrow-val{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800}
 .mob-e-mrow-rnk{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid}
-.mob-e-bar-wrap{height:2px;background:rgba(255,255,255,.06);border-radius:1px;overflow:hidden;max-width:60%}
+.mob-e-bar-wrap{height:2px;background:rgba(255,255,255,.06);border-radius:1px;overflow:hidden}
 .mob-e-bar{height:100%;border-radius:2px}
 .mob-e-sim-card{padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06)}
 .mob-e-sim-card:last-child{border-bottom:none}
@@ -25371,13 +25371,13 @@ function renderMobileElite(){
     const c=vc(key,inv),r=rnkL(key,inv),pct=pctL(key,inv);
     return `<div class="mob-e-mrow" style="padding:10px 14px;cursor:pointer" onclick="showMetricTop3('${key}','${lbl}',${inv?true:false})">
       <div class="mob-e-mrow-inner">
-        <span class="mob-e-mrow-lbl" style="color:${pct>=0.5?'rgba(255,255,255,.85)':'rgba(200,220,245,.55)'}">${lbl}</span>
-        <div class="mob-e-mrow-right">
+        <span class="mob-e-mrow-lbl" style="color:${pct>=0.5?'rgba(255,255,255,.85)':'rgba(200,220,245,.55)'};flex-shrink:0;max-width:38%">${lbl}</span>
+        <div class="mob-e-bar-wrap" style="flex:1;margin-right:5px"><div class="mob-e-bar" style="width:${Math.round(pct*100)}%;background:${pct>=0.8?'linear-gradient(90deg,#38bdf8 70%,#00e5a0 100%)':pct>=0.5?'#38bdf8':'rgba(255,255,255,.15)'}"></div></div>
+        <div class="mob-e-mrow-right" style="flex-shrink:0">
           <span class="mob-e-mrow-val" style="color:${c}">${fv(val)}</span>
           <span class="mob-e-mrow-rnk" style="color:${c};border-color:${c}55">#${r}</span>
         </div>
       </div>
-      <div class="mob-e-bar-wrap"><div class="mob-e-bar" style="width:${Math.round(pct*100)}%;background:${pct>=0.8?'linear-gradient(90deg,#38bdf8 70%,#00e5a0 100%)':pct>=0.5?'#38bdf8':'rgba(255,255,255,.15)'}"></div></div>
     </div>`;
   }
 
