@@ -5,7 +5,7 @@
   <meta http-equiv="Expires" content="0">
   <!-- v2 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thrivella-194651</title>
+<title>Thrivella-194905</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&amp;family=Barlow:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -8129,7 +8129,7 @@ function generateCompareAI(pA, pB) {
   <meta http-equiv="Expires" content="0">
   <!-- v2 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thrivella-194651</title>
+<title>Thrivella-194905</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&amp;family=Barlow:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -13399,7 +13399,7 @@ const AVATAR_COLORS=['#00d4ff','#00e5a0','#ffb340','#ff4757','#9b7fff','#ff6b9d'
 const notes={};
 let selectedPlayer=null, currentView='table', radarChart=null;
 let tableSort={key:'score',dir:-1}; // 'score' key → sorts by talent_index
-let selPos='all', selLeagues=[], showAlerts=false, filts={ageMin:16,ageMax:40,ctMin:2025,ctMax:2031,scMin:0};
+selPos='all'; selLeagues=[]; showAlerts=false; var filts={ageMin:16,ageMax:40,ctMin:2025,ctMax:2031,scMin:0};
 
 // ── DERIVED DATA ─────────────────────────────────────────────────────────────
 let ALL_LEAGUES = [];
@@ -16539,7 +16539,7 @@ function exportSimplePDF() {
   const aiText = (localStorage.getItem(cacheKey)||'<p>Análise não gerada.</p>').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
   const metrics = [['Talent Index',((p.total_off||0)+(p.total_def||0)+(p.total_pass||0)).toFixed(1)],['Off',(p.total_off||0).toFixed(1)],['Def',(p.total_def||0).toFixed(1)],['Pass',(p.total_pass||0).toFixed(1)],['xG',p.xg?.toFixed(2)||'—'],['xA',p.xa?.toFixed(2)||'—'],['Dribles/90',p.dribles90?.toFixed(1)||'—'],['% Dribles',p.dribles_pct!=null?p.dribles_pct.toFixed(0)+'%':'—'],['Acelerações/90',p.accels90?.toFixed(1)||'—'],['Shot Assists/90',p.shot_assist?.toFixed(1)||'—'],['Vel. Máx',p.max_speed!=null?p.max_speed.toFixed(1)+' km/h':'—'],['Sprints/90',p.sprints90?.toFixed(0)||'—']];
   const rows = (arr) => arr.map(([k])=>'<th>'+k+'</th>').join('')+'</tr><tr>'+arr.map(([,v])=>'<td>'+v+'</td>').join('');
-  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Thrivella-194651</title>'
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Thrivella-194905</title>'
     +'<style>body{font-family:Georgia,serif;max-width:800px;margin:0 auto;padding:30px;color:#111}'
     +'h1{font-size:22px;font-weight:400;letter-spacing:1px;margin:0 0 4px}.logo{font-size:14px;color:#00a0c4;letter-spacing:2px;margin-bottom:20px}'
     +'.meta{font-size:12px;color:#555;margin-bottom:20px;display:flex;gap:20px;flex-wrap:wrap}'
@@ -25179,7 +25179,7 @@ function renderMobileCompareView(nameA, nameB){
         // Radar legend
         const leg=document.createElement('div');
         leg.style.cssText='display:flex;gap:14px;margin-top:6px;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;justify-content:center';
-        leg.innerHTML=`<span style="color:#00d4ff">● ${pA.name.split(' ').slice(-1)[0]}</span><span style="color:rgba(255,255,255,.35)">╌ Liga</span><span style="color:#00e5a0">● ${pB.name.split(' ').slice(-1)[0]}</span>`;
+        leg.innerHTML='<span style="color:#00d4ff">● '+pA.name.split(' ').slice(-1)[0]+'</span><span style="color:rgba(255,255,255,.35)">╌ Liga</span><span style="color:#00e5a0">● '+pB.name.split(' ').slice(-1)[0]+'</span>';
         radarWrap.appendChild(leg);
         out.appendChild(radarWrap);
 
