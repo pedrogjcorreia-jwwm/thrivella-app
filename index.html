@@ -21187,7 +21187,7 @@ function pid3BuildSimCards(pool, p, PLAYERS_REF) {
           /* ROW 1: Nome + posições — puxado 1mm para cima */
           '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px;margin-top:-1mm">'+
             '<div style="min-width:0">'+
-              '<div style="font-family:var(--font-d);font-size:14px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2">'+s.name+'</div>'+
+              '<div style="font-family:var(--font-d);font-size:10px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2">'+s.name+'</div>'+
               '<div style="font-size:9px;color:rgba(255,255,255,.32);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.age?s.age+'a · ':'')+s.team+'</div>'+
             '</div>'+
             '<div style="flex-shrink:0;display:flex;gap:2px;align-items:flex-start">'+
@@ -25121,21 +25121,27 @@ function renderMobileCompareView(nameA, nameB){
     const leg=document.getElementById('mob-cmp-legend');
     if(leg) leg.innerHTML=`<span style="color:${cA}">● ${pA.name.split(' ').slice(-1)[0]}</span><span style="color:rgba(255,255,255,.35)">╌ Liga</span><span style="color:${cB}">● ${pB.name.split(' ').slice(-1)[0]}</span>`;
 
-    // Show loading in body
     const body=document.getElementById('mob-cmp-body');
     if(body) body.innerHTML='<div class="ai-thinking" style="padding:20px 0"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
 
-    // Set compare inputs and run desktop engine
+    // Ensure compare view is visible (renderCompare needs compare-body in DOM)
+    const viewCmp=document.getElementById('view-compare');
+    if(viewCmp) viewCmp.style.display='flex';
+
+    // Set inputs
     const sa=document.getElementById('cmp-a'), sb=document.getElementById('cmp-b');
-    if(sa) sa.value=pA.name;
-    if(sb) sb.value=pB.name;
+    if(!sa||!sb){ console.warn('cmp-a/b not found'); return; }
+    sa.value=pA.name;
+    sb.value=pB.name;
+
+    // Run compare engine
     if(typeof renderCompare==='function') renderCompare();
 
     setTimeout(()=>{
       if(typeof _reflowMobileCompare==='function') _reflowMobileCompare();
       if(typeof generateCompareAI==='function') generateCompareAI(pA,pB);
 
-      // Grab the reflowed output from compare-body and put it in mob-cmp-body
+      // Clone compare-body output into mob-cmp-body
       const cmpBody=document.getElementById('compare-body');
       if(body&&cmpBody){
         body.innerHTML='';
@@ -25143,11 +25149,12 @@ function renderMobileCompareView(nameA, nameB){
         wrap.style.cssText='width:100%;overflow-x:hidden;box-sizing:border-box';
         Array.from(cmpBody.children).forEach(child=> wrap.appendChild(child.cloneNode(true)));
         body.appendChild(wrap);
-        // Hide skeleton radar — the cloned body already has the proper radar
         const skRad=document.getElementById('mob-cmp-radar-wrap');
         if(skRad) skRad.style.display='none';
       }
-    },500);
+      // Hide the desktop compare view again
+      if(viewCmp) viewCmp.style.display='none';
+    },600);
   };
 
   if(pA&&pB) setTimeout(mobCmpRun,100);
@@ -25184,21 +25191,37 @@ function renderMobileShadowView(){
   setTimeout(()=>{
     const shadowView = document.getElementById('view-shadow');
     if(shadowView){
-      content.innerHTML='<div style="height:100%;overflow-y:auto;padding-bottom:20px"></div>';
+      content.innerHTML='<div style="overflow-y:auto;height:100%;padding-bottom:20px"></div>';
       const wrap=content.firstChild;
       const children=Array.from(shadowView.children);
       children.slice(1).forEach(child=>{
         const clone=child.cloneNode(true);
-        clone.style.cssText=(clone.style.cssText||'').replace(/display:\s*none/,'');
-        // Scale down the pitch canvas/container
-        const pitchWrap=clone.querySelector('[id*="sh-pitch"],[class*="sh-pitch"],[id*="shadow-pitch"],[class*="shadow-pitch"],canvas');
+        // Fix pitch area padding — desktop uses 200px sides
+        const pitchArea=clone.querySelector('#sh-pitch-area,[id*="sh-pitch-area"]');
+        if(pitchArea){
+          pitchArea.style.padding='8px 4px';
+          pitchArea.style.justifyContent='center';
+          pitchArea.style.overflow='hidden';
+        }
+        // Scale the pitch wrap itself
+        const pitchWrap=clone.querySelector('#sh-pitch-wrap,[id*="sh-pitch-wrap"]');
         if(pitchWrap){
-          pitchWrap.style.maxHeight='55vh';
-          pitchWrap.style.overflow='hidden';
+          pitchWrap.style.transform='scale(0.52)';
+          pitchWrap.style.transformOrigin='top center';
         }
         wrap.appendChild(clone);
       });
-      setTimeout(()=>{ if(typeof shResetAndRender==='function') shResetAndRender(); },100);
+      setTimeout(()=>{
+        if(typeof shResetAndRender==='function') shResetAndRender();
+        // After render, adjust wrap height to match scaled pitch
+        const pitchWrap=wrap.querySelector('#sh-pitch-wrap,[id*="sh-pitch-wrap"]');
+        const pitchArea=wrap.querySelector('#sh-pitch-area,[id*="sh-pitch-area"]');
+        if(pitchWrap&&pitchArea){
+          const h=pitchWrap.offsetHeight;
+          pitchArea.style.height=Math.round(h*0.52+16)+'px';
+          pitchArea.style.minHeight='unset';
+        }
+      },200);
     } else {
       content.innerHTML='<div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase">A carregar campo...</div>';
       setTimeout(renderMobileShadowView,400);
