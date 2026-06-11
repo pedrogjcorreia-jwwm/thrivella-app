@@ -25111,6 +25111,7 @@ function renderMobileCompareView(nameA, nameB){
     const {pA,pB}=window._cmpMob;
     if(!pA||!pB) return;
     const cA='#00d4ff', cB='#00e5a0';
+
     // Update skeleton cards
     ['a','b'].forEach(s=>{
       const p=s==='a'?pA:pB, col=s==='a'?cA:cB;
@@ -25124,24 +25125,21 @@ function renderMobileCompareView(nameA, nameB){
     const body=document.getElementById('mob-cmp-body');
     if(body) body.innerHTML='<div class="ai-thinking" style="padding:20px 0"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
 
-    // Ensure compare view is visible (renderCompare needs compare-body in DOM)
+    // Show compare view so renderCompare can write to compare-body
     const viewCmp=document.getElementById('view-compare');
     if(viewCmp) viewCmp.style.display='flex';
 
-    // Set inputs
+    // initCompare populates the <select> options, then set values
+    if(typeof initCompare==='function') initCompare();
     const sa=document.getElementById('cmp-a'), sb=document.getElementById('cmp-b');
-    if(!sa||!sb){ console.warn('cmp-a/b not found'); return; }
-    sa.value=pA.name;
-    sb.value=pB.name;
-
-    // Run compare engine
+    if(sa) sa.value=pA.name;
+    if(sb) sb.value=pB.name;
     if(typeof renderCompare==='function') renderCompare();
 
     setTimeout(()=>{
       if(typeof _reflowMobileCompare==='function') _reflowMobileCompare();
       if(typeof generateCompareAI==='function') generateCompareAI(pA,pB);
 
-      // Clone compare-body output into mob-cmp-body
       const cmpBody=document.getElementById('compare-body');
       if(body&&cmpBody){
         body.innerHTML='';
@@ -25152,7 +25150,6 @@ function renderMobileCompareView(nameA, nameB){
         const skRad=document.getElementById('mob-cmp-radar-wrap');
         if(skRad) skRad.style.display='none';
       }
-      // Hide the desktop compare view again
       if(viewCmp) viewCmp.style.display='none';
     },600);
   };
@@ -25196,32 +25193,17 @@ function renderMobileShadowView(){
       const children=Array.from(shadowView.children);
       children.slice(1).forEach(child=>{
         const clone=child.cloneNode(true);
-        // Fix pitch area padding — desktop uses 200px sides
+        // Fix pitch area: remove 200px side padding, set zoom to fit screen
         const pitchArea=clone.querySelector('#sh-pitch-area,[id*="sh-pitch-area"]');
         if(pitchArea){
-          pitchArea.style.padding='8px 4px';
-          pitchArea.style.justifyContent='center';
-          pitchArea.style.overflow='hidden';
-        }
-        // Scale the pitch wrap itself
-        const pitchWrap=clone.querySelector('#sh-pitch-wrap,[id*="sh-pitch-wrap"]');
-        if(pitchWrap){
-          pitchWrap.style.transform='scale(0.52)';
-          pitchWrap.style.transformOrigin='top center';
+          pitchArea.style.cssText='flex:none;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;padding:0;width:100%;min-width:0;position:relative;zoom:0.48';
         }
         wrap.appendChild(clone);
       });
+      // Render the shadow pitch
       setTimeout(()=>{
         if(typeof shResetAndRender==='function') shResetAndRender();
-        // After render, adjust wrap height to match scaled pitch
-        const pitchWrap=wrap.querySelector('#sh-pitch-wrap,[id*="sh-pitch-wrap"]');
-        const pitchArea=wrap.querySelector('#sh-pitch-area,[id*="sh-pitch-area"]');
-        if(pitchWrap&&pitchArea){
-          const h=pitchWrap.offsetHeight;
-          pitchArea.style.height=Math.round(h*0.52+16)+'px';
-          pitchArea.style.minHeight='unset';
-        }
-      },200);
+      },150);
     } else {
       content.innerHTML='<div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase">A carregar campo...</div>';
       setTimeout(renderMobileShadowView,400);
@@ -25630,7 +25612,7 @@ function renderMobileElite(){
           <div style="display:flex;gap:4px;flex:1">
             <!-- Coluna esquerda: nome + 3 rows -->
             <div style="flex:1;min-width:0;display:flex;flex-direction:column">
-              <div style="font-family:'Barlow Condensed',sans-serif;font-size:25px;font-weight:800;color:#e8edf2;line-height:1">${s.name}</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:#e8edf2;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.name}</div>
               <div style="margin-top:6px;font-family:'Barlow',sans-serif;font-size:12px;color:rgba(255,255,255,.45)">${s.age||'—'}a · ${s.size?s.size+' cm':'—'}</div>
               <div style="margin-top:6px;display:flex;gap:6px">
                 ${[['J',s.matches],['M',s.minutes],['G',s.goals_np]].map(([l,v])=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:11px"><span style="font-size:8px;color:rgba(255,255,255,.25)">${l} </span><span style="color:#00d4ff;font-weight:700">${v!=null?v:'—'}</span></span>`).join('<span style="color:rgba(255,255,255,.12);font-size:10px;margin:0 1px">·</span>')}
