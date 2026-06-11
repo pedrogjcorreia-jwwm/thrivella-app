@@ -5,7 +5,7 @@
   <meta http-equiv="Expires" content="0">
   <!-- v2 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thrivella 20260611-190612</title>
+<title>Thrivella-191551</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&amp;family=Barlow:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -6935,7 +6935,7 @@ function renderCompare(){
   }
 
   // ── Header card ─────────────────────────────────────────────────────────
-  function playerHeader(p, col) {
+  function playerHeader(p, col, pOther) {
     if (!p) {
       return '<div class="cmp-card" style="align-items:center;justify-content:center;min-height:200px">'
         + '<span style="font-size:13px;color:var(--muted2)">— Seleciona jogador —</span></div>';
@@ -6967,10 +6967,19 @@ function renderCompare(){
         + '</div>';
     }
     // Plain row
-    function plainRow(lbl, val) {
+    function plainRow(lbl, val, otherVal, higherIsBetter=true) {
+      // Colour the value if we have a comparison
+      let valColor = '';
+      if(otherVal !== undefined && otherVal !== null && val !== '—' && otherVal !== '—') {
+        const n = parseFloat(String(val).replace(/[^0-9.-]/g,''));
+        const o = parseFloat(String(otherVal).replace(/[^0-9.-]/g,''));
+        if(!isNaN(n) && !isNaN(o) && n !== o) {
+          valColor = (higherIsBetter ? n > o : n < o) ? ';color:#00e5a0' : ';color:rgba(255,80,80,.8)';
+        }
+      }
       return '<div class="cmp-plain-row">'
         + '<span class="cmp-plain-lbl">' + lbl + '</span>'
-        + '<span class="cmp-plain-val">' + val + '</span>'
+        + '<span class="cmp-plain-val" style="font-weight:700' + valColor + '">' + val + '</span>'
         + '</div>';
     }
 
@@ -7000,7 +7009,7 @@ function renderCompare(){
             + '</svg>'
             + '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;line-height:1">'
             + '<div style="font-family:var(--font-d);font-size:28px;font-weight:700;color:' + col + ';line-height:1">' + Math.round(p.talent_index_pct||0) + '</div>'
-            + '<div style="font-family:var(--font-d);font-size:9px;color:var(--muted2);margin-top:1px">pct</div>'
+            + '<div style="font-family:var(--font-d);font-size:9px;color:var(--muted2);margin-top:1px">/100</div>'
             + '<div style="font-family:var(--font-d);font-size:10px;font-weight:600;color:' + col + ';margin-top:2px">' + (p.talent_index||0).toFixed(1) + '</div>'
             + '<div style="font-family:var(--font-d);font-size:7px;font-weight:600;letter-spacing:1.5px;color:var(--muted2);margin-top:1px">TALENT INDEX</div>'
             + '</div>'
@@ -7019,12 +7028,12 @@ function renderCompare(){
       // ── Stats block
       + '<div class="cmp-section-gap"></div>'
       + '<div class="cmp-info-section">'
-      + plainRow('Appearances',     p.matches)
-      + plainRow('Minutes played',  (p.minutes||0).toLocaleString())
-      + plainRow('Goals (penalties)', (p.goals_np||0) + ' (' + (p.goals_np||0) + ')')
-      + plainRow('xG (expected goals)', p.xg ? p.xg.toFixed(2) : '—')
-      + plainRow('Assists',         p.xa ? p.xa.toFixed(1) : '—')
-      + plainRow('xA (expected assists)', p.xa ? p.xa.toFixed(2) : '—')
+      + plainRow('Appearances',     p.matches, pOther&&pOther.matches)
+      + plainRow('Minutes played',  (p.minutes||0).toLocaleString(), pOther&&pOther.minutes)
+      + plainRow('Goals (penalties)', (p.goals_np||0) + ' (' + (p.goals_np||0) + ')', pOther&&pOther.goals_np)
+      + plainRow('xG (expected goals)', p.xg ? p.xg.toFixed(2) : '—', pOther&&pOther.xg)
+      + plainRow('Assists',         p.xa ? p.xa.toFixed(1) : '—', pOther&&pOther.xa)
+      + plainRow('xA (expected assists)', p.xa ? p.xa.toFixed(2) : '—', pOther&&pOther.xa)
       + '</div>'
 
       // ── Bio block (highlighted)
@@ -7039,9 +7048,9 @@ function renderCompare(){
       // ── Physical block
       + '<div class="cmp-section-gap"></div>'
       + '<div class="cmp-info-section">'
-      + plainRow('Height (cm)', p.size || '—')
-      + plainRow('Weight (kg)', p.weight || '—')
-      + plainRow('Preferred foot', p.foot === 'direito' ? 'Right' : 'Left')
+      + plainRow('Height (cm)', p.size || '—', pOther&&pOther.size)
+      + plainRow('Weight (kg)', p.weight || '—', pOther&&pOther.weight)
+      + plainRow('Preferred foot', p.foot === 'direito' ? 'Right' : 'Left', undefined)
       + '</div>'
 
       + '</div>';
@@ -7120,7 +7129,7 @@ function renderCompare(){
             <circle cx="${r+stroke}" cy="${r+stroke}" r="${r}" fill="none" stroke="${col}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${fill2.toFixed(1)} ${circ.toFixed(1)}" style="filter:drop-shadow(0 0 6px ${col}88)"/>
           </svg>
           <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;line-height:1">
-            <div style="font-family:var(--font-d);font-size:22px;font-weight:700;color:${col};line-height:1">${Math.round(p.talent_index_pct||0)}</div><div style="font-family:var(--font-d);font-size:9px;color:var(--muted2);margin-top:1px">pct</div><div style="font-family:var(--font-d);font-size:10px;font-weight:600;color:${col};margin-top:2px">${(p.talent_index||0).toFixed(1)}</div>
+            <div style="font-family:var(--font-d);font-size:22px;font-weight:700;color:${col};line-height:1">${Math.round(p.talent_index_pct||0)}</div><div style="font-family:var(--font-d);font-size:9px;color:var(--muted2);margin-top:1px">/100</div><div style="font-family:var(--font-d);font-size:10px;font-weight:600;color:${col};margin-top:2px">${(p.talent_index||0).toFixed(1)}</div>
             <div style="font-family:var(--font-d);font-size:7px;font-weight:600;letter-spacing:1.5px;color:var(--muted2);margin-top:2px">TALENT INDEX</div>
           </div>
         </div>
@@ -7150,7 +7159,7 @@ function renderCompare(){
     + `<div class="cmp-header-row" style="grid-template-columns:${gridCols}">`
     + (pC ? playerHeader(pC, CMP_COLS[2]) : '')
     + (pC ? spacer : '')
-    + playerHeader(pA, colA)
+    + playerHeader(pA, colA, pB)
     + '<div class="cmp-header-mid" style="display:flex;flex-direction:column;align-items:center;padding:16px 12px;background:var(--bg0)">'
     + '<canvas id="cmp-radar-combined"></canvas>'
     + '<div style="display:flex;gap:6px;margin-top:10px;padding-bottom:12px;justify-content:center;align-items:center;flex-wrap:nowrap">'
@@ -7160,7 +7169,7 @@ function renderCompare(){
     + togBtnsExtra
     + '</div>'
     + '</div>'
-    + playerHeader(pB, colB)
+    + playerHeader(pB, colB, pA)
     + (pD ? spacer : '')
     + (pD ? playerHeader(pD, CMP_COLS[3]) : '')
     + '</div>'
@@ -8116,7 +8125,7 @@ function generateCompareAI(pA, pB) {
   <meta http-equiv="Expires" content="0">
   <!-- v2 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thrivella 20260611-190612</title>
+<title>Thrivella-191551</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&amp;family=Barlow:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -15018,7 +15027,7 @@ function renderCompare(){
   }
 
   // ── Header card ─────────────────────────────────────────────────────────
-  function playerHeader(p, col) {
+  function playerHeader(p, col, pOther) {
     if (!p) {
       return '<div class="cmp-card" style="align-items:center;justify-content:center;min-height:200px">'
         + '<span style="font-size:13px;color:var(--muted2)">— Seleciona jogador —</span></div>';
@@ -15050,10 +15059,19 @@ function renderCompare(){
         + '</div>';
     }
     // Plain row
-    function plainRow(lbl, val) {
+    function plainRow(lbl, val, otherVal, higherIsBetter=true) {
+      // Colour the value if we have a comparison
+      let valColor = '';
+      if(otherVal !== undefined && otherVal !== null && val !== '—' && otherVal !== '—') {
+        const n = parseFloat(String(val).replace(/[^0-9.-]/g,''));
+        const o = parseFloat(String(otherVal).replace(/[^0-9.-]/g,''));
+        if(!isNaN(n) && !isNaN(o) && n !== o) {
+          valColor = (higherIsBetter ? n > o : n < o) ? ';color:#00e5a0' : ';color:rgba(255,80,80,.8)';
+        }
+      }
       return '<div class="cmp-plain-row">'
         + '<span class="cmp-plain-lbl">' + lbl + '</span>'
-        + '<span class="cmp-plain-val">' + val + '</span>'
+        + '<span class="cmp-plain-val" style="font-weight:700' + valColor + '">' + val + '</span>'
         + '</div>';
     }
 
@@ -15083,7 +15101,7 @@ function renderCompare(){
             + '</svg>'
             + '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;line-height:1">'
             + '<div style="font-family:var(--font-d);font-size:28px;font-weight:700;color:' + col + ';line-height:1">' + Math.round(p.talent_index_pct||0) + '</div>'
-            + '<div style="font-family:var(--font-d);font-size:9px;color:var(--muted2);margin-top:1px">pct</div>'
+            + '<div style="font-family:var(--font-d);font-size:9px;color:var(--muted2);margin-top:1px">/100</div>'
             + '<div style="font-family:var(--font-d);font-size:10px;font-weight:600;color:' + col + ';margin-top:2px">' + (p.talent_index||0).toFixed(1) + '</div>'
             + '<div style="font-family:var(--font-d);font-size:7px;font-weight:600;letter-spacing:1.5px;color:var(--muted2);margin-top:1px">TALENT INDEX</div>'
             + '</div>'
@@ -15102,12 +15120,12 @@ function renderCompare(){
       // ── Stats block
       + '<div class="cmp-section-gap"></div>'
       + '<div class="cmp-info-section">'
-      + plainRow('Appearances',     p.matches)
-      + plainRow('Minutes played',  (p.minutes||0).toLocaleString())
-      + plainRow('Goals (penalties)', (p.goals_np||0) + ' (' + (p.goals_np||0) + ')')
-      + plainRow('xG (expected goals)', p.xg ? p.xg.toFixed(2) : '—')
-      + plainRow('Assists',         p.xa ? p.xa.toFixed(1) : '—')
-      + plainRow('xA (expected assists)', p.xa ? p.xa.toFixed(2) : '—')
+      + plainRow('Appearances',     p.matches, pOther&&pOther.matches)
+      + plainRow('Minutes played',  (p.minutes||0).toLocaleString(), pOther&&pOther.minutes)
+      + plainRow('Goals (penalties)', (p.goals_np||0) + ' (' + (p.goals_np||0) + ')', pOther&&pOther.goals_np)
+      + plainRow('xG (expected goals)', p.xg ? p.xg.toFixed(2) : '—', pOther&&pOther.xg)
+      + plainRow('Assists',         p.xa ? p.xa.toFixed(1) : '—', pOther&&pOther.xa)
+      + plainRow('xA (expected assists)', p.xa ? p.xa.toFixed(2) : '—', pOther&&pOther.xa)
       + '</div>'
 
       // ── Bio block (highlighted)
@@ -15122,9 +15140,9 @@ function renderCompare(){
       // ── Physical block
       + '<div class="cmp-section-gap"></div>'
       + '<div class="cmp-info-section">'
-      + plainRow('Height (cm)', p.size || '—')
-      + plainRow('Weight (kg)', p.weight || '—')
-      + plainRow('Preferred foot', p.foot === 'direito' ? 'Right' : 'Left')
+      + plainRow('Height (cm)', p.size || '—', pOther&&pOther.size)
+      + plainRow('Weight (kg)', p.weight || '—', pOther&&pOther.weight)
+      + plainRow('Preferred foot', p.foot === 'direito' ? 'Right' : 'Left', undefined)
       + '</div>'
 
       + '</div>';
@@ -15203,7 +15221,7 @@ function renderCompare(){
             <circle cx="${r+stroke}" cy="${r+stroke}" r="${r}" fill="none" stroke="${col}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${fill2.toFixed(1)} ${circ.toFixed(1)}" style="filter:drop-shadow(0 0 6px ${col}88)"/>
           </svg>
           <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;line-height:1">
-            <div style="font-family:var(--font-d);font-size:22px;font-weight:700;color:${col};line-height:1">${Math.round(p.talent_index_pct||0)}</div><div style="font-family:var(--font-d);font-size:9px;color:var(--muted2);margin-top:1px">pct</div><div style="font-family:var(--font-d);font-size:10px;font-weight:600;color:${col};margin-top:2px">${(p.talent_index||0).toFixed(1)}</div>
+            <div style="font-family:var(--font-d);font-size:22px;font-weight:700;color:${col};line-height:1">${Math.round(p.talent_index_pct||0)}</div><div style="font-family:var(--font-d);font-size:9px;color:var(--muted2);margin-top:1px">/100</div><div style="font-family:var(--font-d);font-size:10px;font-weight:600;color:${col};margin-top:2px">${(p.talent_index||0).toFixed(1)}</div>
             <div style="font-family:var(--font-d);font-size:7px;font-weight:600;letter-spacing:1.5px;color:var(--muted2);margin-top:2px">TALENT INDEX</div>
           </div>
         </div>
@@ -15233,7 +15251,7 @@ function renderCompare(){
     + `<div class="cmp-header-row" style="grid-template-columns:${gridCols}">`
     + (pC ? playerHeader(pC, CMP_COLS[2]) : '')
     + (pC ? spacer : '')
-    + playerHeader(pA, colA)
+    + playerHeader(pA, colA, pB)
     + '<div class="cmp-header-mid" style="display:flex;flex-direction:column;align-items:center;padding:16px 12px;background:var(--bg0)">'
     + '<canvas id="cmp-radar-combined"></canvas>'
     + '<div style="display:flex;gap:6px;margin-top:10px;padding-bottom:12px;justify-content:center;align-items:center;flex-wrap:nowrap">'
@@ -15243,7 +15261,7 @@ function renderCompare(){
     + togBtnsExtra
     + '</div>'
     + '</div>'
-    + playerHeader(pB, colB)
+    + playerHeader(pB, colB, pA)
     + (pD ? spacer : '')
     + (pD ? playerHeader(pD, CMP_COLS[3]) : '')
     + '</div>'
@@ -16501,7 +16519,7 @@ function exportSimplePDF() {
   const aiText = (localStorage.getItem(cacheKey)||'<p>Análise não gerada.</p>').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
   const metrics = [['Talent Index',((p.total_off||0)+(p.total_def||0)+(p.total_pass||0)).toFixed(1)],['Off',(p.total_off||0).toFixed(1)],['Def',(p.total_def||0).toFixed(1)],['Pass',(p.total_pass||0).toFixed(1)],['xG',p.xg?.toFixed(2)||'—'],['xA',p.xa?.toFixed(2)||'—'],['Dribles/90',p.dribles90?.toFixed(1)||'—'],['% Dribles',p.dribles_pct!=null?p.dribles_pct.toFixed(0)+'%':'—'],['Acelerações/90',p.accels90?.toFixed(1)||'—'],['Shot Assists/90',p.shot_assist?.toFixed(1)||'—'],['Vel. Máx',p.max_speed!=null?p.max_speed.toFixed(1)+' km/h':'—'],['Sprints/90',p.sprints90?.toFixed(0)||'—']];
   const rows = (arr) => arr.map(([k])=>'<th>'+k+'</th>').join('')+'</tr><tr>'+arr.map(([,v])=>'<td>'+v+'</td>').join('');
-  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Thrivella 20260611-190612</title>'
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Thrivella-191551</title>'
     +'<style>body{font-family:Georgia,serif;max-width:800px;margin:0 auto;padding:30px;color:#111}'
     +'h1{font-size:22px;font-weight:400;letter-spacing:1px;margin:0 0 4px}.logo{font-size:14px;color:#00a0c4;letter-spacing:2px;margin-bottom:20px}'
     +'.meta{font-size:12px;color:#555;margin-bottom:20px;display:flex;gap:20px;flex-wrap:wrap}'
@@ -24918,6 +24936,9 @@ function mobGoToView(view){
   document.querySelectorAll('.mob-nav-btn').forEach(b=>{
     b.classList.toggle('active', b.dataset.view===view);
   });
+  // Always reset filter bar before rendering new view
+  const fb=document.getElementById('mob-filter-bar');
+  if(fb){ fb.innerHTML=''; fb.style.overflow=''; }
   if(view==='table') renderMobileTable();
   else if(view==='playerid') renderMobilePlayerID();
   else if(view==='compare') renderMobileCompareView();
@@ -25218,9 +25239,9 @@ function renderMobileShadowView(){
     }
 
     const screenW = window.innerWidth;
-    const availH = window.innerHeight - 120; // minus topbar + filterbar
-    // Pitch ratio 358/445 ≈ 0.805 (width/height)
-    const pitchH = Math.round(Math.min(availH - 40, screenW / 0.805));
+    const availH = window.innerHeight - 120;
+    // Reduce by 15% from full size, and ensure no overflow
+    const pitchH = Math.round(Math.min(availH - 40, screenW / 0.805) * 0.85);
     const pitchW = Math.round(pitchH * 0.805);
 
     // Temporarily set the pitch area size so shRenderPitch uses our dimensions
