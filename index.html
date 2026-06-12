@@ -24876,7 +24876,11 @@ function sfDownload() {
 <script>
 // ── Mobile Mode Management ──
 function isMobilePortrait(){
-  return window.innerWidth<1024 && ('ontouchstart' in window || navigator.maxTouchPoints>0);
+  const w = window.innerWidth || screen.width;
+  const isMobileUA = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  // Require small screen AND either mobile UA or touch - excludes touch laptops
+  return w < 768 && (isMobileUA || hasTouch);
 }
 
 function checkMobileOrientation(){
