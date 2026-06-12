@@ -24975,7 +24975,7 @@ function renderMobileTable(){
     {k:'sprint_dist90',l:'Sprint/90'},{k:'hsr90',l:'HSR/90'},{k:'def_duels',l:'Duelos Def'},
     {k:'def_duels_pct',l:'% Duelos'},{k:'adj_intercept',l:'Intercep'},{k:'passes_pct',l:'% Passes'},
   ];
-  const fSel = (id,extra) => `id="${id}" onchange="renderMobileTable()" style="background:#0a1420;border:1px solid rgba(0,212,255,.3);border-radius:4px;padding:3px 5px;color:#c8e8ff;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;outline:none;${extra||''}"`;
+  const fSel = (id,extra) => `id="${id}" onchange="renderMobileTable()" class="sim-filter-input" style="width:auto;${extra||''}"`;
   const fLbl = t => `<span style="font-family:'Barlow Condensed',sans-serif;font-size:7px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.55);white-space:nowrap">${t}</span>`;
   const fSep = '<span style="width:1px;height:14px;background:rgba(0,212,255,.18);flex-shrink:0"></span>';
   const prev = {
@@ -25027,8 +25027,8 @@ function renderMobileTable(){
 
   function fmtCt(ct){if(!ct)return'—';const p=ct.split('-');if(p.length<2)return'—';const yy=p[0].slice(2),mm=p[1];return mm+'/'+yy;}
   function tiC(v){return v>=80?'#00e5a0':v>=55?'#00d4ff':'rgba(160,178,200,.45)';}
-  function phC(v){return v>=80?'#a78bfa':v>=55?'#c4b5fd':'rgba(160,178,200,.45)';}
-  function trC(v){return v>=80?'#ffb340':v>=55?'#ffd080':'rgba(160,178,200,.45)';}
+  function phC(v){return v>=80?'#00e5a0':v>=55?'#00d4ff':'rgba(160,178,200,.45)';}
+  function trC(v){return v>=80?'#00e5a0':v>=55?'#00d4ff':'rgba(160,178,200,.45)';}
   function winB(p){return '<span style="background:#6d28d9;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">WIN</span>';}
   function r2B(p){const ps=(p.position||'').split(',').map(x=>x.trim()).filter(Boolean);return ps[1]?'<span style="color:#00d4ff;border:1px solid rgba(0,212,255,.3);background:rgba(0,212,255,.06);font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">'+ps[1]+'</span>':'';}
   const VS='font-family:\'Barlow Condensed\',sans-serif;font-size:15px;font-weight:800;line-height:1;text-align:center';
