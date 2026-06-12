@@ -25022,7 +25022,7 @@ function renderMobileTable(){
   function winB(p){return['LW','RW','WF','WIN','LWF','RWF'].some(x=>(p.position||'').toUpperCase().includes(x))?'<span style="background:#6d28d9;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">WIN</span>':'';}
   function r2B(p){const ps=(p.position||'').split(',').map(x=>x.trim()).filter(Boolean);return ps[1]?'<span style="color:#00d4ff;border:1px solid rgba(0,212,255,.3);background:rgba(0,212,255,.06);font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">'+ps[1]+'</span>':'';}
   const VS='font-family:\'Barlow Condensed\',sans-serif;font-size:15px;font-weight:800;line-height:1;text-align:center';
-  const LB='font-family:\'Barlow\',sans-serif;font-size:7px;color:rgba(255,255,255,.9);letter-spacing:.2px;text-align:center';
+  const LB='font-family:\'Barlow\',sans-serif;font-size:7px;color:rgba(255,255,255,.9);letter-spacing:.2px;text-align:center;margin-bottom:2px';
   const CW='min-width:28px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:2px';
 
   content.innerHTML = '<div style="padding:0 0 80px">'
