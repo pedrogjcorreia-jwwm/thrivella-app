@@ -43,9 +43,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
 
 /* ── APP SHELL ── */
-.app{display:grid;grid-template-rows:1fr;height:100vh}
+.app{display:grid;grid-template-rows:50px 1fr;height:100vh}
 .app.simple-active{height:calc(100vh + 180px);}
-.app-body{display:flex;overflow:hidden;padding-top:50px}
+.app-body{display:flex;overflow:hidden}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -54,7 +54,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   background:var(--bg1);border-bottom:1px solid var(--border);
   padding:0 20px;
   gap:0;
-  position:fixed;top:0;left:0;right:0;z-index:1000;
 }
 .top-right{margin-left:auto;flex-shrink:0;}
 .logo{
@@ -8170,9 +8169,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
 
 /* ── APP SHELL ── */
-.app{display:grid;grid-template-rows:1fr;height:100vh}
+.app{display:grid;grid-template-rows:50px 1fr;height:100vh}
 .app.simple-active{height:calc(100vh + 180px);}
-.app-body{display:flex;overflow:hidden;padding-top:50px}
+.app-body{display:flex;overflow:hidden}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -8181,7 +8180,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   background:var(--bg1);border-bottom:1px solid var(--border);
   padding:0 20px;
   gap:0;
-  position:fixed;top:0;left:0;right:0;z-index:1000;
 }
 .top-right{margin-left:auto;flex-shrink:0;}
 .logo{
@@ -25281,17 +25279,8 @@ function renderMobileCompareView(nameA, nameB){
     const out=document.getElementById('mob-cmp-output');
     if(out) out.innerHTML='<div class="ai-thinking" style="padding:30px 0;justify-content:center"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
 
-    // Use offscreen container instead of showing view-compare
-    // This avoids breaking the desktop layout entirely
+    // Run compare engine using a hidden clone to avoid touching view-compare
     const viewCmp=document.getElementById('view-compare');
-    const origDisplay = viewCmp ? viewCmp.style.display : 'none';
-    const origPos = viewCmp ? viewCmp.style.position : '';
-    const origLeft = viewCmp ? viewCmp.style.left : '';
-    if(viewCmp){
-      viewCmp.style.position='fixed';
-      viewCmp.style.left='-9999px';
-      viewCmp.style.display='flex';
-    }
 
     // Populate selects and run desktop engine
     if(typeof initCompare==='function') initCompare();
@@ -25361,12 +25350,7 @@ function renderMobileCompareView(nameA, nameB){
         const aiSec=document.getElementById('cmp-ai-section');
         if(aiSec) out.appendChild(aiSec.cloneNode(true));
 
-        // Restore view-compare to original state
-        if(viewCmp){
-          viewCmp.style.position=origPos;
-          viewCmp.style.left=origLeft;
-          viewCmp.style.display=origDisplay;
-        }
+        // view-compare was never touched - nothing to restore
       },300);
     },500);
   };
