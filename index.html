@@ -24996,20 +24996,28 @@ function renderMobileTable(){
         <span id="${id}-lbl" style="overflow:hidden;text-overflow:ellipsis">${selLabel}</span>
         <span style="font-size:8px;opacity:.55;flex-shrink:0">▾</span>
       </div>
-      <div id="${id}-list" style="display:none;position:fixed;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.85);max-height:200px;overflow-y:auto;min-width:120px">
+      <div id="${id}-list" style="display:none;position:fixed;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.85);max-height:200px;overflow-y:auto;min-width:80px">
         ${items}
       </div>
     </div>`;
   }
   window.mobRkToggle = function(id){
-    document.querySelectorAll('[id$="-list"].sim-dd-list,[id$="-list"][style*="display:block"],[id$="-list"][style*="display: block"]').forEach(l=>{ if(l.id!==id+'-list') l.style.display='none'; });
+    document.querySelectorAll('[id$="-list"]').forEach(l=>{ if(l.id!==id+'-list') l.style.display='none'; });
     const dd=document.getElementById(id);
     const list=document.getElementById(id+'-list');
     if(!list) return;
     const btn=dd.firstElementChild;
     const rect=btn.getBoundingClientRect();
     list.style.top=(rect.bottom+4)+'px';
-    list.style.left=rect.left+'px';
+    // Metric dropdown opens right-aligned to avoid overflow
+    if(id==='mob-f-metric'){
+      list.style.left='auto';
+      list.style.right=(window.innerWidth-rect.right)+'px';
+    } else {
+      list.style.left=rect.left+'px';
+      list.style.right='auto';
+    }
+    list.style.minWidth=Math.max(80,rect.width)+'px';
     list.style.display=list.style.display==='block'?'none':'block';
     // Close on outside click
     setTimeout(()=>{ document.addEventListener('click',function h(e){ if(!e.target.closest('#'+id)){ list.style.display='none'; document.removeEventListener('click',h); }},true); },50);
@@ -25066,9 +25074,9 @@ function renderMobileTable(){
   let players = [...(PLAYERS||[])];
   if(leagueFil) players=players.filter(p=>p.league===leagueFil);
   if(posFil) players=players.filter(p=>{
-    const pos=(p.position||'').toUpperCase();
-    if(posFil==='WIN') return ['LW','RW','WF','WIN','LWF','RWF'].some(x=>pos.includes(x));
-    return pos.includes(posFil);
+    const primary=(p.position||'').split(',')[0].trim().toUpperCase();
+    if(posFil==='WIN') return ['LW','RW','WF','WIN','LWF','RWF'].some(x=>primary.includes(x));
+    return primary===posFil || primary.includes(posFil);
   });
   if(ageFil==='u21') players=players.filter(p=>(p.age||99)<21);
   else if(ageFil==='u23') players=players.filter(p=>(p.age||99)<23);
