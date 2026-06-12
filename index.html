@@ -24876,11 +24876,7 @@ function sfDownload() {
 <script>
 // ── Mobile Mode Management ──
 function isMobilePortrait(){
-  const w = window.innerWidth || screen.width;
-  const isMobileUA = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-  // Require small screen AND either mobile UA or touch - excludes touch laptops
-  return w < 768 && (isMobileUA || hasTouch);
+  return window.innerWidth<1024 && ('ontouchstart' in window || navigator.maxTouchPoints>0);
 }
 
 function checkMobileOrientation(){
@@ -24957,10 +24953,6 @@ function mobGoToView(view){
   window._mobCurrentView = view;
   const el = document.getElementById('mobile-elite-view');
   if(el) el.style.display='block';
-  // Always hide desktop compare view when not in mobile compare
-  // This prevents it leaking into desktop layout
-  const vc=document.getElementById('view-compare');
-  if(vc && view!=='compare') vc.style.display='none';
   // Update active nav btn
   document.querySelectorAll('.mob-nav-btn').forEach(b=>{
     b.classList.toggle('active', b.dataset.view===view);
@@ -25279,8 +25271,9 @@ function renderMobileCompareView(nameA, nameB){
     const out=document.getElementById('mob-cmp-output');
     if(out) out.innerHTML='<div class="ai-thinking" style="padding:30px 0;justify-content:center"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
 
-    // Run compare engine using a hidden clone to avoid touching view-compare
+    // Show desktop compare view (needed for renderCompare to work)
     const viewCmp=document.getElementById('view-compare');
+    if(viewCmp) viewCmp.style.display='flex';
 
     // Populate selects and run desktop engine
     if(typeof initCompare==='function') initCompare();
@@ -25350,7 +25343,8 @@ function renderMobileCompareView(nameA, nameB){
         const aiSec=document.getElementById('cmp-ai-section');
         if(aiSec) out.appendChild(aiSec.cloneNode(true));
 
-        // view-compare was never touched - nothing to restore
+        // Hide desktop compare view
+        if(viewCmp) viewCmp.style.display='none';
       },300);
     },500);
   };
