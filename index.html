@@ -37,7 +37,7 @@
   --perf-bad:    rgba(255,71,87,0.75);   /* below avg — red muted */
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);font-family:var(--font-b);font-size:14px}
+html,body{height:100%;overflow:hidden}body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);font-family:var(--font-b);font-size:14px}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
@@ -54,7 +54,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   background:var(--bg1);border-bottom:1px solid var(--border);
   padding:0 20px;
   gap:0;
-  position:sticky;top:0;z-index:500;
 }
 .top-right{margin-left:auto;flex-shrink:0;}
 .logo{
@@ -4843,7 +4842,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
       </div>
 
       <!-- COMPARE VIEW -->
-      <div id="view-compare" style="display:none;flex-direction:column;flex:1;height:100%;overflow-y:auto;padding:20px;gap:16px;box-sizing:border-box">
+      <div id="view-compare" style="display:none;flex-direction:column;flex:1 1 0%;min-height:0;overflow-y:auto;padding:20px;gap:16px;box-sizing:border-box">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span style="font-family:var(--font-d);font-size:20px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-right:4px">Comparar</span>
           <!-- C slot (esquerda, opcional) -->
@@ -8175,7 +8174,7 @@ function generateCompareAI(pA, pB) {
   --perf-bad:    rgba(255,71,87,0.75);   /* below avg — red muted */
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);font-family:var(--font-b);font-size:14px}
+html,body{height:100%;overflow:hidden}body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);font-family:var(--font-b);font-size:14px}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
@@ -8192,7 +8191,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   background:var(--bg1);border-bottom:1px solid var(--border);
   padding:0 20px;
   gap:0;
-  position:sticky;top:0;z-index:500;
 }
 .top-right{margin-left:auto;flex-shrink:0;}
 .logo{
@@ -12949,7 +12947,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
       </div>
 
       <!-- COMPARE VIEW -->
-      <div id="view-compare" style="display:none;flex-direction:column;flex:1;height:100%;overflow-y:auto;padding:20px;gap:16px;box-sizing:border-box">
+      <div id="view-compare" style="display:none;flex-direction:column;flex:1 1 0%;min-height:0;overflow-y:auto;padding:20px;gap:16px;box-sizing:border-box">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span style="font-family:var(--font-d);font-size:20px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-right:4px">Comparar</span>
           <!-- C slot (esquerda, opcional) -->
