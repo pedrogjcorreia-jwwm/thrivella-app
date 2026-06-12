@@ -2321,6 +2321,10 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .mob-e-mrow-rnk{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid}
 .mob-e-bar-wrap{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
 .mob-e-bar{height:100%;border-radius:2px}
+#mob-filter-bar::-webkit-scrollbar{height:3px}
+#mob-filter-bar::-webkit-scrollbar-track{background:transparent}
+#mob-filter-bar::-webkit-scrollbar-thumb{background:#061528;border-radius:2px}
+
 .mob-e-sim-card{padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06)}
 .mob-e-sim-card:last-child{border-bottom:none}
 .mob-e-sim-card:hover,.mob-e-sim-card:active{background:rgba(0,212,255,.04)}
@@ -24983,47 +24987,79 @@ function renderMobileTable(){
     {k:'def_duels_pct',l:'% Duelos'},{k:'adj_intercept',l:'Intercep'},{k:'passes_pct',l:'% Passes'},
   ];
 
-  // sim-filter-input style selects
-  const fSel = (id,extra) => `id="${id}" onchange="renderMobileTable()" style="background:rgba(0,30,80,.4);border:1px solid rgba(0,212,255,.35);border-radius:3px;padding:3px 7px 3px 7px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;color:#c8e8ff;outline:none;-webkit-appearance:none;appearance:none;${extra||''}"`;
+  // Custom dropdown builder (sim-dd pattern)
+  function mkDD(id, label, opts, selectedVal){
+    const selLabel = opts.find(([v])=>v===selectedVal)?.[1] || label;
+    const items = opts.map(([v,l])=>`<div class="sim-dd-opt mob-rk-opt" data-id="${id}" data-val="${v}" onclick="mobRkSelect('${id}','${v}','${l.replace(/'/g,"\'")}')" style="padding:6px 10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(200,225,255,.85);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,180,255,.12)'" onmouseout="this.style.background=''">${l}</div>`).join('');
+    return `<div class="sim-dd" id="${id}" data-val="${selectedVal}" style="position:relative;flex-shrink:0">
+      <div onclick="mobRkToggle('${id}')" style="display:flex;align-items:center;gap:4px;height:24px;padding:0 8px;background:#0d1e35;border:1px solid rgba(0,180,255,.22);border-radius:5px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(200,225,255,.85);white-space:nowrap;min-width:40px">
+        <span id="${id}-lbl" style="overflow:hidden;text-overflow:ellipsis">${selLabel}</span>
+        <span style="font-size:8px;opacity:.55;flex-shrink:0">▾</span>
+      </div>
+      <div id="${id}-list" style="display:none;position:fixed;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.85);max-height:200px;overflow-y:auto;min-width:120px">
+        ${items}
+      </div>
+    </div>`;
+  }
+  window.mobRkToggle = function(id){
+    document.querySelectorAll('[id$="-list"].sim-dd-list,[id$="-list"][style*="display:block"],[id$="-list"][style*="display: block"]').forEach(l=>{ if(l.id!==id+'-list') l.style.display='none'; });
+    const dd=document.getElementById(id);
+    const list=document.getElementById(id+'-list');
+    if(!list) return;
+    const btn=dd.firstElementChild;
+    const rect=btn.getBoundingClientRect();
+    list.style.top=(rect.bottom+4)+'px';
+    list.style.left=rect.left+'px';
+    list.style.display=list.style.display==='block'?'none':'block';
+    // Close on outside click
+    setTimeout(()=>{ document.addEventListener('click',function h(e){ if(!e.target.closest('#'+id)){ list.style.display='none'; document.removeEventListener('click',h); }},true); },50);
+  };
+  window.mobRkSelect = function(id, val, lbl){
+    const dd=document.getElementById(id);
+    if(dd) dd.dataset.val=val;
+    const l=document.getElementById(id+'-lbl');
+    if(l) l.textContent=lbl;
+    const list=document.getElementById(id+'-list');
+    if(list) list.style.display='none';
+    renderMobileTable();
+  };
+  function getRkVal(id){ const dd=document.getElementById(id); return dd?dd.dataset.val||'':''; }
   const fLbl = t => `<span style="font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6);white-space:nowrap">${t}</span>`;
   const fSep = '<span style="width:1px;height:16px;background:rgba(0,212,255,.2);margin:0 2px;flex-shrink:0"></span>';
 
   const prev = {
-    league: document.getElementById('mob-f-league')?.value||'',
-    pos:    document.getElementById('mob-f-pos')?.value||'',
-    sort:   document.getElementById('mob-f-sort')?.value||'talent_index_pct',
-    age:    document.getElementById('mob-f-age')?.value||'',
-    ct:     document.getElementById('mob-f-ct')?.value||'',
-    metric: document.getElementById('mob-f-metric')?.value||'',
+    league: getRkVal('mob-f-league'),
+    pos:    getRkVal('mob-f-pos'),
+    sort:   getRkVal('mob-f-sort')||'talent_index_pct',
+    age:    getRkVal('mob-f-age'),
+    ct:     getRkVal('mob-f-ct'),
+    metric: getRkVal('mob-f-metric'),
   };
 
   if(filterBar){
     filterBar.style.minHeight='52px';
+    const leagueOpts = [['','Todas'],...leagues.map(l=>[l,l.length>12?l.slice(0,12)+'...':l])];
+    const posOpts = [['','Todas'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']];
+    const sortOpts = [['talent_index_pct','Talent'],['total_physical','Physical'],['score','Transfer']];
+    const ageOpts = [['','Todas'],['u21','Sub-21'],['u23','Sub-23'],['u25','Sub-25'],['2529','25-29'],['30p','30+']];
+    const ctOpts = [['','Todos'],['exp','A expirar'],[String(currYear),'Fim '+currYear],[String(currYear+1),'Fim '+(currYear+1)],[String(currYear+2),'Fim '+(currYear+2)]];
+    const metOpts = [['','—'],...ALL_METRICS_LIST.map(m=>[m.k,m.l])];
     filterBar.innerHTML = '<div style="display:flex;align-items:center;gap:5px;overflow-x:auto;width:100%;padding:2px 0;-webkit-overflow-scrolling:touch">'
-      +fLbl('Liga')+`<select ${fSel('mob-f-league')}><option value="">Todas</option>`
-      +leagues.map(l=>`<option value="${l}"${l===prev.league?' selected':''}>${l.length>10?l.slice(0,10)+'...':l}</option>`).join('')+'</select>'
-      +fSep+fLbl('Pos')+`<select ${fSel('mob-f-pos')}><option value="">Todas</option>`
-      +['RB','CB','LB','DM','CM','WIN','CF'].map(p=>`<option value="${p}"${p===prev.pos?' selected':''}>${p}</option>`).join('')+'</select>'
-      +fSep+fLbl('Index')+`<select ${fSel('mob-f-sort')}>`
-      +`<option value="talent_index_pct"${prev.sort==='talent_index_pct'?' selected':''}>Talent</option>`
-      +`<option value="total_physical"${prev.sort==='total_physical'?' selected':''}>Physical</option>`
-      +`<option value="score"${prev.sort==='score'?' selected':''}>Transfer</option></select>`
-      +fSep+fLbl('Idade')+`<select ${fSel('mob-f-age')}><option value="">Todas</option>`
-      +[['u21','Sub-21'],['u23','Sub-23'],['u25','Sub-25'],['2529','25-29'],['30p','30+']].map(([v,l])=>`<option value="${v}"${v===prev.age?' selected':''}>${l}</option>`).join('')+'</select>'
-      +fSep+fLbl('Ctc')+`<select ${fSel('mob-f-ct')}><option value="">Todos</option>`
-      +`<option value="exp"${'exp'===prev.ct?' selected':''}>A expirar</option>`
-      +[currYear,currYear+1,currYear+2].map(y=>`<option value="${y}"${String(y)===prev.ct?' selected':''}>Fim ${y}</option>`).join('')+'</select>'
-      +fSep+fLbl('Métrica')+`<select ${fSel('mob-f-metric')}><option value="">—</option>`
-      +ALL_METRICS_LIST.map(m=>`<option value="${m.k}"${m.k===prev.metric?' selected':''}>${m.l}</option>`).join('')+'</select>'
+      +fLbl('Liga')+mkDD('mob-f-league','Liga',leagueOpts,prev.league)
+      +fSep+fLbl('Pos')+mkDD('mob-f-pos','Pos',posOpts,prev.pos)
+      +fSep+fLbl('Index')+mkDD('mob-f-sort','Index',sortOpts,prev.sort)
+      +fSep+fLbl('Idade')+mkDD('mob-f-age','Idade',ageOpts,prev.age)
+      +fSep+fLbl('Ctc')+mkDD('mob-f-ct','Ctc',ctOpts,prev.ct)
+      +fSep+fLbl('Métrica')+mkDD('mob-f-metric','Métrica',metOpts,prev.metric)
       +'</div>';
   }
 
-  const leagueFil = document.getElementById('mob-f-league')?.value||'';
-  const posFil    = document.getElementById('mob-f-pos')?.value||'';
-  const sortKey   = document.getElementById('mob-f-sort')?.value||'talent_index_pct';
-  const ageFil    = document.getElementById('mob-f-age')?.value||'';
-  const ctFil     = document.getElementById('mob-f-ct')?.value||'';
-  const metricKey = document.getElementById('mob-f-metric')?.value||'';
+  const leagueFil = getRkVal('mob-f-league');
+  const posFil    = getRkVal('mob-f-pos');
+  const sortKey   = getRkVal('mob-f-sort')||'talent_index_pct';
+  const ageFil    = getRkVal('mob-f-age');
+  const ctFil     = getRkVal('mob-f-ct');
+  const metricKey = getRkVal('mob-f-metric');
   const metricLbl = ALL_METRICS_LIST.find(m=>m.k===metricKey)?.l||'';
   const activeSortKey = metricKey||sortKey;
 
