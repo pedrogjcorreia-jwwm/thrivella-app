@@ -25074,9 +25074,8 @@ function renderMobileTable(){
   let players = [...(PLAYERS||[])];
   if(leagueFil) players=players.filter(p=>p.league===leagueFil);
   if(posFil) players=players.filter(p=>{
-    // winB() always shows WIN badge for ALL players
-    // So WIN = all players, other positions = 0 results
-    return posFil==='WIN';
+    const g=(p.position_group||'').toUpperCase();
+    return g===posFil;
   });
   if(ageFil==='u21') players=players.filter(p=>(p.age||99)<21);
   else if(ageFil==='u23') players=players.filter(p=>(p.age||99)<23);
@@ -25089,7 +25088,7 @@ function renderMobileTable(){
 
   function fmtCt(ct){if(!ct)return'—';const p=ct.split('-');if(p.length<2)return'—';return p[1]+'/'+p[0].slice(2);}
   function tiC(v){return v>=80?'#00e5a0':v>=55?'#00d4ff':'rgba(160,178,200,.45)';}
-  function winB(p){return'<span style="background:#6d28d9;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">WIN</span>';}
+  function winB(p){const g=(p.position_group||'').toUpperCase();return'<span style="background:#6d28d9;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">'+(g||'WIN')+'</span>';}
   function r2B(p){const ps=(p.position||'').split(',').map(x=>x.trim()).filter(Boolean);return ps[1]?'<span style="color:#00d4ff;border:1px solid rgba(0,212,255,.3);background:rgba(0,212,255,.06);font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">'+ps[1]+'</span>':'';}
 
   const VS='font-family:\'Barlow Condensed\',sans-serif;font-size:15px;font-weight:800;line-height:1;text-align:center';
