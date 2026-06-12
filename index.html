@@ -21906,6 +21906,10 @@ function renderSimilarPlayers(p, targetEl) {
             +allLeagues.map(l=>'<option value="'+l+'"'+(ligaFilter===l?' selected':'')+'>'+l+'</option>').join('')
             +'</select>'
           +'</div>'
+          +'<div style="'+CW+';justify-content:space-between">'
+            +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;line-height:1;text-align:center;color:'+(p.contract_end&&p.contract_end.slice(2,4)==='26'?'#ff5757':'rgba(255,255,255,.4)')+'">'+(p.contract_end?p.contract_end.split('-').length>=2?p.contract_end.split('-')[1]+'/'+p.contract_end.slice(2,4):'—':'—')+'</div>'
+            +'<div style="'+LB+'">CON</div>'
+          +'</div>'
         +'</div>'
       +'</div>';
 
@@ -21921,6 +21925,10 @@ function renderSimilarPlayers(p, targetEl) {
               +(hasMore?' style="'+nextBtnStyle+';"':'')
               +(!hasMore?' data-disabled="1"':'')
             +'>&#8250;</button>'
+          +'</div>'
+          +'<div style="'+CW+';justify-content:space-between">'
+            +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;line-height:1;text-align:center;color:'+(p.contract_end&&p.contract_end.slice(2,4)==='26'?'#ff5757':'rgba(255,255,255,.4)')+'">'+(p.contract_end?p.contract_end.split('-').length>=2?p.contract_end.split('-')[1]+'/'+p.contract_end.slice(2,4):'—':'—')+'</div>'
+            +'<div style="'+LB+'">CON</div>'
           +'</div>'
         +'</div>'
       +'</div>';
@@ -25015,7 +25023,7 @@ function renderMobileTable(){
   else if(ctFil) players=players.filter(p=>p.contract_end&&p.contract_end.startsWith(ctFil));
   players.sort((a,b)=>(b[activeSortKey]||0)-(a[activeSortKey]||0));
 
-  function fmtCt(ct){if(!ct)return'—';const p=ct.split('-');return p.length>=2?p[0].slice(2)+'/'+p[1]:'—';}
+  function fmtCt(ct){if(!ct)return'—';const p=ct.split('-');if(p.length<2)return'—';const yy=p[0].slice(2),mm=p[1];return mm+'/'+yy;}
   function tiC(v){return v>=80?'#00e5a0':v>=55?'#00d4ff':'rgba(160,178,200,.45)';}
   function phC(v){return v>=80?'#a78bfa':v>=55?'#c4b5fd':'rgba(160,178,200,.45)';}
   function trC(v){return v>=80?'#ffb340':v>=55?'#ffd080':'rgba(160,178,200,.45)';}
@@ -25038,7 +25046,7 @@ function renderMobileTable(){
       return '<div onclick="mobGoToView(\'playerid\');window.selectedPlayer=PLAYERS.find(x=>x.name===\''+pN+'\');setTimeout(renderMobilePlayerID,50)"'
         +' style="display:flex;align-items:stretch;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;overflow:hidden">'
         // rank + WIN — full height dark column
-        +'<div style="width:30px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:rgba(0,0,0,.3);border-right:1px solid rgba(255,255,255,.07)">'
+        +'<div style="width:30px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:linear-gradient(180deg,#071d36 0%,#0b3260 55%,#040e1e 100%);border-right:1px solid rgba(0,160,255,.2)">'
           +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;color:rgba(200,220,240,.45)">'+(i+1)+'</span>'
           +winB(p)
         +'</div>'
@@ -25062,10 +25070,7 @@ function renderMobileTable(){
             +'<div style="'+VS+';color:'+trC(tr)+'">'+tr+'</div>'
             +'<div style="'+LB+'">TRA</div>'
           +'</div>'
-          +'<div style="'+CW+';justify-content:space-between">'
-            +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.38);line-height:1;text-align:center">'+(metricKey?metV:fmtCt(p.contract_end))+'</div>'
-            +'<div style="'+LB+'">'+(metricKey?metricLbl.slice(0,3).toUpperCase():'CON')+'</div>'
-          +'</div>'
+          
         +'</div>'
       +'</div>';
     }).join('')
