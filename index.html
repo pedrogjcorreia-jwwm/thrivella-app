@@ -24984,9 +24984,9 @@ function renderMobileTable(){
   ];
 
   // sim-filter-input style selects
-  const fSel = (id,extra) => `id="${id}" onchange="renderMobileTable()" class="sim-filter-input" style="width:auto;${extra||''}"`;
-  const fLbl = t => `<span class="sim-filter-lbl">${t}</span>`;
-  const fSep = '<span class="sim-filter-sep"></span>';
+  const fSel = (id,extra) => `id="${id}" onchange="renderMobileTable()" style="background:rgba(0,30,80,.4);border:1px solid rgba(0,212,255,.35);border-radius:3px;padding:3px 7px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;color:#c8e8ff;outline:none;${extra||''}"`;
+  const fLbl = t => `<span style="font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6);white-space:nowrap">${t}</span>`;
+  const fSep = '<span style="width:1px;height:16px;background:rgba(0,212,255,.2);margin:0 2px;flex-shrink:0"></span>';
 
   const prev = {
     league: document.getElementById('mob-f-league')?.value||'',
@@ -25067,7 +25067,7 @@ function renderMobileTable(){
       const pos1= (p.position||'').split(',')[0].trim();
       const pN  = p.name.replace(/'/g,"\\'");
 
-      const col4val  = metricKey ? metV : (ctFil ? ctStr : '—');
+      const col4val  = metricKey ? metV : (ctFil ? ctStr : '');
       const col4lbl  = metricKey ? metricLbl.slice(0,3).toUpperCase() : (ctFil ? 'CON' : '');
       const col4col  = metricKey ? 'rgba(255,255,255,.7)' : (ctRed?'#ff5757':'rgba(255,255,255,.15)');
       const col4size = metricKey ? '13px' : '13px';
@@ -25096,7 +25096,7 @@ function renderMobileTable(){
           +'<div style="'+CW+'"><div style="'+VS+';color:'+tiC(ti)+'">'+ti+'</div><div style="'+LB+'">TAL</div></div>'
           +'<div style="'+CW+'"><div style="'+VS+';color:'+tiC(ph)+'">'+ph+'</div><div style="'+LB+'">PHY</div></div>'
           +'<div style="'+CW+';border-left:1px solid rgba(255,255,255,.07);padding-left:4px"><div style="'+VS+';color:'+tiC(tr)+'">'+tr+'</div><div style="'+LB+'">TRA</div></div>'
-          +(show4?'<div style="'+CW+';border-left:1px solid rgba(255,255,255,.07);padding-left:4px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:'+col4size+';font-weight:800;line-height:1;text-align:center;color:'+col4col+'">'+col4val+'</div><div style="'+LB+'">'+col4lbl+'</div></div>':'')
+          +'<div style="min-width:28px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(180deg,#040e1c 0%,#061528 50%,#030c18 100%);border-left:1px solid rgba(0,180,255,.12);padding:0 4px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;line-height:1;text-align:center;color:'+col4col+'">'+col4val+'</div><div style="'+LB+'">'+col4lbl+'</div></div>'
         +'</div>'
       +'</div>';
     }).join('')+'</div>';
