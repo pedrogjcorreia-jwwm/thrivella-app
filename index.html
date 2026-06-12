@@ -2319,7 +2319,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .mob-e-mrow-right{display:flex;align-items:center;gap:5px}
 .mob-e-mrow-val{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800}
 .mob-e-mrow-rnk{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid}
-.mob-e-bar-wrap{height:2px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.mob-e-bar-wrap{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
 .mob-e-bar{height:100%;border-radius:2px}
 .mob-e-sim-card{padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06)}
 .mob-e-sim-card:last-child{border-bottom:none}
@@ -10441,7 +10441,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .mob-e-mrow-right{display:flex;align-items:center;gap:5px}
 .mob-e-mrow-val{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800}
 .mob-e-mrow-rnk{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid}
-.mob-e-bar-wrap{height:2px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.mob-e-bar-wrap{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
 .mob-e-bar{height:100%;border-radius:2px}
 .mob-e-sim-card{padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06)}
 .mob-e-sim-card:last-child{border-bottom:none}
@@ -24958,7 +24958,6 @@ function renderMobileTable(){
 
   const leagues = [...new Set((PLAYERS||[]).map(p=>p.league).filter(Boolean))].sort();
   const currYear = new Date().getFullYear();
-
   const ALL_METRICS_LIST = [
     {k:'xg',l:'xG'},{k:'xa',l:'xA'},{k:'goals_np',l:'Golos'},{k:'dribles90',l:'Dribles/90'},
     {k:'prog_carries',l:'Cond.Prog'},{k:'accels90',l:'Acel/90'},{k:'recpt_depth',l:'Recep.Prof'},
@@ -24966,12 +24965,9 @@ function renderMobileTable(){
     {k:'sprint_dist90',l:'Sprint/90'},{k:'hsr90',l:'HSR/90'},{k:'def_duels',l:'Duelos Def'},
     {k:'def_duels_pct',l:'% Duelos'},{k:'adj_intercept',l:'Intercep'},{k:'passes_pct',l:'% Passes'},
   ];
-
   const fSel = (id,extra) => `id="${id}" onchange="renderMobileTable()" style="background:#0a1420;border:1px solid rgba(0,212,255,.3);border-radius:4px;padding:3px 5px;color:#c8e8ff;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;outline:none;${extra||''}"`;
   const fLbl = t => `<span style="font-family:'Barlow Condensed',sans-serif;font-size:7px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.55);white-space:nowrap">${t}</span>`;
   const fSep = '<span style="width:1px;height:14px;background:rgba(0,212,255,.18);flex-shrink:0"></span>';
-
-  // Preserve current filter values
   const prev = {
     league: document.getElementById('mob-f-league')?.value||'',
     pos:    document.getElementById('mob-f-pos')?.value||'',
@@ -24980,59 +24976,36 @@ function renderMobileTable(){
     ct:     document.getElementById('mob-f-ct')?.value||'',
     metric: document.getElementById('mob-f-metric')?.value||'',
   };
-
   if(filterBar){
     filterBar.style.minHeight='52px';
-    filterBar.style.alignItems='center';
     filterBar.innerHTML = '<div style="display:flex;align-items:center;gap:5px;overflow-x:auto;width:100%;padding:2px 0;-webkit-overflow-scrolling:touch">'
-      + fLbl('Liga')
-      + `<select ${fSel('mob-f-league','max-width:90px')}><option value="">Todas</option>`
-      + leagues.map(l=>`<option value="${l}"${l===prev.league?' selected':''}>${l.length>10?l.slice(0,10)+'...':l}</option>`).join('')
-      + '</select>'
-      + fSep + fLbl('Pos')
-      + `<select ${fSel('mob-f-pos','max-width:64px')}><option value="">Todas</option>`
-      + ['RB','CB','LB','DM','CM','WIN','CF'].map(p=>`<option value="${p}"${p===prev.pos?' selected':''}>${p}</option>`).join('')
-      + '</select>'
-      + fSep + fLbl('Index')
-      + `<select ${fSel('mob-f-sort','max-width:78px')}>`
-      + `<option value="talent_index_pct"${prev.sort==='talent_index_pct'?' selected':''}>Talent</option>`
-      + `<option value="total_physical"${prev.sort==='total_physical'?' selected':''}>Physical</option>`
-      + `<option value="score"${prev.sort==='score'?' selected':''}>Transfer</option>`
-      + '</select>'
-      + fSep + fLbl('Idade')
-      + `<select ${fSel('mob-f-age','max-width:68px')}><option value="">Todas</option>`
-      + [['u21','Sub-21'],['u23','Sub-23'],['u25','Sub-25'],['2529','25-29'],['30p','30+']].map(([v,l])=>`<option value="${v}"${v===prev.age?' selected':''}>${l}</option>`).join('')
-      + '</select>'
-      + fSep + fLbl('Ctc')
-      + `<select ${fSel('mob-f-ct','max-width:74px')}><option value="">Todos</option>`
-      + `<option value="exp"${'exp'===prev.ct?' selected':''}>A expirar</option>`
-      + [currYear,currYear+1,currYear+2].map(y=>`<option value="${y}"${String(y)===prev.ct?' selected':''}>Fim ${y}</option>`).join('')
-      + '</select>'
-      + fSep + fLbl('Metrica')
-      + `<select ${fSel('mob-f-metric','max-width:90px')}><option value="">—</option>`
-      + ALL_METRICS_LIST.map(m=>`<option value="${m.k}"${m.k===prev.metric?' selected':''}>${m.l}</option>`).join('')
-      + '</select></div>';
+      +fLbl('Liga')+`<select ${fSel('mob-f-league','max-width:90px')}><option value="">Todas</option>`
+      +leagues.map(l=>`<option value="${l}"${l===prev.league?' selected':''}>${l.length>10?l.slice(0,10)+'...':l}</option>`).join('')+'</select>'
+      +fSep+fLbl('Pos')+`<select ${fSel('mob-f-pos','max-width:64px')}><option value="">Todas</option>`
+      +['RB','CB','LB','DM','CM','WIN','CF'].map(p=>`<option value="${p}"${p===prev.pos?' selected':''}>${p}</option>`).join('')+'</select>'
+      +fSep+fLbl('Index')+`<select ${fSel('mob-f-sort','max-width:78px')}>`
+      +`<option value="talent_index_pct"${prev.sort==='talent_index_pct'?' selected':''}>Talent</option>`
+      +`<option value="total_physical"${prev.sort==='total_physical'?' selected':''}>Physical</option>`
+      +`<option value="score"${prev.sort==='score'?' selected':''}>Transfer</option></select>`
+      +fSep+fLbl('Idade')+`<select ${fSel('mob-f-age','max-width:68px')}><option value="">Todas</option>`
+      +[['u21','Sub-21'],['u23','Sub-23'],['u25','Sub-25'],['2529','25-29'],['30p','30+']].map(([v,l])=>`<option value="${v}"${v===prev.age?' selected':''}>${l}</option>`).join('')+'</select>'
+      +fSep+fLbl('Ctc')+`<select ${fSel('mob-f-ct','max-width:74px')}><option value="">Todos</option>`
+      +`<option value="exp"${'exp'===prev.ct?' selected':''}>A expirar</option>`
+      +[currYear,currYear+1,currYear+2].map(y=>`<option value="${y}"${String(y)===prev.ct?' selected':''}>Fim ${y}</option>`).join('')+'</select>'
+      +fSep+fLbl('Metrica')+`<select ${fSel('mob-f-metric','max-width:90px')}><option value="">—</option>`
+      +ALL_METRICS_LIST.map(m=>`<option value="${m.k}"${m.k===prev.metric?' selected':''}>${m.l}</option>`).join('')+'</select></div>';
   }
-
   const leagueFil = document.getElementById('mob-f-league')?.value||'';
   const posFil    = document.getElementById('mob-f-pos')?.value||'';
   const sortKey   = document.getElementById('mob-f-sort')?.value||'talent_index_pct';
   const ageFil    = document.getElementById('mob-f-age')?.value||'';
   const ctFil     = document.getElementById('mob-f-ct')?.value||'';
   const metricKey = document.getElementById('mob-f-metric')?.value||'';
-  const metricLbl = ALL_METRICS_LIST.find(m=>m.k===metricKey)?.l||'';
-
-  // Sort priority: metric > index (liga/age/ct only filter, don't change sort)
-  const activeSortKey = metricKey || sortKey;
-
+  const metricLbl = ALL_METRICS_LIST.find(m=>m.k===metricKey)?.l||'MET';
+  const activeSortKey = metricKey||sortKey;
   let players = [...(PLAYERS||[])];
-  // Filters (don't affect sort)
   if(leagueFil) players=players.filter(p=>p.league===leagueFil);
-  if(posFil) players=players.filter(p=>{
-    const pos=(p.position||'').toUpperCase();
-    if(posFil==='WIN') return ['LW','RW','WF','WIN','LWF','RWF'].some(x=>pos.includes(x));
-    return pos.includes(posFil);
-  });
+  if(posFil) players=players.filter(p=>{const pos=(p.position||'').toUpperCase();if(posFil==='WIN')return['LW','RW','WF','WIN','LWF','RWF'].some(x=>pos.includes(x));return pos.includes(posFil);});
   if(ageFil==='u21') players=players.filter(p=>(p.age||99)<21);
   else if(ageFil==='u23') players=players.filter(p=>(p.age||99)<23);
   else if(ageFil==='u25') players=players.filter(p=>(p.age||99)<25);
@@ -25040,60 +25013,57 @@ function renderMobileTable(){
   else if(ageFil==='30p') players=players.filter(p=>(p.age||0)>=30);
   if(ctFil==='exp') players=players.filter(p=>p.contract_end&&new Date(p.contract_end)<new Date(Date.now()+365*24*36e5));
   else if(ctFil) players=players.filter(p=>p.contract_end&&p.contract_end.startsWith(ctFil));
-  // Sort by active key
   players.sort((a,b)=>(b[activeSortKey]||0)-(a[activeSortKey]||0));
 
-  function badges(p){
-    const pos=(p.position||'').split(',').map(x=>x.trim()).filter(Boolean);
-    const isWin=['LW','RW','WF','WIN','LWF','RWF'].some(x=>(p.position||'').toUpperCase().includes(x));
-    const w=isWin?'<span style="background:#6d28d9;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px;flex-shrink:0">WIN</span>':'';
-    const r2=pos[1]?'<span style="color:#00d4ff;border:1px solid rgba(0,212,255,.35);background:rgba(0,212,255,.07);font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px;flex-shrink:0">'+pos[1]+'</span>':'';
-    return w+r2;
-  }
+  function fmtCt(ct){if(!ct)return'—';const p=ct.split('-');return p.length>=2?p[0].slice(2)+'/'+p[1]:'—';}
+  function tiC(v){return v>=80?'#00e5a0':v>=55?'#00d4ff':'rgba(160,178,200,.45)';}
+  function phC(v){return v>=80?'#a78bfa':v>=55?'#c4b5fd':'rgba(160,178,200,.45)';}
+  function trC(v){return v>=80?'#ffb340':v>=55?'#ffd080':'rgba(160,178,200,.45)';}
+  function winB(p){return['LW','RW','WF','WIN','LWF','RWF'].some(x=>(p.position||'').toUpperCase().includes(x))?'<span style="background:#6d28d9;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">WIN</span>':'';}
+  function r2B(p){const ps=(p.position||'').split(',').map(x=>x.trim()).filter(Boolean);return ps[1]?'<span style="color:#00d4ff;border:1px solid rgba(0,212,255,.3);background:rgba(0,212,255,.06);font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">'+ps[1]+'</span>':'';}
+  const VS='font-family:\'Barlow Condensed\',sans-serif;font-size:15px;font-weight:800;line-height:1;text-align:center';
+  const LB='font-family:\'Barlow\',sans-serif;font-size:7px;color:rgba(255,255,255,.9);letter-spacing:.2px;text-align:center';
+  const CW='min-width:28px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:2px';
 
   content.innerHTML = '<div style="padding:0 0 80px">'
-    + players.map((p,i)=>{
-      const ti  = Math.round(p.talent_index_pct||0);
-      const ph  = Math.round((p.total_physical||0)/25*100);
-      const tr  = Math.round(p.score||0);
-      const tiC = ti>=80?'#00e5a0':ti>=55?'#00d4ff':'rgba(160,178,200,.4)';
-      const phC = ph>=80?'#a78bfa':ph>=55?'#c4b5fd':'rgba(160,178,200,.4)';
-      const trC = tr>=80?'#ffb340':tr>=55?'#ffd080':'rgba(160,178,200,.4)';
-      const metVal = metricKey&&p[metricKey]!=null?(+(p[metricKey])).toFixed(1):'';
-      const foot = p.foot==='direito'?'R':p.foot==='esquerdo'?'L':'';
-      const pName = p.name.replace(/'/g,"\\'");
-      return '<div onclick="mobGoToView(\'playerid\');window.selectedPlayer=PLAYERS.find(x=>x.name===\''+pName+'\');setTimeout(renderMobilePlayerID,50)"'
-        +' style="display:flex;align-items:center;gap:0;padding:8px 0 8px 8px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer">'
-        // rank number - larger, blue, flush left
-        +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:15px;font-weight:800;color:#00d4ff;width:22px;flex-shrink:0;text-align:right;margin-right:6px">'+(i+1)+'</span>'
-        // name + badges — tight left
-        +'<div style="flex:1;min-width:0">'
-          +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25">'+p.name+'</div>'
-          +'<div style="display:flex;align-items:center;gap:3px;margin-top:2px">'+badges(p)
-          +'<span style="font-family:\'Barlow\',sans-serif;font-size:8px;color:rgba(255,255,255,.3);white-space:nowrap">'+(p.age||'—')+'a · '+(p.size?p.size+'cm':'—')+(foot?' · '+foot:'')+'</span></div>'
+    +players.map((p,i)=>{
+      const ti=Math.round(p.talent_index_pct||0);
+      const ph=Math.round((p.total_physical||0)/25*100);
+      const tr=Math.round(p.score||0);
+      const metV=metricKey&&p[metricKey]!=null?(+(p[metricKey])).toFixed(1):'—';
+      const foot=p.foot==='direito'?'R':p.foot==='esquerdo'?'L':'';
+      const pos1=(p.position||'').split(',')[0].trim();
+      const pN=p.name.replace(/'/g,"\\'");
+      const metC=metricKey?'rgba(255,255,255,.75)':'rgba(160,178,200,.45)';
+      return '<div onclick="mobGoToView(\'playerid\');window.selectedPlayer=PLAYERS.find(x=>x.name===\''+pN+'\');setTimeout(renderMobilePlayerID,50)"'
+        +' style="display:flex;align-items:stretch;padding:7px 10px 7px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer">'
+        // rank
+        +'<div style="width:26px;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;padding-right:5px">'
+          +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:15px;font-weight:800;color:#00d4ff">'+(i+1)+'</span>'
         +'</div>'
-        // club + league — aligned to same row height
-        +'<div style="text-align:right;min-width:0;max-width:76px;flex-shrink:1;padding:0 8px;display:flex;flex-direction:column;justify-content:center;height:38px">'
-          +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.team||'—')+'</div>'
-          +'<div style="font-family:\'Barlow\',sans-serif;font-size:8px;color:rgba(0,212,255,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.league||'')+'</div>'
+        // name + badges
+        +'<div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:3px">'
+          +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.3px">'+p.name.toUpperCase()+'</div>'
+          +'<div style="display:flex;align-items:center;gap:3px;overflow:hidden">'+winB(p)+r2B(p)
+            +'<span style="font-family:\'Barlow\',sans-serif;font-size:8px;color:rgba(255,255,255,.32);white-space:nowrap">'+pos1+'. '+(p.age||'—')+'a. '+(p.size?p.size+'cm':'—')+(foot?'. '+foot:'')+'</span>'
+          +'</div>'
         +'</div>'
-        // indexes + metric — aligned same height
-        +'<div style="display:flex;gap:5px;flex-shrink:0;align-items:center;height:38px;padding-right:10px">'
-          +'<div style="text-align:center;min-width:22px">'
-            +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:800;color:'+tiC+';line-height:1">'+ti+'</div>'
-            +'<div style="font-family:\'Barlow\',sans-serif;font-size:6px;color:#fff;letter-spacing:.3px">TAL</div>'
+        // club + league
+        +'<div style="display:flex;flex-direction:column;justify-content:center;align-items:flex-end;max-width:68px;flex-shrink:1;padding:0 7px">'
+          +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:700;color:rgba(255,255,255,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.team||'—')+'</div>'
+          +'<div style="font-family:\'Barlow\',sans-serif;font-size:7px;color:rgba(0,212,255,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.league||'')+'</div>'
+        +'</div>'
+        // 4 cols: TAL PHY MET CON
+        +'<div style="display:flex;gap:2px;flex-shrink:0;align-items:center">'
+          +'<div style="'+CW+'"><div style="'+VS+';color:'+tiC(ti)+'">'+ti+'</div><div style="'+LB+'">TAL</div></div>'
+          +'<div style="'+CW+'"><div style="'+VS+';color:'+phC(ph)+'">'+ph+'</div><div style="'+LB+'">PHY</div></div>'
+          +'<div style="'+CW+';border-left:1px solid rgba(255,255,255,.07);padding-left:4px">'
+            +'<div style="'+VS+';color:'+(metricKey?metC:trC(tr))+'">'+(metricKey?metV:tr)+'</div>'
+            +'<div style="'+LB+'">'+(metricKey?metricLbl.slice(0,3).toUpperCase():'TRA')+'</div>'
           +'</div>'
-          +'<div style="text-align:center;min-width:22px">'
-            +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:800;color:'+phC+';line-height:1">'+ph+'</div>'
-            +'<div style="font-family:\'Barlow\',sans-serif;font-size:6px;color:#fff;letter-spacing:.3px">PHY</div>'
-          +'</div>'
-          +'<div style="text-align:center;min-width:22px">'
-            +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:800;color:'+trC+';line-height:1">'+tr+'</div>'
-            +'<div style="font-family:\'Barlow\',sans-serif;font-size:6px;color:#fff;letter-spacing:.3px">TRA</div>'
-          +'</div>'
-          +'<div style="text-align:center;min-width:26px;border-left:1px solid rgba(255,255,255,.08);padding-left:5px">'
-            +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:800;color:rgba(255,255,255,.5);line-height:1">'+(metVal||'—')+'</div>'
-            +'<div style="font-family:\'Barlow\',sans-serif;font-size:6px;color:#fff;max-width:26px;overflow:hidden;white-space:nowrap">'+(metricKey?metricLbl.slice(0,4).toUpperCase():'MET')+'</div>'
+          +'<div style="'+CW+'">'
+            +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.38);line-height:1;text-align:center">'+fmtCt(p.contract_end)+'</div>'
+            +'<div style="'+LB+'">CON</div>'
           +'</div>'
         +'</div>'
       +'</div>';
