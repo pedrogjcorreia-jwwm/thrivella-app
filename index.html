@@ -25047,7 +25047,7 @@ function renderMobileTable(){
   if(filterBar){
     filterBar.style.minHeight='52px';
     const leagueOpts = [['','Todas'],...leagues.map(l=>[l,l.length>12?l.slice(0,12)+'...':l])];
-    const posOpts = [['','Todas'],['WIN','WIN']];
+    const posOpts = [['','Todas'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']];
     const sortOpts = [['talent_index_pct','Talent'],['total_physical','Physical'],['score','Transfer']];
     const ageOpts = [['','Todas'],['u21','Sub-21'],['u23','Sub-23'],['u25','Sub-25'],['2529','25-29'],['30p','30+']];
     const ctOpts = [['','Todos'],['exp','A expirar'],[String(currYear),'Fim '+currYear],[String(currYear+1),'Fim '+(currYear+1)],[String(currYear+2),'Fim '+(currYear+2)]];
@@ -25074,8 +25074,15 @@ function renderMobileTable(){
   let players = [...(PLAYERS||[])];
   if(leagueFil) players=players.filter(p=>p.league===leagueFil);
   if(posFil) players=players.filter(p=>{
-    if(posFil==='WIN') return true; // WIN badge shown on all players = all match
-    return false;
+    // Use the player's explicit badge/role field if available
+    const badge = (p.badge||p.role||'').toUpperCase();
+    if(badge) return badge===posFil;
+    // Fallback: use winB logic — if WIN badge is shown, player = WIN
+    const isWin = ['LW','RW','WF','WIN','LWF','RWF','LAMF','RAMF'].some(x=>(p.position||'').toUpperCase().includes(x));
+    if(posFil==='WIN') return isWin;
+    if(isWin) return false; // WIN player never matches other positions
+    const primary=(p.position||'').split(',')[0].trim().toUpperCase();
+    return primary===posFil;
   });
   if(ageFil==='u21') players=players.filter(p=>(p.age||99)<21);
   else if(ageFil==='u23') players=players.filter(p=>(p.age||99)<23);
