@@ -24862,7 +24862,7 @@ function sfDownload() {
     </div>
   </div>
   <!-- filter bar — content changes per view -->
-  <div id="mob-filter-bar" style="background:#060c14;border-bottom:1px solid rgba(0,212,255,.1);padding:8px 12px;min-height:46px;display:flex;align-items:center;gap:8px;overflow-x:auto"></div>
+  <div id="mob-filter-bar" style="background:#060c14;border-bottom:2px solid #061528;margin-bottom:2px;padding:8px 12px;min-height:46px;display:flex;align-items:center;gap:8px;overflow-x:auto"></div>
   <!-- main content -->
   <div class="mob-elite-content" id="mob-elite-content"></div>
 </div>
@@ -24984,7 +24984,7 @@ function renderMobileTable(){
   ];
 
   // sim-filter-input style selects
-  const fSel = (id,extra) => `id="${id}" onchange="renderMobileTable()" style="background:rgba(0,30,80,.4);border:1px solid rgba(0,212,255,.35);border-radius:3px;padding:3px 7px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;color:#c8e8ff;outline:none;${extra||''}"`;
+  const fSel = (id,extra) => `id="${id}" onchange="renderMobileTable()" style="background:rgba(0,30,80,.4);border:1px solid rgba(0,212,255,.35);border-radius:3px;padding:3px 7px 3px 7px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;color:#c8e8ff;outline:none;-webkit-appearance:none;appearance:none;${extra||''}"`;
   const fLbl = t => `<span style="font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.6);white-space:nowrap">${t}</span>`;
   const fSep = '<span style="width:1px;height:16px;background:rgba(0,212,255,.2);margin:0 2px;flex-shrink:0"></span>';
 
