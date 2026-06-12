@@ -25054,14 +25054,39 @@ function renderMobileTable(){
     const ageOpts = [['','Todas'],['u21','Sub-21'],['u23','Sub-23'],['u25','Sub-25'],['2529','25-29'],['30p','30+']];
     const ctOpts = [['','Todos'],['exp','A expirar'],[String(currYear),'Fim '+currYear],[String(currYear+1),'Fim '+(currYear+1)],[String(currYear+2),'Fim '+(currYear+2)]];
     const metOpts = [['','—'],...ALL_METRICS_LIST.map(m=>[m.k,m.l])];
-    filterBar.innerHTML = '<div style="display:flex;align-items:center;gap:5px;overflow-x:auto;width:100%;padding:2px 0;-webkit-overflow-scrolling:touch">'
-      +fLbl('Liga')+mkDD('mob-f-league','Liga',leagueOpts,prev.league)
-      +fSep+fLbl('Pos')+mkDD('mob-f-pos','Pos',posOpts,prev.pos)
-      +fSep+fLbl('Index')+mkDD('mob-f-sort','Index',sortOpts,prev.sort)
-      +fSep+fLbl('Idade')+mkDD('mob-f-age','Idade',ageOpts,prev.age)
-      +fSep+fLbl('Ctc')+mkDD('mob-f-ct','Ctc',ctOpts,prev.ct)
-      +fSep+fLbl('Métrica')+mkDD('mob-f-metric','Métrica',metOpts,prev.metric)
-      +'</div>';
+    // Primary filters (always visible): Liga, Pos, Index, Idade
+    // Secondary filters (shown on ›): Ctc, Métrica
+    const showSecondary = prev.ct||prev.metric;
+    filterBar.innerHTML =
+      '<div style="display:flex;align-items:center;gap:5px;width:100%;overflow:hidden">'
+      // Primary filters
+      +'<div id="mob-rk-primary" style="display:flex;align-items:center;gap:5px;flex:1;overflow:hidden;min-width:0">'
+        +fLbl('Liga')+mkDD('mob-f-league','Liga',leagueOpts,prev.league)
+        +fSep+fLbl('Pos')+mkDD('mob-f-pos','Pos',posOpts,prev.pos)
+        +fSep+fLbl('Index')+mkDD('mob-f-sort','Index',sortOpts,prev.sort)
+        +fSep+fLbl('Idade')+mkDD('mob-f-age','Idade',ageOpts,prev.age)
+      +'</div>'
+      // Arrow button
+      +'<button onclick="mobRkToggleExtra()" style="flex-shrink:0;width:24px;height:24px;background:'+(showSecondary?'rgba(0,212,255,.2)':'rgba(0,212,255,.06)')+';border:1px solid rgba(0,212,255,'+(showSecondary?'.5':'.2')+');border-radius:5px;color:rgba(0,212,255,.8);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" id="mob-rk-arrow">'
+        +(showSecondary?'‹':'›')
+      +'</button>'
+      // Secondary filters (hidden by default)
+      +'<div id="mob-rk-secondary" style="display:'+(showSecondary?'flex':'none')+';align-items:center;gap:5px;overflow:hidden">'
+        +fSep+fLbl('Ctc')+mkDD('mob-f-ct','Ctc',ctOpts,prev.ct)
+        +fSep+fLbl('Métrica')+mkDD('mob-f-metric','Métrica',metOpts,prev.metric)
+      +'</div>'
+    +'</div>';
+
+    window.mobRkToggleExtra = function(){
+      const sec=document.getElementById('mob-rk-secondary');
+      const btn=document.getElementById('mob-rk-arrow');
+      if(!sec||!btn) return;
+      const open=sec.style.display==='flex';
+      sec.style.display=open?'none':'flex';
+      btn.textContent=open?'›':'‹';
+      btn.style.background=open?'rgba(0,212,255,.06)':'rgba(0,212,255,.2)';
+      btn.style.borderColor=open?'rgba(0,212,255,.2)':'rgba(0,212,255,.5)';
+    };
   }
 
   const leagueFil = getRkVal('mob-f-league');
