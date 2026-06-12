@@ -24966,6 +24966,13 @@ function renderMobileTable(){
   const filterBar = document.getElementById('mob-filter-bar');
   if(!content) return;
 
+  // Wait for PLAYERS to load
+  if(!PLAYERS||!PLAYERS.length){
+    content.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:40vh;font-family:\'Barlow Condensed\',sans-serif;font-size:13px;color:rgba(0,212,255,.5);letter-spacing:1px;text-transform:uppercase">A carregar...</div>';
+    if(typeof loadPlayers==='function') loadPlayers().then(()=>renderMobileTable());
+    return;
+  }
+
   const leagues = [...new Set((PLAYERS||[]).map(p=>p.league).filter(Boolean))].sort();
   const currYear = new Date().getFullYear();
   const ALL_METRICS_LIST = [
@@ -24975,9 +24982,12 @@ function renderMobileTable(){
     {k:'sprint_dist90',l:'Sprint/90'},{k:'hsr90',l:'HSR/90'},{k:'def_duels',l:'Duelos Def'},
     {k:'def_duels_pct',l:'% Duelos'},{k:'adj_intercept',l:'Intercep'},{k:'passes_pct',l:'% Passes'},
   ];
+
+  // sim-filter-input style selects
   const fSel = (id,extra) => `id="${id}" onchange="renderMobileTable()" class="sim-filter-input" style="width:auto;${extra||''}"`;
-  const fLbl = t => `<span style="font-family:'Barlow Condensed',sans-serif;font-size:7px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.55);white-space:nowrap">${t}</span>`;
-  const fSep = '<span style="width:1px;height:14px;background:rgba(0,212,255,.18);flex-shrink:0"></span>';
+  const fLbl = t => `<span class="sim-filter-lbl">${t}</span>`;
+  const fSep = '<span class="sim-filter-sep"></span>';
+
   const prev = {
     league: document.getElementById('mob-f-league')?.value||'',
     pos:    document.getElementById('mob-f-pos')?.value||'',
@@ -24986,36 +24996,44 @@ function renderMobileTable(){
     ct:     document.getElementById('mob-f-ct')?.value||'',
     metric: document.getElementById('mob-f-metric')?.value||'',
   };
+
   if(filterBar){
     filterBar.style.minHeight='52px';
     filterBar.innerHTML = '<div style="display:flex;align-items:center;gap:5px;overflow-x:auto;width:100%;padding:2px 0;-webkit-overflow-scrolling:touch">'
-      +fLbl('Liga')+`<select ${fSel('mob-f-league','max-width:90px')}><option value="">Todas</option>`
+      +fLbl('Liga')+`<select ${fSel('mob-f-league')}><option value="">Todas</option>`
       +leagues.map(l=>`<option value="${l}"${l===prev.league?' selected':''}>${l.length>10?l.slice(0,10)+'...':l}</option>`).join('')+'</select>'
-      +fSep+fLbl('Pos')+`<select ${fSel('mob-f-pos','max-width:64px')}><option value="">Todas</option>`
+      +fSep+fLbl('Pos')+`<select ${fSel('mob-f-pos')}><option value="">Todas</option>`
       +['RB','CB','LB','DM','CM','WIN','CF'].map(p=>`<option value="${p}"${p===prev.pos?' selected':''}>${p}</option>`).join('')+'</select>'
-      +fSep+fLbl('Index')+`<select ${fSel('mob-f-sort','max-width:78px')}>`
+      +fSep+fLbl('Index')+`<select ${fSel('mob-f-sort')}>`
       +`<option value="talent_index_pct"${prev.sort==='talent_index_pct'?' selected':''}>Talent</option>`
       +`<option value="total_physical"${prev.sort==='total_physical'?' selected':''}>Physical</option>`
       +`<option value="score"${prev.sort==='score'?' selected':''}>Transfer</option></select>`
-      +fSep+fLbl('Idade')+`<select ${fSel('mob-f-age','max-width:68px')}><option value="">Todas</option>`
+      +fSep+fLbl('Idade')+`<select ${fSel('mob-f-age')}><option value="">Todas</option>`
       +[['u21','Sub-21'],['u23','Sub-23'],['u25','Sub-25'],['2529','25-29'],['30p','30+']].map(([v,l])=>`<option value="${v}"${v===prev.age?' selected':''}>${l}</option>`).join('')+'</select>'
-      +fSep+fLbl('Ctc')+`<select ${fSel('mob-f-ct','max-width:74px')}><option value="">Todos</option>`
+      +fSep+fLbl('Ctc')+`<select ${fSel('mob-f-ct')}><option value="">Todos</option>`
       +`<option value="exp"${'exp'===prev.ct?' selected':''}>A expirar</option>`
       +[currYear,currYear+1,currYear+2].map(y=>`<option value="${y}"${String(y)===prev.ct?' selected':''}>Fim ${y}</option>`).join('')+'</select>'
-      +fSep+fLbl('Metrica')+`<select ${fSel('mob-f-metric','max-width:90px')}><option value="">—</option>`
-      +ALL_METRICS_LIST.map(m=>`<option value="${m.k}"${m.k===prev.metric?' selected':''}>${m.l}</option>`).join('')+'</select></div>';
+      +fSep+fLbl('Métrica')+`<select ${fSel('mob-f-metric')}><option value="">—</option>`
+      +ALL_METRICS_LIST.map(m=>`<option value="${m.k}"${m.k===prev.metric?' selected':''}>${m.l}</option>`).join('')+'</select>'
+      +'</div>';
   }
+
   const leagueFil = document.getElementById('mob-f-league')?.value||'';
   const posFil    = document.getElementById('mob-f-pos')?.value||'';
   const sortKey   = document.getElementById('mob-f-sort')?.value||'talent_index_pct';
   const ageFil    = document.getElementById('mob-f-age')?.value||'';
   const ctFil     = document.getElementById('mob-f-ct')?.value||'';
   const metricKey = document.getElementById('mob-f-metric')?.value||'';
-  const metricLbl = ALL_METRICS_LIST.find(m=>m.k===metricKey)?.l||'MET';
+  const metricLbl = ALL_METRICS_LIST.find(m=>m.k===metricKey)?.l||'';
   const activeSortKey = metricKey||sortKey;
+
   let players = [...(PLAYERS||[])];
   if(leagueFil) players=players.filter(p=>p.league===leagueFil);
-  if(posFil) players=players.filter(p=>{const pos=(p.position||'').toUpperCase();if(posFil==='WIN')return['LW','RW','WF','WIN','LWF','RWF'].some(x=>pos.includes(x));return pos.includes(posFil);});
+  if(posFil) players=players.filter(p=>{
+    const pos=(p.position||'').toUpperCase();
+    if(posFil==='WIN') return ['LW','RW','WF','WIN','LWF','RWF'].some(x=>pos.includes(x));
+    return pos.includes(posFil);
+  });
   if(ageFil==='u21') players=players.filter(p=>(p.age||99)<21);
   else if(ageFil==='u23') players=players.filter(p=>(p.age||99)<23);
   else if(ageFil==='u25') players=players.filter(p=>(p.age||99)<25);
@@ -25025,58 +25043,63 @@ function renderMobileTable(){
   else if(ctFil) players=players.filter(p=>p.contract_end&&p.contract_end.startsWith(ctFil));
   players.sort((a,b)=>(b[activeSortKey]||0)-(a[activeSortKey]||0));
 
-  function fmtCt(ct){if(!ct)return'—';const p=ct.split('-');if(p.length<2)return'—';const yy=p[0].slice(2),mm=p[1];return mm+'/'+yy;}
+  function fmtCt(ct){if(!ct)return'—';const p=ct.split('-');if(p.length<2)return'—';return p[1]+'/'+p[0].slice(2);}
   function tiC(v){return v>=80?'#00e5a0':v>=55?'#00d4ff':'rgba(160,178,200,.45)';}
-  function phC(v){return v>=80?'#00e5a0':v>=55?'#00d4ff':'rgba(160,178,200,.45)';}
-  function trC(v){return v>=80?'#00e5a0':v>=55?'#00d4ff':'rgba(160,178,200,.45)';}
-  function winB(p){return '<span style="background:#6d28d9;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">WIN</span>';}
+  function winB(p){return'<span style="background:#6d28d9;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">WIN</span>';}
   function r2B(p){const ps=(p.position||'').split(',').map(x=>x.trim()).filter(Boolean);return ps[1]?'<span style="color:#00d4ff;border:1px solid rgba(0,212,255,.3);background:rgba(0,212,255,.06);font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">'+ps[1]+'</span>':'';}
+
   const VS='font-family:\'Barlow Condensed\',sans-serif;font-size:15px;font-weight:800;line-height:1;text-align:center';
   const LB='font-family:\'Barlow\',sans-serif;font-size:7px;color:rgba(255,255,255,.9);letter-spacing:.2px;text-align:center;margin-bottom:2px';
-  const CW='min-width:28px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:2px';
+  const CW='min-width:28px;text-align:center;display:flex;flex-direction:column;justify-content:space-between';
+
+  // 4th col: appears when metric OR contract filter active
+  const show4 = !!(metricKey||ctFil);
 
   content.innerHTML = '<div style="padding:0 0 80px">'
     +players.map((p,i)=>{
-      const ti=Math.round(p.talent_index_pct||0);
-      const ph=Math.round((p.total_physical||0)/25*100);
-      const tr=Math.round(p.score||0);
-      const metV=metricKey&&p[metricKey]!=null?(+(p[metricKey])).toFixed(1):'—';
-      const foot=p.foot==='direito'?'R':p.foot==='esquerdo'?'L':'';
-      const pos1=(p.position||'').split(',')[0].trim();
-      const pN=p.name.replace(/'/g,"\\'");
-      const metC=metricKey?'rgba(255,255,255,.75)':'rgba(160,178,200,.45)';
+      const ti  = Math.round(p.talent_index_pct||0);
+      const ph  = Math.round((p.total_physical||0)/25*100);
+      const tr  = Math.round(p.score||0);
+      const metV= metricKey&&p[metricKey]!=null?(+(p[metricKey])).toFixed(1):'—';
+      const ctStr = fmtCt(p.contract_end);
+      const ctRed = p.contract_end&&p.contract_end.slice(2,4)==='26';
+      const foot= p.foot==='direito'?'R':p.foot==='esquerdo'?'L':'';
+      const pos1= (p.position||'').split(',')[0].trim();
+      const pN  = p.name.replace(/'/g,"\\'");
+
+      const col4val  = metricKey ? metV : ctStr;
+      const col4lbl  = metricKey ? metricLbl.slice(0,3).toUpperCase() : 'CON';
+      const col4col  = metricKey ? 'rgba(255,255,255,.7)' : (ctRed?'#ff5757':'rgba(255,255,255,.4)');
+      const col4size = metricKey ? '13px' : '13px';
+
       return '<div onclick="mobGoToView(\'playerid\');window.selectedPlayer=PLAYERS.find(x=>x.name===\''+pN+'\');setTimeout(renderMobilePlayerID,50)"'
         +' style="display:flex;align-items:stretch;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;overflow:hidden">'
-        // rank + WIN — full height dark column
+        // rank+WIN dark blue col
         +'<div style="width:30px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:linear-gradient(180deg,#040e1c 0%,#061528 50%,#030c18 100%);border-right:1px solid rgba(0,180,255,.12)">'
           +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;color:rgba(200,220,240,.45)">'+(i+1)+'</span>'
           +winB(p)
         +'</div>'
-        // name (line1) + 2nd role + info (line2)
+        // name + 2nd role
         +'<div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:8px 4px 8px 10px">'
           +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</div>'
           +'<div style="display:flex;align-items:center;gap:3px;overflow:hidden">'+r2B(p)
             +'<span style="font-family:\'Barlow\',sans-serif;font-size:8px;color:rgba(255,255,255,.32);white-space:nowrap">'+pos1+'. '+(p.age||'—')+'a. '+(p.size?p.size+'cm':'—')+(foot?'. '+foot:'')+'</span>'
           +'</div>'
         +'</div>'
-        // club + league — aligned: club with name line, league with 2nd role line
+        // club + league
         +'<div style="display:flex;flex-direction:column;justify-content:center;align-items:flex-end;max-width:68px;flex-shrink:1;padding:8px 4px 8px 0;margin-right:6px;gap:4px">'
           +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11.5px;font-weight:700;color:rgba(255,255,255,.65);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.team||'—')+'</div>'
-          +'<div style="font-family:\'Barlow\',sans-serif;font-size:9px;color:rgba(0,212,255,.65);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.league||'')+'</div>'
+          +'<div style="font-family:\'Barlow\',sans-serif;font-size:9px;color:rgba(0,212,255,.65);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px">'+(p.league||'')+'</div>'
         +'</div>'
-        // 4 cols: TAL PHY MET CON — values top, labels bottom matching 2-line structure
+        // TAL PHY TRA + optional 4th
         +'<div style="display:flex;gap:2px;flex-shrink:0;align-items:stretch;padding:8px 10px 8px 0">'
-          +'<div style="'+CW+';justify-content:space-between"><div style="'+VS+';color:'+tiC(ti)+'">'+ti+'</div><div style="'+LB+'">TAL</div></div>'
-          +'<div style="'+CW+';justify-content:space-between"><div style="'+VS+';color:'+phC(ph)+'">'+ph+'</div><div style="'+LB+'">PHY</div></div>'
-          +'<div style="'+CW+';justify-content:space-between;border-left:1px solid rgba(255,255,255,.07);padding-left:4px">'
-            +'<div style="'+VS+';color:'+trC(tr)+'">'+tr+'</div>'
-            +'<div style="'+LB+'">TRA</div>'
-          +'</div>'
-          
+          +'<div style="'+CW+'"><div style="'+VS+';color:'+tiC(ti)+'">'+ti+'</div><div style="'+LB+'">TAL</div></div>'
+          +'<div style="'+CW+'"><div style="'+VS+';color:'+tiC(ph)+'">'+ph+'</div><div style="'+LB+'">PHY</div></div>'
+          +'<div style="'+CW+';border-left:1px solid rgba(255,255,255,.07);padding-left:4px"><div style="'+VS+';color:'+tiC(tr)+'">'+tr+'</div><div style="'+LB+'">TRA</div></div>'
+          +(show4?'<div style="'+CW+';border-left:1px solid rgba(255,255,255,.07);padding-left:4px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:'+col4size+';font-weight:800;line-height:1;text-align:center;color:'+col4col+'">'+col4val+'</div><div style="'+LB+'">'+col4lbl+'</div></div>':'')
         +'</div>'
       +'</div>';
-    }).join('')
-    +'</div>';
+    }).join('')+'</div>';
 }
 
 function renderMobilePlayerID(){
