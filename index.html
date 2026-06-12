@@ -24866,8 +24866,9 @@ function sfDownload() {
     </div>
   </div>
   <!-- filter bar — content changes per view -->
-  <div id="mob-filter-bar" style="background:#060c14;padding:8px 12px 6px;min-height:46px;display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none"></div>
-  <div style="height:2px;background:rgba(0,212,255,.45);margin:3px 12px 0"></div>
+  <div style="background:#060c14;padding:8px 12px 0;min-height:46px;overflow:hidden">
+    <div id="mob-filter-bar" style="display:flex;align-items:center;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:-5px;scrollbar-color:rgba(0,212,255,.5) transparent;scrollbar-width:thin"></div>
+  </div>
   <!-- main content -->
   <div class="mob-elite-content" id="mob-elite-content"></div>
 </div>
