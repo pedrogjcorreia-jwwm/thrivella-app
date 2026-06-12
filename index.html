@@ -6757,7 +6757,7 @@ function buildCmpPicker(slot) {
           positions.map(p=>'<option value="'+p+'">'+(p||'Posição')+'</option>').join('') +
         '</select>' +
       '</div>' +
-      '<div id="cmp-list-'+slot+'" style="position:absolute;top:100%;left:0;right:0;max-height:200px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border2);border-radius:5px;display:none;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>' +
+      '<div id="cmp-list-'+slot+'" style="position:fixed;max-height:200px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border2);border-radius:5px;display:none;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>' +
     '</div>';
 }
 
@@ -6771,7 +6771,18 @@ function filterCmpPicker(slot) {
     const posMatch = !pos || (p.position||'').split(',').map(x=>x.trim()).includes(pos);
     return nameMatch && posMatch;
   }).slice(0,40);
-  list.style.display = filtered.length ? 'block' : 'none';
+  if(filtered.length){
+    const input = document.getElementById('cmp-search-'+slot);
+    if(input){
+      const r = input.getBoundingClientRect();
+      list.style.top = (r.bottom+2)+'px';
+      list.style.left = r.left+'px';
+      list.style.width = r.width+'px';
+    }
+    list.style.display = 'block';
+  } else {
+    list.style.display = 'none';
+  }
   list.innerHTML = filtered.map(p =>
     '<div onclick="selectCmpPlayer(\''+slot+'\',\''+p.name.replace(/'/g,"\\'")+'\')" style="padding:6px 10px;font-family:var(--font-d);font-size:11px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background=\'rgba(0,180,255,.1)\'" onmouseout="this.style.background=\'\'">' +
       '<span style="font-weight:700;color:var(--text)">' + p.name + '</span>' +
@@ -14851,7 +14862,7 @@ function buildCmpPicker(slot) {
           positions.map(p=>'<option value="'+p+'">'+(p||'Posição')+'</option>').join('') +
         '</select>' +
       '</div>' +
-      '<div id="cmp-list-'+slot+'" style="position:absolute;top:100%;left:0;right:0;max-height:200px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border2);border-radius:5px;display:none;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>' +
+      '<div id="cmp-list-'+slot+'" style="position:fixed;max-height:200px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border2);border-radius:5px;display:none;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>' +
     '</div>';
 }
 
@@ -14865,7 +14876,18 @@ function filterCmpPicker(slot) {
     const posMatch = !pos || (p.position||'').split(',').map(x=>x.trim()).includes(pos);
     return nameMatch && posMatch;
   }).slice(0,40);
-  list.style.display = filtered.length ? 'block' : 'none';
+  if(filtered.length){
+    const input = document.getElementById('cmp-search-'+slot);
+    if(input){
+      const r = input.getBoundingClientRect();
+      list.style.top = (r.bottom+2)+'px';
+      list.style.left = r.left+'px';
+      list.style.width = r.width+'px';
+    }
+    list.style.display = 'block';
+  } else {
+    list.style.display = 'none';
+  }
   list.innerHTML = filtered.map(p =>
     '<div onclick="selectCmpPlayer(\''+slot+'\',\''+p.name.replace(/'/g,"\\'")+'\')" style="padding:6px 10px;font-family:var(--font-d);font-size:11px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background=\'rgba(0,180,255,.1)\'" onmouseout="this.style.background=\'\'">' +
       '<span style="font-weight:700;color:var(--text)">' + p.name + '</span>' +
