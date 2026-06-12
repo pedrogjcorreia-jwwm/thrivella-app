@@ -25019,7 +25019,7 @@ function renderMobileTable(){
   function tiC(v){return v>=80?'#00e5a0':v>=55?'#00d4ff':'rgba(160,178,200,.45)';}
   function phC(v){return v>=80?'#a78bfa':v>=55?'#c4b5fd':'rgba(160,178,200,.45)';}
   function trC(v){return v>=80?'#ffb340':v>=55?'#ffd080':'rgba(160,178,200,.45)';}
-  function winB(p){return['LW','RW','WF','WIN','LWF','RWF'].some(x=>(p.position||'').toUpperCase().includes(x))?'<span style="background:#6d28d9;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">WIN</span>':'';}
+  function winB(p){return '<span style="background:#6d28d9;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">WIN</span>';}
   function r2B(p){const ps=(p.position||'').split(',').map(x=>x.trim()).filter(Boolean);return ps[1]?'<span style="color:#00d4ff;border:1px solid rgba(0,212,255,.3);background:rgba(0,212,255,.06);font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px">'+ps[1]+'</span>':'';}
   const VS='font-family:\'Barlow Condensed\',sans-serif;font-size:15px;font-weight:800;line-height:1;text-align:center';
   const LB='font-family:\'Barlow\',sans-serif;font-size:7px;color:rgba(255,255,255,.9);letter-spacing:.2px;text-align:center;margin-bottom:2px';
@@ -25038,12 +25038,12 @@ function renderMobileTable(){
       return '<div onclick="mobGoToView(\'playerid\');window.selectedPlayer=PLAYERS.find(x=>x.name===\''+pN+'\');setTimeout(renderMobilePlayerID,50)"'
         +' style="display:flex;align-items:stretch;padding:7px 10px 7px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer">'
         // rank + WIN stacked
-        +'<div style="width:28px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;padding-right:4px;padding-top:1px">'
+        +'<div style="width:28px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;padding-right:4px;padding-top:1px;background:rgba(255,255,255,.03);border-radius:4px;margin-right:2px">'
           +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;color:rgba(200,220,240,.5)">'+(i+1)+'</span>'
           +winB(p)
         +'</div>'
         // name (line1) + 2nd role + info (line2)
-        +'<div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-start;gap:3px;padding-left:2px;padding-top:1px">'
+        +'<div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-start;gap:3px;padding-left:8px;padding-top:1px">'
           +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</div>'
           +'<div style="display:flex;align-items:center;gap:3px;overflow:hidden">'+r2B(p)
             +'<span style="font-family:\'Barlow\',sans-serif;font-size:8px;color:rgba(255,255,255,.32);white-space:nowrap">'+pos1+'. '+(p.age||'—')+'a. '+(p.size?p.size+'cm':'—')+(foot?'. '+foot:'')+'</span>'
