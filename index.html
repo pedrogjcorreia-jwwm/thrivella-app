@@ -43,9 +43,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
 
 /* ── APP SHELL ── */
-.app{display:grid;grid-template-rows:50px 1fr;height:100vh}
+.app{display:grid;grid-template-rows:1fr;height:100vh}
 .app.simple-active{height:calc(100vh + 180px);}
-.app-body{display:flex;overflow:hidden}
+.app-body{display:flex;overflow:hidden;padding-top:50px}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -54,6 +54,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   background:var(--bg1);border-bottom:1px solid var(--border);
   padding:0 20px;
   gap:0;
+  position:fixed;top:0;left:0;right:0;z-index:1000;
 }
 .top-right{margin-left:auto;flex-shrink:0;}
 .logo{
@@ -8169,9 +8170,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
 
 /* ── APP SHELL ── */
-.app{display:grid;grid-template-rows:50px 1fr;height:100vh}
+.app{display:grid;grid-template-rows:1fr;height:100vh}
 .app.simple-active{height:calc(100vh + 180px);}
-.app-body{display:flex;overflow:hidden}
+.app-body{display:flex;overflow:hidden;padding-top:50px}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -8180,6 +8181,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   background:var(--bg1);border-bottom:1px solid var(--border);
   padding:0 20px;
   gap:0;
+  position:fixed;top:0;left:0;right:0;z-index:1000;
 }
 .top-right{margin-left:auto;flex-shrink:0;}
 .logo{
