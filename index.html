@@ -25074,11 +25074,10 @@ function renderMobileTable(){
   let players = [...(PLAYERS||[])];
   if(leagueFil) players=players.filter(p=>p.league===leagueFil);
   if(posFil) players=players.filter(p=>{
-    if(posFil==='WIN') return true; // WIN badge is always 1st col = all players
-    // Other positions filter by 2nd role badge (first position after comma)
-    const second=(p.position||'').split(',')[1];
-    if(!second) return false;
-    return second.trim().toUpperCase()===posFil;
+    const pos=(p.position||'').toUpperCase();
+    const parts=pos.split(',').map(x=>x.trim());
+    if(posFil==='WIN') return parts.some(x=>x==='WIN'||x==='LW'||x==='RW'||x==='WF'||x==='LWF'||x==='RWF'||x==='LWB'||x==='RWB'||x==='LAMF'||x==='RAMF');
+    return parts.some(x=>x===posFil);
   });
   if(ageFil==='u21') players=players.filter(p=>(p.age||99)<21);
   else if(ageFil==='u23') players=players.filter(p=>(p.age||99)<23);
