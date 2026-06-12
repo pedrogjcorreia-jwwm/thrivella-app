@@ -25047,7 +25047,7 @@ function renderMobileTable(){
   if(filterBar){
     filterBar.style.minHeight='52px';
     const leagueOpts = [['','Todas'],...leagues.map(l=>[l,l.length>12?l.slice(0,12)+'...':l])];
-    const posOpts = [['','Todas'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']];
+    const posOpts = [['','Todas'],['WIN','WIN']];
     const sortOpts = [['talent_index_pct','Talent'],['total_physical','Physical'],['score','Transfer']];
     const ageOpts = [['','Todas'],['u21','Sub-21'],['u23','Sub-23'],['u25','Sub-25'],['2529','25-29'],['30p','30+']];
     const ctOpts = [['','Todos'],['exp','A expirar'],[String(currYear),'Fim '+currYear],[String(currYear+1),'Fim '+(currYear+1)],[String(currYear+2),'Fim '+(currYear+2)]];
@@ -25074,10 +25074,8 @@ function renderMobileTable(){
   let players = [...(PLAYERS||[])];
   if(leagueFil) players=players.filter(p=>p.league===leagueFil);
   if(posFil) players=players.filter(p=>{
-    const pos=(p.position||'').toUpperCase();
-    const parts=pos.split(',').map(x=>x.trim());
-    if(posFil==='WIN') return parts.some(x=>x==='WIN'||x==='LW'||x==='RW'||x==='WF'||x==='LWF'||x==='RWF'||x==='LWB'||x==='RWB'||x==='LAMF'||x==='RAMF');
-    return parts.some(x=>x===posFil);
+    if(posFil==='WIN') return true; // WIN badge shown on all players = all match
+    return false;
   });
   if(ageFil==='u21') players=players.filter(p=>(p.age||99)<21);
   else if(ageFil==='u23') players=players.filter(p=>(p.age||99)<23);
