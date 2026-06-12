@@ -25073,11 +25073,14 @@ function renderMobileTable(){
 
   let players = [...(PLAYERS||[])];
   if(leagueFil) players=players.filter(p=>p.league===leagueFil);
+  // Same WIN detection as badge display
+  function isWinPlayer(p){ return ['LW','RW','WF','WIN','LWF','RWF','LAMF','RAMF'].some(x=>(p.position||'').toUpperCase().includes(x)); }
+
   if(posFil) players=players.filter(p=>{
+    if(posFil==='WIN') return isWinPlayer(p);
+    // Other positions: exact primary badge, exclude WIN players
+    if(isWinPlayer(p)) return false;
     const primary=(p.position||'').split(',')[0].trim().toUpperCase();
-    const nonWin=['RB','LB','CB','DM','CM','CF','GK','SW','CDM','CAM','AM','ST'];
-    if(posFil==='WIN') return !nonWin.some(x=>primary===x||primary.startsWith(x));
-    // Exact match on primary badge only
     return primary===posFil;
   });
   if(ageFil==='u21') players=players.filter(p=>(p.age||99)<21);
