@@ -25053,7 +25053,7 @@ function renderMobileTable(){
   const CW='min-width:28px;text-align:center;display:flex;flex-direction:column;justify-content:space-between';
 
   // 4th col: appears when metric OR contract filter active
-  const show4 = !!(metricKey||ctFil);
+  const show4 = true; // always show 4th col slot
 
   content.innerHTML = '<div style="padding:0 0 80px">'
     +players.map((p,i)=>{
@@ -25067,9 +25067,9 @@ function renderMobileTable(){
       const pos1= (p.position||'').split(',')[0].trim();
       const pN  = p.name.replace(/'/g,"\\'");
 
-      const col4val  = metricKey ? metV : ctStr;
-      const col4lbl  = metricKey ? metricLbl.slice(0,3).toUpperCase() : 'CON';
-      const col4col  = metricKey ? 'rgba(255,255,255,.7)' : (ctRed?'#ff5757':'rgba(255,255,255,.4)');
+      const col4val  = metricKey ? metV : (ctFil ? ctStr : '—');
+      const col4lbl  = metricKey ? metricLbl.slice(0,3).toUpperCase() : (ctFil ? 'CON' : '');
+      const col4col  = metricKey ? 'rgba(255,255,255,.7)' : (ctRed?'#ff5757':'rgba(255,255,255,.15)');
       const col4size = metricKey ? '13px' : '13px';
 
       return '<div onclick="mobGoToView(\'playerid\');window.selectedPlayer=PLAYERS.find(x=>x.name===\''+pN+'\');setTimeout(renderMobilePlayerID,50)"'
@@ -25083,7 +25083,7 @@ function renderMobileTable(){
         +'<div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:8px 4px 8px 10px">'
           +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</div>'
           +'<div style="display:flex;align-items:center;gap:3px;overflow:hidden">'+r2B(p)
-            +'<span style="font-family:\'Barlow\',sans-serif;font-size:8px;color:rgba(255,255,255,.32);white-space:nowrap">'+pos1+'. '+(p.age||'—')+'a. '+(p.size?p.size+'cm':'—')+(foot?'. '+foot:'')+'</span>'
+            +'<span style="font-family:\'Barlow\',sans-serif;font-size:8.5px;color:rgba(255,255,255,.42);white-space:nowrap">'+(p.age||'—')+'a. '+(p.size?p.size+'cm':'—')+(foot?'. '+foot:'')+'</span>'
           +'</div>'
         +'</div>'
         // club + league
