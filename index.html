@@ -4,7 +4,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <!-- v2 -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <title>Thrivella-192643</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&amp;family=Barlow:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
@@ -25271,9 +25271,15 @@ function renderMobileCompareView(nameA, nameB){
     const out=document.getElementById('mob-cmp-output');
     if(out) out.innerHTML='<div class="ai-thinking" style="padding:30px 0;justify-content:center"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
 
-    // Show desktop compare view (needed for renderCompare to work)
+    // Make view-compare invisible but still in layout (so renderCompare works)
+    // Using visibility:hidden + pointer-events:none instead of display changes
+    // This way the desktop layout grid is NEVER affected
     const viewCmp=document.getElementById('view-compare');
-    if(viewCmp) viewCmp.style.display='flex';
+    if(viewCmp){
+      viewCmp.style.visibility='hidden';
+      viewCmp.style.pointerEvents='none';
+      viewCmp.style.display='flex';
+    }
 
     // Populate selects and run desktop engine
     if(typeof initCompare==='function') initCompare();
@@ -25344,7 +25350,12 @@ function renderMobileCompareView(nameA, nameB){
         if(aiSec) out.appendChild(aiSec.cloneNode(true));
 
         // Hide desktop compare view
-        if(viewCmp) viewCmp.style.display='none';
+        // Restore view-compare to hidden state
+        if(viewCmp){
+          viewCmp.style.visibility='';
+          viewCmp.style.pointerEvents='';
+          viewCmp.style.display='none';
+        }
       },300);
     },500);
   };
