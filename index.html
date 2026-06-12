@@ -25075,8 +25075,9 @@ function renderMobileTable(){
   if(leagueFil) players=players.filter(p=>p.league===leagueFil);
   if(posFil) players=players.filter(p=>{
     const primary=(p.position||'').split(',')[0].trim().toUpperCase();
-    if(posFil==='WIN') return ['LW','RW','WF','WIN','LWF','RWF','LAMF','RAMF'].some(x=>primary===x||primary.startsWith(x));
-    // Exact match on primary badge only — CM only shows CM, not LCAM etc
+    const nonWin=['RB','LB','CB','DM','CM','CF','GK','SW','CDM','CAM','AM','ST'];
+    if(posFil==='WIN') return !nonWin.some(x=>primary===x||primary.startsWith(x));
+    // Exact match on primary badge only
     return primary===posFil;
   });
   if(ageFil==='u21') players=players.filter(p=>(p.age||99)<21);
