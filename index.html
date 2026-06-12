@@ -25279,11 +25279,17 @@ function renderMobileCompareView(nameA, nameB){
     const out=document.getElementById('mob-cmp-output');
     if(out) out.innerHTML='<div class="ai-thinking" style="padding:30px 0;justify-content:center"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
 
-    // Show desktop compare view temporarily (needed for renderCompare to work)
-    // IMPORTANT: always hide it again - leaving it visible breaks desktop layout
+    // Use offscreen container instead of showing view-compare
+    // This avoids breaking the desktop layout entirely
     const viewCmp=document.getElementById('view-compare');
-    const wasVisible = viewCmp && viewCmp.style.display==='flex';
-    if(viewCmp && !wasVisible) viewCmp.style.display='flex';
+    const origDisplay = viewCmp ? viewCmp.style.display : 'none';
+    const origPos = viewCmp ? viewCmp.style.position : '';
+    const origLeft = viewCmp ? viewCmp.style.left : '';
+    if(viewCmp){
+      viewCmp.style.position='fixed';
+      viewCmp.style.left='-9999px';
+      viewCmp.style.display='flex';
+    }
 
     // Populate selects and run desktop engine
     if(typeof initCompare==='function') initCompare();
@@ -25353,8 +25359,12 @@ function renderMobileCompareView(nameA, nameB){
         const aiSec=document.getElementById('cmp-ai-section');
         if(aiSec) out.appendChild(aiSec.cloneNode(true));
 
-        // Hide desktop compare view - only if still in mobile mode
-        if(viewCmp && document.getElementById('mobile-elite-view')?.style.display!=='none') viewCmp.style.display='none';
+        // Restore view-compare to original state
+        if(viewCmp){
+          viewCmp.style.position=origPos;
+          viewCmp.style.left=origLeft;
+          viewCmp.style.display=origDisplay;
+        }
       },300);
     },500);
   };
