@@ -2299,9 +2299,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .mob-skip:hover{color:rgba(255,255,255,.5)}
 
 /* ═══ MOBILE PORTRAIT ELITE VIEW ═══ */
-#mobile-elite-view{display:none;position:fixed;inset:0;z-index:9998;background:#080c10;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#mobile-elite-view{display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;height:100dvh;z-index:9998;background:#080c10;overflow-y:auto;-webkit-overflow-scrolling:touch}
 #mobile-elite-view::-webkit-scrollbar{display:none}
-.mob-elite-topbar{position:sticky;top:0;z-index:10;height:50px;background:#080c10;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;padding:0 14px;gap:8px}
+.mob-elite-topbar{position:fixed;top:0;left:0;right:0;z-index:9999;height:50px;background:#080c10;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;padding:0 14px;gap:8px}
 .mob-elite-logo{font-family:Georgia,serif;font-size:14px;letter-spacing:2px;background:linear-gradient(90deg,#00c4ff,#00e5a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .mob-elite-back{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.8px;text-transform:uppercase;cursor:pointer;padding:4px 8px;border-radius:4px;border:1px solid rgba(255,255,255,.1)}
 .mob-elite-back:hover{color:rgba(0,212,255,.8);border-color:rgba(0,212,255,.3)}
@@ -10425,9 +10425,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .mob-skip:hover{color:rgba(255,255,255,.5)}
 
 /* ═══ MOBILE PORTRAIT ELITE VIEW ═══ */
-#mobile-elite-view{display:none;position:fixed;inset:0;z-index:9998;background:#080c10;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#mobile-elite-view{display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;height:100dvh;z-index:9998;background:#080c10;overflow-y:auto;-webkit-overflow-scrolling:touch}
 #mobile-elite-view::-webkit-scrollbar{display:none}
-.mob-elite-topbar{position:sticky;top:0;z-index:10;height:50px;background:#080c10;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;padding:0 14px;gap:8px}
+.mob-elite-topbar{position:fixed;top:0;left:0;right:0;z-index:9999;height:50px;background:#080c10;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;padding:0 14px;gap:8px}
 .mob-elite-logo{font-family:Georgia,serif;font-size:14px;letter-spacing:2px;background:linear-gradient(90deg,#00c4ff,#00e5a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .mob-elite-back{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.8px;text-transform:uppercase;cursor:pointer;padding:4px 8px;border-radius:4px;border:1px solid rgba(255,255,255,.1)}
 .mob-elite-back:hover{color:rgba(0,212,255,.8);border-color:rgba(0,212,255,.3)}
@@ -24866,11 +24866,11 @@ function sfDownload() {
     </div>
   </div>
   <!-- filter bar — content changes per view -->
-  <div style="background:#060c14;border-bottom:1px solid rgba(0,212,255,.12);padding:8px 12px 0;min-height:46px;overflow:hidden">
+  <div style="background:#060c14;border-bottom:1px solid rgba(0,212,255,.12);padding:8px 12px 0;min-height:46px;overflow:hidden;position:sticky;top:50px;z-index:9998">
     <div id="mob-filter-bar" style="display:flex;align-items:center;gap:8px;overflow-x:auto;padding-bottom:11px;margin-bottom:-5px;scrollbar-color:rgba(0,212,255,.5) transparent;scrollbar-width:thin"></div>
   </div>
   <!-- main content -->
-  <div class="mob-elite-content" id="mob-elite-content"></div>
+  <div class="mob-elite-content" id="mob-elite-content" style="margin-top:50px"></div>
 </div>
 
 <script>
