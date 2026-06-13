@@ -25403,26 +25403,32 @@ function renderMobileShadowView(){
       pitchArea.style.cssText = `position:fixed;left:-9999px;top:0;width:${pitchW+40}px;height:${pitchH+40}px;display:flex;align-items:center;justify-content:center;overflow:visible`;
     }
 
-    // Render the pitch
+    // Render the pitch at desktop size (let shRenderPitch decide dimensions)
     if(typeof shRender==='function') shRender();
 
     setTimeout(()=>{
+      if(pitchArea && pitchArea._savedStyle!==undefined) pitchArea.style.cssText=pitchArea._savedStyle;
+
       content.innerHTML='<div style="overflow-x:hidden;overflow-y:auto;height:100%;padding-bottom:20px"></div>';
       const wrap=content.firstChild;
 
-      if(pitchArea && pitchArea._savedStyle!==undefined) pitchArea.style.cssText=pitchArea._savedStyle;
-
-      if(pitchWrap){
-        // Set pitchWrap to exact mobile size via inline style
-        // then show it directly in the mobile content via absolute positioning trick
+      const svg = pitchWrap && pitchWrap.querySelector('svg');
+      if(svg){
+        // Serialize the SVG and show as <img width:100%> — same as radar in Comparar
+        // This scales perfectly to any screen width
+        const serializer = new XMLSerializer();
+        const svgStr = serializer.serializeToString(svg);
+        const blob = new Blob([svgStr], {type:'image/svg+xml'});
+        const url = URL.createObjectURL(blob);
+        const img = document.createElement('img');
+        img.onload = function(){ URL.revokeObjectURL(url); };
+        img.src = url;
+        img.style.cssText = 'width:calc(100% - 40px);height:auto;display:block;margin:8px 20px';
+        wrap.appendChild(img);
+      } else if(pitchWrap){
         const clone=pitchWrap.cloneNode(true);
-        // Remove any offscreen transforms
-        clone.style.cssText='width:'+pitchW+'px;height:'+pitchH+'px;position:relative;overflow:visible;flex-shrink:0;margin:0 auto;display:block';
-        // Scale down using CSS transform on a wrapper
-        const outer=document.createElement('div');
-        outer.style.cssText='width:'+pitchW+'px;overflow:visible;margin:8px auto;flex-shrink:0';
-        outer.appendChild(clone);
-        wrap.appendChild(outer);
+        clone.style.cssText='width:'+pitchW+'px;height:'+pitchH+'px;display:block;margin:8px auto;position:relative;overflow:visible';
+        wrap.appendChild(clone);
       }
 
       const shadowTeam=window.shadowTeam||[];
