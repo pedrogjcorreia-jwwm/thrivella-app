@@ -25175,7 +25175,7 @@ function renderMobileTable(){
           +'<div style="'+CW+'"><div style="'+VS+';color:'+tiC(ti)+'">'+ti+'</div><div style="'+LB+'">TAL</div></div>'
           +'<div style="'+CW+'"><div style="'+VS+';color:'+tiC(ph)+'">'+ph+'</div><div style="'+LB+'">PHY</div></div>'
           +'<div style="'+CW+';border-left:1px solid rgba(255,255,255,.07);padding-left:4px"><div style="'+VS+';color:'+tiC(tr)+'">'+tr+'</div><div style="'+LB+'">TRA</div></div>'
-          +'<div style="min-width:28px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(180deg,#040e1c 0%,#061528 50%,#030c18 100%);border-left:1px solid rgba(0,180,255,.12);padding:0 4px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;line-height:1;text-align:center;color:'+col4col+'">'+col4val+'</div><div style="'+LB+'">'+col4lbl+'</div></div>'
+          +'<div style="min-width:28px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(180deg,#040e1c 0%,#061528 50%,#030c18 100%);border-left:1px solid rgba(0,180,255,.12);padding:0 4px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:800;line-height:1;text-align:center;color:'+col4col+'">'+col4val+'</div><div style="'+LB+'">'+col4lbl+'</div></div>'
         +'</div>'
       +'</div>';
     }).join('')+'</div>';
@@ -25432,9 +25432,9 @@ function renderMobileShadowView(){
 
     const screenW = window.innerWidth;
     const availH = window.innerHeight - 120;
-    // Reduce by 15% from full size, and ensure no overflow
-    const pitchH = Math.round(Math.min(availH - 40, screenW / 0.805) * 0.85);
-    const pitchW = Math.round(pitchH * 0.805);
+    // Fill full width with correct football pitch proportions
+    const pitchW = screenW - 16;
+    const pitchH = Math.round(Math.min(pitchW * 1.45, availH - 20));
 
     // Temporarily set the pitch area size so shRenderPitch uses our dimensions
     const pitchArea = document.getElementById('sh-pitch-area');
