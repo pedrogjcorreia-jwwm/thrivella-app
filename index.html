@@ -25423,7 +25423,7 @@ function renderMobileShadowView(){
         const img = document.createElement('img');
         img.onload = function(){ URL.revokeObjectURL(url); };
         img.src = url;
-        img.style.cssText = 'width:calc(100% - 40px);height:auto;display:block;margin:8px 20px';
+        img.style.cssText = 'width:calc(100% - 40px);height:auto;display:block;margin:8px 20px;transform:scaleY(1.1);transform-origin:top center';
         wrap.appendChild(img);
       } else if(pitchWrap){
         const clone=pitchWrap.cloneNode(true);
