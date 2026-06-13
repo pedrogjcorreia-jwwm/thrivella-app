@@ -25435,7 +25435,8 @@ function renderMobileShadowView(){
               const players = slotData?slotData.players:[];
               const hasPl = players.length>0;
               const label = hasPl?(players[slotData.cur||0]||{name:''}).name.split(' ').slice(-1)[0]:slot.label;
-              dot.style.cssText = 'position:absolute;left:'+pos.x+'%;top:'+(pos.y*1.1)+'%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(0,30,60,.85);border:2px solid rgba(0,200,255,.85);display:flex;align-items:center;justify-content:center;z-index:10';
+              const yAdj = slot.id==='cf' ? 1.9 : -2.6;
+              dot.style.cssText = 'position:absolute;left:'+pos.x+'%;top:'+((pos.y*1.1)+yAdj)+'%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(0,30,60,.85);border:2px solid rgba(0,200,255,.85);display:flex;align-items:center;justify-content:center;z-index:10';
               dot.innerHTML = '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:'+(hasPl?'7':'8')+'px;font-weight:700;color:#fff;text-align:center;letter-spacing:.3px;max-width:30px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">'+label+'</span>';
               imgWrap.appendChild(dot);
             });
