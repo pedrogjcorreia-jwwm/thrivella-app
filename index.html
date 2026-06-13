@@ -13102,7 +13102,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 </div>
 
 <script>
-var API_URL = 'https://thrivela.up.railway.app';
+API_URL = 'https://thrivela.up.railway.app';
 
 // STATIC PHOTO CACHE -- paste exported photos here for cross-device access
 window.STATIC_PHOTOS = {
@@ -13325,9 +13325,9 @@ window.exportPhotoCache=function(){
   doSync(ghToken);
 };
 
-var PLAYERS = [];
-var _playersLoaded = false;
-var _loadingPromise = null;
+PLAYERS = [];
+_playersLoaded = false;
+_loadingPromise = null;
 
 async function loadPlayers() {
   if (_playersLoaded) return PLAYERS;
@@ -13416,15 +13416,15 @@ async function loadPlayers() {
   return _loadingPromise;
 }
 
-var AVATAR_COLORS=['#00d4ff','#00e5a0','#ffb340','#ff4757','#9b7fff','#ff6b9d','#4ecdc4','#f7b731','#a29bfe','#fd79a8'];
-var notes={};
-var selectedPlayer=null, currentView='table', radarChart=null;
-var tableSort={key:'score',dir:-1}; // 'score' key → sorts by talent_index
-var selPos='all', selLeagues=[], showAlerts=false, filts={ageMin:16,ageMax:40,ctMin:2025,ctMax:2031,scMin:0};
+AVATAR_COLORS=['#00d4ff','#00e5a0','#ffb340','#ff4757','#9b7fff','#ff6b9d','#4ecdc4','#f7b731','#a29bfe','#fd79a8'];
+notes={};
+selectedPlayer=null, currentView='table', radarChart=null;
+tableSort={key:'score',dir:-1}; // 'score' key → sorts by talent_index
+selPos='all', selLeagues=[], showAlerts=false, filts={ageMin:16,ageMax:40,ctMin:2025,ctMax:2031,scMin:0};
 
 // ── DERIVED DATA ─────────────────────────────────────────────────────────────
-var ALL_LEAGUES = [];
-var ALL_POS = [];
+ALL_LEAGUES = [];
+ALL_POS = [];
 
 
 
@@ -13569,7 +13569,7 @@ function rebuildDerivedData() {
 // ── HELPERS ──────────────────────────────────────────────────────────────────
 function getColor(i){return '#00d4ff'}
 
-var FLAG_MAP_DETAIL = {
+FLAG_MAP_DETAIL = {
   'Greece':'🇬🇷','Portugal':'🇵🇹','Ecuador':'🇪🇨','Belgium':'🇧🇪','Poland':'🇵🇱',
   "Côte d'Ivoire":'🇨🇮','Iran':'🇮🇷','Comoros':'🇰🇲','France':'🇫🇷','Japan':'🇯🇵',
   'Sweden':'🇸🇪','Gambia':'🇬🇲','Ghana':'🇬🇭','Nigeria':'🇳🇬','Senegal':'🇸🇳',
@@ -13581,7 +13581,7 @@ var FLAG_MAP_DETAIL = {
 };
 function getFlag(c){ return FLAG_MAP_DETAIL[c.trim()] || '🌍'; }
 
-var COUNTRY_CODE_MAP = {
+COUNTRY_CODE_MAP = {
   'Greece':'gr','Portugal':'pt','Ecuador':'ec','Belgium':'be','Poland':'pl',
   "Côte d'Ivoire":'ci','Iran':'ir','Comoros':'km','France':'fr','Japan':'jp',
   'Sweden':'se','Gambia':'gm','Ghana':'gh','Nigeria':'ng','Senegal':'sn',
@@ -13598,7 +13598,7 @@ function getFlagImg(c) {
   return '<img src="https://flagcdn.com/16x12/' + code + '.png" width="16" height="12" style="border-radius:1px;flex-shrink:0;object-fit:cover" alt="' + c + '">';
 }
 
-var LEAGUE_CONFIG = {
+LEAGUE_CONFIG = {
   'Albania1':{country:'Albania',level:1,display:'Albania'},
   'Armenia1':{country:'Armenia',level:1,display:'Armenia'},
   'Australia1':{country:'Australia',level:1,display:'Australia'},
@@ -13650,7 +13650,7 @@ var LEAGUE_CONFIG = {
   'Ukraine2':{country:'Ukraine',level:2,display:'Ukraine 2'},
 };
 // Backwards compat
-var VALID_WIN_POS = new Set(['LW','RW','LWF','RWF','LAMF','RAMF','AMF','LCMF','RCMF']);
+VALID_WIN_POS = new Set(['LW','RW','LWF','RWF','LAMF','RAMF','AMF','LCMF','RCMF']);
 
 function hasWinAlert(p) {
   if (!p.position_group || p.position_group !== 'WIN') return false;
@@ -13661,10 +13661,10 @@ function getWinAlertPos(p) {
   return (p.position||'').split(',').map(x=>x.trim()).filter(pos => pos && !VALID_WIN_POS.has(pos));
 }
 
-var LEAGUE_COUNTRY_MAP = Object.fromEntries(Object.entries(LEAGUE_CONFIG).map(([k,v])=>[k,v.country]));
+LEAGUE_COUNTRY_MAP = Object.fromEntries(Object.entries(LEAGUE_CONFIG).map(([k,v])=>[k,v.country]));
 
 // ── Liga Difficulty Multipliers (Opta-based, ref=Portugal2=1.000) ──────────
-var LEAGUE_DIFFICULTY = {
+LEAGUE_DIFFICULTY = {
   // Raw Opta multipliers — ref = Portugal2 = 71.8 (no cap)
   'England1':1.2632,  // Opta 90.7  +26.3%
   'Belgium1':1.1253,  // Opta 80.8  +12.5%
@@ -13717,7 +13717,7 @@ var LEAGUE_DIFFICULTY = {
   'Ukraine2':0.8064,  // Opta 57.9  -19.4%
 };
 
-var ligaAdjustActive = false;
+ligaAdjustActive = false;
 
 function getLigaMult(league) {
   return LEAGUE_DIFFICULTY[league] || 1.000;
@@ -13836,7 +13836,7 @@ function ageStyle(age){
 function htStyle(h){
   return{bg:'var(--bg3)',col:'var(--muted)'};
 }
-var LEAGUE_COLORS = {};
+LEAGUE_COLORS = {};
 function leagueBadge(league) {
   const cfg = LEAGUE_CONFIG[league];
   const display = cfg ? cfg.display : league;
@@ -14303,9 +14303,9 @@ function metricRow(label, val, max, avg, inverse=false, key=null, player=null, s
 }
 
 // ── METRIC TABLE VIEW ────────────────────────────────────────────────────────
-var _mtChartInst = null;
-var _mtCurrentPlayer = null;
-var _mtCurrentLA = null;
+_mtChartInst = null;
+_mtCurrentPlayer = null;
+_mtCurrentLA = null;
 
 function metricTableRow(label, val, avg, rank, inverse=false, key=null, section=null) {
   const above   = inverse ? val <= avg : val >= avg;
@@ -14325,9 +14325,9 @@ function metricTableRow(label, val, avg, rank, inverse=false, key=null, section=
     + '</div>';
 }
 
-var _mrChartInst = null;
-var _mrActiveRow = null;
-var _mrFullPanel = null;
+_mrChartInst = null;
+_mrActiveRow = null;
+_mrFullPanel = null;
 
 function mrClickRow(el) {
   const key     = el.dataset.key;
@@ -14748,7 +14748,7 @@ function metricTable(p, LA) {
     + '</div>';
 }
 
-var _currentMetricView = 'bars';
+_currentMetricView = 'bars';
 function setMetricView(v) {
   _currentMetricView = v;
   const bars    = document.getElementById('metric-view-bars');
@@ -14807,8 +14807,8 @@ function showView(v,btn){
 }
 
 // ── COMPARE ──────────────────────────────────────────────────────────────────
-var CMP_COLS  = ['#378ADD','#00e5a0','#ff9f43','#ff4757'];
-var CMP_FILLS = [
+CMP_COLS  = ['#378ADD','#00e5a0','#ff9f43','#ff4757'];
+CMP_FILLS = [
   'linear-gradient(to right,#0a4a8a,#378ADD)',
   'linear-gradient(to right,#006644,#00e5a0)',
   'linear-gradient(to right,#7a3a00,#ff9f43)',
@@ -14835,7 +14835,7 @@ function removeCmpSlot(slot) {
   renderCompare();
 }
 
-var cmpA=null,cmpB=null;
+cmpA=null,cmpB=null;
 function initCompare(){
   const sa=document.getElementById('cmp-a');
   const sb=document.getElementById('cmp-b');
@@ -15563,7 +15563,7 @@ function injectHeaderPhoto(el, src) {
 
 // ── PLAYER PHOTO FETCH (SofaScore → Wikipedia fallback) ──────────────────────
 // Load saved photos from localStorage
-var photoCache = {};
+photoCache = {};
 // Load static photos first (lowest priority)
 if(window.STATIC_PHOTOS) Object.assign(photoCache, window.STATIC_PHOTOS);
 // localStorage overrides static (higher priority — user uploads win)
@@ -15732,7 +15732,7 @@ function uploadPlayerPhoto(name) {
 }
 
 // ── PHOTO CACHE & TRANSFERMARKT API ──────────────────────────────────────────
-var tmCache = {};     // name -> transfermarkt player id
+tmCache = {};     // name -> transfermarkt player id
 
 async function searchTMPlayer(name, apiKey) {
   const url = `https://transfermarkt-db.p.rapidapi.com/v1/search?query=${encodeURIComponent(name)}&lang=en`;
@@ -15809,7 +15809,7 @@ try {
 } catch(e) {}
 
 // ── AI SCOUT ASSISTANT ────────────────────────────────────────────────────────
-var aiCache = {};
+aiCache = {};
 
 async function generateAIReportSimple(playerName, league, outEl, barEl) {
   if(!outEl) return;
@@ -16067,7 +16067,7 @@ function generateAIReport(playerName, position, league) {
 }
 
 // ── CATEGORY EXPAND ──────────────────────────────────────────────────────────
-var expandedCats = { off: false, def: false, pass: false, phys: false };
+expandedCats = { off: false, def: false, pass: false, phys: false };
 
 function toggleCat(cat) {
   expandedCats[cat] = !expandedCats[cat];
@@ -16087,7 +16087,7 @@ function toggleCat(cat) {
 
 // ── SIDEBAR TOGGLE ────────────────────────────────────────────────────────────
 // ── FLYOUT SIDEBAR ───────────────────────────────────────────────────────────
-var activeFlyout = null;
+activeFlyout = null;
 
 function toggleFlyout(id) {
   const icons = ['pos','league','filters','shadow','talent','watchlist'];
@@ -16147,7 +16147,7 @@ function openPlayerFromCompare(name) {
   else if(typeof renderMobileElite==='function') renderMobileElite();
 }
 
-var aiCmpCache = {};
+aiCmpCache = {};
 
 function generateCompareAI(pA, pB) {
   const cacheKey = pA.name + '||' + pB.name;
