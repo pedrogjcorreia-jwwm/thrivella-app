@@ -25400,7 +25400,6 @@ function renderMobileShadowView(){
   const filterBar = document.getElementById('mob-filter-bar');
   if(!content) return;
 
-  // Filter bar: formation selector + tabs
   if(filterBar){
     filterBar.style.overflow='visible';
     filterBar.innerHTML=`
@@ -25418,125 +25417,85 @@ function renderMobileShadowView(){
       </div>`;
   }
 
-  // Use the desktop shadow view directly — show it inside mob content
-  // First ensure the shadow view is rendered
   if(typeof shResetAndRender==='function') shResetAndRender();
 
-  // For mobile: resize the shadow pitch area to fill the screen, render, then capture
   setTimeout(()=>{
-    const shadowView = document.getElementById('view-shadow');
-    if(!shadowView){
-      content.innerHTML='<div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase">A carregar campo...</div>';
+    const pitchArea = document.getElementById('sh-pitch-area');
+    const pitchWrap = document.getElementById('sh-pitch-wrap');
+    if(!pitchArea || !pitchWrap){
+      content.innerHTML='<div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase">A carregar campo...</div>';
       setTimeout(renderMobileShadowView,400);
       return;
     }
 
     const screenW = window.innerWidth;
     const availH = window.innerHeight - 130;
-    // No scroll: field must fit in both width AND height
-    // 5mm margins: pitch SVG = screenW - 66. Also constrain by height.
-    // Dots are 38px circles (19px radius). For 5mm gap each side (~19px):
-    // visual_w = pW + 38. Want gap = 19px => pW = screenW - 76
-    // pitchAreaW = pW + 32 = screenW - 44
-    const pitchAreaW = screenW - 44;
-    const targetPitchW = pitchAreaW - 32; // = screenW - 76
-    // Temporarily set the pitch area size so shRenderPitch uses our dimensions
-    const pitchArea = document.getElementById('sh-pitch-area');
-    const pitchWrap = document.getElementById('sh-pitch-wrap');
-    if(pitchArea){
-      pitchArea._savedStyle = pitchArea.style.cssText;
-      // Use a large offscreen size so the pitch renders at full quality
-      pitchArea.style.cssText = `position:fixed;left:-9999px;top:0;width:${pitchAreaW}px;height:${availH + 100}px;display:flex;align-items:flex-start;justify-content:center;padding:0;overflow:visible`;
-    }
 
-    // Render the pitch
+    // Set pitchArea to exactly the right mobile size
+    // Target: pitch SVG = screenW - 76px (gives 19px gap + 19px dot radius each side)
+    // shRenderPitch: pW = aW - 32, so aW = (screenW - 76) + 32 = screenW - 44
+    const mobileAreaW = screenW - 44;
+    const mobileAreaH = availH;
+
+    // Render at mobile size
+    pitchArea._savedStyle = pitchArea.style.cssText;
+    pitchArea.style.cssText = `position:fixed;left:-9999px;top:0;width:${mobileAreaW}px;height:${mobileAreaH}px;display:flex;align-items:flex-start;justify-content:center;padding:0;overflow:visible`;
+
     if(typeof shRender==='function') shRender();
 
     setTimeout(()=>{
-      // Capture the SVG pitch as an image
-      const svg = pitchWrap && pitchWrap.querySelector('svg');
-      content.innerHTML='<div style="overflow:hidden;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start"></div>';
-      const wrap=content.firstChild;
+      // pitchWrap is now exactly the right size (no scaling needed)
+      const pW = pitchWrap.offsetWidth;
+      const pH = pitchWrap.offsetHeight;
 
-      if(svg){
-        const wrapClone = pitchWrap.cloneNode(true);
-        const actualW = pitchWrap.offsetWidth || targetPitchW;
-        const actualH = pitchWrap.offsetHeight || Math.round(actualW / 0.8045);
-        // Dots are 38px circles (19px radius): visual = actualW+38, actualH+38
-        const visualW = actualW + 38;
-        const visualH = actualH + 38;
-        const scale = Math.min((screenW - 38) / visualW, (availH - 20) / visualH);
-        const scaledW = Math.round(visualW * scale);
-        const scaledH = Math.round(visualH * scale);
-        const container = document.createElement('div');
-        container.style.cssText = `width:${scaledW}px;height:${scaledH}px;margin:4px auto;position:relative;flex-shrink:0;overflow:hidden`;
-        const dotOffset = Math.round(19 * scale);
-        wrapClone.style.cssText = `width:${actualW}px;height:${actualH}px;position:absolute;top:${dotOffset}px;left:${dotOffset}px;transform:scale(${scale});transform-origin:top left`;
-        container.appendChild(wrapClone);
-        wrap.appendChild(container);
-      } else if(pitchWrap){
-        const fallback = pitchWrap.cloneNode(true);
-        fallback.style.cssText = `width:${screenW-66}px;height:auto;display:block;margin:8px auto;position:relative`;
-        wrap.appendChild(fallback);
-      }
+      // Clone without any transform — pitch is already at the right size
+      const wrapClone = pitchWrap.cloneNode(true);
+      wrapClone.style.cssText = `width:${pW}px;height:${pH}px;position:relative;overflow:visible`;
+      // Remove any event handlers that reference desktop elements
+      wrapClone.querySelectorAll('[onclick],[onmouseenter],[onmouseleave]').forEach(el=>{
+        el.removeAttribute('onclick');
+        el.removeAttribute('onmouseenter');
+        el.removeAttribute('onmouseleave');
+      });
 
-      // Restore pitch area
-      if(pitchArea && pitchArea._savedStyle !== undefined){
+      // Container: add 19px padding each side for the dots
+      const containerW = pW + 38;
+      const containerH = pH + 38;
+      const container = document.createElement('div');
+      container.style.cssText = `width:${containerW}px;height:${containerH}px;position:relative;margin:0 auto;flex-shrink:0`;
+      // Clone sits inset by 19px so dots have room to show on all sides
+      wrapClone.style.position = 'absolute';
+      wrapClone.style.left = '19px';
+      wrapClone.style.top = '19px';
+      container.appendChild(wrapClone);
+
+      content.innerHTML = '';
+      content.style.cssText = 'overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:0';
+      content.appendChild(container);
+
+      // Restore pitchArea
+      if(pitchArea._savedStyle !== undefined){
         pitchArea.style.cssText = pitchArea._savedStyle;
       }
 
-      // Player list
+      // Player list below
       const shadowTeam=window.shadowTeam||[];
       if(shadowTeam.length){
         const list=document.createElement('div');
-        list.style.cssText='padding:0 12px;display:flex;flex-direction:column;gap:6px;margin-top:8px';
+        list.style.cssText='padding:0 12px;display:flex;flex-direction:column;gap:6px;margin-top:8px;width:100%;box-sizing:border-box';
         shadowTeam.forEach(p=>{
           const row=document.createElement('div');
           row.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 12px;background:#060c18;border-radius:6px;border:1px solid rgba(0,212,255,.1)';
           row.innerHTML=`<span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#e8edf2;flex:1">${p.name}</span><span style="color:rgba(255,255,255,.35);font-size:10px">${(p.position||'').split(',')[0]}</span><span style="color:#00d4ff;font-size:10px;font-weight:700">${p.team||''}</span>`;
           list.appendChild(row);
         });
-        wrap.appendChild(list);
+        content.appendChild(list);
       }
     }, 250);
   }, 100);
 }
 
-// ── Mobile init on page load ──────────────────────────────────────────────────
-(function initMobile(){
-  function run(){
-    if(!isMobilePortrait()) return;
-    sessionStorage.removeItem('thrivella_mobile_pref');
-    const popup = document.getElementById('mobile-popup');
-    if(popup) popup.classList.add('show');
-    if(typeof mobResetPopup==='function') mobResetPopup();
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', run);
-  else run();
-})();
 
-window.addEventListener('orientationchange',()=>{
-  setTimeout(()=>{
-    if(!isMobilePortrait()) return;
-    sessionStorage.removeItem('thrivella_mobile_pref');
-    document.getElementById('mobile-elite-view').style.display='none';
-    document.getElementById('mobile-popup').classList.add('show');
-  }, 350);
-});
-
-// Also check when Player ID opens
-const _origNavTo = window.navTo;
-window.navTo = function(view){
-  _origNavTo && _origNavTo(view);
-  if(view==='playerid'){
-    setTimeout(()=>{
-      const pref=sessionStorage.getItem('thrivella_mobile_pref');
-      if(isMobilePortrait()&&pref==='elite'&&window.selectedPlayer) renderMobileElite();
-    }, 500);
-  }
-};
-
-// ── Render Mobile Elite ──
 function renderMobileElite(){
   const p=window.selectedPlayer||window._sv7CurrentPlayer&&PLAYERS&&PLAYERS.find(x=>x.name===window._sv7CurrentPlayer);
   const el=document.getElementById('mobile-elite-view');
