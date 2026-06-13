@@ -25432,9 +25432,17 @@ function renderMobileShadowView(){
     }
 
     const screenW = window.innerWidth;
-    const availH = window.innerHeight - 120;
-    // 5mm margin each side: pitchAreaW gives pW=screenW-66, dots+pitch=screenW-38, gap=19px
-    const pitchAreaW = screenW - 34;
+    const availH = window.innerHeight - 130;
+    // No scroll: field must fit in both width AND height
+    // 5mm margins: pitch SVG = screenW - 66. Also constrain by height.
+    const maxPitchW = screenW - 66;
+    const maxPitchH = availH - 20;
+    // pitch ratio W/H = 0.8045; choose smaller constraint
+    const pitchByW = maxPitchW;
+    const pitchByH = Math.round(maxPitchH * 0.8045);
+    const targetPitchW = Math.min(pitchByW, pitchByH);
+    // pitchAreaW: shRenderPitch does pW = aW - 32, so aW = targetPitchW + 32
+    const pitchAreaW = targetPitchW + 32;
     // Temporarily set the pitch area size so shRenderPitch uses our dimensions
     const pitchArea = document.getElementById('sh-pitch-area');
     const pitchWrap = document.getElementById('sh-pitch-wrap');
@@ -25450,15 +25458,15 @@ function renderMobileShadowView(){
     setTimeout(()=>{
       // Capture the SVG pitch as an image
       const svg = pitchWrap && pitchWrap.querySelector('svg');
-      content.innerHTML='<div style="overflow-y:auto;height:100%;padding-bottom:20px"></div>';
+      content.innerHTML='<div style="overflow:hidden;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start"></div>';
       const wrap=content.firstChild;
 
       if(svg){
         const wrapClone = pitchWrap.cloneNode(true);
-        const cloneW = pitchWrap.offsetWidth || (screenW - 66);
+        const cloneW = pitchWrap.offsetWidth || targetPitchW;
         const cloneH = pitchWrap.offsetHeight || Math.round(cloneW / 0.8045);
         const container = document.createElement('div');
-        container.style.cssText = `width:${cloneW}px;height:${cloneH}px;margin:8px auto;position:relative;flex-shrink:0`;
+        container.style.cssText = `width:${cloneW}px;height:${cloneH}px;margin:4px auto 0;position:relative;flex-shrink:0`;
         wrapClone.style.cssText = `width:${cloneW}px;height:${cloneH}px;position:absolute;top:0;left:0`;
         container.appendChild(wrapClone);
         wrap.appendChild(container);
