@@ -25432,9 +25432,8 @@ function renderMobileShadowView(){
 
     const screenW = window.innerWidth;
     const availH = window.innerHeight - 120;
-    // Don't pre-define pitchH - let the actual content determine scale
-    // We only define target width (screenW minus ~5mm each side = 20px total margin)
-    const targetW = screenW - 20;
+    // 5mm margins each side (~20px) + extra 20px for position dots that extend beyond pitch lines
+    const targetW = screenW - 40;
 
     // Temporarily set the pitch area size so shRenderPitch uses our dimensions
     const pitchArea = document.getElementById('sh-pitch-area');
@@ -25465,7 +25464,7 @@ function renderMobileShadowView(){
         const scaledW = Math.round(actualW * scale);
         const scaledH = Math.round(actualH * scale);
         const container = document.createElement('div');
-        container.style.cssText = `width:${scaledW}px;height:${scaledH}px;overflow:hidden;margin:8px auto;position:relative;border-radius:6px`;
+        container.style.cssText = `width:${scaledW}px;height:${scaledH}px;overflow:visible;margin:8px auto;position:relative;border-radius:6px`;
         wrapClone.style.cssText = `width:${actualW}px;height:${actualH}px;position:absolute;top:0;left:0;transform:scale(${scale});transform-origin:top left`;
         container.appendChild(wrapClone);
         wrap.appendChild(container);
