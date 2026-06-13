@@ -25416,15 +25416,37 @@ function renderMobileShadowView(){
       if(svg){
         // Serialize the SVG and show as <img width:100%> — same as radar in Comparar
         // This scales perfectly to any screen width
-        const serializer = new XMLSerializer();
+      const serializer = new XMLSerializer();
         const svgStr = serializer.serializeToString(svg);
         const blob = new Blob([svgStr], {type:'image/svg+xml'});
         const url = URL.createObjectURL(blob);
         const img = document.createElement('img');
-        img.onload = function(){ URL.revokeObjectURL(url); };
+        img.onload = function(){
+          URL.revokeObjectURL(url);
+          // Overlay dots using the same x%/y% positions as desktop
+          const formation = SH_FORMATIONS[shGetFormation ? shGetFormation() : '3-4-3'] || SH_FORMATIONS['3-4-3'];
+          const tabData = shData && shData[shCurrentTab||'my'] || {};
+          const customPos = (typeof shCustomPos!=='undefined' && shCustomPos)||{};
+          if(formation){
+            formation.slots.forEach(function(slot){
+              const pos = customPos[slot.id]||{x:slot.x,y:slot.y};
+              const dot = document.createElement('div');
+              const slotData = tabData[slot.id];
+              const players = slotData?slotData.players:[];
+              const hasPl = players.length>0;
+              const label = hasPl?(players[slotData.cur||0]||{name:''}).name.split(' ').slice(-1)[0]:slot.label;
+              dot.style.cssText = 'position:absolute;left:'+pos.x+'%;top:'+(pos.y*1.1)+'%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(0,30,60,.85);border:2px solid rgba(0,200,255,.85);display:flex;align-items:center;justify-content:center;z-index:10';
+              dot.innerHTML = '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:'+(hasPl?'7':'8')+'px;font-weight:700;color:#fff;text-align:center;letter-spacing:.3px;max-width:30px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">'+label+'</span>';
+              imgWrap.appendChild(dot);
+            });
+          }
+        };
         img.src = url;
-        img.style.cssText = 'width:calc(100% - 40px);height:auto;display:block;margin:8px 20px;transform:scaleY(1.1);transform-origin:top center';
-        wrap.appendChild(img);
+        img.style.cssText = 'width:100%;height:auto;display:block';
+        const imgWrap = document.createElement('div');
+        imgWrap.style.cssText = 'position:relative;width:calc(100% - 40px);margin:8px auto;transform:scaleY(1.1);transform-origin:top center';
+        imgWrap.appendChild(img);
+        wrap.appendChild(imgWrap);
       } else if(pitchWrap){
         const clone=pitchWrap.cloneNode(true);
         clone.style.cssText='width:'+pitchW+'px;height:'+pitchH+'px;display:block;margin:8px auto;position:relative;overflow:visible';
