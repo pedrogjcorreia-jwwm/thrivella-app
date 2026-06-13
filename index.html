@@ -25392,7 +25392,7 @@ function renderMobileShadowView(){
     const screenW = window.innerWidth;
     const availH = window.innerHeight - 120;
     // Proportional: pW = screenW-40 (5mm each side), pH = pW/0.8045
-    const pitchW = screenW - 78; // 20px margin + 19px dot each side
+    const pitchW = Math.round((screenW - 40) * 0.72);
     const pitchH = Math.min(Math.round(pitchW / 0.8045), availH - 20);
 
     // Temporarily set the pitch area size so shRenderPitch uses our dimensions
@@ -25407,7 +25407,7 @@ function renderMobileShadowView(){
     if(typeof shRender==='function') shRender();
 
     setTimeout(()=>{
-      content.innerHTML='<div style="overflow-y:auto;height:100%;padding-bottom:20px"></div>';
+      content.innerHTML='<div style="overflow-x:hidden;overflow-y:auto;height:100%;padding-bottom:20px"></div>';
       const wrap=content.firstChild;
 
       if(pitchArea && pitchArea._savedStyle!==undefined) pitchArea.style.cssText=pitchArea._savedStyle;
