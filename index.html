@@ -25435,12 +25435,11 @@ function renderMobileShadowView(){
               const players = slotData?slotData.players:[];
               const hasPl = players.length>0;
               const label = hasPl?(players[slotData.cur||0]||{name:''}).name.split(' ').slice(-1)[0]:slot.label;
-              // Per-slot vertical adjustment (% of image height)
-              // CF +5mm down=+1.9, GK -7mm=-2.6, LCB/RCB/lb/rb -5mm=-1.9
-              // LWB/RWB(lw2/rw2) -3mm=-1.1, DM/CM(lc/rc) -3mm=-1.1, LW/RW -5mm=-1.9
-              const yOffsets = {cf:1.9, gk:-2.6, lb:-1.9, cb:-1.9, rb:-1.9, lw2:-1.1, rw2:-1.1, lc:-1.1, rc:-1.1, cm:-1.1, lw:-1.9, rw:-1.9};
+              // Per-slot vertical adjustment in percentage points (before 1.1 scale)
+              const yOffsets = {cf:1.8, gk:-6.5, lb:-4.5, cb:-4.5, rb:-4.5, lw2:-2.8, rw2:-2.8, lc:-2.8, rc:-2.8, cm:-2.8, lw:-4.5, rw:-4.5};
               const yAdj = yOffsets[slot.id] !== undefined ? yOffsets[slot.id] : 0;
-              dot.style.cssText = 'position:absolute;left:'+pos.x+'%;top:'+((pos.y*1.1)+yAdj)+'%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(0,30,60,.85);border:2px solid rgba(0,200,255,.85);display:flex;align-items:center;justify-content:center;z-index:10';
+              const topPct = (pos.y + yAdj) * 1.1;
+              dot.style.cssText = 'position:absolute;left:'+pos.x+'%;top:'+topPct+'%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(0,30,60,.85);border:2px solid rgba(0,200,255,.85);display:flex;align-items:center;justify-content:center;z-index:10';
               dot.innerHTML = '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:'+(hasPl?'7':'8')+'px;font-weight:700;color:#fff;text-align:center;letter-spacing:.3px;max-width:30px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">'+label+'</span>';
               imgWrap.appendChild(dot);
             });
