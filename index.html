@@ -25463,11 +25463,16 @@ function renderMobileShadowView(){
 
       if(svg){
         const wrapClone = pitchWrap.cloneNode(true);
-        const cloneW = pitchWrap.offsetWidth || targetPitchW;
-        const cloneH = pitchWrap.offsetHeight || Math.round(cloneW / 0.8045);
+        const actualW = pitchWrap.offsetWidth || targetPitchW;
+        const actualH = pitchWrap.offsetHeight || Math.round(actualW / 0.8045);
+        // Scale to fit exactly — no clipping, no scroll
+        const scale = Math.min(targetPitchW / actualW, (availH - 20) / actualH);
+        const scaledW = Math.round(actualW * scale);
+        const scaledH = Math.round(actualH * scale);
         const container = document.createElement('div');
-        container.style.cssText = `width:${cloneW}px;height:${cloneH}px;margin:4px auto 0;position:relative;flex-shrink:0`;
-        wrapClone.style.cssText = `width:${cloneW}px;height:${cloneH}px;position:absolute;top:0;left:0`;
+        container.style.cssText = `width:${scaledW}px;height:${scaledH}px;margin:4px auto 0;position:relative;flex-shrink:0;overflow:visible`;
+        wrapClone.style.cssText = `width:${actualW}px;height:${actualH}px;position:absolute;top:0;left:0;transform:scale(${scale});transform-origin:top left`;
+        container.appendChild(wrapClone);
         container.appendChild(wrapClone);
         wrap.appendChild(container);
       } else if(pitchWrap){
