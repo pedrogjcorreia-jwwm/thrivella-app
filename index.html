@@ -25393,8 +25393,8 @@ function renderMobileShadowView(){
         +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;color:rgba(255,255,255,.4)">M€</span>'
         +'<span style="width:1px;height:14px;background:rgba(0,212,255,.18);flex-shrink:0"></span>'
         +'<span style="'+lblStyle+'">My Shadow</span>'
-        +'<button onclick="if(typeof shSelectTab===\'function\'){shSelectTab(\'my\');setTimeout(renderMobileShadowView,300)}" style="'+selStyle+';cursor:pointer">My</button>'
-        +'<button onclick="if(typeof shSelectTab===\'function\'){shSelectTab(\'overall\');setTimeout(renderMobileShadowView,300)}" style="'+selStyle+';cursor:pointer;border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.5)">Best</button>'
+        +'<button onclick="if(typeof shSelectTab===\'function\')shSelectTab(\'my\');setTimeout(renderMobileShadowView,300)" style="'+selStyle+';cursor:pointer">My</button>'
+        +'<button onclick="if(typeof shSelectTab===\'function\')shSelectTab(\'overall\');setTimeout(renderMobileShadowView,300)" style="'+selStyle+';cursor:pointer;border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.5)">Best</button>'
       +'</div>'
       +'<button style="'+btnStyle+'" onclick="document.getElementById(\'mob-sh-scroll\').scrollLeft+=80">&#8250;</button>';
   }
