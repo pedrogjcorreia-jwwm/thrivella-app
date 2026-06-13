@@ -25353,47 +25353,76 @@ function renderMobileCompareView(nameA, nameB){
 
 }
 
-
-function mobShFormation(v){var s=document.getElementById('sh-formation');if(s)s.value=v;if(typeof shResetAndRender==='function')shResetAndRender();renderMobileShadowView();}
-function mobShLeague(v){if(typeof shSetLeague==='function')shSetLeague(v);else if(typeof shResetAndRender==='function')shResetAndRender();}
-function mobShMkt(v){var s=document.getElementById('sh-mkt-max');if(s)s.value=v;if(typeof shResetAndRender==='function')shResetAndRender();}
-function mobShTab(t){if(typeof shSelectTab==='function')shSelectTab(t);setTimeout(renderMobileShadowView,300);}
 function renderMobileShadowView(){
   const content = document.getElementById('mob-elite-content');
   const filterBar = document.getElementById('mob-filter-bar');
   if(!content) return;
 
-  // Filter bar with ranking-style ‹ › scroll buttons
+  // Filter bar - built with createElement to avoid parser issues
   if(filterBar){
     filterBar.style.overflow='hidden';
     filterBar.style.minHeight='44px';
+    filterBar.innerHTML='';
 
-    const btnStyle='flex-shrink:0;width:22px;height:22px;background:#000;border:1px solid rgba(139,92,246,.6);border-radius:5px;color:rgba(139,92,246,.9);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0';
-    const selStyle='background:#0a1420;border:1px solid rgba(0,212,255,.3);border-radius:4px;padding:3px 6px;color:#c8e8ff;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;outline:none';
-    const lblStyle='font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.55);white-space:nowrap';
+    var btnL=document.createElement('button');
+    btnL.style.cssText='flex-shrink:0;width:22px;height:22px;background:#000;border:1px solid rgba(139,92,246,.6);border-radius:5px;color:rgba(139,92,246,.9);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0';
+    btnL.textContent='\u2039';
+    btnL.onclick=function(){scr.scrollLeft-=80;};
 
-    // Build leagues options from PLAYERS
-    const leagues=[...new Set((PLAYERS||[]).map(p=>p.league).filter(Boolean))].sort();
+    var scr=document.createElement('div');
+    scr.style.cssText='display:flex;align-items:center;gap:6px;flex:1;overflow-x:auto;scrollbar-width:none;padding:0 4px';
 
-    var fmOpts='<option value="3-4-3">3-4-3</option><option value="4-3-3">4-3-3</option><option value="4-4-2">4-4-2</option><option value="3-5-2">3-5-2</option>';
-    var lgOpts='<option value="all">Todas</option>'+leagues.map(function(l){return '<option value="'+l+'">'+(l.length>12?l.slice(0,12)+'...':l)+'</option>';}).join('');
-    filterBar.innerHTML=
-      '<button style="'+btnStyle+'" onclick="document.getElementById(\'mob-sh-scroll\').scrollLeft-=80">&#8249;</button>'
-      +'<div id="mob-sh-scroll" style="display:flex;align-items:center;gap:6px;flex:1;overflow-x:auto;scrollbar-width:none;padding:0 4px">'
-        +'<span style="'+lblStyle+'">Sistema</span>'
-        +'<select id="mob-sh-fm" style="'+selStyle+'" onchange="mobShFormation(this.value)">'+fmOpts+'</select>'
-        +'<span style="width:1px;height:14px;background:rgba(0,212,255,.18);flex-shrink:0"></span>'
-        +'<span style="'+lblStyle+'">Liga</span>'
-        +'<select id="mob-sh-lg" style="'+selStyle+'" onchange="mobShLeague(this.value)">'+lgOpts+'</select>'
-        +'<span style="width:1px;height:14px;background:rgba(0,212,255,.18);flex-shrink:0"></span>'
-        +'<span style="'+lblStyle+'">Valor</span>'
-        +'<input id="mob-sh-mkt" type="number" placeholder="\u221e" style="'+selStyle+';width:46px" oninput="mobShMkt(this.value)">'
-        +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;color:rgba(255,255,255,.4)">M€</span>'
-        +'<span style="width:1px;height:14px;background:rgba(0,212,255,.18);flex-shrink:0"></span>'
-        +'<button onclick="mobShTab(\'my\')" style="'+selStyle+';cursor:pointer">My</button>'
-        +'<button onclick="mobShTab(\'overall\')" style="'+selStyle+';cursor:pointer;border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.5)">Best</button>'
-      +'</div>'
-      +'<button style="'+btnStyle+'" onclick="document.getElementById(\'mob-sh-scroll\').scrollLeft+=80">&#8250;</button>';
+    var btnR=document.createElement('button');
+    btnR.style.cssText=btnL.style.cssText;
+    btnR.textContent='\u203a';
+    btnR.onclick=function(){scr.scrollLeft+=80;};
+
+    var ss='background:#0a1420;border:1px solid rgba(0,212,255,.3);border-radius:4px;padding:3px 6px;color:#c8e8ff;font-family:var(--font-d);font-size:10px;font-weight:700;outline:none';
+    var ls='font-family:var(--font-d);font-size:7px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.55);white-space:nowrap';
+    var sp=function(){var s=document.createElement('span');s.style.cssText='width:1px;height:14px;background:rgba(0,212,255,.18);flex-shrink:0';return s;};
+    var lbl=function(t){var s=document.createElement('span');s.style.cssText=ls;s.textContent=t;return s;};
+
+    // Sistema
+    scr.appendChild(lbl('Sistema'));
+    var fm=document.createElement('select');
+    fm.style.cssText=ss;
+    ['3-4-3','4-3-3','4-4-2','3-5-2'].forEach(function(v){var o=document.createElement('option');o.value=v;o.textContent=v;fm.appendChild(o);});
+    fm.onchange=function(){var s=document.getElementById('sh-formation');if(s)s.value=this.value;if(typeof shResetAndRender==='function')shResetAndRender();renderMobileShadowView();};
+    scr.appendChild(fm);
+    scr.appendChild(sp());
+
+    // Liga
+    scr.appendChild(lbl('Liga'));
+    var lg=document.createElement('select');
+    lg.style.cssText=ss;
+    var allOpt=document.createElement('option');allOpt.value='all';allOpt.textContent='Todas';lg.appendChild(allOpt);
+    var leagues=[...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))].sort();
+    leagues.forEach(function(l){var o=document.createElement('option');o.value=l;o.textContent=l.length>12?l.slice(0,12)+'...':l;lg.appendChild(o);});
+    lg.onchange=function(){if(typeof shSetLeague==='function')shSetLeague(this.value);else if(typeof shResetAndRender==='function')shResetAndRender();};
+    scr.appendChild(lg);
+    scr.appendChild(sp());
+
+    // Valor
+    scr.appendChild(lbl('Valor'));
+    var le=document.createElement('span');le.style.cssText='font-size:9px;color:rgba(255,255,255,.4)';le.textContent='\u2264';scr.appendChild(le);
+    var mkt=document.createElement('input');
+    mkt.type='number';mkt.placeholder='\u221e';mkt.style.cssText=ss+';width:44px;text-align:right';
+    mkt.oninput=function(){var s=document.getElementById('sh-mkt-max');if(s)s.value=this.value;if(typeof shResetAndRender==='function')shResetAndRender();};
+    scr.appendChild(mkt);
+    var me=document.createElement('span');me.style.cssText='font-size:9px;color:rgba(255,255,255,.4)';me.textContent='M\u20ac';scr.appendChild(me);
+    scr.appendChild(sp());
+
+    // My / Best
+    var my=document.createElement('button');my.style.cssText=ss+';cursor:pointer';my.textContent='My';
+    my.onclick=function(){if(typeof shSelectTab==='function')shSelectTab('my');setTimeout(renderMobileShadowView,300);};
+    scr.appendChild(my);
+    var best=document.createElement('button');best.style.cssText=ss+';cursor:pointer;border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.5)';best.textContent='Best';
+    best.onclick=function(){if(typeof shSelectTab==='function')shSelectTab('overall');setTimeout(renderMobileShadowView,300);};
+    scr.appendChild(best);
+
+    filterBar.appendChild(btnL);
+    filterBar.appendChild(scr);
+    filterBar.appendChild(btnR);
   }
   }
 
@@ -25456,11 +25485,12 @@ function renderMobileShadowView(){
               const players = slotData?slotData.players:[];
               const hasPl = players.length>0;
               const label = hasPl?(players[slotData.cur||0]||{name:''}).name.split(' ').slice(-1)[0]:slot.label;
-              // Per-slot vertical adjustment in percentage points (before 1.1 scale)
-              const yOffsets = {cf:1.8, gk:-6.5, lb:-4.5, cb:-4.5, rb:-4.5, lw2:-2.8, rw2:-2.8, lc:-2.8, rc:-2.8, cm:-2.8, lw:-4.5, rw:-4.5};
+              // Per-slot vertical adjustment (% of image height)
+              // CF +5mm down=+1.9, GK -7mm=-2.6, LCB/RCB/lb/rb -5mm=-1.9
+              // LWB/RWB(lw2/rw2) -3mm=-1.1, DM/CM(lc/rc) -3mm=-1.1, LW/RW -5mm=-1.9
+              const yOffsets = {cf:1.9, gk:-2.6, lb:-1.9, cb:-1.9, rb:-1.9, lw2:-1.1, rw2:-1.1, lc:-1.1, rc:-1.1, cm:-1.1, lw:-1.9, rw:-1.9};
               const yAdj = yOffsets[slot.id] !== undefined ? yOffsets[slot.id] : 0;
-              const topPct = (pos.y + yAdj) * 1.1;
-              dot.style.cssText = 'position:absolute;left:'+pos.x+'%;top:'+topPct+'%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(0,30,60,.85);border:2px solid rgba(0,200,255,.85);display:flex;align-items:center;justify-content:center;z-index:10';
+              dot.style.cssText = 'position:absolute;left:'+pos.x+'%;top:'+((pos.y*1.1)+yAdj)+'%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(0,30,60,.85);border:2px solid rgba(0,200,255,.85);display:flex;align-items:center;justify-content:center;z-index:10';
               dot.innerHTML = '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:'+(hasPl?'7':'8')+'px;font-weight:700;color:#fff;text-align:center;letter-spacing:.3px;max-width:30px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">'+label+'</span>';
               imgWrap.appendChild(dot);
             });
