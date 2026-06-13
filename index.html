@@ -13102,7 +13102,6 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 </div>
 
 <script>
-API_URL = 'https://thrivela.up.railway.app';
 
 // STATIC PHOTO CACHE -- paste exported photos here for cross-device access
 window.STATIC_PHOTOS = {
@@ -13416,8 +13415,6 @@ async function loadPlayers() {
   return _loadingPromise;
 }
 
-AVATAR_COLORS=['#00d4ff','#00e5a0','#ffb340','#ff4757','#9b7fff','#ff6b9d','#4ecdc4','#f7b731','#a29bfe','#fd79a8'];
-notes={};
 selectedPlayer=null, currentView='table', radarChart=null;
 tableSort={key:'score',dir:-1}; // 'score' key → sorts by talent_index
 selPos='all', selLeagues=[], showAlerts=false, filts={ageMin:16,ageMax:40,ctMin:2025,ctMax:2031,scMin:0};
@@ -13569,7 +13566,6 @@ function rebuildDerivedData() {
 // ── HELPERS ──────────────────────────────────────────────────────────────────
 function getColor(i){return '#00d4ff'}
 
-FLAG_MAP_DETAIL = {
   'Greece':'🇬🇷','Portugal':'🇵🇹','Ecuador':'🇪🇨','Belgium':'🇧🇪','Poland':'🇵🇱',
   "Côte d'Ivoire":'🇨🇮','Iran':'🇮🇷','Comoros':'🇰🇲','France':'🇫🇷','Japan':'🇯🇵',
   'Sweden':'🇸🇪','Gambia':'🇬🇲','Ghana':'🇬🇭','Nigeria':'🇳🇬','Senegal':'🇸🇳',
@@ -13581,7 +13577,6 @@ FLAG_MAP_DETAIL = {
 };
 function getFlag(c){ return FLAG_MAP_DETAIL[c.trim()] || '🌍'; }
 
-COUNTRY_CODE_MAP = {
   'Greece':'gr','Portugal':'pt','Ecuador':'ec','Belgium':'be','Poland':'pl',
   "Côte d'Ivoire":'ci','Iran':'ir','Comoros':'km','France':'fr','Japan':'jp',
   'Sweden':'se','Gambia':'gm','Ghana':'gh','Nigeria':'ng','Senegal':'sn',
@@ -13598,7 +13593,6 @@ function getFlagImg(c) {
   return '<img src="https://flagcdn.com/16x12/' + code + '.png" width="16" height="12" style="border-radius:1px;flex-shrink:0;object-fit:cover" alt="' + c + '">';
 }
 
-LEAGUE_CONFIG = {
   'Albania1':{country:'Albania',level:1,display:'Albania'},
   'Armenia1':{country:'Armenia',level:1,display:'Armenia'},
   'Australia1':{country:'Australia',level:1,display:'Australia'},
@@ -13650,7 +13644,6 @@ LEAGUE_CONFIG = {
   'Ukraine2':{country:'Ukraine',level:2,display:'Ukraine 2'},
 };
 // Backwards compat
-VALID_WIN_POS = new Set(['LW','RW','LWF','RWF','LAMF','RAMF','AMF','LCMF','RCMF']);
 
 function hasWinAlert(p) {
   if (!p.position_group || p.position_group !== 'WIN') return false;
@@ -13661,10 +13654,8 @@ function getWinAlertPos(p) {
   return (p.position||'').split(',').map(x=>x.trim()).filter(pos => pos && !VALID_WIN_POS.has(pos));
 }
 
-LEAGUE_COUNTRY_MAP = Object.fromEntries(Object.entries(LEAGUE_CONFIG).map(([k,v])=>[k,v.country]));
 
 // ── Liga Difficulty Multipliers (Opta-based, ref=Portugal2=1.000) ──────────
-LEAGUE_DIFFICULTY = {
   // Raw Opta multipliers — ref = Portugal2 = 71.8 (no cap)
   'England1':1.2632,  // Opta 90.7  +26.3%
   'Belgium1':1.1253,  // Opta 80.8  +12.5%
@@ -13836,7 +13827,6 @@ function ageStyle(age){
 function htStyle(h){
   return{bg:'var(--bg3)',col:'var(--muted)'};
 }
-LEAGUE_COLORS = {};
 function leagueBadge(league) {
   const cfg = LEAGUE_CONFIG[league];
   const display = cfg ? cfg.display : league;
@@ -14807,8 +14797,6 @@ function showView(v,btn){
 }
 
 // ── COMPARE ──────────────────────────────────────────────────────────────────
-CMP_COLS  = ['#378ADD','#00e5a0','#ff9f43','#ff4757'];
-CMP_FILLS = [
   'linear-gradient(to right,#0a4a8a,#378ADD)',
   'linear-gradient(to right,#006644,#00e5a0)',
   'linear-gradient(to right,#7a3a00,#ff9f43)',
@@ -15563,7 +15551,6 @@ function injectHeaderPhoto(el, src) {
 
 // ── PLAYER PHOTO FETCH (SofaScore → Wikipedia fallback) ──────────────────────
 // Load saved photos from localStorage
-photoCache = {};
 // Load static photos first (lowest priority)
 if(window.STATIC_PHOTOS) Object.assign(photoCache, window.STATIC_PHOTOS);
 // localStorage overrides static (higher priority — user uploads win)
@@ -15732,7 +15719,6 @@ function uploadPlayerPhoto(name) {
 }
 
 // ── PHOTO CACHE & TRANSFERMARKT API ──────────────────────────────────────────
-tmCache = {};     // name -> transfermarkt player id
 
 async function searchTMPlayer(name, apiKey) {
   const url = `https://transfermarkt-db.p.rapidapi.com/v1/search?query=${encodeURIComponent(name)}&lang=en`;
@@ -15809,7 +15795,6 @@ try {
 } catch(e) {}
 
 // ── AI SCOUT ASSISTANT ────────────────────────────────────────────────────────
-aiCache = {};
 
 async function generateAIReportSimple(playerName, league, outEl, barEl) {
   if(!outEl) return;
@@ -16067,7 +16052,6 @@ function generateAIReport(playerName, position, league) {
 }
 
 // ── CATEGORY EXPAND ──────────────────────────────────────────────────────────
-expandedCats = { off: false, def: false, pass: false, phys: false };
 
 function toggleCat(cat) {
   expandedCats[cat] = !expandedCats[cat];
@@ -16147,7 +16131,6 @@ function openPlayerFromCompare(name) {
   else if(typeof renderMobileElite==='function') renderMobileElite();
 }
 
-aiCmpCache = {};
 
 function generateCompareAI(pA, pB) {
   const cacheKey = pA.name + '||' + pB.name;
