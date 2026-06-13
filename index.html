@@ -25457,12 +25457,16 @@ function renderMobileShadowView(){
         const wrapClone = pitchWrap.cloneNode(true);
         const cloneW = pitchWrap.offsetWidth || (screenW - 66);
         const cloneH = pitchWrap.offsetHeight || Math.round(cloneW / 0.8045);
-        // No scaling needed - pitch was rendered at correct mobile size
         const container = document.createElement('div');
         container.style.cssText = `width:${cloneW}px;height:${cloneH}px;margin:8px auto;position:relative;flex-shrink:0`;
         wrapClone.style.cssText = `width:${cloneW}px;height:${cloneH}px;position:absolute;top:0;left:0`;
         container.appendChild(wrapClone);
         wrap.appendChild(container);
+      } else if(pitchWrap){
+        const fallback = pitchWrap.cloneNode(true);
+        fallback.style.cssText = `width:${screenW-66}px;height:auto;display:block;margin:8px auto;position:relative`;
+        wrap.appendChild(fallback);
+      }
 
       // Restore pitch area
       if(pitchArea && pitchArea._savedStyle !== undefined){
