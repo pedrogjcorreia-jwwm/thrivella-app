@@ -5233,6 +5233,7 @@ async function loadPlayers() {
 
       while (true) {
         const res = await fetch(`${API_URL}/players?limit=${limit}&offset=${offset}&sort=score&dir=desc`);
+        if(!res.ok) throw new Error(`API error ${res.status}`);
         const data = await res.json();
         const batch = data.players || [];
         allPlayers = allPlayers.concat(batch);
@@ -13343,6 +13344,7 @@ async function loadPlayers() {
 
       while (true) {
         const res = await fetch(`${API_URL}/players?limit=${limit}&offset=${offset}&sort=score&dir=desc`);
+        if(!res.ok) throw new Error(`API error ${res.status}`);
         const data = await res.json();
         const batch = data.players || [];
         allPlayers = allPlayers.concat(batch);
