@@ -25358,72 +25358,22 @@ function renderMobileShadowView(){
   const filterBar = document.getElementById('mob-filter-bar');
   if(!content) return;
 
-  // Filter bar - built with createElement to avoid parser issues
+  // Filter bar: formation selector + tabs
   if(filterBar){
-    filterBar.style.overflow='hidden';
-    filterBar.style.minHeight='44px';
-    filterBar.innerHTML='';
-
-    var btnL=document.createElement('button');
-    btnL.style.cssText='flex-shrink:0;width:22px;height:22px;background:#000;border:1px solid rgba(139,92,246,.6);border-radius:5px;color:rgba(139,92,246,.9);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0';
-    btnL.textContent='\u2039';
-    btnL.onclick=function(){scr.scrollLeft-=80;};
-
-    var scr=document.createElement('div');
-    scr.style.cssText='display:flex;align-items:center;gap:6px;flex:1;overflow-x:auto;scrollbar-width:none;padding:0 4px';
-
-    var btnR=document.createElement('button');
-    btnR.style.cssText=btnL.style.cssText;
-    btnR.textContent='\u203a';
-    btnR.onclick=function(){scr.scrollLeft+=80;};
-
-    var ss='background:#0a1420;border:1px solid rgba(0,212,255,.3);border-radius:4px;padding:3px 6px;color:#c8e8ff;font-family:var(--font-d);font-size:10px;font-weight:700;outline:none';
-    var ls='font-family:var(--font-d);font-size:7px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.55);white-space:nowrap';
-    var sp=function(){var s=document.createElement('span');s.style.cssText='width:1px;height:14px;background:rgba(0,212,255,.18);flex-shrink:0';return s;};
-    var lbl=function(t){var s=document.createElement('span');s.style.cssText=ls;s.textContent=t;return s;};
-
-    // Sistema
-    scr.appendChild(lbl('Sistema'));
-    var fm=document.createElement('select');
-    fm.style.cssText=ss;
-    ['3-4-3','4-3-3','4-4-2','3-5-2'].forEach(function(v){var o=document.createElement('option');o.value=v;o.textContent=v;fm.appendChild(o);});
-    fm.onchange=function(){var s=document.getElementById('sh-formation');if(s)s.value=this.value;if(typeof shResetAndRender==='function')shResetAndRender();renderMobileShadowView();};
-    scr.appendChild(fm);
-    scr.appendChild(sp());
-
-    // Liga
-    scr.appendChild(lbl('Liga'));
-    var lg=document.createElement('select');
-    lg.style.cssText=ss;
-    var allOpt=document.createElement('option');allOpt.value='all';allOpt.textContent='Todas';lg.appendChild(allOpt);
-    var leagues=[...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))].sort();
-    leagues.forEach(function(l){var o=document.createElement('option');o.value=l;o.textContent=l.length>12?l.slice(0,12)+'...':l;lg.appendChild(o);});
-    lg.onchange=function(){if(typeof shSetLeague==='function')shSetLeague(this.value);else if(typeof shResetAndRender==='function')shResetAndRender();};
-    scr.appendChild(lg);
-    scr.appendChild(sp());
-
-    // Valor
-    scr.appendChild(lbl('Valor'));
-    var le=document.createElement('span');le.style.cssText='font-size:9px;color:rgba(255,255,255,.4)';le.textContent='\u2264';scr.appendChild(le);
-    var mkt=document.createElement('input');
-    mkt.type='number';mkt.placeholder='\u221e';mkt.style.cssText=ss+';width:44px;text-align:right';
-    mkt.oninput=function(){var s=document.getElementById('sh-mkt-max');if(s)s.value=this.value;if(typeof shResetAndRender==='function')shResetAndRender();};
-    scr.appendChild(mkt);
-    var me=document.createElement('span');me.style.cssText='font-size:9px;color:rgba(255,255,255,.4)';me.textContent='M\u20ac';scr.appendChild(me);
-    scr.appendChild(sp());
-
-    // My / Best
-    var my=document.createElement('button');my.style.cssText=ss+';cursor:pointer';my.textContent='My';
-    my.onclick=function(){if(typeof shSelectTab==='function')shSelectTab('my');setTimeout(renderMobileShadowView,300);};
-    scr.appendChild(my);
-    var best=document.createElement('button');best.style.cssText=ss+';cursor:pointer;border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.5)';best.textContent='Best';
-    best.onclick=function(){if(typeof shSelectTab==='function')shSelectTab('overall');setTimeout(renderMobileShadowView,300);};
-    scr.appendChild(best);
-
-    filterBar.appendChild(btnL);
-    filterBar.appendChild(scr);
-    filterBar.appendChild(btnR);
-  }
+    filterBar.style.overflow='visible';
+    filterBar.innerHTML=`
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.55);flex-shrink:0">Shadow</span>
+      <select onchange="document.getElementById('sh-formation').value=this.value;if(typeof shResetAndRender==='function')shResetAndRender()"
+        style="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:5px;padding:4px 8px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0">
+        <option value="3-4-3">3-4-3</option>
+        <option value="4-3-3">4-3-3</option>
+        <option value="4-4-2">4-4-2</option>
+        <option value="3-5-2">3-5-2</option>
+      </select>
+      <div style="display:flex;gap:4px;margin-left:auto">
+        <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this)" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);border-radius:4px;padding:3px 8px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:#00d4ff;cursor:pointer">My Shadow</button>
+        <button onclick="if(typeof shSelectTab==='function')shSelectTab('overall',this)" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:3px 8px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.5);cursor:pointer">Best</button>
+      </div>`;
   }
 
   // Use the desktop shadow view directly — show it inside mob content
