@@ -8141,7 +8141,6 @@ function generateCompareAI(pA, pB) {
   const el2=document.getElementById('cmp-ai-out');
   if(el2) el2.innerHTML=htmlOut;
 }
-</script></body></html>
 <html lang="pt"><head>
 <meta charset="UTF-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
@@ -13102,7 +13101,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 </div>
 
 <script>
-const API_URL = 'https://thrivela.up.railway.app';
+var API_URL = 'https://thrivela.up.railway.app';
 
 // STATIC PHOTO CACHE -- paste exported photos here for cross-device access
 window.STATIC_PHOTOS = {
@@ -13325,9 +13324,9 @@ window.exportPhotoCache=function(){
   doSync(ghToken);
 };
 
-let PLAYERS = [];
-let _playersLoaded = false;
-let _loadingPromise = null;
+var PLAYERS = [];
+var _playersLoaded = false;
+var _loadingPromise = null;
 
 async function loadPlayers() {
   if (_playersLoaded) return PLAYERS;
@@ -13416,15 +13415,15 @@ async function loadPlayers() {
   return _loadingPromise;
 }
 
-const AVATAR_COLORS=['#00d4ff','#00e5a0','#ffb340','#ff4757','#9b7fff','#ff6b9d','#4ecdc4','#f7b731','#a29bfe','#fd79a8'];
-const notes={};
-let selectedPlayer=null, currentView='table', radarChart=null;
-let tableSort={key:'score',dir:-1}; // 'score' key → sorts by talent_index
-let selPos='all', selLeagues=[], showAlerts=false, filts={ageMin:16,ageMax:40,ctMin:2025,ctMax:2031,scMin:0};
+var AVATAR_COLORS=['#00d4ff','#00e5a0','#ffb340','#ff4757','#9b7fff','#ff6b9d','#4ecdc4','#f7b731','#a29bfe','#fd79a8'];
+var notes={};
+var selectedPlayer=null, currentView='table', radarChart=null;
+var tableSort={key:'score',dir:-1}; // 'score' key → sorts by talent_index
+var selPos='all', selLeagues=[], showAlerts=false, filts={ageMin:16,ageMax:40,ctMin:2025,ctMax:2031,scMin:0};
 
 // ── DERIVED DATA ─────────────────────────────────────────────────────────────
-let ALL_LEAGUES = [];
-let ALL_POS = [];
+var ALL_LEAGUES = [];
+var ALL_POS = [];
 
 
 
@@ -13569,7 +13568,7 @@ function rebuildDerivedData() {
 // ── HELPERS ──────────────────────────────────────────────────────────────────
 function getColor(i){return '#00d4ff'}
 
-const FLAG_MAP_DETAIL = {
+var FLAG_MAP_DETAIL = {
   'Greece':'🇬🇷','Portugal':'🇵🇹','Ecuador':'🇪🇨','Belgium':'🇧🇪','Poland':'🇵🇱',
   "Côte d'Ivoire":'🇨🇮','Iran':'🇮🇷','Comoros':'🇰🇲','France':'🇫🇷','Japan':'🇯🇵',
   'Sweden':'🇸🇪','Gambia':'🇬🇲','Ghana':'🇬🇭','Nigeria':'🇳🇬','Senegal':'🇸🇳',
@@ -13581,7 +13580,7 @@ const FLAG_MAP_DETAIL = {
 };
 function getFlag(c){ return FLAG_MAP_DETAIL[c.trim()] || '🌍'; }
 
-const COUNTRY_CODE_MAP = {
+var COUNTRY_CODE_MAP = {
   'Greece':'gr','Portugal':'pt','Ecuador':'ec','Belgium':'be','Poland':'pl',
   "Côte d'Ivoire":'ci','Iran':'ir','Comoros':'km','France':'fr','Japan':'jp',
   'Sweden':'se','Gambia':'gm','Ghana':'gh','Nigeria':'ng','Senegal':'sn',
@@ -13598,7 +13597,7 @@ function getFlagImg(c) {
   return '<img src="https://flagcdn.com/16x12/' + code + '.png" width="16" height="12" style="border-radius:1px;flex-shrink:0;object-fit:cover" alt="' + c + '">';
 }
 
-const LEAGUE_CONFIG = {
+var LEAGUE_CONFIG = {
   'Albania1':{country:'Albania',level:1,display:'Albania'},
   'Armenia1':{country:'Armenia',level:1,display:'Armenia'},
   'Australia1':{country:'Australia',level:1,display:'Australia'},
@@ -13650,7 +13649,7 @@ const LEAGUE_CONFIG = {
   'Ukraine2':{country:'Ukraine',level:2,display:'Ukraine 2'},
 };
 // Backwards compat
-const VALID_WIN_POS = new Set(['LW','RW','LWF','RWF','LAMF','RAMF','AMF','LCMF','RCMF']);
+var VALID_WIN_POS = new Set(['LW','RW','LWF','RWF','LAMF','RAMF','AMF','LCMF','RCMF']);
 
 function hasWinAlert(p) {
   if (!p.position_group || p.position_group !== 'WIN') return false;
@@ -13661,10 +13660,10 @@ function getWinAlertPos(p) {
   return (p.position||'').split(',').map(x=>x.trim()).filter(pos => pos && !VALID_WIN_POS.has(pos));
 }
 
-const LEAGUE_COUNTRY_MAP = Object.fromEntries(Object.entries(LEAGUE_CONFIG).map(([k,v])=>[k,v.country]));
+var LEAGUE_COUNTRY_MAP = Object.fromEntries(Object.entries(LEAGUE_CONFIG).map(([k,v])=>[k,v.country]));
 
 // ── Liga Difficulty Multipliers (Opta-based, ref=Portugal2=1.000) ──────────
-const LEAGUE_DIFFICULTY = {
+var LEAGUE_DIFFICULTY = {
   // Raw Opta multipliers — ref = Portugal2 = 71.8 (no cap)
   'England1':1.2632,  // Opta 90.7  +26.3%
   'Belgium1':1.1253,  // Opta 80.8  +12.5%
@@ -13717,7 +13716,7 @@ const LEAGUE_DIFFICULTY = {
   'Ukraine2':0.8064,  // Opta 57.9  -19.4%
 };
 
-let ligaAdjustActive = false;
+var ligaAdjustActive = false;
 
 function getLigaMult(league) {
   return LEAGUE_DIFFICULTY[league] || 1.000;
@@ -13836,7 +13835,7 @@ function ageStyle(age){
 function htStyle(h){
   return{bg:'var(--bg3)',col:'var(--muted)'};
 }
-const LEAGUE_COLORS = {};
+var LEAGUE_COLORS = {};
 function leagueBadge(league) {
   const cfg = LEAGUE_CONFIG[league];
   const display = cfg ? cfg.display : league;
@@ -14303,9 +14302,9 @@ function metricRow(label, val, max, avg, inverse=false, key=null, player=null, s
 }
 
 // ── METRIC TABLE VIEW ────────────────────────────────────────────────────────
-let _mtChartInst = null;
-let _mtCurrentPlayer = null;
-let _mtCurrentLA = null;
+var _mtChartInst = null;
+var _mtCurrentPlayer = null;
+var _mtCurrentLA = null;
 
 function metricTableRow(label, val, avg, rank, inverse=false, key=null, section=null) {
   const above   = inverse ? val <= avg : val >= avg;
@@ -14325,9 +14324,9 @@ function metricTableRow(label, val, avg, rank, inverse=false, key=null, section=
     + '</div>';
 }
 
-let _mrChartInst = null;
-let _mrActiveRow = null;
-let _mrFullPanel = null;
+var _mrChartInst = null;
+var _mrActiveRow = null;
+var _mrFullPanel = null;
 
 function mrClickRow(el) {
   const key     = el.dataset.key;
@@ -14748,7 +14747,7 @@ function metricTable(p, LA) {
     + '</div>';
 }
 
-let _currentMetricView = 'bars';
+var _currentMetricView = 'bars';
 function setMetricView(v) {
   _currentMetricView = v;
   const bars    = document.getElementById('metric-view-bars');
@@ -14807,8 +14806,8 @@ function showView(v,btn){
 }
 
 // ── COMPARE ──────────────────────────────────────────────────────────────────
-const CMP_COLS  = ['#378ADD','#00e5a0','#ff9f43','#ff4757'];
-const CMP_FILLS = [
+var CMP_COLS  = ['#378ADD','#00e5a0','#ff9f43','#ff4757'];
+var CMP_FILLS = [
   'linear-gradient(to right,#0a4a8a,#378ADD)',
   'linear-gradient(to right,#006644,#00e5a0)',
   'linear-gradient(to right,#7a3a00,#ff9f43)',
@@ -14835,7 +14834,7 @@ function removeCmpSlot(slot) {
   renderCompare();
 }
 
-let cmpA=null,cmpB=null;
+var cmpA=null,cmpB=null;
 function initCompare(){
   const sa=document.getElementById('cmp-a');
   const sb=document.getElementById('cmp-b');
@@ -15563,7 +15562,7 @@ function injectHeaderPhoto(el, src) {
 
 // ── PLAYER PHOTO FETCH (SofaScore → Wikipedia fallback) ──────────────────────
 // Load saved photos from localStorage
-const photoCache = {};
+var photoCache = {};
 // Load static photos first (lowest priority)
 if(window.STATIC_PHOTOS) Object.assign(photoCache, window.STATIC_PHOTOS);
 // localStorage overrides static (higher priority — user uploads win)
@@ -15732,7 +15731,7 @@ function uploadPlayerPhoto(name) {
 }
 
 // ── PHOTO CACHE & TRANSFERMARKT API ──────────────────────────────────────────
-const tmCache = {};     // name -> transfermarkt player id
+var tmCache = {};     // name -> transfermarkt player id
 
 async function searchTMPlayer(name, apiKey) {
   const url = `https://transfermarkt-db.p.rapidapi.com/v1/search?query=${encodeURIComponent(name)}&lang=en`;
@@ -15809,7 +15808,7 @@ try {
 } catch(e) {}
 
 // ── AI SCOUT ASSISTANT ────────────────────────────────────────────────────────
-const aiCache = {};
+var aiCache = {};
 
 async function generateAIReportSimple(playerName, league, outEl, barEl) {
   if(!outEl) return;
@@ -16067,7 +16066,7 @@ function generateAIReport(playerName, position, league) {
 }
 
 // ── CATEGORY EXPAND ──────────────────────────────────────────────────────────
-const expandedCats = { off: false, def: false, pass: false, phys: false };
+var expandedCats = { off: false, def: false, pass: false, phys: false };
 
 function toggleCat(cat) {
   expandedCats[cat] = !expandedCats[cat];
@@ -16087,7 +16086,7 @@ function toggleCat(cat) {
 
 // ── SIDEBAR TOGGLE ────────────────────────────────────────────────────────────
 // ── FLYOUT SIDEBAR ───────────────────────────────────────────────────────────
-let activeFlyout = null;
+var activeFlyout = null;
 
 function toggleFlyout(id) {
   const icons = ['pos','league','filters','shadow','talent','watchlist'];
@@ -16147,7 +16146,7 @@ function openPlayerFromCompare(name) {
   else if(typeof renderMobileElite==='function') renderMobileElite();
 }
 
-const aiCmpCache = {};
+var aiCmpCache = {};
 
 function generateCompareAI(pA, pB) {
   const cacheKey = pA.name + '||' + pB.name;
@@ -16371,8 +16370,8 @@ function generateCompareAI(pA, pB) {
   if(el2) el2.innerHTML=htmlOut;
 }
 // ── SHADOW TEAM & TALENT CENTER ──────────────────────────────────────────────
-const shadowTeam = [];
-const talentCenter = [];
+var shadowTeam = [];
+var talentCenter = [];
 
 function renderListSection(players, containerId, emptyMsg) {
   const el = document.getElementById(containerId);
@@ -16419,7 +16418,7 @@ function addToTalentCenter() {
 }
 
 // ── TALENT CENTER VIEW ───────────────────────────────────────────────────────
-let talentSort = {key:'rank', dir:1};
+var talentSort = {key:'rank', dir:1};
 
 function sortTalent(key) {
   if(talentSort.key===key) talentSort.dir*=-1;
@@ -16430,7 +16429,7 @@ function sortTalent(key) {
 }
 
 // ── WATCHLIST ─────────────────────────────────────────────────────────────
-let watchlist = JSON.parse(localStorage.getItem('thrivella_watchlist') || '[]');
+var watchlist = JSON.parse(localStorage.getItem('thrivella_watchlist') || '[]');
 function watchlistAdd(name, league) {
   if(!watchlist.find(x=>x.name===name&&x.league===league)) {
     watchlist.push({name, league});
@@ -20052,7 +20051,7 @@ function svDrawRadars(p, pkey) {
 
 
 // ── CV AI REPORT ─────────────────────────────────────────────────────────────
-const cvAICache = {};
+var cvAICache = {};
 
 async function cvAIReport(playerName, position, pkey) {
   const outEl = document.getElementById('cv-ai-' + pkey);
@@ -20146,9 +20145,9 @@ Sem títulos, sem bullets. Máximo 70 palavras total.`;
 // auto-trigger quando renderSimpleView carrega um jogador
 
 // ── SIMPLE VIEW — METRIC CLICK (inline scrolldown panel) ─────────────────────
-let _svChartInst = null;
-let _svActiveRow = null;
-let _svActivePanel = null;
+var _svChartInst = null;
+var _svActiveRow = null;
+var _svActivePanel = null;
 
 function svClosePanel(btn) {
   if (_svActivePanel) {
@@ -20483,7 +20482,7 @@ function sv7ToggleExpand(expandId, triggerEl) {
 }
 
 // Mapa: key da métrica → chave do total da secção
-const SV_SECTION_MAP = {
+var SV_SECTION_MAP = {
   xg:'total_off', xa:'total_off', goals_np:'total_off', shots90:'total_off',
   goals_per_shot:'total_off', dribles90:'total_off', dribles_pct:'total_off',
   crosses90:'total_off', crosses_pct:'total_off', box_touches:'total_off',
@@ -20495,11 +20494,11 @@ const SV_SECTION_MAP = {
   total_dist:'total_physical', hsr90:'total_physical', sprint_dist90:'total_physical',
   max_speed:'total_physical', sprints90:'total_physical', hsr_sprint_pct:'total_physical',
 };
-const SV_SECTION_LABEL = {
+var SV_SECTION_LABEL = {
   total_off:'Ofensivo Total', total_def:'Defensivo Total',
   total_pass:'Passe Total',   total_physical:'Físico Total',
 };
-const SV_SECTION_COL = {
+var SV_SECTION_COL = {
   total_off:'#00e5a0', total_def:'#ff5370',
   total_pass:'#4fc3f7', total_physical:'#9b7fff',
 };
@@ -20748,7 +20747,7 @@ function svMetricClick(el, playerName) {
 
 // ── SIMPLE VIEW — FOTO UPLOAD ─────────────────────────────────────────────────
 // ── SIMPLE VIEW — COLUNA CHART (barras verticais por percentil) ─────────────
-const SV_COL_CHART_DEF = {
+var SV_COL_CHART_DEF = {
   off: {
     metrics: [
       {key:'xg',            lbl:'xG',       inv:false},
@@ -20800,7 +20799,7 @@ const SV_COL_CHART_DEF = {
   },
 };
 
-const _svColChartInsts = {};
+var _svColChartInsts = {};
 
 function svColChartToggle(btn) {
   const section  = btn.dataset.section;
@@ -21344,7 +21343,7 @@ window.pid3FilterSim = function() {
 
 // ── SIMILAR PLAYERS ──────────────────────────────────────────────────────────
 // Métricas 70% mais relevantes por categoria — pesos reflectem importância real
-const SIMILAR_METRICS = {
+var SIMILAR_METRICS = {
   off: [
     // Criação de golos e ameaça directa — máxima importância
     {key:'xg',           w:2.0, inv:false, lbl:'xG'},
@@ -21386,7 +21385,7 @@ const SIMILAR_METRICS = {
   ],
 };
 
-const ALL_SIM_METRICS = [
+var ALL_SIM_METRICS = [
   ...SIMILAR_METRICS.off,
   ...SIMILAR_METRICS.def,
   ...SIMILAR_METRICS.pas,
@@ -22220,7 +22219,7 @@ function scPopClose(id) {
 // ══════════════════════════════════════════════════════════════════════════════
 // SHADOW TEAM MODULE v2
 // ══════════════════════════════════════════════════════════════════════════════
-const SH_FORMATIONS = {
+var SH_FORMATIONS = {
   '3-4-3': { slots: [
     {id:'lw', label:'LW',  tag:'WIN',side:'L', x:9.4,  y:28.3},
     {id:'cf', label:'CF',  tag:'CF', side:null, x:50,   y:4.2},
@@ -22276,16 +22275,16 @@ const SH_FORMATIONS = {
 };
 
 // shData[tabId][slotId] = {players:['Name',...], cur:0}
-let shData = {my:{},overall:{},contract:{},u23:{}};
-let shNotes = {};
-let shCurrentTab = 'my';
-let shSidePlayer = null;
-let shPickerSlot = null;
+var shData = {my:{},overall:{},contract:{},u23:{}};
+var shNotes = {};
+var shCurrentTab = 'my';
+var shSidePlayer = null;
+var shPickerSlot = null;
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function shGetFormation(){ return document.getElementById('sh-formation').value||'3-4-3'; }
 // Multi-league selection state
-let shSelectedLeagues = new Set(); // empty = all leagues
+var shSelectedLeagues = new Set(); // empty = all leagues
 
 function shGetLeague(){ return shSelectedLeagues.size===0?'all':'multi'; }
 
@@ -22453,7 +22452,7 @@ function shFillAuto(){
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────────
-let _shInited=false;
+var _shInited=false;
 function shInit(){
   if(!_shInited){
     shLoad(); // restore persisted state
@@ -22792,8 +22791,8 @@ function shRenderPitch(formation, tabData){
 }
 
 // ── Drag & Drop for edit mode ─────────────────────────────────────────────────
-let shEditMode=false;
-let shCustomPos={}; // {formation: {slotId: {x,y}}}
+var shEditMode=false;
+var shCustomPos={}; // {formation: {slotId: {x,y}}}
 
 function shMakeDraggable(dot, slotId, pW, pH){
   let dragging=false, ox=0, oy=0;
@@ -22872,7 +22871,7 @@ function shRemoveFromSlot(tabId,slotId,idx){
 }
 
 // ── Side panel ────────────────────────────────────────────────────────────────
-let shSideSlotId = '';
+var shSideSlotId = '';
 function shOpenSide(name, slotId){
   if(shSidePlayer===name){ shCloseSide(); return; }
   shSidePlayer=name;
@@ -23158,7 +23157,7 @@ function shImportAuto(tabId, slotId, e) {
 }
 
 // ── Shadow: open slot manager (edit/remove players) ───────────────────────────
-let _shManagerSlot = null;
+var _shManagerSlot = null;
 
 function shOpenManager(tabId, slotId, e) {
   e && e.stopPropagation();
@@ -23210,9 +23209,9 @@ function shManagerRemove(idx) {
 
 
 // ── Squad Manager Panel ───────────────────────────────────────────────────────
-let _shSquadMode = 'add';   // 'add' | 'rem'
-let _shSquadSlot = null;    // slot object when in player list view
-let _shSquadLeague = null;  // selected league filter (null = all)
+var _shSquadMode = 'add';   // 'add' | 'rem'
+var _shSquadSlot = null;    // slot object when in player list view
+var _shSquadLeague = null;  // selected league filter (null = all)
 
 function shOpenNoteByName(tabId, slotId, playerName){
   const key = tabId + '__' + slotId + '__' + playerName;
@@ -23522,7 +23521,7 @@ function shSideToggleGroup(groupKey){
 
 
 // ── Metrics drawer ─────────────────────────────────────────────────────────
-const SH_METRIC_GROUPS = {
+var SH_METRIC_GROUPS = {
   off: {
     label:'Total Off', color:'var(--accent)',
     metrics:[
@@ -23662,7 +23661,7 @@ function shCloseMetrics(){
 }
 
 // Close metrics when side panel closes
-const _origShCloseSide = shCloseSide;
+var _origShCloseSide = shCloseSide;
 shCloseSide = function(){
   shCloseMetrics();
   _origShCloseSide();
@@ -23670,7 +23669,7 @@ shCloseSide = function(){
 
 
 // ── Shadow Team Persistence ───────────────────────────────────────────────────
-const SH_STORAGE_KEY = 'scoutpro_shadow_v1';
+var SH_STORAGE_KEY = 'scoutpro_shadow_v1';
 
 function shSave() {
   try {
@@ -23734,14 +23733,14 @@ function shGetNote(tabId, slotId, playerName) {
 }
 
 // ── Squad Manager Filters ─────────────────────────────────────────────────────
-let _shFilterAge    = 'all';
-let _shFilterHeight = 'all';
-let _shFilterCt     = 'all';
-let _shFilterFoot   = 'all';   // 'all' | 'right' | 'left'
-let _shFilterMetric = 'score'; // sort key
-let _shFilterGroup  = '';      // 'off' | 'def' | 'pass' | 'phy' | '' (for specific metric)
-let _shFilterSpecific = '';    // specific metric key within group
-let _shFilterDir    = 'desc';
+var _shFilterAge    = 'all';
+var _shFilterHeight = 'all';
+var _shFilterCt     = 'all';
+var _shFilterFoot   = 'all';   // 'all' | 'right' | 'left'
+var _shFilterMetric = 'score'; // sort key
+var _shFilterGroup  = '';      // 'off' | 'def' | 'pass' | 'phy' | '' (for specific metric)
+var _shFilterSpecific = '';    // specific metric key within group
+var _shFilterDir    = 'desc';
 
 function shSquadFilterAge(v)    { _shFilterAge=v;    shSquadRender(); }
 function shSquadFilterFoot(v)   { _shFilterFoot=v;   shSquadRender(); }
@@ -23798,8 +23797,8 @@ function shApplyFilters(players) {
 
 
 // ── Shadow Compare ────────────────────────────────────────────────────────────
-let _shCmpPlayerA = null;
-let _shCmpSlotId  = null;
+var _shCmpPlayerA = null;
+var _shCmpSlotId  = null;
 
 function shOpenCompare(playerName, slotId) {
   _shCmpPlayerA = playerName;
@@ -24161,9 +24160,9 @@ function shDrawRadar(p) {
 
 <script>
 // ══ SOFASCORE UPDATER ═══════════════════════════════════════════════════════
-const _SF = { TOURN: 38, SEASON: 77040, DELAY: 1100 };
-let _sfBusy = false, _sfStop = false, _sfManFor = null;
-const sfDelay = ms => new Promise(r => setTimeout(r, ms));
+var _SF = { TOURN: 38, SEASON: 77040, DELAY: 1100 };
+var _sfBusy = false, _sfStop = false, _sfManFor = null;
+var sfDelay = ms => new Promise(r => setTimeout(r, ms));
 
 function sfExtractId(url) {
   const m = (url||'').match(/\/(\d+)(?:[#?]|$)/);
@@ -24248,7 +24247,7 @@ async function sfLast5(pid) {
 // ── I18N ─────────────────────────────────────────────────────────────────────
 window._lang = localStorage.getItem('app_lang') || 'pt';
 
-const I18N = {
+var I18N = {
   pt: {
     // Nav
     nav_rankings:'Rankings', nav_compare:'Comparar', nav_playerid:'Player ID', nav_shadow:'Shadow Team',
