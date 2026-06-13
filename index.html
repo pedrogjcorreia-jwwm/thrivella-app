@@ -4,7 +4,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <!-- v2 -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thrivella-192643</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&amp;family=Barlow:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
@@ -37,15 +37,15 @@
   --perf-bad:    rgba(255,71,87,0.75);   /* below avg — red muted */
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);font-family:var(--font-b);font-size:14px}
+html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);font-family:var(--font-b);font-size:14px}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
 
 /* ── APP SHELL ── */
-.app{display:grid;grid-template-rows:50px 1fr;height:100vh;overflow:hidden}
+.app{display:grid;grid-template-rows:50px 1fr;height:100vh}
 .app.simple-active{height:calc(100vh + 180px);}
-.app-body{display:flex;overflow:hidden;height:100%;min-height:0}
+.app-body{display:flex;overflow:hidden}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -268,7 +268,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
 
 /* ── MAIN PANEL ── */
-.main-panel{display:flex;flex-direction:column;overflow:hidden;background:var(--bg0);flex:1;height:100%;min-height:0}
+.main-panel{display:flex;flex-direction:column;overflow:hidden;background:var(--bg0);flex:1}
 
 /* ── PLAYERS TABLE VIEW ── */
 .table-wrap{flex:1;overflow:auto}
@@ -2299,9 +2299,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .mob-skip:hover{color:rgba(255,255,255,.5)}
 
 /* ═══ MOBILE PORTRAIT ELITE VIEW ═══ */
-#mobile-elite-view{display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;height:100dvh;z-index:9998;background:#080c10;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#mobile-elite-view{display:none;position:fixed;inset:0;z-index:9998;background:#080c10;overflow-y:auto;-webkit-overflow-scrolling:touch}
 #mobile-elite-view::-webkit-scrollbar{display:none}
-.mob-elite-topbar{position:fixed;top:0;left:0;right:0;z-index:9999;height:50px;background:#080c10;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;padding:0 14px;gap:8px}
+.mob-elite-topbar{position:sticky;top:0;z-index:10;height:50px;background:#080c10;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;padding:0 14px;gap:8px}
 .mob-elite-logo{font-family:Georgia,serif;font-size:14px;letter-spacing:2px;background:linear-gradient(90deg,#00c4ff,#00e5a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .mob-elite-back{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.8px;text-transform:uppercase;cursor:pointer;padding:4px 8px;border-radius:4px;border:1px solid rgba(255,255,255,.1)}
 .mob-elite-back:hover{color:rgba(0,212,255,.8);border-color:rgba(0,212,255,.3)}
@@ -4842,7 +4842,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
       </div>
 
       <!-- COMPARE VIEW -->
-      <div id="view-compare" style="display:none;flex-direction:column;flex:1 1 0%;min-height:0;overflow-y:auto;padding:20px;gap:16px;box-sizing:border-box">
+      <div id="view-compare" style="display:none;flex-direction:column;padding:20px;overflow-y:auto;gap:16px">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span style="font-family:var(--font-d);font-size:20px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-right:4px">Comparar</span>
           <!-- C slot (esquerda, opcional) -->
@@ -5233,7 +5233,6 @@ async function loadPlayers() {
 
       while (true) {
         const res = await fetch(`${API_URL}/players?limit=${limit}&offset=${offset}&sort=score&dir=desc`);
-        if(!res.ok) throw new Error(`API error ${res.status}`);
         const data = await res.json();
         const batch = data.players || [];
         allPlayers = allPlayers.concat(batch);
@@ -6748,7 +6747,7 @@ function buildCmpPicker(slot) {
   const positions = [''].concat([...posSet].sort());
 
   wrap.innerHTML =
-    '<div style="display:flex;flex-direction:column;gap:4px;position:relative">' +
+    '<div style="display:flex;flex-direction:column;gap:4px">' +
       '<div style="display:flex;gap:4px">' +
         '<div style="position:relative;flex:1">' +
           '<svg style="position:absolute;left:7px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:.4" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>' +
@@ -6758,7 +6757,7 @@ function buildCmpPicker(slot) {
           positions.map(p=>'<option value="'+p+'">'+(p||'Posição')+'</option>').join('') +
         '</select>' +
       '</div>' +
-      '<div id="cmp-list-'+slot+'" style="position:fixed;max-height:200px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border2);border-radius:5px;display:none;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>' +
+      '<div id="cmp-list-'+slot+'" style="max-height:160px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border2);border-radius:5px;display:none"></div>' +
     '</div>';
 }
 
@@ -6772,18 +6771,7 @@ function filterCmpPicker(slot) {
     const posMatch = !pos || (p.position||'').split(',').map(x=>x.trim()).includes(pos);
     return nameMatch && posMatch;
   }).slice(0,40);
-  if(filtered.length){
-    const input = document.getElementById('cmp-search-'+slot);
-    if(input){
-      const r = input.getBoundingClientRect();
-      list.style.top = (r.bottom+2)+'px';
-      list.style.left = r.left+'px';
-      list.style.width = r.width+'px';
-    }
-    list.style.display = 'block';
-  } else {
-    list.style.display = 'none';
-  }
+  list.style.display = filtered.length ? 'block' : 'none';
   list.innerHTML = filtered.map(p =>
     '<div onclick="selectCmpPlayer(\''+slot+'\',\''+p.name.replace(/'/g,"\\'")+'\')" style="padding:6px 10px;font-family:var(--font-d);font-size:11px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background=\'rgba(0,180,255,.1)\'" onmouseout="this.style.background=\'\'">' +
       '<span style="font-weight:700;color:var(--text)">' + p.name + '</span>' +
@@ -7385,14 +7373,11 @@ function renderCompare(){
   // Delay to let layout settle before measuring container
   requestAnimationFrame(() => { setTimeout(drawCmpRadarCanvas, 30); });
 
-  // Scroll suave até às métricas - scroll inside view-compare only
+  // Scroll suave até às métricas
   setTimeout(() => {
     const anchor = document.getElementById('cmp-metrics-anchor');
     const container = document.getElementById('view-compare');
-    if (anchor && container) {
-      const anchorTop = anchor.getBoundingClientRect().top - container.getBoundingClientRect().top;
-      container.scrollBy({ top: anchorTop, behavior: 'smooth' });
-    }
+    if (anchor && container) { const anchorTop = anchor.getBoundingClientRect().top - container.getBoundingClientRect().top; container.scrollBy({ top: anchorTop, behavior: 'smooth' }); }
   }, 350);
 
   // Auto-trigger AI comparison
@@ -8181,15 +8166,15 @@ function generateCompareAI(pA, pB) {
   --perf-bad:    rgba(255,71,87,0.75);   /* below avg — red muted */
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);font-family:var(--font-b);font-size:14px}
+html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);font-family:var(--font-b);font-size:14px}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
 
 /* ── APP SHELL ── */
-.app{display:grid;grid-template-rows:50px 1fr;height:100vh;overflow:hidden}
+.app{display:grid;grid-template-rows:50px 1fr;height:100vh}
 .app.simple-active{height:calc(100vh + 180px);}
-.app-body{display:flex;overflow:hidden;height:100%;min-height:0}
+.app-body{display:flex;overflow:hidden}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -8412,7 +8397,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
 
 /* ── MAIN PANEL ── */
-.main-panel{display:flex;flex-direction:column;overflow:hidden;background:var(--bg0);flex:1;height:100%;min-height:0}
+.main-panel{display:flex;flex-direction:column;overflow:hidden;background:var(--bg0);flex:1}
 
 /* ── PLAYERS TABLE VIEW ── */
 .table-wrap{flex:1;overflow:auto}
@@ -10443,9 +10428,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .mob-skip:hover{color:rgba(255,255,255,.5)}
 
 /* ═══ MOBILE PORTRAIT ELITE VIEW ═══ */
-#mobile-elite-view{display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;height:100dvh;z-index:9998;background:#080c10;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#mobile-elite-view{display:none;position:fixed;inset:0;z-index:9998;background:#080c10;overflow-y:auto;-webkit-overflow-scrolling:touch}
 #mobile-elite-view::-webkit-scrollbar{display:none}
-.mob-elite-topbar{position:fixed;top:0;left:0;right:0;z-index:9999;height:50px;background:#080c10;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;padding:0 14px;gap:8px}
+.mob-elite-topbar{position:sticky;top:0;z-index:10;height:50px;background:#080c10;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;padding:0 14px;gap:8px}
 .mob-elite-logo{font-family:Georgia,serif;font-size:14px;letter-spacing:2px;background:linear-gradient(90deg,#00c4ff,#00e5a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .mob-elite-back{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.8px;text-transform:uppercase;cursor:pointer;padding:4px 8px;border-radius:4px;border:1px solid rgba(255,255,255,.1)}
 .mob-elite-back:hover{color:rgba(0,212,255,.8);border-color:rgba(0,212,255,.3)}
@@ -12954,7 +12939,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
       </div>
 
       <!-- COMPARE VIEW -->
-      <div id="view-compare" style="display:none;flex-direction:column;flex:1 1 0%;min-height:0;overflow-y:auto;padding:20px;gap:16px;box-sizing:border-box">
+      <div id="view-compare" style="display:none;flex-direction:column;padding:20px;overflow-y:auto;gap:16px">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <span style="font-family:var(--font-d);font-size:20px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-right:4px">Comparar</span>
           <!-- C slot (esquerda, opcional) -->
@@ -13102,6 +13087,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 </div>
 
 <script>
+const API_URL = 'https://thrivela.up.railway.app';
 
 // STATIC PHOTO CACHE -- paste exported photos here for cross-device access
 window.STATIC_PHOTOS = {
@@ -13324,9 +13310,9 @@ window.exportPhotoCache=function(){
   doSync(ghToken);
 };
 
-PLAYERS = [];
-_playersLoaded = false;
-_loadingPromise = null;
+let PLAYERS = [];
+let _playersLoaded = false;
+let _loadingPromise = null;
 
 async function loadPlayers() {
   if (_playersLoaded) return PLAYERS;
@@ -13344,7 +13330,6 @@ async function loadPlayers() {
 
       while (true) {
         const res = await fetch(`${API_URL}/players?limit=${limit}&offset=${offset}&sort=score&dir=desc`);
-        if(!res.ok) throw new Error(`API error ${res.status}`);
         const data = await res.json();
         const batch = data.players || [];
         allPlayers = allPlayers.concat(batch);
@@ -13415,13 +13400,15 @@ async function loadPlayers() {
   return _loadingPromise;
 }
 
-selectedPlayer=null, currentView='table', radarChart=null;
-tableSort={key:'score',dir:-1}; // 'score' key → sorts by talent_index
-selPos='all', selLeagues=[], showAlerts=false, filts={ageMin:16,ageMax:40,ctMin:2025,ctMax:2031,scMin:0};
+const AVATAR_COLORS=['#00d4ff','#00e5a0','#ffb340','#ff4757','#9b7fff','#ff6b9d','#4ecdc4','#f7b731','#a29bfe','#fd79a8'];
+const notes={};
+let selectedPlayer=null, currentView='table', radarChart=null;
+let tableSort={key:'score',dir:-1}; // 'score' key → sorts by talent_index
+let selPos='all', selLeagues=[], showAlerts=false, filts={ageMin:16,ageMax:40,ctMin:2025,ctMax:2031,scMin:0};
 
 // ── DERIVED DATA ─────────────────────────────────────────────────────────────
-ALL_LEAGUES = [];
-ALL_POS = [];
+let ALL_LEAGUES = [];
+let ALL_POS = [];
 
 
 
@@ -13566,6 +13553,7 @@ function rebuildDerivedData() {
 // ── HELPERS ──────────────────────────────────────────────────────────────────
 function getColor(i){return '#00d4ff'}
 
+const FLAG_MAP_DETAIL = {
   'Greece':'🇬🇷','Portugal':'🇵🇹','Ecuador':'🇪🇨','Belgium':'🇧🇪','Poland':'🇵🇱',
   "Côte d'Ivoire":'🇨🇮','Iran':'🇮🇷','Comoros':'🇰🇲','France':'🇫🇷','Japan':'🇯🇵',
   'Sweden':'🇸🇪','Gambia':'🇬🇲','Ghana':'🇬🇭','Nigeria':'🇳🇬','Senegal':'🇸🇳',
@@ -13577,6 +13565,7 @@ function getColor(i){return '#00d4ff'}
 };
 function getFlag(c){ return FLAG_MAP_DETAIL[c.trim()] || '🌍'; }
 
+const COUNTRY_CODE_MAP = {
   'Greece':'gr','Portugal':'pt','Ecuador':'ec','Belgium':'be','Poland':'pl',
   "Côte d'Ivoire":'ci','Iran':'ir','Comoros':'km','France':'fr','Japan':'jp',
   'Sweden':'se','Gambia':'gm','Ghana':'gh','Nigeria':'ng','Senegal':'sn',
@@ -13593,6 +13582,7 @@ function getFlagImg(c) {
   return '<img src="https://flagcdn.com/16x12/' + code + '.png" width="16" height="12" style="border-radius:1px;flex-shrink:0;object-fit:cover" alt="' + c + '">';
 }
 
+const LEAGUE_CONFIG = {
   'Albania1':{country:'Albania',level:1,display:'Albania'},
   'Armenia1':{country:'Armenia',level:1,display:'Armenia'},
   'Australia1':{country:'Australia',level:1,display:'Australia'},
@@ -13644,6 +13634,7 @@ function getFlagImg(c) {
   'Ukraine2':{country:'Ukraine',level:2,display:'Ukraine 2'},
 };
 // Backwards compat
+const VALID_WIN_POS = new Set(['LW','RW','LWF','RWF','LAMF','RAMF','AMF','LCMF','RCMF']);
 
 function hasWinAlert(p) {
   if (!p.position_group || p.position_group !== 'WIN') return false;
@@ -13654,8 +13645,10 @@ function getWinAlertPos(p) {
   return (p.position||'').split(',').map(x=>x.trim()).filter(pos => pos && !VALID_WIN_POS.has(pos));
 }
 
+const LEAGUE_COUNTRY_MAP = Object.fromEntries(Object.entries(LEAGUE_CONFIG).map(([k,v])=>[k,v.country]));
 
 // ── Liga Difficulty Multipliers (Opta-based, ref=Portugal2=1.000) ──────────
+const LEAGUE_DIFFICULTY = {
   // Raw Opta multipliers — ref = Portugal2 = 71.8 (no cap)
   'England1':1.2632,  // Opta 90.7  +26.3%
   'Belgium1':1.1253,  // Opta 80.8  +12.5%
@@ -13708,7 +13701,7 @@ function getWinAlertPos(p) {
   'Ukraine2':0.8064,  // Opta 57.9  -19.4%
 };
 
-ligaAdjustActive = false;
+let ligaAdjustActive = false;
 
 function getLigaMult(league) {
   return LEAGUE_DIFFICULTY[league] || 1.000;
@@ -13827,6 +13820,7 @@ function ageStyle(age){
 function htStyle(h){
   return{bg:'var(--bg3)',col:'var(--muted)'};
 }
+const LEAGUE_COLORS = {};
 function leagueBadge(league) {
   const cfg = LEAGUE_CONFIG[league];
   const display = cfg ? cfg.display : league;
@@ -14293,9 +14287,9 @@ function metricRow(label, val, max, avg, inverse=false, key=null, player=null, s
 }
 
 // ── METRIC TABLE VIEW ────────────────────────────────────────────────────────
-_mtChartInst = null;
-_mtCurrentPlayer = null;
-_mtCurrentLA = null;
+let _mtChartInst = null;
+let _mtCurrentPlayer = null;
+let _mtCurrentLA = null;
 
 function metricTableRow(label, val, avg, rank, inverse=false, key=null, section=null) {
   const above   = inverse ? val <= avg : val >= avg;
@@ -14315,9 +14309,9 @@ function metricTableRow(label, val, avg, rank, inverse=false, key=null, section=
     + '</div>';
 }
 
-_mrChartInst = null;
-_mrActiveRow = null;
-_mrFullPanel = null;
+let _mrChartInst = null;
+let _mrActiveRow = null;
+let _mrFullPanel = null;
 
 function mrClickRow(el) {
   const key     = el.dataset.key;
@@ -14738,7 +14732,7 @@ function metricTable(p, LA) {
     + '</div>';
 }
 
-_currentMetricView = 'bars';
+let _currentMetricView = 'bars';
 function setMetricView(v) {
   _currentMetricView = v;
   const bars    = document.getElementById('metric-view-bars');
@@ -14797,6 +14791,8 @@ function showView(v,btn){
 }
 
 // ── COMPARE ──────────────────────────────────────────────────────────────────
+const CMP_COLS  = ['#378ADD','#00e5a0','#ff9f43','#ff4757'];
+const CMP_FILLS = [
   'linear-gradient(to right,#0a4a8a,#378ADD)',
   'linear-gradient(to right,#006644,#00e5a0)',
   'linear-gradient(to right,#7a3a00,#ff9f43)',
@@ -14823,7 +14819,7 @@ function removeCmpSlot(slot) {
   renderCompare();
 }
 
-cmpA=null,cmpB=null;
+let cmpA=null,cmpB=null;
 function initCompare(){
   const sa=document.getElementById('cmp-a');
   const sb=document.getElementById('cmp-b');
@@ -14848,7 +14844,7 @@ function buildCmpPicker(slot) {
   const positions = [''].concat([...posSet].sort());
 
   wrap.innerHTML =
-    '<div style="display:flex;flex-direction:column;gap:4px;position:relative">' +
+    '<div style="display:flex;flex-direction:column;gap:4px">' +
       '<div style="display:flex;gap:4px">' +
         '<div style="position:relative;flex:1">' +
           '<svg style="position:absolute;left:7px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:.4" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>' +
@@ -14858,7 +14854,7 @@ function buildCmpPicker(slot) {
           positions.map(p=>'<option value="'+p+'">'+(p||'Posição')+'</option>').join('') +
         '</select>' +
       '</div>' +
-      '<div id="cmp-list-'+slot+'" style="position:fixed;max-height:200px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border2);border-radius:5px;display:none;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>' +
+      '<div id="cmp-list-'+slot+'" style="max-height:160px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border2);border-radius:5px;display:none"></div>' +
     '</div>';
 }
 
@@ -14872,18 +14868,7 @@ function filterCmpPicker(slot) {
     const posMatch = !pos || (p.position||'').split(',').map(x=>x.trim()).includes(pos);
     return nameMatch && posMatch;
   }).slice(0,40);
-  if(filtered.length){
-    const input = document.getElementById('cmp-search-'+slot);
-    if(input){
-      const r = input.getBoundingClientRect();
-      list.style.top = (r.bottom+2)+'px';
-      list.style.left = r.left+'px';
-      list.style.width = r.width+'px';
-    }
-    list.style.display = 'block';
-  } else {
-    list.style.display = 'none';
-  }
+  list.style.display = filtered.length ? 'block' : 'none';
   list.innerHTML = filtered.map(p =>
     '<div onclick="selectCmpPlayer(\''+slot+'\',\''+p.name.replace(/'/g,"\\'")+'\')" style="padding:6px 10px;font-family:var(--font-d);font-size:11px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background=\'rgba(0,180,255,.1)\'" onmouseout="this.style.background=\'\'">' +
       '<span style="font-weight:700;color:var(--text)">' + p.name + '</span>' +
@@ -15485,14 +15470,11 @@ function renderCompare(){
   // Delay to let layout settle before measuring container
   requestAnimationFrame(() => { setTimeout(drawCmpRadarCanvas, 30); });
 
-  // Scroll suave até às métricas - scroll inside view-compare only
+  // Scroll suave até às métricas
   setTimeout(() => {
     const anchor = document.getElementById('cmp-metrics-anchor');
     const container = document.getElementById('view-compare');
-    if (anchor && container) {
-      const anchorTop = anchor.getBoundingClientRect().top - container.getBoundingClientRect().top;
-      container.scrollBy({ top: anchorTop, behavior: 'smooth' });
-    }
+    if (anchor && container) { const anchorTop = anchor.getBoundingClientRect().top - container.getBoundingClientRect().top; container.scrollBy({ top: anchorTop, behavior: 'smooth' }); }
   }, 350);
 
   // Auto-trigger AI comparison
@@ -15551,6 +15533,7 @@ function injectHeaderPhoto(el, src) {
 
 // ── PLAYER PHOTO FETCH (SofaScore → Wikipedia fallback) ──────────────────────
 // Load saved photos from localStorage
+const photoCache = {};
 // Load static photos first (lowest priority)
 if(window.STATIC_PHOTOS) Object.assign(photoCache, window.STATIC_PHOTOS);
 // localStorage overrides static (higher priority — user uploads win)
@@ -15719,6 +15702,7 @@ function uploadPlayerPhoto(name) {
 }
 
 // ── PHOTO CACHE & TRANSFERMARKT API ──────────────────────────────────────────
+const tmCache = {};     // name -> transfermarkt player id
 
 async function searchTMPlayer(name, apiKey) {
   const url = `https://transfermarkt-db.p.rapidapi.com/v1/search?query=${encodeURIComponent(name)}&lang=en`;
@@ -15795,6 +15779,7 @@ try {
 } catch(e) {}
 
 // ── AI SCOUT ASSISTANT ────────────────────────────────────────────────────────
+const aiCache = {};
 
 async function generateAIReportSimple(playerName, league, outEl, barEl) {
   if(!outEl) return;
@@ -16052,6 +16037,7 @@ function generateAIReport(playerName, position, league) {
 }
 
 // ── CATEGORY EXPAND ──────────────────────────────────────────────────────────
+const expandedCats = { off: false, def: false, pass: false, phys: false };
 
 function toggleCat(cat) {
   expandedCats[cat] = !expandedCats[cat];
@@ -16071,7 +16057,7 @@ function toggleCat(cat) {
 
 // ── SIDEBAR TOGGLE ────────────────────────────────────────────────────────────
 // ── FLYOUT SIDEBAR ───────────────────────────────────────────────────────────
-activeFlyout = null;
+let activeFlyout = null;
 
 function toggleFlyout(id) {
   const icons = ['pos','league','filters','shadow','talent','watchlist'];
@@ -16131,6 +16117,7 @@ function openPlayerFromCompare(name) {
   else if(typeof renderMobileElite==='function') renderMobileElite();
 }
 
+const aiCmpCache = {};
 
 function generateCompareAI(pA, pB) {
   const cacheKey = pA.name + '||' + pB.name;
@@ -16354,8 +16341,8 @@ function generateCompareAI(pA, pB) {
   if(el2) el2.innerHTML=htmlOut;
 }
 // ── SHADOW TEAM & TALENT CENTER ──────────────────────────────────────────────
-var shadowTeam = [];
-var talentCenter = [];
+const shadowTeam = [];
+const talentCenter = [];
 
 function renderListSection(players, containerId, emptyMsg) {
   const el = document.getElementById(containerId);
@@ -16402,7 +16389,7 @@ function addToTalentCenter() {
 }
 
 // ── TALENT CENTER VIEW ───────────────────────────────────────────────────────
-var talentSort = {key:'rank', dir:1};
+let talentSort = {key:'rank', dir:1};
 
 function sortTalent(key) {
   if(talentSort.key===key) talentSort.dir*=-1;
@@ -16413,7 +16400,7 @@ function sortTalent(key) {
 }
 
 // ── WATCHLIST ─────────────────────────────────────────────────────────────
-var watchlist = JSON.parse(localStorage.getItem('thrivella_watchlist') || '[]');
+let watchlist = JSON.parse(localStorage.getItem('thrivella_watchlist') || '[]');
 function watchlistAdd(name, league) {
   if(!watchlist.find(x=>x.name===name&&x.league===league)) {
     watchlist.push({name, league});
@@ -20035,7 +20022,7 @@ function svDrawRadars(p, pkey) {
 
 
 // ── CV AI REPORT ─────────────────────────────────────────────────────────────
-var cvAICache = {};
+const cvAICache = {};
 
 async function cvAIReport(playerName, position, pkey) {
   const outEl = document.getElementById('cv-ai-' + pkey);
@@ -20129,9 +20116,9 @@ Sem títulos, sem bullets. Máximo 70 palavras total.`;
 // auto-trigger quando renderSimpleView carrega um jogador
 
 // ── SIMPLE VIEW — METRIC CLICK (inline scrolldown panel) ─────────────────────
-var _svChartInst = null;
-var _svActiveRow = null;
-var _svActivePanel = null;
+let _svChartInst = null;
+let _svActiveRow = null;
+let _svActivePanel = null;
 
 function svClosePanel(btn) {
   if (_svActivePanel) {
@@ -20466,7 +20453,7 @@ function sv7ToggleExpand(expandId, triggerEl) {
 }
 
 // Mapa: key da métrica → chave do total da secção
-var SV_SECTION_MAP = {
+const SV_SECTION_MAP = {
   xg:'total_off', xa:'total_off', goals_np:'total_off', shots90:'total_off',
   goals_per_shot:'total_off', dribles90:'total_off', dribles_pct:'total_off',
   crosses90:'total_off', crosses_pct:'total_off', box_touches:'total_off',
@@ -20478,11 +20465,11 @@ var SV_SECTION_MAP = {
   total_dist:'total_physical', hsr90:'total_physical', sprint_dist90:'total_physical',
   max_speed:'total_physical', sprints90:'total_physical', hsr_sprint_pct:'total_physical',
 };
-var SV_SECTION_LABEL = {
+const SV_SECTION_LABEL = {
   total_off:'Ofensivo Total', total_def:'Defensivo Total',
   total_pass:'Passe Total',   total_physical:'Físico Total',
 };
-var SV_SECTION_COL = {
+const SV_SECTION_COL = {
   total_off:'#00e5a0', total_def:'#ff5370',
   total_pass:'#4fc3f7', total_physical:'#9b7fff',
 };
@@ -20731,7 +20718,7 @@ function svMetricClick(el, playerName) {
 
 // ── SIMPLE VIEW — FOTO UPLOAD ─────────────────────────────────────────────────
 // ── SIMPLE VIEW — COLUNA CHART (barras verticais por percentil) ─────────────
-var SV_COL_CHART_DEF = {
+const SV_COL_CHART_DEF = {
   off: {
     metrics: [
       {key:'xg',            lbl:'xG',       inv:false},
@@ -20783,7 +20770,7 @@ var SV_COL_CHART_DEF = {
   },
 };
 
-var _svColChartInsts = {};
+const _svColChartInsts = {};
 
 function svColChartToggle(btn) {
   const section  = btn.dataset.section;
@@ -21327,7 +21314,7 @@ window.pid3FilterSim = function() {
 
 // ── SIMILAR PLAYERS ──────────────────────────────────────────────────────────
 // Métricas 70% mais relevantes por categoria — pesos reflectem importância real
-var SIMILAR_METRICS = {
+const SIMILAR_METRICS = {
   off: [
     // Criação de golos e ameaça directa — máxima importância
     {key:'xg',           w:2.0, inv:false, lbl:'xG'},
@@ -21369,7 +21356,7 @@ var SIMILAR_METRICS = {
   ],
 };
 
-var ALL_SIM_METRICS = [
+const ALL_SIM_METRICS = [
   ...SIMILAR_METRICS.off,
   ...SIMILAR_METRICS.def,
   ...SIMILAR_METRICS.pas,
@@ -22203,7 +22190,7 @@ function scPopClose(id) {
 // ══════════════════════════════════════════════════════════════════════════════
 // SHADOW TEAM MODULE v2
 // ══════════════════════════════════════════════════════════════════════════════
-var SH_FORMATIONS = {
+const SH_FORMATIONS = {
   '3-4-3': { slots: [
     {id:'lw', label:'LW',  tag:'WIN',side:'L', x:9.4,  y:28.3},
     {id:'cf', label:'CF',  tag:'CF', side:null, x:50,   y:4.2},
@@ -22259,16 +22246,16 @@ var SH_FORMATIONS = {
 };
 
 // shData[tabId][slotId] = {players:['Name',...], cur:0}
-var shData = {my:{},overall:{},contract:{},u23:{}};
-var shNotes = {};
-var shCurrentTab = 'my';
-var shSidePlayer = null;
-var shPickerSlot = null;
+let shData = {my:{},overall:{},contract:{},u23:{}};
+let shNotes = {};
+let shCurrentTab = 'my';
+let shSidePlayer = null;
+let shPickerSlot = null;
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function shGetFormation(){ return document.getElementById('sh-formation').value||'3-4-3'; }
 // Multi-league selection state
-var shSelectedLeagues = new Set(); // empty = all leagues
+let shSelectedLeagues = new Set(); // empty = all leagues
 
 function shGetLeague(){ return shSelectedLeagues.size===0?'all':'multi'; }
 
@@ -22436,7 +22423,7 @@ function shFillAuto(){
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────────
-var _shInited=false;
+let _shInited=false;
 function shInit(){
   if(!_shInited){
     shLoad(); // restore persisted state
@@ -22775,8 +22762,8 @@ function shRenderPitch(formation, tabData){
 }
 
 // ── Drag & Drop for edit mode ─────────────────────────────────────────────────
-var shEditMode=false;
-var shCustomPos={}; // {formation: {slotId: {x,y}}}
+let shEditMode=false;
+let shCustomPos={}; // {formation: {slotId: {x,y}}}
 
 function shMakeDraggable(dot, slotId, pW, pH){
   let dragging=false, ox=0, oy=0;
@@ -22855,7 +22842,7 @@ function shRemoveFromSlot(tabId,slotId,idx){
 }
 
 // ── Side panel ────────────────────────────────────────────────────────────────
-var shSideSlotId = '';
+let shSideSlotId = '';
 function shOpenSide(name, slotId){
   if(shSidePlayer===name){ shCloseSide(); return; }
   shSidePlayer=name;
@@ -23141,7 +23128,7 @@ function shImportAuto(tabId, slotId, e) {
 }
 
 // ── Shadow: open slot manager (edit/remove players) ───────────────────────────
-var _shManagerSlot = null;
+let _shManagerSlot = null;
 
 function shOpenManager(tabId, slotId, e) {
   e && e.stopPropagation();
@@ -23193,9 +23180,9 @@ function shManagerRemove(idx) {
 
 
 // ── Squad Manager Panel ───────────────────────────────────────────────────────
-var _shSquadMode = 'add';   // 'add' | 'rem'
-var _shSquadSlot = null;    // slot object when in player list view
-var _shSquadLeague = null;  // selected league filter (null = all)
+let _shSquadMode = 'add';   // 'add' | 'rem'
+let _shSquadSlot = null;    // slot object when in player list view
+let _shSquadLeague = null;  // selected league filter (null = all)
 
 function shOpenNoteByName(tabId, slotId, playerName){
   const key = tabId + '__' + slotId + '__' + playerName;
@@ -23505,7 +23492,7 @@ function shSideToggleGroup(groupKey){
 
 
 // ── Metrics drawer ─────────────────────────────────────────────────────────
-var SH_METRIC_GROUPS = {
+const SH_METRIC_GROUPS = {
   off: {
     label:'Total Off', color:'var(--accent)',
     metrics:[
@@ -23645,7 +23632,7 @@ function shCloseMetrics(){
 }
 
 // Close metrics when side panel closes
-var _origShCloseSide = shCloseSide;
+const _origShCloseSide = shCloseSide;
 shCloseSide = function(){
   shCloseMetrics();
   _origShCloseSide();
@@ -23653,7 +23640,7 @@ shCloseSide = function(){
 
 
 // ── Shadow Team Persistence ───────────────────────────────────────────────────
-var SH_STORAGE_KEY = 'scoutpro_shadow_v1';
+const SH_STORAGE_KEY = 'scoutpro_shadow_v1';
 
 function shSave() {
   try {
@@ -23717,14 +23704,14 @@ function shGetNote(tabId, slotId, playerName) {
 }
 
 // ── Squad Manager Filters ─────────────────────────────────────────────────────
-var _shFilterAge    = 'all';
-var _shFilterHeight = 'all';
-var _shFilterCt     = 'all';
-var _shFilterFoot   = 'all';   // 'all' | 'right' | 'left'
-var _shFilterMetric = 'score'; // sort key
-var _shFilterGroup  = '';      // 'off' | 'def' | 'pass' | 'phy' | '' (for specific metric)
-var _shFilterSpecific = '';    // specific metric key within group
-var _shFilterDir    = 'desc';
+let _shFilterAge    = 'all';
+let _shFilterHeight = 'all';
+let _shFilterCt     = 'all';
+let _shFilterFoot   = 'all';   // 'all' | 'right' | 'left'
+let _shFilterMetric = 'score'; // sort key
+let _shFilterGroup  = '';      // 'off' | 'def' | 'pass' | 'phy' | '' (for specific metric)
+let _shFilterSpecific = '';    // specific metric key within group
+let _shFilterDir    = 'desc';
 
 function shSquadFilterAge(v)    { _shFilterAge=v;    shSquadRender(); }
 function shSquadFilterFoot(v)   { _shFilterFoot=v;   shSquadRender(); }
@@ -23781,8 +23768,8 @@ function shApplyFilters(players) {
 
 
 // ── Shadow Compare ────────────────────────────────────────────────────────────
-var _shCmpPlayerA = null;
-var _shCmpSlotId  = null;
+let _shCmpPlayerA = null;
+let _shCmpSlotId  = null;
 
 function shOpenCompare(playerName, slotId) {
   _shCmpPlayerA = playerName;
@@ -24144,9 +24131,9 @@ function shDrawRadar(p) {
 
 <script>
 // ══ SOFASCORE UPDATER ═══════════════════════════════════════════════════════
-var _SF = { TOURN: 38, SEASON: 77040, DELAY: 1100 };
-var _sfBusy = false, _sfStop = false, _sfManFor = null;
-var sfDelay = ms => new Promise(r => setTimeout(r, ms));
+const _SF = { TOURN: 38, SEASON: 77040, DELAY: 1100 };
+let _sfBusy = false, _sfStop = false, _sfManFor = null;
+const sfDelay = ms => new Promise(r => setTimeout(r, ms));
 
 function sfExtractId(url) {
   const m = (url||'').match(/\/(\d+)(?:[#?]|$)/);
@@ -24231,7 +24218,7 @@ async function sfLast5(pid) {
 // ── I18N ─────────────────────────────────────────────────────────────────────
 window._lang = localStorage.getItem('app_lang') || 'pt';
 
-var I18N = {
+const I18N = {
   pt: {
     // Nav
     nav_rankings:'Rankings', nav_compare:'Comparar', nav_playerid:'Player ID', nav_shadow:'Shadow Team',
@@ -24883,11 +24870,11 @@ function sfDownload() {
     </div>
   </div>
   <!-- filter bar — content changes per view -->
-  <div style="background:#060c14;border-bottom:1px solid rgba(0,212,255,.12);padding:8px 12px 0;min-height:46px;overflow:hidden;position:sticky;top:50px;z-index:9998">
+  <div style="background:#060c14;border-bottom:1px solid rgba(0,212,255,.12);padding:8px 12px 0;min-height:46px;overflow:hidden">
     <div id="mob-filter-bar" style="display:flex;align-items:center;gap:8px;overflow-x:auto;padding-bottom:11px;margin-bottom:-5px;scrollbar-color:rgba(0,212,255,.5) transparent;scrollbar-width:thin"></div>
   </div>
   <!-- main content -->
-  <div class="mob-elite-content" id="mob-elite-content" style="margin-top:50px"></div>
+  <div class="mob-elite-content" id="mob-elite-content"></div>
 </div>
 
 <script>
@@ -25162,7 +25149,7 @@ function renderMobileTable(){
           +'<div style="'+CW+'"><div style="'+VS+';color:'+tiC(ti)+'">'+ti+'</div><div style="'+LB+'">TAL</div></div>'
           +'<div style="'+CW+'"><div style="'+VS+';color:'+tiC(ph)+'">'+ph+'</div><div style="'+LB+'">PHY</div></div>'
           +'<div style="'+CW+';border-left:1px solid rgba(255,255,255,.07);padding-left:4px"><div style="'+VS+';color:'+tiC(tr)+'">'+tr+'</div><div style="'+LB+'">TRA</div></div>'
-          +'<div style="min-width:28px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(180deg,#040e1c 0%,#061528 50%,#030c18 100%);border-left:1px solid rgba(0,180,255,.12);padding:0 4px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:800;line-height:1;text-align:center;color:'+col4col+'">'+col4val+'</div><div style="'+LB+'">'+col4lbl+'</div></div>'
+          +'<div style="min-width:28px;text-align:center;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(180deg,#040e1c 0%,#061528 50%,#030c18 100%);border-left:1px solid rgba(0,180,255,.12);padding:0 4px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;line-height:1;text-align:center;color:'+col4col+'">'+col4val+'</div><div style="'+LB+'">'+col4lbl+'</div></div>'
         +'</div>'
       +'</div>';
     }).join('')+'</div>';
@@ -25288,15 +25275,9 @@ function renderMobileCompareView(nameA, nameB){
     const out=document.getElementById('mob-cmp-output');
     if(out) out.innerHTML='<div class="ai-thinking" style="padding:30px 0;justify-content:center"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
 
-    // Make view-compare invisible but still in layout (so renderCompare works)
-    // Using visibility:hidden + pointer-events:none instead of display changes
-    // This way the desktop layout grid is NEVER affected
+    // Show desktop compare view (needed for renderCompare to work)
     const viewCmp=document.getElementById('view-compare');
-    if(viewCmp){
-      viewCmp.style.visibility='hidden';
-      viewCmp.style.pointerEvents='none';
-      viewCmp.style.display='flex';
-    }
+    if(viewCmp) viewCmp.style.display='flex';
 
     // Populate selects and run desktop engine
     if(typeof initCompare==='function') initCompare();
@@ -25367,12 +25348,7 @@ function renderMobileCompareView(nameA, nameB){
         if(aiSec) out.appendChild(aiSec.cloneNode(true));
 
         // Hide desktop compare view
-        // Restore view-compare to hidden state
-        if(viewCmp){
-          viewCmp.style.visibility='';
-          viewCmp.style.pointerEvents='';
-          viewCmp.style.display='none';
-        }
+        if(viewCmp) viewCmp.style.display='none';
       },300);
     },500);
   };
@@ -25405,74 +25381,53 @@ function renderMobileShadowView(){
 
   if(typeof shResetAndRender==='function') shResetAndRender();
 
-  setTimeout(()=>{
-    const pitchArea = document.getElementById('sh-pitch-area');
-    const pitchWrap = document.getElementById('sh-pitch-wrap');
+  setTimeout(function(){
+    var pitchArea = document.getElementById('sh-pitch-area');
+    var pitchWrap = document.getElementById('sh-pitch-wrap');
     if(!pitchArea || !pitchWrap){
-      content.innerHTML='<div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase">A carregar campo...</div>';
+      content.innerHTML='<div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-size:13px">A carregar campo...</div>';
       setTimeout(renderMobileShadowView,400);
       return;
     }
 
-    const screenW = window.innerWidth;
-    const availH = window.innerHeight - 130;
+    var screenW = window.innerWidth;
+    var availH = window.innerHeight - 130;
+    // Render pitch at exact mobile size: pW = screenW-76 gives 19px(5mm) gap each side with 19px dots
+    var mobileAreaW = screenW - 44;
 
-    // Set pitchArea to exactly the right mobile size
-    // Target: pitch SVG = screenW - 76px (gives 19px gap + 19px dot radius each side)
-    // shRenderPitch: pW = aW - 32, so aW = (screenW - 76) + 32 = screenW - 44
-    const mobileAreaW = screenW - 44;
-    const mobileAreaH = availH;
-
-    // Render at mobile size
     pitchArea._savedStyle = pitchArea.style.cssText;
-    pitchArea.style.cssText = `position:fixed;left:-9999px;top:0;width:${mobileAreaW}px;height:${mobileAreaH}px;display:flex;align-items:flex-start;justify-content:center;padding:0;overflow:visible`;
+    pitchArea.style.cssText = 'position:fixed;left:-9999px;top:0;width:'+mobileAreaW+'px;height:'+availH+'px;display:flex;align-items:flex-start;justify-content:center;padding:0;overflow:visible';
 
     if(typeof shRender==='function') shRender();
 
-    setTimeout(()=>{
-      // pitchWrap is now exactly the right size (no scaling needed)
-      const pW = pitchWrap.offsetWidth;
-      const pH = pitchWrap.offsetHeight;
+    setTimeout(function(){
+      var pW = pitchWrap.offsetWidth;
+      var pH = pitchWrap.offsetHeight;
+      var wrapClone = pitchWrap.cloneNode(true);
+      wrapClone.style.cssText = 'width:'+pW+'px;height:'+pH+'px;position:absolute;top:19px;left:19px';
 
-      // Clone without any transform — pitch is already at the right size
-      const wrapClone = pitchWrap.cloneNode(true);
-      wrapClone.style.cssText = `width:${pW}px;height:${pH}px;position:relative;overflow:visible`;
-      // Remove any event handlers that reference desktop elements
-      wrapClone.querySelectorAll('[onclick],[onmouseenter],[onmouseleave]').forEach(el=>{
-        el.removeAttribute('onclick');
-        el.removeAttribute('onmouseenter');
-        el.removeAttribute('onmouseleave');
-      });
-
-      // Container: add 19px padding each side for the dots
-      const containerW = pW + 38;
-      const containerH = pH + 38;
-      const container = document.createElement('div');
-      container.style.cssText = `width:${containerW}px;height:${containerH}px;position:relative;margin:0 auto;flex-shrink:0`;
-      // Clone sits inset by 19px so dots have room to show on all sides
-      wrapClone.style.position = 'absolute';
-      wrapClone.style.left = '19px';
-      wrapClone.style.top = '19px';
+      var containerW = pW + 38;
+      var containerH = pH + 38;
+      var container = document.createElement('div');
+      container.style.cssText = 'width:'+containerW+'px;height:'+containerH+'px;position:relative;margin:0 auto;flex-shrink:0;overflow:visible';
       container.appendChild(wrapClone);
 
       content.innerHTML = '';
       content.style.cssText = 'overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:0';
       content.appendChild(container);
 
-      // Restore pitchArea
       if(pitchArea._savedStyle !== undefined){
         pitchArea.style.cssText = pitchArea._savedStyle;
       }
 
-      // Player list below
-      const shadowTeam=window.shadowTeam||[];
+      var shadowTeam = window.shadowTeam||[];
       if(shadowTeam.length){
-        const list=document.createElement('div');
-        list.style.cssText='padding:0 12px;display:flex;flex-direction:column;gap:6px;margin-top:8px;width:100%;box-sizing:border-box';
-        shadowTeam.forEach(p=>{
-          const row=document.createElement('div');
-          row.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 12px;background:#060c18;border-radius:6px;border:1px solid rgba(0,212,255,.1)';
-          row.innerHTML=`<span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#e8edf2;flex:1">${p.name}</span><span style="color:rgba(255,255,255,.35);font-size:10px">${(p.position||'').split(',')[0]}</span><span style="color:#00d4ff;font-size:10px;font-weight:700">${p.team||''}</span>`;
+        var list = document.createElement('div');
+        list.style.cssText = 'padding:0 12px;display:flex;flex-direction:column;gap:6px;margin-top:8px;width:100%;box-sizing:border-box';
+        shadowTeam.forEach(function(p){
+          var row = document.createElement('div');
+          row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 12px;background:#060c18;border-radius:6px;border:1px solid rgba(0,212,255,.1)';
+          row.innerHTML = '<span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#e8edf2;flex:1">'+p.name+'</span><span style="color:rgba(255,255,255,.35);font-size:10px">'+((p.position||'').split(',')[0])+'</span><span style="color:#00d4ff;font-size:10px;font-weight:700">'+(p.team||'')+'</span>';
           list.appendChild(row);
         });
         content.appendChild(list);
