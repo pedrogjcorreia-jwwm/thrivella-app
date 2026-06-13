@@ -25458,7 +25458,7 @@ function renderMobileShadowView(){
     setTimeout(()=>{
       // Capture the SVG pitch as an image
       const svg = pitchWrap && pitchWrap.querySelector('svg');
-      content.innerHTML='<div style="overflow:hidden;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start"></div>';
+      content.innerHTML='<div style="overflow:visible;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start"></div>';
       const wrap=content.firstChild;
 
       if(svg){
