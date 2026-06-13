@@ -25432,16 +25432,15 @@ function renderMobileShadowView(){
 
     const screenW = window.innerWidth;
     const availH = window.innerHeight - 120;
-    // 5mm margins each side (~20px) + extra 20px for position dots that extend beyond pitch lines
-    const targetW = screenW - 40;
-
+    // 5mm margin each side: pitchAreaW gives pW=screenW-66, dots+pitch=screenW-38, gap=19px
+    const pitchAreaW = screenW - 34;
     // Temporarily set the pitch area size so shRenderPitch uses our dimensions
     const pitchArea = document.getElementById('sh-pitch-area');
     const pitchWrap = document.getElementById('sh-pitch-wrap');
     if(pitchArea){
       pitchArea._savedStyle = pitchArea.style.cssText;
       // Use a large offscreen size so the pitch renders at full quality
-      pitchArea.style.cssText = `position:fixed;left:-9999px;top:0;width:${targetW}px;height:${Math.round(targetW*1.6)}px;display:flex;align-items:center;justify-content:center;overflow:visible`;
+      pitchArea.style.cssText = `position:fixed;left:-9999px;top:0;width:${pitchAreaW}px;height:${availH + 100}px;display:flex;align-items:flex-start;justify-content:center;padding:0;overflow:visible`;
     }
 
     // Render the pitch
@@ -25455,23 +25454,22 @@ function renderMobileShadowView(){
 
       if(svg){
         const wrapClone = pitchWrap.cloneNode(true);
-        const actualW = pitchWrap.scrollWidth || pitchWrap.offsetWidth || targetW;
-        const actualH = pitchWrap.scrollHeight || pitchWrap.offsetHeight || Math.round(targetW * 1.5);
-        // Scale so the full content (including dots) fits within targetW and availH
-        const scale = Math.min(targetW / Math.max(1, actualW), (availH - 20) / Math.max(1, actualH));
-        const scaledW = Math.round(actualW * scale);
-        const scaledH = Math.round(actualH * scale);
-        // Container matches the scaled size exactly
+        const cloneW = pitchWrap.offsetWidth || (screenW - 66);
+        const cloneH = pitchWrap.offsetHeight || Math.round(cloneW / 0.8045);
+        // No scaling needed - pitch was rendered at correct mobile size
         const container = document.createElement('div');
-        container.style.cssText = `width:${scaledW}px;height:${scaledH}px;margin:8px auto;position:relative;flex-shrink:0`;
-        // Clone fills container via transform scale from top-left
-        wrapClone.style.cssText = `width:${actualW}px;height:${actualH}px;position:absolute;top:0;left:0;transform:scale(${scale});transform-origin:top left;pointer-events:none`;
+        container.style.cssText = `width:${cloneW}px;height:${cloneH}px;margin:8px auto;position:relative;flex-shrink:0`;
+        wrapClone.style.cssText = `width:${cloneW}px;height:${cloneH}px;position:absolute;top:0;left:0`;
         container.appendChild(wrapClone);
         wrap.appendChild(container);
-      } else if(pitchWrap){
+
+
+
+
+
         const clone = pitchWrap.cloneNode(true);
-        clone.style.cssText = `width:${targetW}px;height:${Math.round(targetW*1.45)}px;display:block;margin:8px auto;position:relative`;
-        wrap.appendChild(clone);
+        const clone = pitchWrap.cloneNode(true);
+        clone.style.cssText = `width:${screenW-66}px;height:auto;display:block;margin:8px auto;position:relative`;
       }
 
       // Restore pitch area
