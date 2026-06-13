@@ -25433,7 +25433,7 @@ function renderMobileShadowView(){
     const screenW = window.innerWidth;
     const availH = window.innerHeight - 120;
     // Fill full width with correct football pitch proportions
-    const pitchW = screenW - 16;
+    const pitchW = Math.round((screenW - 16) * 0.9);
     const pitchH = Math.round(Math.min(pitchW * 1.45, availH - 20));
 
     // Temporarily set the pitch area size so shRenderPitch uses our dimensions
