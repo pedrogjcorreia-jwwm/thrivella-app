@@ -7376,7 +7376,8 @@ function renderCompare(){
   // Scroll suave até às métricas
   setTimeout(() => {
     const anchor = document.getElementById('cmp-metrics-anchor');
-    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const container = document.getElementById('view-compare');
+    if (anchor && container) { const anchorTop = anchor.getBoundingClientRect().top - container.getBoundingClientRect().top; container.scrollBy({ top: anchorTop, behavior: 'smooth' }); }
   }, 350);
 
   // Auto-trigger AI comparison
@@ -8124,7 +8125,8 @@ function generateCompareAI(pA, pB) {
   aiCmpCache[cacheKey]=htmlOut;
   const el2=document.getElementById('cmp-ai-out');
   if(el2) el2.innerHTML=htmlOut;
-}tml lang="pt"><head>
+}
+<html lang="pt"><head>
 <meta charset="UTF-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
   <meta http-equiv="Pragma" content="no-cache">
@@ -13084,7 +13086,6 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 </div>
 
 <script>
-const API_URL = 'https://thrivela.up.railway.app';
 
 // STATIC PHOTO CACHE -- paste exported photos here for cross-device access
 window.STATIC_PHOTOS = {
@@ -13307,9 +13308,9 @@ window.exportPhotoCache=function(){
   doSync(ghToken);
 };
 
-let PLAYERS = [];
-let _playersLoaded = false;
-let _loadingPromise = null;
+PLAYERS = [];
+_playersLoaded = false;
+_loadingPromise = null;
 
 async function loadPlayers() {
   if (_playersLoaded) return PLAYERS;
@@ -13397,15 +13398,13 @@ async function loadPlayers() {
   return _loadingPromise;
 }
 
-const AVATAR_COLORS=['#00d4ff','#00e5a0','#ffb340','#ff4757','#9b7fff','#ff6b9d','#4ecdc4','#f7b731','#a29bfe','#fd79a8'];
-const notes={};
-let selectedPlayer=null, currentView='table', radarChart=null;
-let tableSort={key:'score',dir:-1}; // 'score' key → sorts by talent_index
-let selPos='all', selLeagues=[], showAlerts=false, filts={ageMin:16,ageMax:40,ctMin:2025,ctMax:2031,scMin:0};
+selectedPlayer=null, currentView='table', radarChart=null;
+tableSort={key:'score',dir:-1}; // 'score' key → sorts by talent_index
+selPos='all', selLeagues=[], showAlerts=false, filts={ageMin:16,ageMax:40,ctMin:2025,ctMax:2031,scMin:0};
 
 // ── DERIVED DATA ─────────────────────────────────────────────────────────────
-let ALL_LEAGUES = [];
-let ALL_POS = [];
+ALL_LEAGUES = [];
+ALL_POS = [];
 
 
 
@@ -13550,7 +13549,6 @@ function rebuildDerivedData() {
 // ── HELPERS ──────────────────────────────────────────────────────────────────
 function getColor(i){return '#00d4ff'}
 
-const FLAG_MAP_DETAIL = {
   'Greece':'🇬🇷','Portugal':'🇵🇹','Ecuador':'🇪🇨','Belgium':'🇧🇪','Poland':'🇵🇱',
   "Côte d'Ivoire":'🇨🇮','Iran':'🇮🇷','Comoros':'🇰🇲','France':'🇫🇷','Japan':'🇯🇵',
   'Sweden':'🇸🇪','Gambia':'🇬🇲','Ghana':'🇬🇭','Nigeria':'🇳🇬','Senegal':'🇸🇳',
@@ -13562,7 +13560,6 @@ const FLAG_MAP_DETAIL = {
 };
 function getFlag(c){ return FLAG_MAP_DETAIL[c.trim()] || '🌍'; }
 
-const COUNTRY_CODE_MAP = {
   'Greece':'gr','Portugal':'pt','Ecuador':'ec','Belgium':'be','Poland':'pl',
   "Côte d'Ivoire":'ci','Iran':'ir','Comoros':'km','France':'fr','Japan':'jp',
   'Sweden':'se','Gambia':'gm','Ghana':'gh','Nigeria':'ng','Senegal':'sn',
@@ -13579,7 +13576,6 @@ function getFlagImg(c) {
   return '<img src="https://flagcdn.com/16x12/' + code + '.png" width="16" height="12" style="border-radius:1px;flex-shrink:0;object-fit:cover" alt="' + c + '">';
 }
 
-const LEAGUE_CONFIG = {
   'Albania1':{country:'Albania',level:1,display:'Albania'},
   'Armenia1':{country:'Armenia',level:1,display:'Armenia'},
   'Australia1':{country:'Australia',level:1,display:'Australia'},
@@ -13631,7 +13627,6 @@ const LEAGUE_CONFIG = {
   'Ukraine2':{country:'Ukraine',level:2,display:'Ukraine 2'},
 };
 // Backwards compat
-const VALID_WIN_POS = new Set(['LW','RW','LWF','RWF','LAMF','RAMF','AMF','LCMF','RCMF']);
 
 function hasWinAlert(p) {
   if (!p.position_group || p.position_group !== 'WIN') return false;
@@ -13642,10 +13637,8 @@ function getWinAlertPos(p) {
   return (p.position||'').split(',').map(x=>x.trim()).filter(pos => pos && !VALID_WIN_POS.has(pos));
 }
 
-const LEAGUE_COUNTRY_MAP = Object.fromEntries(Object.entries(LEAGUE_CONFIG).map(([k,v])=>[k,v.country]));
 
 // ── Liga Difficulty Multipliers (Opta-based, ref=Portugal2=1.000) ──────────
-const LEAGUE_DIFFICULTY = {
   // Raw Opta multipliers — ref = Portugal2 = 71.8 (no cap)
   'England1':1.2632,  // Opta 90.7  +26.3%
   'Belgium1':1.1253,  // Opta 80.8  +12.5%
@@ -13698,7 +13691,7 @@ const LEAGUE_DIFFICULTY = {
   'Ukraine2':0.8064,  // Opta 57.9  -19.4%
 };
 
-let ligaAdjustActive = false;
+ligaAdjustActive = false;
 
 function getLigaMult(league) {
   return LEAGUE_DIFFICULTY[league] || 1.000;
@@ -13817,7 +13810,6 @@ function ageStyle(age){
 function htStyle(h){
   return{bg:'var(--bg3)',col:'var(--muted)'};
 }
-const LEAGUE_COLORS = {};
 function leagueBadge(league) {
   const cfg = LEAGUE_CONFIG[league];
   const display = cfg ? cfg.display : league;
@@ -14284,9 +14276,9 @@ function metricRow(label, val, max, avg, inverse=false, key=null, player=null, s
 }
 
 // ── METRIC TABLE VIEW ────────────────────────────────────────────────────────
-let _mtChartInst = null;
-let _mtCurrentPlayer = null;
-let _mtCurrentLA = null;
+_mtChartInst = null;
+_mtCurrentPlayer = null;
+_mtCurrentLA = null;
 
 function metricTableRow(label, val, avg, rank, inverse=false, key=null, section=null) {
   const above   = inverse ? val <= avg : val >= avg;
@@ -14306,9 +14298,9 @@ function metricTableRow(label, val, avg, rank, inverse=false, key=null, section=
     + '</div>';
 }
 
-let _mrChartInst = null;
-let _mrActiveRow = null;
-let _mrFullPanel = null;
+_mrChartInst = null;
+_mrActiveRow = null;
+_mrFullPanel = null;
 
 function mrClickRow(el) {
   const key     = el.dataset.key;
@@ -14729,7 +14721,7 @@ function metricTable(p, LA) {
     + '</div>';
 }
 
-let _currentMetricView = 'bars';
+_currentMetricView = 'bars';
 function setMetricView(v) {
   _currentMetricView = v;
   const bars    = document.getElementById('metric-view-bars');
@@ -14788,8 +14780,6 @@ function showView(v,btn){
 }
 
 // ── COMPARE ──────────────────────────────────────────────────────────────────
-const CMP_COLS  = ['#378ADD','#00e5a0','#ff9f43','#ff4757'];
-const CMP_FILLS = [
   'linear-gradient(to right,#0a4a8a,#378ADD)',
   'linear-gradient(to right,#006644,#00e5a0)',
   'linear-gradient(to right,#7a3a00,#ff9f43)',
@@ -14816,7 +14806,7 @@ function removeCmpSlot(slot) {
   renderCompare();
 }
 
-let cmpA=null,cmpB=null;
+cmpA=null,cmpB=null;
 function initCompare(){
   const sa=document.getElementById('cmp-a');
   const sb=document.getElementById('cmp-b');
@@ -15470,7 +15460,8 @@ function renderCompare(){
   // Scroll suave até às métricas
   setTimeout(() => {
     const anchor = document.getElementById('cmp-metrics-anchor');
-    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const container = document.getElementById('view-compare');
+    if (anchor && container) { const anchorTop = anchor.getBoundingClientRect().top - container.getBoundingClientRect().top; container.scrollBy({ top: anchorTop, behavior: 'smooth' }); }
   }, 350);
 
   // Auto-trigger AI comparison
@@ -15529,7 +15520,6 @@ function injectHeaderPhoto(el, src) {
 
 // ── PLAYER PHOTO FETCH (SofaScore → Wikipedia fallback) ──────────────────────
 // Load saved photos from localStorage
-const photoCache = {};
 // Load static photos first (lowest priority)
 if(window.STATIC_PHOTOS) Object.assign(photoCache, window.STATIC_PHOTOS);
 // localStorage overrides static (higher priority — user uploads win)
@@ -15698,7 +15688,6 @@ function uploadPlayerPhoto(name) {
 }
 
 // ── PHOTO CACHE & TRANSFERMARKT API ──────────────────────────────────────────
-const tmCache = {};     // name -> transfermarkt player id
 
 async function searchTMPlayer(name, apiKey) {
   const url = `https://transfermarkt-db.p.rapidapi.com/v1/search?query=${encodeURIComponent(name)}&lang=en`;
@@ -15775,7 +15764,6 @@ try {
 } catch(e) {}
 
 // ── AI SCOUT ASSISTANT ────────────────────────────────────────────────────────
-const aiCache = {};
 
 async function generateAIReportSimple(playerName, league, outEl, barEl) {
   if(!outEl) return;
@@ -16033,7 +16021,6 @@ function generateAIReport(playerName, position, league) {
 }
 
 // ── CATEGORY EXPAND ──────────────────────────────────────────────────────────
-const expandedCats = { off: false, def: false, pass: false, phys: false };
 
 function toggleCat(cat) {
   expandedCats[cat] = !expandedCats[cat];
@@ -16053,7 +16040,7 @@ function toggleCat(cat) {
 
 // ── SIDEBAR TOGGLE ────────────────────────────────────────────────────────────
 // ── FLYOUT SIDEBAR ───────────────────────────────────────────────────────────
-let activeFlyout = null;
+activeFlyout = null;
 
 function toggleFlyout(id) {
   const icons = ['pos','league','filters','shadow','talent','watchlist'];
@@ -16113,7 +16100,6 @@ function openPlayerFromCompare(name) {
   else if(typeof renderMobileElite==='function') renderMobileElite();
 }
 
-const aiCmpCache = {};
 
 function generateCompareAI(pA, pB) {
   const cacheKey = pA.name + '||' + pB.name;
@@ -25358,7 +25344,6 @@ function renderMobileShadowView(){
   const filterBar = document.getElementById('mob-filter-bar');
   if(!content) return;
 
-  // Filter bar: formation selector + tabs
   if(filterBar){
     filterBar.style.overflow='visible';
     filterBar.innerHTML=`
@@ -25376,123 +25361,68 @@ function renderMobileShadowView(){
       </div>`;
   }
 
-  // Use the desktop shadow view directly — show it inside mob content
-  // First ensure the shadow view is rendered
   if(typeof shResetAndRender==='function') shResetAndRender();
 
-  // For mobile: resize the shadow pitch area to fill the screen, render, then capture
-  setTimeout(()=>{
-    const shadowView = document.getElementById('view-shadow');
-    if(!shadowView){
-      content.innerHTML='<div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase">A carregar campo...</div>';
+  setTimeout(function(){
+    var pitchArea = document.getElementById('sh-pitch-area');
+    var pitchWrap = document.getElementById('sh-pitch-wrap');
+    if(!pitchArea || !pitchWrap){
+      content.innerHTML='<div style="padding:20px;text-align:center;color:rgba(255,255,255,.4);font-size:13px">A carregar campo...</div>';
       setTimeout(renderMobileShadowView,400);
       return;
     }
 
-    const screenW = window.innerWidth;
-    const availH = window.innerHeight - 120;
-    // Reduce by 15% from full size, and ensure no overflow
-    const pitchH = Math.round(Math.min(availH - 40, screenW / 0.805) * 0.85);
-    const pitchW = Math.round(pitchH * 0.805);
+    var screenW = window.innerWidth;
+    var availH = window.innerHeight - 130;
+    // Pitch ratio W/H = 358/445 = 0.8045
+    // 5mm each side ≈ 20px → pW = screenW - 40, pH = pW / 0.8045
+    var pW = screenW - 40;
+    var pH = Math.round(pW / 0.8045);
+    // If too tall for screen, constrain by height instead
+    if(pH > availH){ pH = availH; pW = Math.round(pH * 0.8045); }
+    // pitchArea must give shRenderPitch the right clientWidth/clientHeight
+    // shRenderPitch: pW_result = aW - 32, so aW = pW + 32
+    var mobileAreaW = pW + 32;
+    var mobileAreaH = pH + 32;
 
-    // Temporarily set the pitch area size so shRenderPitch uses our dimensions
-    const pitchArea = document.getElementById('sh-pitch-area');
-    const pitchWrap = document.getElementById('sh-pitch-wrap');
-    if(pitchArea){
-      pitchArea._savedStyle = pitchArea.style.cssText;
-      pitchArea.style.cssText = `position:fixed;left:-9999px;top:0;width:${pitchW+40}px;height:${pitchH+40}px;display:flex;align-items:center;justify-content:center;overflow:visible`;
-    }
+    pitchArea._savedStyle = pitchArea.style.cssText;
+    pitchArea.style.cssText = 'position:fixed;left:-9999px;top:0;width:'+mobileAreaW+'px;height:'+mobileAreaH+'px;display:flex;align-items:flex-start;justify-content:center;padding:0;overflow:visible';
 
-    // Render the pitch
     if(typeof shRender==='function') shRender();
 
-    setTimeout(()=>{
-      // Capture the SVG pitch as an image
-      const svg = pitchWrap && pitchWrap.querySelector('svg');
-      content.innerHTML='<div style="overflow-y:auto;height:100%;padding-bottom:20px"></div>';
-      const wrap=content.firstChild;
+    setTimeout(function(){
+      var wrapClone = pitchWrap.cloneNode(true);
+      wrapClone.style.cssText = 'width:'+pW+'px;height:'+pH+'px;position:relative;overflow:visible';
 
-      if(svg){
-        // The pitch wrap has both SVG (field) and HTML divs (position dots)
-        // We must clone the entire wrap — not just the SVG — to get the dots
-        const wrapClone = pitchWrap.cloneNode(true);
-        // Scale to fit: pitchWrap is pitchW×pitchH, we want it at target size
-        const actualW = pitchWrap.offsetWidth || pitchW;
-        const actualH = pitchWrap.offsetHeight || pitchH;
-        const scaleX = pitchW / Math.max(1, actualW);
-        const scaleY = pitchH / Math.max(1, actualH);
-        const scale = Math.min(scaleX, scaleY);
-        const scaledW = Math.round(actualW * scale);
-        const scaledH = Math.round(actualH * scale);
-        const container = document.createElement('div');
-        container.style.cssText = `width:${scaledW}px;height:${scaledH}px;overflow:hidden;margin:8px auto;position:relative;border-radius:6px`;
-        wrapClone.style.cssText = `width:${actualW}px;height:${actualH}px;position:absolute;top:0;left:0;transform:scale(${scale});transform-origin:top left`;
-        container.appendChild(wrapClone);
-        wrap.appendChild(container);
-      } else if(pitchWrap){
-        // Fallback: show a cloned pitch wrap directly
-        const clone = pitchWrap.cloneNode(true);
-        clone.style.cssText = `width:${pitchW}px;height:${pitchH}px;display:block;margin:8px auto;position:relative`;
-        wrap.appendChild(clone);
-      }
+      var container = document.createElement('div');
+      container.style.cssText = 'width:'+pW+'px;margin:0 auto;position:relative;flex-shrink:0';
+      container.appendChild(wrapClone);
 
-      // Restore pitch area
-      if(pitchArea && pitchArea._savedStyle !== undefined){
+      content.innerHTML = '';
+      content.style.cssText = 'overflow:visible;display:flex;flex-direction:column;align-items:center;padding:0 20px';
+      content.appendChild(container);
+
+      if(pitchArea._savedStyle !== undefined){
         pitchArea.style.cssText = pitchArea._savedStyle;
       }
 
-      // Player list
-      const shadowTeam=window.shadowTeam||[];
+      var shadowTeam = window.shadowTeam||[];
       if(shadowTeam.length){
-        const list=document.createElement('div');
-        list.style.cssText='padding:0 12px;display:flex;flex-direction:column;gap:6px;margin-top:8px';
-        shadowTeam.forEach(p=>{
-          const row=document.createElement('div');
-          row.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 12px;background:#060c18;border-radius:6px;border:1px solid rgba(0,212,255,.1)';
-          row.innerHTML=`<span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#e8edf2;flex:1">${p.name}</span><span style="color:rgba(255,255,255,.35);font-size:10px">${(p.position||'').split(',')[0]}</span><span style="color:#00d4ff;font-size:10px;font-weight:700">${p.team||''}</span>`;
+        var list = document.createElement('div');
+        list.style.cssText = 'padding:0 12px;display:flex;flex-direction:column;gap:6px;margin-top:8px;width:100%;box-sizing:border-box';
+        shadowTeam.forEach(function(p){
+          var row = document.createElement('div');
+          row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 12px;background:#060c18;border-radius:6px;border:1px solid rgba(0,212,255,.1)';
+          row.innerHTML = '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;color:#e8edf2;flex:1">'+p.name+'</span><span style="color:rgba(255,255,255,.35);font-size:10px">'+((p.position||'').split(',')[0])+'</span><span style="color:#00d4ff;font-size:10px;font-weight:700">'+(p.team||'')+'</span>';
           list.appendChild(row);
         });
-        wrap.appendChild(list);
+        content.appendChild(list);
       }
     }, 250);
   }, 100);
 }
 
-// ── Mobile init on page load ──────────────────────────────────────────────────
-(function initMobile(){
-  function run(){
-    if(!isMobilePortrait()) return;
-    sessionStorage.removeItem('thrivella_mobile_pref');
-    const popup = document.getElementById('mobile-popup');
-    if(popup) popup.classList.add('show');
-    if(typeof mobResetPopup==='function') mobResetPopup();
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', run);
-  else run();
-})();
 
-window.addEventListener('orientationchange',()=>{
-  setTimeout(()=>{
-    if(!isMobilePortrait()) return;
-    sessionStorage.removeItem('thrivella_mobile_pref');
-    document.getElementById('mobile-elite-view').style.display='none';
-    document.getElementById('mobile-popup').classList.add('show');
-  }, 350);
-});
-
-// Also check when Player ID opens
-const _origNavTo = window.navTo;
-window.navTo = function(view){
-  _origNavTo && _origNavTo(view);
-  if(view==='playerid'){
-    setTimeout(()=>{
-      const pref=sessionStorage.getItem('thrivella_mobile_pref');
-      if(isMobilePortrait()&&pref==='elite'&&window.selectedPlayer) renderMobileElite();
-    }, 500);
-  }
-};
-
-// ── Render Mobile Elite ──
 function renderMobileElite(){
   const p=window.selectedPlayer||window._sv7CurrentPlayer&&PLAYERS&&PLAYERS.find(x=>x.name===window._sv7CurrentPlayer);
   const el=document.getElementById('mobile-elite-view');
