@@ -25392,7 +25392,7 @@ function renderMobileShadowView(){
     const screenW = window.innerWidth;
     const availH = window.innerHeight - 120;
     // Proportional: pW = screenW-40 (5mm each side), pH = pW/0.8045
-    const pitchW = screenW - 40;
+    const pitchW = screenW - 78; // 20px margin + 19px dot each side
     const pitchH = Math.min(Math.round(pitchW / 0.8045), availH - 20);
 
     // Temporarily set the pitch area size so shRenderPitch uses our dimensions
