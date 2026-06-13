@@ -25432,16 +25432,17 @@ function renderMobileShadowView(){
 
     const screenW = window.innerWidth;
     const availH = window.innerHeight - 120;
-    // Fill full width with correct football pitch proportions
-    const pitchW = Math.round((screenW - 16) * 0.9);
-    const pitchH = Math.round(Math.min(pitchW * 1.45, availH - 20));
+    // Don't pre-define pitchH - let the actual content determine scale
+    // We only define target width (screenW minus ~5mm each side = 20px total margin)
+    const targetW = screenW - 20;
 
     // Temporarily set the pitch area size so shRenderPitch uses our dimensions
     const pitchArea = document.getElementById('sh-pitch-area');
     const pitchWrap = document.getElementById('sh-pitch-wrap');
     if(pitchArea){
       pitchArea._savedStyle = pitchArea.style.cssText;
-      pitchArea.style.cssText = `position:fixed;left:-9999px;top:0;width:${pitchW+40}px;height:${pitchH+40}px;display:flex;align-items:center;justify-content:center;overflow:visible`;
+      // Use a large offscreen size so the pitch renders at full quality
+      pitchArea.style.cssText = `position:fixed;left:-9999px;top:0;width:${targetW}px;height:${Math.round(targetW*1.6)}px;display:flex;align-items:center;justify-content:center;overflow:visible`;
     }
 
     // Render the pitch
@@ -25454,15 +25455,13 @@ function renderMobileShadowView(){
       const wrap=content.firstChild;
 
       if(svg){
-        // The pitch wrap has both SVG (field) and HTML divs (position dots)
-        // We must clone the entire wrap — not just the SVG — to get the dots
         const wrapClone = pitchWrap.cloneNode(true);
-        // Scale to fit: pitchWrap is pitchW×pitchH, we want it at target size
-        const actualW = pitchWrap.offsetWidth || pitchW;
-        const actualH = pitchWrap.offsetHeight || pitchH;
-        const scaleX = pitchW / Math.max(1, actualW);
-        const scaleY = pitchH / Math.max(1, actualH);
-        const scale = Math.min(scaleX, scaleY);
+        const actualW = pitchWrap.offsetWidth || targetW;
+        const actualH = pitchWrap.offsetHeight || Math.round(targetW * 1.5);
+        // Scale to fit width exactly (targetW), but never exceed availH
+        const scaleByW = targetW / Math.max(1, actualW);
+        const scaleByH = (availH - 20) / Math.max(1, actualH);
+        const scale = Math.min(scaleByW, scaleByH);
         const scaledW = Math.round(actualW * scale);
         const scaledH = Math.round(actualH * scale);
         const container = document.createElement('div');
@@ -25471,9 +25470,8 @@ function renderMobileShadowView(){
         container.appendChild(wrapClone);
         wrap.appendChild(container);
       } else if(pitchWrap){
-        // Fallback: show a cloned pitch wrap directly
         const clone = pitchWrap.cloneNode(true);
-        clone.style.cssText = `width:${pitchW}px;height:${pitchH}px;display:block;margin:8px auto;position:relative`;
+        clone.style.cssText = `width:${targetW}px;height:${Math.round(targetW*1.45)}px;display:block;margin:8px auto;position:relative`;
         wrap.appendChild(clone);
       }
 
