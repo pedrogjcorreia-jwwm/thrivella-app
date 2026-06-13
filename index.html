@@ -25353,6 +25353,11 @@ function renderMobileCompareView(nameA, nameB){
 
 }
 
+
+function mobShFormation(v){var s=document.getElementById('sh-formation');if(s)s.value=v;if(typeof shResetAndRender==='function')shResetAndRender();renderMobileShadowView();}
+function mobShLeague(v){if(typeof shSetLeague==='function')shSetLeague(v);else if(typeof shResetAndRender==='function')shResetAndRender();}
+function mobShMkt(v){var s=document.getElementById('sh-mkt-max');if(s)s.value=v;if(typeof shResetAndRender==='function')shResetAndRender();}
+function mobShTab(t){if(typeof shSelectTab==='function')shSelectTab(t);setTimeout(renderMobileShadowView,300);}
 function renderMobileShadowView(){
   const content = document.getElementById('mob-elite-content');
   const filterBar = document.getElementById('mob-filter-bar');
@@ -25370,31 +25375,23 @@ function renderMobileShadowView(){
     // Build leagues options from PLAYERS
     const leagues=[...new Set((PLAYERS||[]).map(p=>p.league).filter(Boolean))].sort();
 
+    var fmOpts='<option value="3-4-3">3-4-3</option><option value="4-3-3">4-3-3</option><option value="4-4-2">4-4-2</option><option value="3-5-2">3-5-2</option>';
+    var lgOpts='<option value="all">Todas</option>'+leagues.map(function(l){return '<option value="'+l+'">'+(l.length>12?l.slice(0,12)+'...':l)+'</option>';}).join('');
     filterBar.innerHTML=
       '<button style="'+btnStyle+'" onclick="document.getElementById(\'mob-sh-scroll\').scrollLeft-=80">&#8249;</button>'
-      +'<div id="mob-sh-scroll" style="display:flex;align-items:center;gap:6px;flex:1;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:0 4px">'
+      +'<div id="mob-sh-scroll" style="display:flex;align-items:center;gap:6px;flex:1;overflow-x:auto;scrollbar-width:none;padding:0 4px">'
         +'<span style="'+lblStyle+'">Sistema</span>'
-        +'<select id="mob-sh-formation" style="'+selStyle+'" onchange="document.getElementById(\'sh-formation\').value=this.value;if(typeof shResetAndRender===\'function\')shResetAndRender();renderMobileShadowView()">'
-          +'<option value="3-4-3">3-4-3</option>'
-          +'<option value="4-3-3">4-3-3</option>'
-          +'<option value="4-4-2">4-4-2</option>'
-          +'<option value="3-5-2">3-5-2</option>'
-        +'</select>'
+        +'<select id="mob-sh-fm" style="'+selStyle+'" onchange="mobShFormation(this.value)">'+fmOpts+'</select>'
         +'<span style="width:1px;height:14px;background:rgba(0,212,255,.18);flex-shrink:0"></span>'
         +'<span style="'+lblStyle+'">Liga</span>'
-        +'<select id="mob-sh-league" style="'+selStyle+'" onchange="if(typeof shSetLeague===\'function\')shSetLeague(this.value);else if(typeof shResetAndRender===\'function\')shResetAndRender()">'
-          +'<option value="all">Todas</option>'
-          +leagues.map(l=>'<option value="'+l+'">'+(l.length>12?l.slice(0,12)+'...':l)+'</option>').join('')
-        +'</select>'
+        +'<select id="mob-sh-lg" style="'+selStyle+'" onchange="mobShLeague(this.value)">'+lgOpts+'</select>'
         +'<span style="width:1px;height:14px;background:rgba(0,212,255,.18);flex-shrink:0"></span>'
         +'<span style="'+lblStyle+'">Valor</span>'
-        +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;color:rgba(255,255,255,.4)">≤</span>'
-        +'<input id="mob-sh-mkt" type="number" placeholder="∞" style="'+selStyle+';width:46px;text-align:right" oninput="document.getElementById(\'sh-mkt-max\').value=this.value;if(typeof shResetAndRender===\'function\')shResetAndRender()">'
+        +'<input id="mob-sh-mkt" type="number" placeholder="\u221e" style="'+selStyle+';width:46px" oninput="mobShMkt(this.value)">'
         +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;color:rgba(255,255,255,.4)">M€</span>'
         +'<span style="width:1px;height:14px;background:rgba(0,212,255,.18);flex-shrink:0"></span>'
-        +'<span style="'+lblStyle+'">My Shadow</span>'
-        +'<button onclick="if(typeof shSelectTab===\'function\')shSelectTab(\'my\');setTimeout(renderMobileShadowView,300)" style="'+selStyle+';cursor:pointer">My</button>'
-        +'<button onclick="if(typeof shSelectTab===\'function\')shSelectTab(\'overall\');setTimeout(renderMobileShadowView,300)" style="'+selStyle+';cursor:pointer;border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.5)">Best</button>'
+        +'<button onclick="mobShTab(\'my\')" style="'+selStyle+';cursor:pointer">My</button>'
+        +'<button onclick="mobShTab(\'overall\')" style="'+selStyle+';cursor:pointer;border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.5)">Best</button>'
       +'</div>'
       +'<button style="'+btnStyle+'" onclick="document.getElementById(\'mob-sh-scroll\').scrollLeft+=80">&#8250;</button>';
   }
