@@ -25361,6 +25361,7 @@ function renderMobileShadowView(){
   // Filter bar: formation selector + tabs
   if(filterBar){
     filterBar.style.overflow='visible';
+    var lgOpts='<option value="all">Liga: Todas</option>'+[...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))].sort().map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');
     filterBar.innerHTML=`
       <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(0,212,255,.55);flex-shrink:0">Shadow</span>
       <select onchange="document.getElementById('sh-formation').value=this.value;if(typeof shResetAndRender==='function')shResetAndRender()"
@@ -25370,10 +25371,12 @@ function renderMobileShadowView(){
         <option value="4-4-2">4-4-2</option>
         <option value="3-5-2">3-5-2</option>
       </select>
+      <select id="mob-sh-lg" style="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:5px;padding:4px 6px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;max-width:110px" onchange="if(typeof shSetLeague==='function')shSetLeague(this.value);else if(typeof shResetAndRender==='function')shResetAndRender()"></select>
       <div style="display:flex;gap:4px;margin-left:auto">
         <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this)" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);border-radius:4px;padding:3px 8px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:#00d4ff;cursor:pointer">My Shadow</button>
         <button onclick="if(typeof shSelectTab==='function')shSelectTab('overall',this)" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:3px 8px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,.5);cursor:pointer">Best</button>
       </div>`;
+    document.getElementById('mob-sh-lg').innerHTML=lgOpts;
   }
 
   // Use the desktop shadow view directly — show it inside mob content
