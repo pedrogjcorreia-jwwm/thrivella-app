@@ -25435,14 +25435,11 @@ function renderMobileShadowView(){
     const availH = window.innerHeight - 130;
     // No scroll: field must fit in both width AND height
     // 5mm margins: pitch SVG = screenW - 66. Also constrain by height.
-    const maxPitchW = screenW - 66;  // 19px gap each side + ~14px dot each side
-    const maxPitchH = availH - 20;
-    // pitch ratio W/H = 0.8045; choose smaller constraint
-    const pitchByW = maxPitchW;
-    const pitchByH = Math.round(maxPitchH * 0.8045);
-    const targetPitchW = Math.min(pitchByW, pitchByH);
-    // pitchAreaW: shRenderPitch does pW = aW - 32, so aW = targetPitchW + 32
-    const pitchAreaW = targetPitchW + 32;
+    // Dots are 38px circles (19px radius). For 5mm gap each side (~19px):
+    // visual_w = pW + 38. Want gap = 19px => pW = screenW - 76
+    // pitchAreaW = pW + 32 = screenW - 44
+    const pitchAreaW = screenW - 44;
+    const targetPitchW = pitchAreaW - 32; // = screenW - 76
     // Temporarily set the pitch area size so shRenderPitch uses our dimensions
     const pitchArea = document.getElementById('sh-pitch-area');
     const pitchWrap = document.getElementById('sh-pitch-wrap');
@@ -25458,22 +25455,22 @@ function renderMobileShadowView(){
     setTimeout(()=>{
       // Capture the SVG pitch as an image
       const svg = pitchWrap && pitchWrap.querySelector('svg');
-      content.innerHTML='<div style="overflow:visible;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start"></div>';
+      content.innerHTML='<div style="overflow:hidden;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start"></div>';
       const wrap=content.firstChild;
 
       if(svg){
         const wrapClone = pitchWrap.cloneNode(true);
         const actualW = pitchWrap.offsetWidth || targetPitchW;
         const actualH = pitchWrap.offsetHeight || Math.round(actualW / 0.8045);
-        // Dots extend ~14px outside each edge: visual total = actualW+28, actualH+28
-        const visualW = actualW + 28;
-        const visualH = actualH + 28;
+        // Dots are 38px circles (19px radius): visual = actualW+38, actualH+38
+        const visualW = actualW + 38;
+        const visualH = actualH + 38;
         const scale = Math.min((screenW - 38) / visualW, (availH - 20) / visualH);
         const scaledW = Math.round(visualW * scale);
         const scaledH = Math.round(visualH * scale);
         const container = document.createElement('div');
-        container.style.cssText = `width:${scaledW}px;height:${scaledH}px;margin:4px auto;position:relative;flex-shrink:0;overflow:visible`;
-        const dotOffset = Math.round(14 * scale);
+        container.style.cssText = `width:${scaledW}px;height:${scaledH}px;margin:4px auto;position:relative;flex-shrink:0;overflow:hidden`;
+        const dotOffset = Math.round(19 * scale);
         wrapClone.style.cssText = `width:${actualW}px;height:${actualH}px;position:absolute;top:${dotOffset}px;left:${dotOffset}px;transform:scale(${scale});transform-origin:top left`;
         container.appendChild(wrapClone);
         wrap.appendChild(container);
