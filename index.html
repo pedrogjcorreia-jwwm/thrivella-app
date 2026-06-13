@@ -25435,7 +25435,7 @@ function renderMobileShadowView(){
     const availH = window.innerHeight - 130;
     // No scroll: field must fit in both width AND height
     // 5mm margins: pitch SVG = screenW - 66. Also constrain by height.
-    const maxPitchW = screenW - 66;
+    const maxPitchW = screenW - 66;  // 19px gap each side + ~14px dot each side
     const maxPitchH = availH - 20;
     // pitch ratio W/H = 0.8045; choose smaller constraint
     const pitchByW = maxPitchW;
@@ -25465,14 +25465,16 @@ function renderMobileShadowView(){
         const wrapClone = pitchWrap.cloneNode(true);
         const actualW = pitchWrap.offsetWidth || targetPitchW;
         const actualH = pitchWrap.offsetHeight || Math.round(actualW / 0.8045);
-        // Scale to fit exactly — no clipping, no scroll
-        const scale = Math.min(targetPitchW / actualW, (availH - 20) / actualH);
-        const scaledW = Math.round(actualW * scale);
-        const scaledH = Math.round(actualH * scale);
+        // Dots extend ~14px outside each edge: visual total = actualW+28, actualH+28
+        const visualW = actualW + 28;
+        const visualH = actualH + 28;
+        const scale = Math.min((screenW - 38) / visualW, (availH - 20) / visualH);
+        const scaledW = Math.round(visualW * scale);
+        const scaledH = Math.round(visualH * scale);
         const container = document.createElement('div');
-        container.style.cssText = `width:${scaledW}px;height:${scaledH}px;margin:4px auto 0;position:relative;flex-shrink:0;overflow:visible`;
-        wrapClone.style.cssText = `width:${actualW}px;height:${actualH}px;position:absolute;top:0;left:0;transform:scale(${scale});transform-origin:top left`;
-        container.appendChild(wrapClone);
+        container.style.cssText = `width:${scaledW}px;height:${scaledH}px;margin:4px auto;position:relative;flex-shrink:0;overflow:visible`;
+        const dotOffset = Math.round(14 * scale);
+        wrapClone.style.cssText = `width:${actualW}px;height:${actualH}px;position:absolute;top:${dotOffset}px;left:${dotOffset}px;transform:scale(${scale});transform-origin:top left`;
         container.appendChild(wrapClone);
         wrap.appendChild(container);
       } else if(pitchWrap){
