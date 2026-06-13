@@ -25455,17 +25455,17 @@ function renderMobileShadowView(){
 
       if(svg){
         const wrapClone = pitchWrap.cloneNode(true);
-        const actualW = pitchWrap.offsetWidth || targetW;
-        const actualH = pitchWrap.offsetHeight || Math.round(targetW * 1.5);
-        // Scale to fit width exactly (targetW), but never exceed availH
-        const scaleByW = targetW / Math.max(1, actualW);
-        const scaleByH = (availH - 20) / Math.max(1, actualH);
-        const scale = Math.min(scaleByW, scaleByH);
+        const actualW = pitchWrap.scrollWidth || pitchWrap.offsetWidth || targetW;
+        const actualH = pitchWrap.scrollHeight || pitchWrap.offsetHeight || Math.round(targetW * 1.5);
+        // Scale so the full content (including dots) fits within targetW and availH
+        const scale = Math.min(targetW / Math.max(1, actualW), (availH - 20) / Math.max(1, actualH));
         const scaledW = Math.round(actualW * scale);
         const scaledH = Math.round(actualH * scale);
+        // Container matches the scaled size exactly
         const container = document.createElement('div');
-        container.style.cssText = `width:${scaledW}px;height:${scaledH}px;overflow:visible;margin:8px auto;position:relative;border-radius:6px`;
-        wrapClone.style.cssText = `width:${actualW}px;height:${actualH}px;position:absolute;top:0;left:0;transform:scale(${scale});transform-origin:top left`;
+        container.style.cssText = `width:${scaledW}px;height:${scaledH}px;margin:8px auto;position:relative;flex-shrink:0`;
+        // Clone fills container via transform scale from top-left
+        wrapClone.style.cssText = `width:${actualW}px;height:${actualH}px;position:absolute;top:0;left:0;transform:scale(${scale});transform-origin:top left;pointer-events:none`;
         container.appendChild(wrapClone);
         wrap.appendChild(container);
       } else if(pitchWrap){
