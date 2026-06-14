@@ -25546,6 +25546,23 @@ function renderMobileShadowView(){
         wrap.appendChild(clone);
       }
 
+      // TEMP DEBUG — remove after diagnosing auto-fill
+      try{
+        const dbg=document.createElement('div');
+        dbg.style.cssText='padding:6px 12px;font-family:monospace;font-size:9px;color:rgba(255,200,0,.8);background:#1a1006;border-radius:4px;margin:4px auto;max-width:calc(100% - 24px);word-break:break-all';
+        const tCur=(typeof shCurrentTab!=='undefined')?shCurrentTab:'(undef)';
+        const pLen=(typeof PLAYERS!=='undefined' && PLAYERS)?PLAYERS.length:'(undef)';
+        const wpLen=(window.PLAYERS)?window.PLAYERS.length:'(undef)';
+        const td=(typeof shData!=='undefined' && shData)?JSON.stringify(shData[tCur]).slice(0,200):'(shData undef)';
+        dbg.textContent='DBG tab='+tCur+' PLAYERS='+pLen+' win.PLAYERS='+wpLen+' tabData='+td;
+        wrap.appendChild(dbg);
+      }catch(e){
+        const dbg=document.createElement('div');
+        dbg.style.cssText='padding:6px 12px;font-family:monospace;font-size:9px;color:#ff6666';
+        dbg.textContent='DBG ERROR: '+e.message;
+        wrap.appendChild(dbg);
+      }
+
       const shadowTeam=window.shadowTeam||[];
       if(shadowTeam.length){
         const list=document.createElement('div');
