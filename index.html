@@ -25536,7 +25536,7 @@ function renderMobileShadowView(){
                   : pool;
                 const rnkSorted = rankPool.slice().sort(function(a,b){return activeTIfn(b)-activeTIfn(a);});
 
-                const CARD_H = 26, GAP = 2;
+                const CARD_H = 36, GAP = 2;
 
                 players.forEach(function(pname, i){
                   const p = pool.find(function(x){return x.name===pname;}) || {};
