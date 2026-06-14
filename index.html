@@ -24967,6 +24967,26 @@ function mobGoToView(view){
 }
 
 // ── Mobile Rankings view ─────────────────────────────────────────────────────
+window.mobRkToggle = function(id){
+  document.querySelectorAll('[id$="-list"]').forEach(l=>{ if(l.id!==id+'-list') l.style.display='none'; });
+  const dd=document.getElementById(id);
+  const list=document.getElementById(id+'-list');
+  if(!list||!dd) return;
+  const btn=dd.firstElementChild;
+  const rect=btn.getBoundingClientRect();
+  list.style.top=(rect.bottom+4)+'px';
+  if(id==='mob-f-metric'){
+    list.style.left='auto';
+    list.style.right=(window.innerWidth-rect.right)+'px';
+  } else {
+    list.style.left=rect.left+'px';
+    list.style.right='auto';
+  }
+  list.style.minWidth=Math.max(80,rect.width)+'px';
+  list.style.display=list.style.display==='block'?'none':'block';
+  setTimeout(()=>{ document.addEventListener('click',function h(e){ if(!e.target.closest('#'+id)){ list.style.display='none'; document.removeEventListener('click',h); }},true); },50);
+};
+
 function renderMobileTable(){
   const content = document.getElementById('mob-elite-content');
   const filterBar = document.getElementById('mob-filter-bar');
@@ -25003,27 +25023,6 @@ function renderMobileTable(){
       </div>
     </div>`;
   }
-  window.mobRkToggle = function(id){
-    document.querySelectorAll('[id$="-list"]').forEach(l=>{ if(l.id!==id+'-list') l.style.display='none'; });
-    const dd=document.getElementById(id);
-    const list=document.getElementById(id+'-list');
-    if(!list) return;
-    const btn=dd.firstElementChild;
-    const rect=btn.getBoundingClientRect();
-    list.style.top=(rect.bottom+4)+'px';
-    // Metric dropdown opens right-aligned to avoid overflow
-    if(id==='mob-f-metric'){
-      list.style.left='auto';
-      list.style.right=(window.innerWidth-rect.right)+'px';
-    } else {
-      list.style.left=rect.left+'px';
-      list.style.right='auto';
-    }
-    list.style.minWidth=Math.max(80,rect.width)+'px';
-    list.style.display=list.style.display==='block'?'none':'block';
-    // Close on outside click
-    setTimeout(()=>{ document.addEventListener('click',function h(e){ if(!e.target.closest('#'+id)){ list.style.display='none'; document.removeEventListener('click',h); }},true); },50);
-  };
   window.mobRkSelect = function(id, val, lbl){
     const dd=document.getElementById(id);
     if(dd) dd.dataset.val=val;
@@ -25136,12 +25135,12 @@ function renderMobileTable(){
           +'</div>'
         +'</div>'
         // club + league
-        +'<div style="display:flex;flex-direction:column;justify-content:center;align-items:flex-end;max-width:68px;flex-shrink:1;padding:11px 4px 11px 0;margin-right:6px;margin-left:4px;gap:4px">'
+        +'<div style="display:flex;flex-direction:column;justify-content:center;align-items:flex-end;max-width:68px;flex-shrink:1;padding:11px 4px 11px 0;margin-right:6px;gap:4px">'
           +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11.5px;font-weight:700;color:rgba(255,255,255,.42);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.team||'—')+'</div>'
           +'<div style="font-family:\'Barlow\',sans-serif;font-size:9px;color:rgba(0,212,255,.65);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px">'+(p.league||'')+'</div>'
         +'</div>'
         // TAL PHY TRA + optional 4th
-        +'<div style="display:flex;gap:2px;flex-shrink:0;align-items:stretch;padding:11px 10px 11px 0;margin-left:4px">'
+        +'<div style="display:flex;gap:2px;flex-shrink:0;align-items:stretch;padding:11px 6px 11px 0">'
           +'<div style="'+CW+'"><div style="'+VS+';color:'+tiC(ti)+'">'+ti+'</div><div style="'+LB+'">TAL</div></div>'
           +'<div style="'+CW+'"><div style="'+VS+';color:'+tiC(ph)+'">'+ph+'</div><div style="'+LB+'">PHY</div></div>'
           +'<div style="'+CW+';border-left:1px solid rgba(255,255,255,.07);padding-left:4px"><div style="'+VS+';color:'+tiC(tr)+'">'+tr+'</div><div style="'+LB+'">TRA</div></div>'
@@ -25403,10 +25402,34 @@ function renderMobileShadowView(){
     var curFm=(document.getElementById('sh-formation')||{}).value||'3-4-3';
     var lgOptsArr=[['all','Liga: Todas']].concat([...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))].sort().map(function(l){return [l,'Liga: '+l];}));
 
+    window.mobShMktInput = function(v){
+      var lbl=document.getElementById('mob-sh-mkt-lbl');
+      if(lbl) lbl.textContent = v ? ('Valor \u2264'+v+'M\u20ac') : 'Market Value';
+      var s=document.getElementById('sh-mkt-max');
+      if(s) s.value=v;
+      if(typeof shResetAndRender==='function') shResetAndRender();
+    };
+
+    var curMkt=(document.getElementById('sh-mkt-max')||{}).value||'';
+    var mktDD='<div class="sim-dd" id="mob-sh-mkt" style="position:relative;flex-shrink:0">'
+      +'<div onclick="mobRkToggle(\'mob-sh-mkt\')" style="display:flex;align-items:center;gap:4px;height:28px;padding:0 8px;background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:5px;cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;color:#e8edf2;white-space:nowrap;box-sizing:border-box">'
+        +'<span id="mob-sh-mkt-lbl">'+(curMkt?('Valor \u2264'+curMkt+'M\u20ac'):'Market Value')+'</span>'
+        +'<span style="font-size:8px;opacity:.55;flex-shrink:0">\u25be</span>'
+      +'</div>'
+      +'<div id="mob-sh-mkt-list" style="display:none;position:fixed;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.85);padding:8px;min-width:140px">'
+        +'<div style="display:flex;align-items:center;gap:6px">'
+          +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;color:rgba(255,255,255,.5)">\u2264</span>'
+          +'<input type="number" placeholder="\u221e" value="'+curMkt+'" style="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:4px;padding:4px 6px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;width:60px" oninput="mobShMktInput(this.value)">'
+          +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;color:rgba(255,255,255,.5)">M\u20ac</span>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+
     filterBar.innerHTML=`
       <div style="display:flex;align-items:center;gap:6px;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch">
       ${mkDDsh('mob-sh-fm', fmOpts, curFm)}
       ${mkDDsh('mob-sh-lg', lgOptsArr, 'all')}
+      ${mktDD}
       <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this)" style="${btnStyle};cursor:pointer">My Shadow</button>
       <button onclick="if(typeof shSelectTab==='function')shSelectTab('overall',this)" style="${btnStyle};cursor:pointer">Best</button>
       <button onclick="if(typeof shSelectTab==='function')shSelectTab('contract',this)" style="${btnStyle};cursor:pointer">Contract</button>
