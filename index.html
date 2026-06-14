@@ -25425,15 +25425,30 @@ function renderMobileShadowView(){
       +'</div>'
     +'</div>';
 
+    var aiActive = (typeof ligaAdjustActive!=='undefined') && ligaAdjustActive;
+    var aiBtn='<button id="mob-sh-ai" onclick="toggleLigaAdjust();if(typeof shResetAndRender===\'function\')shResetAndRender();renderMobileShadowView();" title="Liga Adjust" style="flex-shrink:0;height:28px;padding:0 8px;background:'+(aiActive?'rgba(0,230,140,.18)':'rgba(0,230,140,.06)')+';border:1px solid '+(aiActive?'rgba(0,230,140,.7)':'rgba(0,230,140,.3)')+';border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-sizing:border-box">'
+      +'<svg viewBox="0 0 28 22" width="18" height="14" style="display:block;overflow:visible">'
+        +'<defs><linearGradient id="spkGradMob" x1="0%" y1="100%" x2="100%" y2="0%">'
+          +'<stop offset="0%" style="stop-color:#00e68c"/>'
+          +'<stop offset="50%" style="stop-color:#00ffaa"/>'
+          +'<stop offset="100%" style="stop-color:#34d399"/>'
+        +'</linearGradient></defs>'
+        +'<path d="M10 1 L11.5 7 L18 8.5 L11.5 10 L10 16 L8.5 10 L2 8.5 L8.5 7 Z" fill="url(#spkGradMob)"/>'
+        +'<path d="M22 0 L23 3.5 L26.5 4.5 L23 5.5 L22 9 L21 5.5 L17.5 4.5 L21 3.5 Z" fill="url(#spkGradMob)" opacity="0.85"/>'
+        +'<path d="M23 13 L23.8 15.5 L26.5 16 L23.8 16.5 L23 19 L22.2 16.5 L19.5 16 L22.2 15.5 Z" fill="url(#spkGradMob)" opacity="0.7"/>'
+      +'</svg>'
+    +'</button>';
+
     filterBar.innerHTML=`
       <div style="display:flex;align-items:center;gap:6px;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch">
       ${mkDDsh('mob-sh-fm', fmOpts, curFm)}
       ${mkDDsh('mob-sh-lg', lgOptsArr, 'all')}
       ${mktDD}
-      <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this)" style="${btnStyle};cursor:pointer">My Shadow <span style="font-size:8px;opacity:.55">\u25be</span></button>
-      <button onclick="if(typeof shSelectTab==='function')shSelectTab('overall',this)" style="${btnStyle};cursor:pointer">Best <span style="font-size:8px;opacity:.55">\u25be</span></button>
-      <button onclick="if(typeof shSelectTab==='function')shSelectTab('contract',this)" style="${btnStyle};cursor:pointer">Contract <span style="font-size:8px;opacity:.55">\u25be</span></button>
-      <button onclick="if(typeof shSelectTab==='function')shSelectTab('u23',this)" style="${btnStyle};cursor:pointer">U23 <span style="font-size:8px;opacity:.55">\u25be</span></button>
+      ${aiBtn}
+      <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this)" style="${btnStyle};cursor:pointer">My Shadow</button>
+      <button onclick="if(typeof shSelectTab==='function')shSelectTab('overall',this)" style="${btnStyle};cursor:pointer">Best</button>
+      <button onclick="if(typeof shSelectTab==='function')shSelectTab('contract',this)" style="${btnStyle};cursor:pointer">Contract</button>
+      <button onclick="if(typeof shSelectTab==='function')shSelectTab('u23',this)" style="${btnStyle};cursor:pointer">U23</button>
       </div>`;
   }
 
