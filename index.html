@@ -25527,26 +25527,64 @@ function renderMobileShadowView(){
               dot.innerHTML = '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:8px;font-weight:700;color:#fff;text-align:center;letter-spacing:.3px;max-width:30px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">'+label+'</span>';
               imgWrap.appendChild(dot);
 
-              // Black player card below the position dot
+              // Black player card above the position dot — desktop sh-pcard scheme
               if(hasPl){
                 const pname = players[cur]||players[0];
                 const pool = (typeof PLAYERS!=='undefined' && PLAYERS && PLAYERS.length) ? PLAYERS : (window.PLAYERS||[]);
                 const p = pool.find(function(x){return x.name===pname;}) || {};
-                const lastName = pname.split(' ').slice(-1)[0] || pname;
+                const isGK = slot.tag==='GK';
+
+                // Rank within current league filter (same logic as desktop)
+                const activeTIfn = (typeof activeTI==='function') ? activeTI : function(x){return x.talent_index||0;};
+                const rankPool = (typeof shSelectedLeagues!=='undefined' && shSelectedLeagues.size>0)
+                  ? pool.filter(function(x){return shSelectedLeagues.has(x.league);})
+                  : pool;
+                const rnkSorted = rankPool.slice().sort(function(a,b){return activeTIfn(b)-activeTIfn(a);});
+                const rnk = rnkSorted.findIndex(function(x){return x.name===pname;})+1;
+                const rnkTxt = rnk===1?'#1st':rnk===2?'#2nd':rnk===3?'#3rd':(rnk>0?'#'+rnk+'th':'');
+
+                // 2nd role badge
+                const posParts = (p.position||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
+                const role2 = posParts[1]||'';
+
+                // Foot abbreviation
+                const footTxt = p.foot ? (/^d/i.test(p.foot)?'D':'E') : '';
+
+                // Contract colour
                 const ctYear = p.contract_end ? parseInt(p.contract_end.slice(0,4)) : null;
-                const ctCol = ctYear && ctYear<=2026 ? '#ff4757' : ctYear===2027 ? '#f59e0b' : 'rgba(180,200,220,.55)';
+                const ctCol = ctYear && ctYear<=2026 ? '#ff4757' : ctYear===2027 ? '#f59e0b' : 'rgba(180,200,220,.5)';
                 const ctTxt = p.contract_end ? p.contract_end.slice(0,7) : '\u2014';
-                const pg = p.position_group || '';
+                const ctExpiring = ctYear && ctYear<=2026;
+
+                const ti = p.talent_index!=null ? p.talent_index.toFixed(1) : '\u2014';
+                const phy = p.total_physical!=null ? p.total_physical.toFixed(1) : '\u2014';
+
+                const cardBg = isGK ? 'rgba(30,50,80,0.94)' : 'rgba(2,12,26,0.92)';
+                const cardBorder = ctExpiring ? 'rgba(255,71,87,.8)' : (isGK ? 'rgba(160,200,255,0.7)' : 'rgba(0,200,255,0.45)');
+                const cardShadow = ctExpiring ? '0 0 8px rgba(255,71,87,.35)' : (isGK ? '0 0 10px rgba(120,180,255,0.3)' : 'none');
+
                 const card = document.createElement('div');
-                card.style.cssText = 'position:absolute;left:'+pos.x+'%;top:calc('+topPct+'% + 20px);transform:translateX(-50%);width:62px;background:#000;border:1px solid rgba(0,212,255,.4);border-radius:4px;padding:2px 3px;z-index:11;'+(players.length>1?'cursor:pointer;':'');
+                card.style.cssText = 'position:absolute;left:'+pos.x+'%;top:calc('+topPct+'% - 4px);transform:translate(-50%,-100%);width:84px;background:'+cardBg+';border:1px solid '+cardBorder+';border-radius:4px;padding:3px 4px;z-index:11;box-shadow:'+cardShadow+';'+(players.length>1?'cursor:pointer;':'');
+
                 card.innerHTML =
-                  '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:8px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center">'+lastName+'</div>'
-                  +'<div style="display:flex;align-items:center;justify-content:center;gap:2px;margin-top:1px">'
-                    +(pg?'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:6px;font-weight:700;color:rgba(0,210,255,.9);background:rgba(0,200,255,.1);border-radius:2px;padding:0 2px">'+pg+'</span>':'')
-                    +(p.age?'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:6px;color:rgba(255,255,255,.5)">'+p.age+'y</span>':'')
+                  // Row 1: Name + rank badge + 2nd role badge
+                  '<div style="display:flex;align-items:center;gap:3px;min-width:0">'
+                    +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:700;color:#e0f8ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0">'+pname+'</div>'
+                    +(rnkTxt?'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:800;color:#f59e0b;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);border-radius:3px;padding:0 3px;flex-shrink:0;white-space:nowrap">'+rnkTxt+'</span>':'')
+                    +(role2?'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;color:rgba(0,210,255,.85);background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.3);border-radius:3px;padding:0 3px;flex-shrink:0;white-space:nowrap">'+role2+'</span>':'')
                   +'</div>'
-                  +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:6px;color:'+ctCol+';text-align:center;margin-top:1px">'+ctTxt+'</div>'
+                  // Row 2: age + height + foot + contract
+                  +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px">'
+                    +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:7px;color:rgba(180,200,220,.6);white-space:nowrap">'+(p.age?p.age+'y':'')+(p.size?' \u00b7 '+p.size+'cm':'')+(footTxt?' \u00b7 '+footTxt:'')+'</span>'
+                    +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:7px;color:'+ctCol+';white-space:nowrap">'+ctTxt+'</span>'
+                  +'</div>'
+                  // Row 3: talent index + physical index
+                  +'<div style="display:flex;align-items:center;gap:6px;margin-top:1px">'
+                    +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:7px;color:#6b7d8e;flex:1;white-space:nowrap">TI <b style="color:#cde8ff">'+ti+'</b></div>'
+                    +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:7px;color:#6b7d8e;flex:1;white-space:nowrap">PHY <b style="color:#cde8ff">'+phy+'</b></div>'
+                  +'</div>'
                   +(players.length>1?'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:6px;color:rgba(0,212,255,.6);text-align:center;margin-top:1px">'+(cur+1)+'/'+players.length+'</div>':'');
+
                 if(players.length>1){
                   card.onclick = function(){
                     slotData.cur = (cur+1) % players.length;
