@@ -25385,6 +25385,128 @@ function renderMobileShadowView(){
       return m[1].slice(0,3).toUpperCase()+m[2];
     }
 
+    // ── Manual squad builder (My Shadow): + adds a player via Position -> League -> Player
+    window.mobShCloseOverlay = function(){
+      var ov=document.getElementById('mob-sh-add-overlay');
+      if(ov) ov.remove();
+    };
+
+    function mobShOverlayShell(title){
+      mobShCloseOverlay();
+      var overlay=document.createElement('div');
+      overlay.id='mob-sh-add-overlay';
+      overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:flex;align-items:flex-end;justify-content:center';
+      overlay.onclick=function(e){ if(e.target===overlay) mobShCloseOverlay(); };
+      var panel=document.createElement('div');
+      panel.style.cssText='width:100%;max-height:80vh;overflow-y:auto;background:#0a1420;border-top:1px solid rgba(0,212,255,.3);border-radius:12px 12px 0 0;padding:14px;box-sizing:border-box';
+      overlay.appendChild(panel);
+      var h=document.createElement('div');
+      h.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:10px';
+      var t=document.createElement('div');
+      t.style.cssText='font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;color:#fff';
+      t.textContent=title;
+      var x=document.createElement('button');
+      x.style.cssText='background:none;border:none;color:rgba(255,255,255,.5);font-size:18px;cursor:pointer;padding:0 6px;line-height:1';
+      x.textContent='\u2715';
+      x.onclick=window.mobShCloseOverlay;
+      h.appendChild(t); h.appendChild(x);
+      panel.appendChild(h);
+      document.body.appendChild(overlay);
+      return panel;
+    }
+
+    window.mobShOpenAddOverlay = function(){
+      const formation = SH_FORMATIONS[shGetFormation ? shGetFormation() : '3-4-3'] || SH_FORMATIONS['3-4-3'];
+      const panel = mobShOverlayShell('Escolher posi\u00e7\u00e3o');
+      const grid=document.createElement('div');
+      grid.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:8px';
+      formation.slots.forEach(function(slot){
+        const slotData=(shData.my||{})[slot.id];
+        const occ=slotData && slotData.players && slotData.players[0];
+        const btn=document.createElement('button');
+        btn.style.cssText='background:#0d1e35;border:1px solid rgba(0,212,255,.25);border-radius:6px;padding:8px 4px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:center';
+        btn.innerHTML='<div>'+slot.label+'</div>'+(occ?'<div style="font-size:8px;color:rgba(0,212,255,.6);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+occ+'</div>':'<div style="font-size:8px;color:rgba(255,255,255,.3);margin-top:2px">vazio</div>');
+        btn.onclick=function(){ mobShPickPosition(slot); };
+        grid.appendChild(btn);
+      });
+      panel.appendChild(grid);
+    };
+
+    function mobShPickPosition(slot){
+      const pool=(typeof PLAYERS!=='undefined' && PLAYERS && PLAYERS.length)?PLAYERS:(window.PLAYERS||[]);
+      const leagues=[...new Set(pool.filter(function(p){return shPlayerMatchesSlot(p,slot);}).map(function(p){return p.league;}).filter(Boolean))].sort();
+      const panel=mobShOverlayShell('Liga \u2014 '+slot.label);
+      const list=document.createElement('div');
+      list.style.cssText='display:flex;flex-direction:column;gap:6px';
+      function lgBtn(label, val){
+        const b=document.createElement('button');
+        b.style.cssText='background:#0d1e35;border:1px solid rgba(0,212,255,.25);border-radius:6px;padding:8px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left';
+        b.textContent=label;
+        b.onclick=function(){ mobShPickLeague(slot, val); };
+        return b;
+      }
+      list.appendChild(lgBtn('Todas as ligas','all'));
+      leagues.forEach(function(lg){ list.appendChild(lgBtn(lgShortLabel(lg)+' \u2014 '+lg, lg)); });
+      panel.appendChild(list);
+    }
+
+    function mobShPickLeague(slot, league){
+      const pool=(typeof PLAYERS!=='undefined' && PLAYERS && PLAYERS.length)?PLAYERS:(window.PLAYERS||[]);
+      const activeTIfn=(typeof activeTI==='function')?activeTI:function(x){return x.talent_index||0;};
+      const eligible=pool.filter(function(p){
+        return shPlayerMatchesSlot(p,slot) && (league==='all' || p.league===league);
+      }).slice().sort(function(a,b){return activeTIfn(b)-activeTIfn(a);});
+
+      const panel=mobShOverlayShell('Jogador \u2014 '+slot.label);
+      const search=document.createElement('input');
+      search.type='text';
+      search.placeholder='Pesquisar jogador...';
+      search.style.cssText='width:100%;box-sizing:border-box;background:#0d1e35;border:1px solid rgba(0,212,255,.25);border-radius:6px;padding:8px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;margin-bottom:8px';
+      panel.appendChild(search);
+
+      const listWrap=document.createElement('div');
+      listWrap.style.cssText='display:flex;flex-direction:column;gap:4px';
+      panel.appendChild(listWrap);
+
+      function renderList(filterText){
+        listWrap.innerHTML='';
+        const ft=(filterText||'').toLowerCase();
+        const filtered=ft?eligible.filter(function(p){return p.name.toLowerCase().includes(ft);}):eligible;
+        if(filtered.length===0){
+          const empty=document.createElement('div');
+          empty.style.cssText='color:rgba(255,255,255,.4);font-family:\'Barlow Condensed\',sans-serif;font-size:12px;text-align:center;padding:12px';
+          empty.textContent='Nenhum jogador encontrado';
+          listWrap.appendChild(empty);
+          return;
+        }
+        filtered.slice(0,60).forEach(function(p){
+          const ti=p.talent_index_pct!=null?Math.round(p.talent_index_pct):'\u2014';
+          const row=document.createElement('button');
+          row.style.cssText='display:flex;align-items:center;gap:8px;background:#0d1e35;border:1px solid rgba(0,212,255,.15);border-radius:6px;padding:8px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;cursor:pointer;text-align:left;width:100%;box-sizing:border-box';
+          row.innerHTML='<span style="font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">'+p.name+'</span>'
+            +'<span style="font-size:10px;color:rgba(0,229,160,.75);white-space:nowrap;flex-shrink:0">'+(p.team||'')+'</span>'
+            +'<span style="font-size:10px;color:#6b7d8e;white-space:nowrap;flex-shrink:0">TAL <b style="color:#cde8ff">'+ti+'</b></span>';
+          row.onclick=function(){ mobShAssignPlayer(slot.id, p.name); };
+          listWrap.appendChild(row);
+        });
+      }
+      search.oninput=function(){ renderList(this.value); };
+      renderList('');
+      setTimeout(function(){ search.focus(); }, 150);
+    }
+
+    window.mobShAssignPlayer=function(slotId, name){
+      mobShCloseOverlay();
+      shData.my=shData.my||{};
+      shData.my[slotId]={players:[name], cur:0, _manual:true};
+      renderMobileShadowView();
+    };
+
+    window.mobShToggleRemoveMode=function(){
+      window._mobShRemoveMode=!window._mobShRemoveMode;
+      renderMobileShadowView();
+    };
+
     window.mobShDDSelect = function(id, val, lbl){
       var dd=document.getElementById(id);
       if(dd) dd.dataset.val=val;
@@ -25594,19 +25716,30 @@ function renderMobileShadowView(){
 
                   imgWrap.appendChild(card);
 
-                  const nameEl = card.querySelector('.mob-sh-pname');
-                  if(nameEl){
-                    nameEl.onclick = function(e){
+                  const removeMode = !!window._mobShRemoveMode && curTab==='my';
+                  if(removeMode){
+                    card.style.border='2px solid #ff4757';
+                    card.style.cursor='pointer';
+                    card.onclick=function(e){
                       e.stopPropagation();
-                      const n=this.getAttribute('data-pname');
-                      const pool2 = (typeof PLAYERS!=='undefined' && PLAYERS && PLAYERS.length) ? PLAYERS : (window.PLAYERS||[]);
-                      const pl = pool2.find(function(x){return x.name===n;});
-                      if(pl){
-                        window.selectedPlayer = pl;
-                        try{ if(typeof selectedPlayer!=='undefined') selectedPlayer = pl; }catch(_e){}
-                        if(typeof renderMobileElite==='function') renderMobileElite();
-                      }
+                      shData.my[slot.id]={players:[], cur:0};
+                      renderMobileShadowView();
                     };
+                  } else {
+                    const nameEl = card.querySelector('.mob-sh-pname');
+                    if(nameEl){
+                      nameEl.onclick = function(e){
+                        e.stopPropagation();
+                        const n=this.getAttribute('data-pname');
+                        const pool2 = (typeof PLAYERS!=='undefined' && PLAYERS && PLAYERS.length) ? PLAYERS : (window.PLAYERS||[]);
+                        const pl = pool2.find(function(x){return x.name===n;});
+                        if(pl){
+                          window.selectedPlayer = pl;
+                          try{ if(typeof selectedPlayer!=='undefined') selectedPlayer = pl; }catch(_e){}
+                          if(typeof renderMobileElite==='function') renderMobileElite();
+                        }
+                      };
+                    }
                   }
                 });
               }
@@ -25623,6 +25756,30 @@ function renderMobileShadowView(){
         const clone=pitchWrap.cloneNode(true);
         clone.style.cssText='width:'+pitchW+'px;height:'+pitchH+'px;display:block;margin:8px auto;position:relative;overflow:visible';
         wrap.appendChild(clone);
+      }
+
+      // My Shadow manual squad controls: + (add player) / − (remove mode toggle)
+      if(curTab==='my'){
+        const addRow=document.createElement('div');
+        addRow.style.cssText='display:flex;justify-content:center;align-items:center;gap:18px;margin:8px 0 4px';
+        const plusBtn=document.createElement('button');
+        plusBtn.textContent='+';
+        plusBtn.style.cssText='width:38px;height:38px;border-radius:50%;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.5);color:#00e5a0;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1';
+        plusBtn.onclick=function(){ if(typeof mobShOpenAddOverlay==='function') mobShOpenAddOverlay(); };
+        const removeActive=!!window._mobShRemoveMode;
+        const minusBtn=document.createElement('button');
+        minusBtn.textContent='\u2212';
+        minusBtn.style.cssText='width:38px;height:38px;border-radius:50%;background:'+(removeActive?'rgba(255,71,87,.22)':'rgba(255,71,87,.08)')+';border:1px solid '+(removeActive?'rgba(255,71,87,.85)':'rgba(255,71,87,.35)')+';color:#ff4757;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1';
+        minusBtn.onclick=function(){ if(typeof mobShToggleRemoveMode==='function') mobShToggleRemoveMode(); };
+        addRow.appendChild(plusBtn);
+        addRow.appendChild(minusBtn);
+        wrap.appendChild(addRow);
+        if(removeActive){
+          const hint=document.createElement('div');
+          hint.style.cssText='text-align:center;font-family:\'Barlow Condensed\',sans-serif;font-size:9px;color:rgba(255,71,87,.8);margin-bottom:4px';
+          hint.textContent='Toca num jogador para o remover \u00b7 toca em \u2212 para sair';
+          wrap.appendChild(hint);
+        }
       }
 
       // Legend — card border colour meanings (horizontal, fixed near screen bottom)
