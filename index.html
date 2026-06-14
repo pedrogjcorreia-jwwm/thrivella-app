@@ -25357,13 +25357,6 @@ function renderMobileShadowView(){
   const filterBar = document.getElementById('mob-filter-bar');
   if(!content) return;
 
-  // Initialize shadow data once, default to "Best" (auto-filled) tab
-  if(typeof shInit==='function' && !window._mobShInited){
-    shInit();
-    window._mobShInited = true;
-    if(typeof shCurrentTab!=='undefined' && shCurrentTab==='my') shCurrentTab='overall';
-  }
-
   // Filter bar: formation selector + tabs
   if(filterBar){
     filterBar.style.overflow='auto';
