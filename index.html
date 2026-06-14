@@ -25367,10 +25367,10 @@ function renderMobileShadowView(){
       <div style="display:flex;align-items:center;gap:6px;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch">
       <select onchange="document.getElementById('sh-formation').value=this.value;if(typeof shResetAndRender==='function')shResetAndRender()"
         style="${selStyle}">
-        <option value="3-4-3">Tactic: 3-4-3</option>
-        <option value="4-3-3">Tactic: 4-3-3</option>
-        <option value="4-4-2">Tactic: 4-4-2</option>
-        <option value="3-5-2">Tactic: 3-5-2</option>
+        <option value="3-4-3">3-4-3</option>
+        <option value="4-3-3">4-3-3</option>
+        <option value="4-4-2">4-4-2</option>
+        <option value="3-5-2">3-5-2</option>
       </select>
       <select id="mob-sh-lg" style="${selStyle};max-width:130px" onchange="if(typeof shSetLeague==='function')shSetLeague(this.value);else if(typeof shResetAndRender==='function')shResetAndRender()"></select>
       <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this)" style="${selStyle};cursor:pointer">My Shadow</button>
