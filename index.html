@@ -25136,12 +25136,12 @@ function renderMobileTable(){
           +'</div>'
         +'</div>'
         // club + league
-        +'<div style="display:flex;flex-direction:column;justify-content:center;align-items:flex-end;max-width:68px;flex-shrink:1;padding:11px 4px 11px 0;margin-right:6px;gap:4px">'
+        +'<div style="display:flex;flex-direction:column;justify-content:center;align-items:flex-end;max-width:68px;flex-shrink:1;padding:11px 4px 11px 0;margin-right:6px;margin-left:4px;gap:4px">'
           +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11.5px;font-weight:700;color:rgba(255,255,255,.42);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.team||'—')+'</div>'
           +'<div style="font-family:\'Barlow\',sans-serif;font-size:9px;color:rgba(0,212,255,.65);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px">'+(p.league||'')+'</div>'
         +'</div>'
         // TAL PHY TRA + optional 4th
-        +'<div style="display:flex;gap:2px;flex-shrink:0;align-items:stretch;padding:11px 10px 11px 0">'
+        +'<div style="display:flex;gap:2px;flex-shrink:0;align-items:stretch;padding:11px 10px 11px 0;margin-left:4px">'
           +'<div style="'+CW+'"><div style="'+VS+';color:'+tiC(ti)+'">'+ti+'</div><div style="'+LB+'">TAL</div></div>'
           +'<div style="'+CW+'"><div style="'+VS+';color:'+tiC(ph)+'">'+ph+'</div><div style="'+LB+'">PHY</div></div>'
           +'<div style="'+CW+';border-left:1px solid rgba(255,255,255,.07);padding-left:4px"><div style="'+VS+';color:'+tiC(tr)+'">'+tr+'</div><div style="'+LB+'">TRA</div></div>'
@@ -25363,23 +25363,55 @@ function renderMobileShadowView(){
     filterBar.style.overflow='auto';
     var selStyle="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:5px;padding:0 8px;height:28px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap;box-sizing:border-box";
     var btnStyle="background:#0a1420;border:1px solid rgba(139,92,246,.6);border-radius:5px;padding:0 8px;height:28px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap;box-sizing:border-box";
-    var lgOpts='<option value="all">Liga: Todas</option>'+[...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))].sort().map(function(l){return '<option value="'+l+'">Liga: '+l+'</option>';}).join('');
+
+    function mkDDsh(id, opts, selectedVal){
+      var selLabel = '';
+      for(var i=0;i<opts.length;i++){ if(opts[i][0]===selectedVal){ selLabel=opts[i][1]; break; } }
+      if(!selLabel && opts[0]) selLabel=opts[0][1];
+      var items = opts.map(function(o){
+        var v=o[0], l=o[1];
+        return '<div class="sim-dd-opt" data-id="'+id+'" data-val="'+v+'" onclick="mobShDDSelect(\''+id+'\',\''+v+'\',\''+l.replace(/'/g,"\\'")+'\')" style="padding:6px 10px;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;color:rgba(200,225,255,.85);cursor:pointer;white-space:nowrap" onmouseover="this.style.background=\'rgba(0,180,255,.12)\'" onmouseout="this.style.background=\'\'">'+l+'</div>';
+      }).join('');
+      return '<div class="sim-dd" id="'+id+'" data-val="'+selectedVal+'" style="position:relative;flex-shrink:0">'
+        +'<div onclick="mobRkToggle(\''+id+'\')" style="display:flex;align-items:center;gap:4px;height:28px;padding:0 8px;background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:5px;cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;color:#e8edf2;white-space:nowrap;box-sizing:border-box">'
+          +'<span id="'+id+'-lbl" style="overflow:hidden;text-overflow:ellipsis;max-width:90px">'+selLabel+'</span>'
+          +'<span style="font-size:8px;opacity:.55;flex-shrink:0">\u25be</span>'
+        +'</div>'
+        +'<div id="'+id+'-list" style="display:none;position:fixed;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.85);max-height:200px;overflow-y:auto;min-width:80px">'+items+'</div>'
+      +'</div>';
+    }
+
+    window.mobShDDSelect = function(id, val, lbl){
+      var dd=document.getElementById(id);
+      if(dd) dd.dataset.val=val;
+      var l=document.getElementById(id+'-lbl');
+      if(l) l.textContent=lbl;
+      var list=document.getElementById(id+'-list');
+      if(list) list.style.display='none';
+      if(id==='mob-sh-fm'){
+        var s=document.getElementById('sh-formation');
+        if(s) s.value=val;
+        if(typeof shResetAndRender==='function') shResetAndRender();
+        renderMobileShadowView();
+      } else if(id==='mob-sh-lg'){
+        if(typeof shSetLeague==='function') shSetLeague(val);
+        else if(typeof shResetAndRender==='function') shResetAndRender();
+      }
+    };
+
+    var fmOpts=[['3-4-3','3-4-3'],['4-3-3','4-3-3'],['4-4-2','4-4-2'],['3-5-2','3-5-2']];
+    var curFm=(document.getElementById('sh-formation')||{}).value||'3-4-3';
+    var lgOptsArr=[['all','Liga: Todas']].concat([...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))].sort().map(function(l){return [l,'Liga: '+l];}));
+
     filterBar.innerHTML=`
       <div style="display:flex;align-items:center;gap:6px;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch">
-      <select onchange="document.getElementById('sh-formation').value=this.value;if(typeof shResetAndRender==='function')shResetAndRender()"
-        style="${selStyle}">
-        <option value="3-4-3">3-4-3</option>
-        <option value="4-3-3">4-3-3</option>
-        <option value="4-4-2">4-4-2</option>
-        <option value="3-5-2">3-5-2</option>
-      </select>
-      <select id="mob-sh-lg" style="${selStyle};max-width:130px" onchange="if(typeof shSetLeague==='function')shSetLeague(this.value);else if(typeof shResetAndRender==='function')shResetAndRender()"></select>
+      ${mkDDsh('mob-sh-fm', fmOpts, curFm)}
+      ${mkDDsh('mob-sh-lg', lgOptsArr, 'all')}
       <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this)" style="${btnStyle};cursor:pointer">My Shadow</button>
       <button onclick="if(typeof shSelectTab==='function')shSelectTab('overall',this)" style="${btnStyle};cursor:pointer">Best</button>
       <button onclick="if(typeof shSelectTab==='function')shSelectTab('contract',this)" style="${btnStyle};cursor:pointer">Contract</button>
       <button onclick="if(typeof shSelectTab==='function')shSelectTab('u23',this)" style="${btnStyle};cursor:pointer">U23</button>
       </div>`;
-    document.getElementById('mob-sh-lg').innerHTML=lgOpts;
   }
 
   // Use the desktop shadow view directly — show it inside mob content
