@@ -25548,7 +25548,7 @@ function renderMobileShadowView(){
                   const posParts = (p.position||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
                   const role2 = posParts[1]||'';
 
-                  const footTxt = p.foot ? (/^d/i.test(p.foot)?'D':'E') : '';
+                  const footTxt = p.foot ? (/^d/i.test(p.foot)?'R':'L') : '';
 
                   const ctYear = p.contract_end ? parseInt(p.contract_end.slice(0,4)) : null;
                   const ctCol = ctYear && ctYear<=2026 ? '#ff4757' : ctYear===2027 ? '#f59e0b' : 'rgba(180,200,220,.5)';
@@ -25568,7 +25568,7 @@ function renderMobileShadowView(){
                   card.innerHTML =
                     // Row 1: Name + rank badge + 2nd role badge
                     '<div style="display:flex;align-items:center;gap:3px;min-width:0">'
-                      +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:700;color:#e0f8ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0">'+pname+'</div>'
+                      +'<div data-pname="'+pname.replace(/"/g,'&quot;')+'" data-pleague="'+(p.league||'').replace(/"/g,'&quot;')+'" class="mob-sh-pname" style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:700;color:#00d4ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;cursor:pointer">'+pname+'</div>'
                       +(rnkTxt?'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:800;color:#f59e0b;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);border-radius:3px;padding:0 3px;flex-shrink:0;white-space:nowrap">'+rnkTxt+'</span>':'')
                       +(role2?'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:7px;font-weight:700;color:rgba(0,210,255,.85);background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.3);border-radius:3px;padding:0 3px;flex-shrink:0;white-space:nowrap">'+role2+'</span>':'')
                     +'</div>'
@@ -25584,6 +25584,16 @@ function renderMobileShadowView(){
                     +'</div>';
 
                   imgWrap.appendChild(card);
+
+                  const nameEl = card.querySelector('.mob-sh-pname');
+                  if(nameEl){
+                    nameEl.onclick = function(e){
+                      e.stopPropagation();
+                      const n=this.getAttribute('data-pname');
+                      const lg=this.getAttribute('data-pleague');
+                      if(typeof selectPlayer==='function') selectPlayer(n, lg||undefined);
+                    };
+                  }
                 });
               }
             });
@@ -25600,6 +25610,28 @@ function renderMobileShadowView(){
         clone.style.cssText='width:'+pitchW+'px;height:'+pitchH+'px;display:block;margin:8px auto;position:relative;overflow:visible';
         wrap.appendChild(clone);
       }
+
+      // Legend — card border colour meanings
+      const legend=document.createElement('div');
+      legend.style.cssText='display:flex;flex-direction:column;gap:6px;padding:10px 14px;margin:6px 12px;background:rgba(2,12,26,.6);border:1px solid rgba(0,212,255,.12);border-radius:6px';
+      const legendItems=[
+        {color:'rgba(0,200,255,0.45)', label:'Jogador de campo'},
+        {color:'rgba(160,200,255,0.7)', label:'Guarda-redes'},
+        {color:'#ff4757', label:'Contrato a terminar (\u22642026)'}
+      ];
+      legendItems.forEach(function(it){
+        const row=document.createElement('div');
+        row.style.cssText='display:flex;align-items:center;gap:8px';
+        const sw=document.createElement('div');
+        sw.style.cssText='width:18px;height:12px;border-radius:3px;background:rgba(2,12,26,0.92);border:1px solid '+it.color+';flex-shrink:0';
+        const lbl=document.createElement('span');
+        lbl.style.cssText='font-family:\'Barlow Condensed\',sans-serif;font-size:10px;color:rgba(255,255,255,.6)';
+        lbl.textContent=it.label;
+        row.appendChild(sw);
+        row.appendChild(lbl);
+        legend.appendChild(row);
+      });
+      wrap.appendChild(legend);
 
       const shadowTeam=window.shadowTeam||[];
       if(shadowTeam.length){
