@@ -25390,8 +25390,11 @@ function renderMobileShadowView(){
         if(typeof shResetAndRender==='function') shResetAndRender();
         renderMobileShadowView();
       } else if(id==='mob-sh-lg'){
-        if(typeof shSetLeague==='function') shSetLeague(val);
-        else if(typeof shResetAndRender==='function') shResetAndRender();
+        if(typeof shSelectedLeagues!=='undefined'){
+          shSelectedLeagues = (val==='all') ? new Set() : new Set([val]);
+        }
+        if(typeof shResetAndRender==='function') shResetAndRender();
+        renderMobileShadowView();
       }
     };
 
@@ -25405,6 +25408,7 @@ function renderMobileShadowView(){
       var s=document.getElementById('sh-mkt-max');
       if(s) s.value=v;
       if(typeof shResetAndRender==='function') shResetAndRender();
+      renderMobileShadowView();
     };
 
     var curMkt=(document.getElementById('sh-mkt-max')||{}).value||'';
@@ -25416,7 +25420,7 @@ function renderMobileShadowView(){
       +'<div id="mob-sh-mkt-list" style="display:none;position:fixed;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.85);padding:8px;min-width:140px">'
         +'<div style="display:flex;align-items:center;gap:6px">'
           +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;color:rgba(255,255,255,.5)">\u2264</span>'
-          +'<input type="number" placeholder="\u221e" value="'+curMkt+'" style="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:4px;padding:4px 6px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;width:60px" oninput="mobShMktInput(this.value)">'
+          +'<input type="number" placeholder="\u221e" value="'+curMkt+'" style="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:4px;padding:4px 6px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;width:60px" onchange="mobShMktInput(this.value)">'
           +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;color:rgba(255,255,255,.5)">M\u20ac</span>'
         +'</div>'
       +'</div>'
@@ -25513,15 +25517,44 @@ function renderMobileShadowView(){
               const slotData = tabData[slot.id];
               const players = slotData?slotData.players:[];
               const hasPl = players.length>0;
-              const pname = hasPl ? (players[slotData.cur||0]||'') : '';
-              const label = hasPl ? (pname.split(' ').slice(-1)[0] || slot.label) : slot.label;
+              const cur = hasPl ? (slotData.cur||0) : 0;
+              const label = slot.label;
               // Per-slot vertical adjustment in percentage points (before 1.1 scale)
               const yOffsets = {cf:1.8, gk:-6.5, lb:-4.5, cb:-4.5, rb:-4.5, lw2:-2.8, rw2:-2.8, lc:-2.8, rc:-2.8, cm:-2.8, lw:-4.5, rw:-4.5};
               const yAdj = yOffsets[slot.id] !== undefined ? yOffsets[slot.id] : 0;
               const topPct = (pos.y + yAdj) * 1.1;
               dot.style.cssText = 'position:absolute;left:'+pos.x+'%;top:'+topPct+'%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(0,30,60,.85);border:2px solid rgba(0,200,255,.85);display:flex;align-items:center;justify-content:center;z-index:10';
-              dot.innerHTML = '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:'+(hasPl?'7':'8')+'px;font-weight:700;color:#fff;text-align:center;letter-spacing:.3px;max-width:30px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">'+label+'</span>';
+              dot.innerHTML = '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:8px;font-weight:700;color:#fff;text-align:center;letter-spacing:.3px;max-width:30px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">'+label+'</span>';
               imgWrap.appendChild(dot);
+
+              // Black player card below the position dot
+              if(hasPl){
+                const pname = players[cur]||players[0];
+                const pool = (typeof PLAYERS!=='undefined' && PLAYERS && PLAYERS.length) ? PLAYERS : (window.PLAYERS||[]);
+                const p = pool.find(function(x){return x.name===pname;}) || {};
+                const lastName = pname.split(' ').slice(-1)[0] || pname;
+                const ctYear = p.contract_end ? parseInt(p.contract_end.slice(0,4)) : null;
+                const ctCol = ctYear && ctYear<=2026 ? '#ff4757' : ctYear===2027 ? '#f59e0b' : 'rgba(180,200,220,.55)';
+                const ctTxt = p.contract_end ? p.contract_end.slice(0,7) : '\u2014';
+                const pg = p.position_group || '';
+                const card = document.createElement('div');
+                card.style.cssText = 'position:absolute;left:'+pos.x+'%;top:calc('+topPct+'% + 20px);transform:translateX(-50%);width:62px;background:#000;border:1px solid rgba(0,212,255,.4);border-radius:4px;padding:2px 3px;z-index:11;'+(players.length>1?'cursor:pointer;':'');
+                card.innerHTML =
+                  '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:8px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center">'+lastName+'</div>'
+                  +'<div style="display:flex;align-items:center;justify-content:center;gap:2px;margin-top:1px">'
+                    +(pg?'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:6px;font-weight:700;color:rgba(0,210,255,.9);background:rgba(0,200,255,.1);border-radius:2px;padding:0 2px">'+pg+'</span>':'')
+                    +(p.age?'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:6px;color:rgba(255,255,255,.5)">'+p.age+'y</span>':'')
+                  +'</div>'
+                  +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:6px;color:'+ctCol+';text-align:center;margin-top:1px">'+ctTxt+'</div>'
+                  +(players.length>1?'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:6px;color:rgba(0,212,255,.6);text-align:center;margin-top:1px">'+(cur+1)+'/'+players.length+'</div>':'');
+                if(players.length>1){
+                  card.onclick = function(){
+                    slotData.cur = (cur+1) % players.length;
+                    renderMobileShadowView();
+                  };
+                }
+                imgWrap.appendChild(card);
+              }
             });
           }
         };
