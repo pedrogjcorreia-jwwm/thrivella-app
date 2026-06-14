@@ -25439,8 +25439,13 @@ function renderMobileShadowView(){
       +'</svg>'
     +'</button>';
 
+    btnStyle="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:5px;padding:0 8px;height:28px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap;box-sizing:border-box";
+
+    var scrollBtnStyle = 'flex-shrink:0;width:22px;height:22px;background:#000;border:1px solid rgba(139,92,246,.6);border-radius:5px;color:rgba(139,92,246,.9);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1';
+
     filterBar.innerHTML=`
-      <div style="display:flex;align-items:center;gap:6px;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch">
+      <button style="${scrollBtnStyle}" onclick="document.getElementById('mob-sh-scroll').scrollLeft-=80">\u2039</button>
+      <div id="mob-sh-scroll" style="display:flex;align-items:center;gap:6px;flex:1;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:0 4px">
       ${mkDDsh('mob-sh-fm', fmOpts, curFm)}
       ${mkDDsh('mob-sh-lg', lgOptsArr, 'all')}
       ${mktDD}
@@ -25449,7 +25454,8 @@ function renderMobileShadowView(){
       <button onclick="if(typeof shSelectTab==='function')shSelectTab('overall',this)" style="${btnStyle};cursor:pointer">Best</button>
       <button onclick="if(typeof shSelectTab==='function')shSelectTab('contract',this)" style="${btnStyle};cursor:pointer">Contract</button>
       <button onclick="if(typeof shSelectTab==='function')shSelectTab('u23',this)" style="${btnStyle};cursor:pointer">U23</button>
-      </div>`;
+      </div>
+      <button style="${scrollBtnStyle}" onclick="document.getElementById('mob-sh-scroll').scrollLeft+=80">\u203a</button>`;
   }
 
   // Use the desktop shadow view directly — show it inside mob content
