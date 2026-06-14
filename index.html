@@ -25543,7 +25543,7 @@ function renderMobileShadowView(){
                   const isGK = slot.tag==='GK';
 
                   const rnk = rnkSorted.findIndex(function(x){return x.name===pname;})+1;
-                  const rnkTxt = rnk===1?'#1st':rnk===2?'#2nd':rnk===3?'#3rd':(rnk>0?'#'+rnk+'th':'');
+                  const rnkTxt = rnk>0 ? String(rnk) : '';
 
                   const posParts = (p.position||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
                   const role2 = posParts[1]||'';
@@ -25563,7 +25563,7 @@ function renderMobileShadowView(){
                   const cardShadow = ctExpiring ? '0 0 8px rgba(255,71,87,.35)' : (isGK ? '0 0 10px rgba(120,180,255,0.3)' : 'none');
 
                   const card = document.createElement('div');
-                  card.style.cssText = 'position:absolute;left:'+pos.x+'%;top:calc('+topPct+'% - 4px - '+(i*(CARD_H+GAP))+'px);transform:translate(-50%,-100%);width:84px;height:'+CARD_H+'px;box-sizing:border-box;background:'+cardBg+';border:1px solid '+cardBorder+';border-radius:4px;padding:2px 4px;z-index:'+(11+i)+';box-shadow:'+cardShadow+';overflow:hidden';
+                  card.style.cssText = 'position:absolute;left:'+pos.x+'%;top:calc('+topPct+'% - 4px - '+(i*(CARD_H+GAP))+'px);transform:translate(-50%,-100%);width:92px;height:'+CARD_H+'px;box-sizing:border-box;background:'+cardBg+';border:1px solid '+cardBorder+';border-radius:4px;padding:2px 4px;z-index:'+(11+i)+';box-shadow:'+cardShadow+';overflow:hidden';
 
                   card.innerHTML =
                     // Row 1: Name + rank badge + 2nd role badge
