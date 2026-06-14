@@ -25361,7 +25361,8 @@ function renderMobileShadowView(){
   // Filter bar: formation selector + tabs
   if(filterBar){
     filterBar.style.overflow='auto';
-    var selStyle="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:5px;padding:4px 8px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap";
+    var selStyle="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:5px;padding:0 8px;height:28px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap;box-sizing:border-box";
+    var btnStyle="background:#0a1420;border:1px solid rgba(139,92,246,.6);border-radius:5px;padding:0 8px;height:28px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap;box-sizing:border-box";
     var lgOpts='<option value="all">Liga: Todas</option>'+[...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))].sort().map(function(l){return '<option value="'+l+'">Liga: '+l+'</option>';}).join('');
     filterBar.innerHTML=`
       <div style="display:flex;align-items:center;gap:6px;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch">
@@ -25373,10 +25374,10 @@ function renderMobileShadowView(){
         <option value="3-5-2">3-5-2</option>
       </select>
       <select id="mob-sh-lg" style="${selStyle};max-width:130px" onchange="if(typeof shSetLeague==='function')shSetLeague(this.value);else if(typeof shResetAndRender==='function')shResetAndRender()"></select>
-      <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this)" style="${selStyle};cursor:pointer">My Shadow</button>
-      <button onclick="if(typeof shSelectTab==='function')shSelectTab('overall',this)" style="${selStyle};cursor:pointer">Best</button>
-      <button onclick="if(typeof shSelectTab==='function')shSelectTab('contract',this)" style="${selStyle};cursor:pointer">Contract</button>
-      <button onclick="if(typeof shSelectTab==='function')shSelectTab('u23',this)" style="${selStyle};cursor:pointer">U23</button>
+      <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this)" style="${btnStyle};cursor:pointer">My Shadow</button>
+      <button onclick="if(typeof shSelectTab==='function')shSelectTab('overall',this)" style="${btnStyle};cursor:pointer">Best</button>
+      <button onclick="if(typeof shSelectTab==='function')shSelectTab('contract',this)" style="${btnStyle};cursor:pointer">Contract</button>
+      <button onclick="if(typeof shSelectTab==='function')shSelectTab('u23',this)" style="${btnStyle};cursor:pointer">U23</button>
       </div>`;
     document.getElementById('mob-sh-lg').innerHTML=lgOpts;
   }
