@@ -25540,7 +25540,6 @@ function renderMobileShadowView(){
 
                 players.forEach(function(pname, i){
                   const p = pool.find(function(x){return x.name===pname;}) || {};
-                  const isGK = slot.tag==='GK';
 
                   const rnk = rnkSorted.findIndex(function(x){return x.name===pname;})+1;
                   const rnkTxt = rnk>0 ? String(rnk) : '';
@@ -25551,16 +25550,17 @@ function renderMobileShadowView(){
                   const footTxt = p.foot ? (/^d/i.test(p.foot)?'R':'L') : '';
 
                   const ctYear = p.contract_end ? parseInt(p.contract_end.slice(0,4)) : null;
-                  const ctCol = ctYear && ctYear<=2026 ? '#ff4757' : ctYear===2027 ? '#f59e0b' : 'rgba(180,200,220,.5)';
+                  const ctCol = ctYear && ctYear<=2026 ? '#ff4757' : ctYear===2027 ? '#f59e0b' : 'rgba(0,200,255,.85)';
                   const ctTxt = p.contract_end ? p.contract_end.slice(0,7) : '\u2014';
                   const ctExpiring = ctYear && ctYear<=2026;
+                  const ct2027 = ctYear===2027;
 
                   const tiPct = p.talent_index_pct!=null ? Math.round(p.talent_index_pct) : null;
                   const club = p.team || '\u2014';
 
-                  const cardBg = isGK ? 'rgba(30,50,80,0.94)' : 'rgba(2,12,26,0.92)';
-                  const cardBorder = ctExpiring ? 'rgba(255,71,87,.8)' : (isGK ? 'rgba(160,200,255,0.7)' : 'rgba(0,200,255,0.45)');
-                  const cardShadow = ctExpiring ? '0 0 8px rgba(255,71,87,.35)' : (isGK ? '0 0 10px rgba(120,180,255,0.3)' : 'none');
+                  const cardBg = 'rgba(2,12,26,0.92)';
+                  const cardBorder = ctExpiring ? 'rgba(255,71,87,.8)' : ct2027 ? 'rgba(245,158,11,.8)' : 'rgba(0,200,255,0.45)';
+                  const cardShadow = ctExpiring ? '0 0 8px rgba(255,71,87,.35)' : ct2027 ? '0 0 8px rgba(245,158,11,.3)' : 'none';
 
                   const card = document.createElement('div');
                   card.style.cssText = 'position:absolute;left:'+pos.x+'%;top:calc('+topPct+'% - 4px - '+(i*(CARD_H+GAP))+'px);transform:translate(-50%,-100%);width:92px;height:'+CARD_H+'px;box-sizing:border-box;background:'+cardBg+';border:1px solid '+cardBorder+';border-radius:4px;padding:2px 4px;z-index:'+(11+i)+';box-shadow:'+cardShadow+';overflow:hidden';
@@ -25620,10 +25620,9 @@ function renderMobileShadowView(){
       const legend=document.createElement('div');
       legend.style.cssText='position:fixed;left:8px;right:8px;bottom:19px;display:flex;align-items:center;justify-content:space-around;gap:4px;padding:6px 6px;background:rgba(2,12,26,.9);border:1px solid rgba(0,212,255,.15);border-radius:6px;z-index:30;backdrop-filter:blur(4px)';
       const legendItems=[
-        {color:'rgba(0,200,255,0.45)', label:'Campo'},
         {color:'#ff4757', label:'Cont. \u22642026'},
         {color:'#f59e0b', label:'Cont. 2027'},
-        {color:'rgba(180,200,220,.5)', label:'Cont. 2028+'}
+        {color:'rgba(0,200,255,0.45)', label:'Cont. 2028+'}
       ];
       legendItems.forEach(function(it){
         const row=document.createElement('div');
