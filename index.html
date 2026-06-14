@@ -22260,7 +22260,7 @@ function shFilterPlayers(league){
   const mktInput = document.getElementById('sh-mkt-max');
   const mktMax = mktInput && mktInput.value ? parseFloat(mktInput.value) * 1e6 : null;
 
-  let pool = PLAYERS;
+  let pool = (PLAYERS && PLAYERS.length) ? PLAYERS : (window.PLAYERS||[]);
   // League filter
   if(shSelectedLeagues.size > 0){
     pool = pool.filter(p => shSelectedLeagues.has(p.league));
@@ -25459,6 +25459,9 @@ function renderMobileShadowView(){
 
   // Use the desktop shadow view directly — show it inside mob content
   // First ensure the shadow view is rendered
+  // Bridge: shFillAuto (different script scope) may have its own empty PLAYERS —
+  // expose this scope's populated PLAYERS via window so it can fall back to it
+  if(typeof PLAYERS!=='undefined' && PLAYERS && PLAYERS.length) window.PLAYERS = PLAYERS;
   try{
     if(typeof shResetAndRender==='function') shResetAndRender();
   }catch(e){ console.error('[ShadowMobile:reset]',e); }
