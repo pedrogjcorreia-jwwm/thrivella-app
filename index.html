@@ -25509,7 +25509,8 @@ function renderMobileShadowView(){
               const slotData = tabData[slot.id];
               const players = slotData?slotData.players:[];
               const hasPl = players.length>0;
-              const label = hasPl?(players[slotData.cur||0]||{name:''}).name.split(' ').slice(-1)[0]:slot.label;
+              const pname = hasPl ? (players[slotData.cur||0]||'') : '';
+              const label = hasPl ? (pname.split(' ').slice(-1)[0] || slot.label) : slot.label;
               // Per-slot vertical adjustment in percentage points (before 1.1 scale)
               const yOffsets = {cf:1.8, gk:-6.5, lb:-4.5, cb:-4.5, rb:-4.5, lw2:-2.8, rw2:-2.8, lc:-2.8, rc:-2.8, cm:-2.8, lw:-4.5, rw:-4.5};
               const yAdj = yOffsets[slot.id] !== undefined ? yOffsets[slot.id] : 0;
