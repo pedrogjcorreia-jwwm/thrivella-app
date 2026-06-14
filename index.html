@@ -25357,6 +25357,13 @@ function renderMobileShadowView(){
   const filterBar = document.getElementById('mob-filter-bar');
   if(!content) return;
 
+  // Initialize shadow data once, default to "Best" (auto-filled) tab
+  if(typeof shInit==='function' && !window._mobShInited){
+    shInit();
+    window._mobShInited = true;
+    if(typeof shCurrentTab!=='undefined' && shCurrentTab==='my') shCurrentTab='overall';
+  }
+
   // Filter bar: formation selector + tabs
   if(filterBar){
     filterBar.style.overflow='auto';
@@ -25428,7 +25435,11 @@ function renderMobileShadowView(){
     var aiActive = (typeof ligaAdjustActive!=='undefined') && ligaAdjustActive;
     var aiBtn='<button id="mob-sh-ai" onclick="toggleLigaAdjust();if(typeof shResetAndRender===\'function\')shResetAndRender();renderMobileShadowView();" title="Liga Adjust" style="flex-shrink:0;height:28px;padding:0 10px;background:'+(aiActive?'rgba(0,230,140,.18)':'rgba(0,230,140,.06)')+';border:1px solid '+(aiActive?'rgba(0,230,140,.7)':'rgba(0,230,140,.3)')+';border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-sizing:border-box;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:800;color:'+(aiActive?'#00e68c':'rgba(0,230,140,.6)')+'">AI</button>';
 
-    btnStyle="background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:5px;padding:0 8px;height:28px;color:#e8edf2;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap;box-sizing:border-box";
+    var curTab = (typeof shCurrentTab!=='undefined') ? shCurrentTab : 'my';
+    var tabBtnStyle = function(tabId){
+      var active = curTab===tabId;
+      return "background:"+(active?"rgba(0,212,255,.16)":"#0a1420")+";border:1px solid "+(active?"#00d4ff":"rgba(0,212,255,.25)")+";border-radius:5px;padding:0 8px;height:28px;color:"+(active?"#00d4ff":"#e8edf2")+";font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap;box-sizing:border-box";
+    };
 
     var scrollBtnStyle = 'flex-shrink:0;width:22px;height:22px;background:#000;border:1px solid rgba(139,92,246,.6);border-radius:5px;color:rgba(139,92,246,.9);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1';
 
@@ -25439,10 +25450,10 @@ function renderMobileShadowView(){
       ${mkDDsh('mob-sh-lg', lgOptsArr, 'all')}
       ${mktDD}
       ${aiBtn}
-      <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this)" style="${btnStyle};cursor:pointer">My Shadow</button>
-      <button onclick="if(typeof shSelectTab==='function')shSelectTab('overall',this)" style="${btnStyle};cursor:pointer">Best</button>
-      <button onclick="if(typeof shSelectTab==='function')shSelectTab('contract',this)" style="${btnStyle};cursor:pointer">Contract</button>
-      <button onclick="if(typeof shSelectTab==='function')shSelectTab('u23',this)" style="${btnStyle};cursor:pointer">U23</button>
+      <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this);setTimeout(renderMobileShadowView,300)" style="${tabBtnStyle('my')};cursor:pointer">My Shadow</button>
+      <button onclick="if(typeof shSelectTab==='function')shSelectTab('overall',this);setTimeout(renderMobileShadowView,300)" style="${tabBtnStyle('overall')};cursor:pointer">Best</button>
+      <button onclick="if(typeof shSelectTab==='function')shSelectTab('contract',this);setTimeout(renderMobileShadowView,300)" style="${tabBtnStyle('contract')};cursor:pointer">Contract</button>
+      <button onclick="if(typeof shSelectTab==='function')shSelectTab('u23',this);setTimeout(renderMobileShadowView,300)" style="${tabBtnStyle('u23')};cursor:pointer">U23</button>
       </div>
       <button style="${scrollBtnStyle}" onclick="document.getElementById('mob-sh-scroll').scrollLeft+=80">\u203a</button>`;
   }
