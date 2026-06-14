@@ -25364,6 +25364,7 @@ function renderMobileShadowView(){
       var selLabel = '';
       for(var i=0;i<opts.length;i++){ if(opts[i][0]===selectedVal){ selLabel=opts[i][1]; break; } }
       if(!selLabel && opts[0]) selLabel=opts[0][1];
+      if(id==='mob-sh-lg') selLabel = lgShortLabel(selectedVal);
       var items = opts.map(function(o){
         var v=o[0], l=o[1];
         return '<div class="sim-dd-opt" data-id="'+id+'" data-val="'+v+'" onclick="mobShDDSelect(\''+id+'\',\''+v+'\',\''+l.replace(/'/g,"\\'")+'\')" style="padding:6px 10px;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;color:rgba(200,225,255,.85);cursor:pointer;white-space:nowrap" onmouseover="this.style.background=\'rgba(0,180,255,.12)\'" onmouseout="this.style.background=\'\'">'+l+'</div>';
@@ -25377,11 +25378,18 @@ function renderMobileShadowView(){
       +'</div>';
     }
 
+    function lgShortLabel(val){
+      if(val==='all') return 'Liga: Todas';
+      var m = val.match(/^([A-Za-z ]+?)(\d+)$/);
+      if(!m) return val;
+      return m[1].slice(0,3).toUpperCase()+m[2];
+    }
+
     window.mobShDDSelect = function(id, val, lbl){
       var dd=document.getElementById(id);
       if(dd) dd.dataset.val=val;
       var l=document.getElementById(id+'-lbl');
-      if(l) l.textContent=lbl;
+      if(l) l.textContent=(id==='mob-sh-lg') ? lgShortLabel(val) : lbl;
       var list=document.getElementById(id+'-list');
       if(list) list.style.display='none';
       if(id==='mob-sh-fm'){
@@ -25400,7 +25408,8 @@ function renderMobileShadowView(){
 
     var fmOpts=[['3-4-3','3-4-3'],['4-3-3','4-3-3'],['4-4-2','4-4-2'],['3-5-2','3-5-2']];
     var curFm=(document.getElementById('sh-formation')||{}).value||'3-4-3';
-    var lgOptsArr=[['all','Liga: Todas']].concat([...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))].sort().map(function(l){return [l,'Liga: '+l];}));
+    var curLg=(typeof shSelectedLeagues!=='undefined' && shSelectedLeagues.size===1) ? [...shSelectedLeagues][0] : 'all';
+    var lgOptsArr=[['all','Liga: Todas']].concat([...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))].sort().map(function(l){return [l, lgShortLabel(l)+' \u2014 '+l];}));
 
     window.mobShMktInput = function(v){
       var lbl=document.getElementById('mob-sh-mkt-lbl');
@@ -25441,7 +25450,7 @@ function renderMobileShadowView(){
       <button style="${scrollBtnStyle}" onclick="document.getElementById('mob-sh-scroll').scrollLeft-=80">\u2039</button>
       <div id="mob-sh-scroll" style="display:flex;align-items:center;gap:6px;flex:1;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:0 4px">
       ${mkDDsh('mob-sh-fm', fmOpts, curFm)}
-      ${mkDDsh('mob-sh-lg', lgOptsArr, 'all')}
+      ${mkDDsh('mob-sh-lg', lgOptsArr, curLg)}
       ${mktDD}
       ${aiBtn}
       <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this);setTimeout(renderMobileShadowView,300)" style="${tabBtnStyle('my')};cursor:pointer">My Shadow</button>
