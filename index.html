@@ -25759,24 +25759,25 @@ function renderMobileShadowView(){
       }
 
       // My Shadow manual squad controls: + (add player) / − (remove mode toggle)
+      // Fixed bottom-right corner, 2mm above the legend
       if(curTab==='my'){
         const addRow=document.createElement('div');
-        addRow.style.cssText='display:flex;justify-content:center;align-items:center;gap:18px;margin:8px 0 4px';
+        addRow.style.cssText='position:fixed;right:12px;bottom:50px;display:flex;align-items:center;gap:8px;z-index:31';
         const plusBtn=document.createElement('button');
         plusBtn.textContent='+';
-        plusBtn.style.cssText='width:38px;height:38px;border-radius:50%;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.5);color:#00e5a0;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1';
+        plusBtn.style.cssText='width:38px;height:38px;border-radius:50%;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.5);color:#00e5a0;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.5)';
         plusBtn.onclick=function(){ if(typeof mobShOpenAddOverlay==='function') mobShOpenAddOverlay(); };
         const removeActive=!!window._mobShRemoveMode;
         const minusBtn=document.createElement('button');
         minusBtn.textContent='\u2212';
-        minusBtn.style.cssText='width:38px;height:38px;border-radius:50%;background:'+(removeActive?'rgba(255,71,87,.22)':'rgba(255,71,87,.08)')+';border:1px solid '+(removeActive?'rgba(255,71,87,.85)':'rgba(255,71,87,.35)')+';color:#ff4757;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1';
+        minusBtn.style.cssText='width:38px;height:38px;border-radius:50%;background:'+(removeActive?'rgba(255,71,87,.22)':'rgba(255,71,87,.08)')+';border:1px solid '+(removeActive?'rgba(255,71,87,.85)':'rgba(255,71,87,.35)')+';color:#ff4757;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.5)';
         minusBtn.onclick=function(){ if(typeof mobShToggleRemoveMode==='function') mobShToggleRemoveMode(); };
         addRow.appendChild(plusBtn);
         addRow.appendChild(minusBtn);
         wrap.appendChild(addRow);
         if(removeActive){
           const hint=document.createElement('div');
-          hint.style.cssText='text-align:center;font-family:\'Barlow Condensed\',sans-serif;font-size:9px;color:rgba(255,71,87,.8);margin-bottom:4px';
+          hint.style.cssText='position:fixed;left:12px;right:100px;bottom:55px;font-family:\'Barlow Condensed\',sans-serif;font-size:9px;color:rgba(255,71,87,.8);z-index:31;text-align:right';
           hint.textContent='Toca num jogador para o remover \u00b7 toca em \u2212 para sair';
           wrap.appendChild(hint);
         }
