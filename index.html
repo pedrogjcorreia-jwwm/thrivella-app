@@ -22355,24 +22355,15 @@ document.addEventListener('click', e=>{
 }, true);
 
 function shPlayerMatchesSlot(p, slot){
-  const parts=(p.position||'').split(',').map(s=>s.trim());
-  if(slot.tag==='WIN'){
-    // All WIN position_group players are eligible for LW and RW slots only
-    return p.position_group === 'WIN';
-  }
+  const pg = p.position_group;
+  if(slot.tag==='WIN') return pg === 'WIN';
   // Non-WIN slots: WIN players are NEVER eligible
-  if(p.position_group === 'WIN') return false;
-  if(slot.tag==='CF') return parts.some(s=>/^(CF|ST|SS)$/i.test(s));
-  if(slot.tag==='CMF') return parts.some(s=>/^(CMF|LCMF|RCMF|DMF|AMF)$/i.test(s));
-  if(slot.tag==='WB'){
-    if(slot.side==='L') return parts.some(s=>/^(LWB|LB)$/i.test(s));
-    if(slot.side==='R') return parts.some(s=>/^(RWB|RB)$/i.test(s));
-    return parts.some(s=>/^(LWB|RWB|LB|RB)$/i.test(s));
-  }
-  if(slot.tag==='LB') return parts.some(s=>/^(LB|LWB)$/i.test(s));
-  if(slot.tag==='RB') return parts.some(s=>/^(RB|RWB)$/i.test(s));
-  if(slot.tag==='CB') return parts.some(s=>/^(CB|LCB|RCB)$/i.test(s));
-  if(slot.tag==='GK') return parts.some(s=>/^GK$/i.test(s));
+  if(pg === 'WIN') return false;
+  if(slot.tag==='CF')  return pg === 'CF';
+  if(slot.tag==='CMF') return pg === 'CM';
+  if(slot.tag==='WB' || slot.tag==='LB' || slot.tag==='RB') return pg === 'WB';
+  if(slot.tag==='CB')  return pg === 'CB';
+  if(slot.tag==='GK')  return pg === 'GK' || /\bGK\b/i.test(p.position||'');
   return false;
 }
 
@@ -25544,23 +25535,6 @@ function renderMobileShadowView(){
         const clone=pitchWrap.cloneNode(true);
         clone.style.cssText='width:'+pitchW+'px;height:'+pitchH+'px;display:block;margin:8px auto;position:relative;overflow:visible';
         wrap.appendChild(clone);
-      }
-
-      // TEMP DEBUG — remove after diagnosing auto-fill
-      try{
-        const dbg=document.createElement('div');
-        dbg.style.cssText='padding:6px 12px;font-family:monospace;font-size:9px;color:rgba(255,200,0,.8);background:#1a1006;border-radius:4px;margin:4px auto;max-width:calc(100% - 24px);word-break:break-all';
-        const tCur=(typeof shCurrentTab!=='undefined')?shCurrentTab:'(undef)';
-        const pLen=(typeof PLAYERS!=='undefined' && PLAYERS)?PLAYERS.length:'(undef)';
-        const wpLen=(window.PLAYERS)?window.PLAYERS.length:'(undef)';
-        const td=(typeof shData!=='undefined' && shData)?JSON.stringify(shData[tCur]).slice(0,200):'(shData undef)';
-        dbg.textContent='DBG tab='+tCur+' PLAYERS='+pLen+' win.PLAYERS='+wpLen+' tabData='+td;
-        wrap.appendChild(dbg);
-      }catch(e){
-        const dbg=document.createElement('div');
-        dbg.style.cssText='padding:6px 12px;font-family:monospace;font-size:9px;color:#ff6666';
-        dbg.textContent='DBG ERROR: '+e.message;
-        wrap.appendChild(dbg);
       }
 
       const shadowTeam=window.shadowTeam||[];
