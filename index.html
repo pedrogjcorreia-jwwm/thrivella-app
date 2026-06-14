@@ -25759,19 +25759,30 @@ function renderMobileShadowView(){
       }
 
       // My Shadow manual squad controls: + (add player) / − (remove mode toggle)
+      // Same design/size as the header purple scroll buttons (22x22, #000 bg, rounded)
       // Fixed bottom-right corner, 2mm above the legend
       if(curTab==='my'){
         const addRow=document.createElement('div');
         addRow.style.cssText='position:fixed;right:12px;bottom:50px;display:flex;align-items:center;gap:8px;z-index:31';
         const plusBtn=document.createElement('button');
         plusBtn.textContent='+';
-        plusBtn.style.cssText='width:38px;height:38px;border-radius:50%;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.5);color:#00e5a0;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.5)';
-        plusBtn.onclick=function(){ if(typeof mobShOpenAddOverlay==='function') mobShOpenAddOverlay(); };
+        plusBtn.style.cssText='flex-shrink:0;width:22px;height:22px;background:#000;border:1px solid rgba(0,229,160,.6);border-radius:5px;color:rgba(0,229,160,.95);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.5)';
+        plusBtn.onclick=function(){
+          try{
+            if(typeof mobShOpenAddOverlay==='function') mobShOpenAddOverlay();
+            else alert('mobShOpenAddOverlay nao definido');
+          }catch(err){ alert('Erro +: '+err.message); console.error('[mobSh+]',err); }
+        };
         const removeActive=!!window._mobShRemoveMode;
         const minusBtn=document.createElement('button');
         minusBtn.textContent='\u2212';
-        minusBtn.style.cssText='width:38px;height:38px;border-radius:50%;background:'+(removeActive?'rgba(255,71,87,.22)':'rgba(255,71,87,.08)')+';border:1px solid '+(removeActive?'rgba(255,71,87,.85)':'rgba(255,71,87,.35)')+';color:#ff4757;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.5)';
-        minusBtn.onclick=function(){ if(typeof mobShToggleRemoveMode==='function') mobShToggleRemoveMode(); };
+        minusBtn.style.cssText='flex-shrink:0;width:22px;height:22px;background:#000;border:1px solid '+(removeActive?'rgba(255,71,87,.95)':'rgba(255,71,87,.6)')+';border-radius:5px;color:rgba(255,71,87,.95);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.5)'+(removeActive?';background:rgba(255,71,87,.18)':'');
+        minusBtn.onclick=function(){
+          try{
+            if(typeof mobShToggleRemoveMode==='function') mobShToggleRemoveMode();
+            else alert('mobShToggleRemoveMode nao definido');
+          }catch(err){ alert('Erro -: '+err.message); console.error('[mobSh-]',err); }
+        };
         addRow.appendChild(plusBtn);
         addRow.appendChild(minusBtn);
         wrap.appendChild(addRow);
