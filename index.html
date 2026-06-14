@@ -25395,7 +25395,7 @@ function renderMobileShadowView(){
       mobShCloseOverlay();
       var overlay=document.createElement('div');
       overlay.id='mob-sh-add-overlay';
-      overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:flex;align-items:flex-end;justify-content:center';
+      overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:20000;display:flex;align-items:flex-end;justify-content:center';
       overlay.onclick=function(e){ if(e.target===overlay) mobShCloseOverlay(); };
       var panel=document.createElement('div');
       panel.style.cssText='width:100%;max-height:80vh;overflow-y:auto;background:#0a1420;border-top:1px solid rgba(0,212,255,.3);border-radius:12px 12px 0 0;padding:14px;box-sizing:border-box';
