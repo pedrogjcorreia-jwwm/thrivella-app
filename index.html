@@ -22402,7 +22402,9 @@ function shFillAuto(){
   const players=shFilterPlayers(league);
   // overall: sort by talent_index (OFF+DEF+PASS, equal for all)
   // Physical shown separately — don't mix into the sort to avoid penalising NPHY players
-  shAutoFillTab('overall',players,(a,b)=>activeTI(b)-activeTI(a));
+  try{
+    shAutoFillTab('overall',players,(a,b)=>activeTI(b)-activeTI(a));
+  }catch(e){ console.error('[shFillAuto:overall]',e); shData.overall=shData.overall||{}; }
   const withCt=players.filter(p=>p.contract_end);
   // End Contract: catch all contracts expiring 2025 or 2026 regardless of date format
   const only2026=players.filter(p=>{
@@ -22413,9 +22415,13 @@ function shFillAuto(){
   });
   // End Contract: primary sort = Talent Index (best player with expiring contract)
   // Date is already guaranteed by the filter (2025/2026 only)
-  shAutoFillTab('contract',only2026,(a,b)=>activeTI(b)-activeTI(a));
+  try{
+    shAutoFillTab('contract',only2026,(a,b)=>activeTI(b)-activeTI(a));
+  }catch(e){ console.error('[shFillAuto:contract]',e); shData.contract=shData.contract||{}; }
   const u23=players.filter(p=>(p.age||99)<=23);
-  shAutoFillTab('u23',u23,(a,b)=>activeTI(b)-activeTI(a));
+  try{
+    shAutoFillTab('u23',u23,(a,b)=>activeTI(b)-activeTI(a));
+  }catch(e){ console.error('[shFillAuto:u23]',e); shData.u23=shData.u23||{}; }
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────────
@@ -25453,7 +25459,9 @@ function renderMobileShadowView(){
 
   // Use the desktop shadow view directly — show it inside mob content
   // First ensure the shadow view is rendered
-  if(typeof shResetAndRender==='function') shResetAndRender();
+  try{
+    if(typeof shResetAndRender==='function') shResetAndRender();
+  }catch(e){ console.error('[ShadowMobile:reset]',e); }
 
   // For mobile: resize the shadow pitch area to fill the screen, render, then capture
   setTimeout(()=>{
@@ -25479,7 +25487,9 @@ function renderMobileShadowView(){
     }
 
     // Render the pitch at desktop size (let shRenderPitch decide dimensions)
-    if(typeof shRender==='function') shRender();
+    try{
+      if(typeof shRender==='function') shRender();
+    }catch(e){ console.error('[ShadowMobile:render]',e); }
 
     setTimeout(()=>{
       if(pitchArea && pitchArea._savedStyle!==undefined) pitchArea.style.cssText=pitchArea._savedStyle;
