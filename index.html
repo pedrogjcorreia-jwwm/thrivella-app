@@ -25404,7 +25404,7 @@ function renderMobileShadowView(){
 
     window.mobShMktInput = function(v){
       var lbl=document.getElementById('mob-sh-mkt-lbl');
-      if(lbl) lbl.textContent = v ? ('Valor \u2264'+v+'M\u20ac') : 'Market Value';
+      if(lbl) lbl.textContent = v ? ('\u2264'+v+'M\u20ac') : 'MV';
       var s=document.getElementById('sh-mkt-max');
       if(s) s.value=v;
       if(typeof shResetAndRender==='function') shResetAndRender();
@@ -25413,7 +25413,7 @@ function renderMobileShadowView(){
     var curMkt=(document.getElementById('sh-mkt-max')||{}).value||'';
     var mktDD='<div class="sim-dd" id="mob-sh-mkt" style="position:relative;flex-shrink:0">'
       +'<div onclick="mobRkToggle(\'mob-sh-mkt\')" style="display:flex;align-items:center;gap:4px;height:28px;padding:0 8px;background:#0a1420;border:1px solid rgba(0,212,255,.25);border-radius:5px;cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;color:#e8edf2;white-space:nowrap;box-sizing:border-box">'
-        +'<span id="mob-sh-mkt-lbl">'+(curMkt?('Valor \u2264'+curMkt+'M\u20ac'):'Market Value')+'</span>'
+        +'<span id="mob-sh-mkt-lbl">'+(curMkt?('\u2264'+curMkt+'M\u20ac'):'MV')+'</span>'
         +'<span style="font-size:8px;opacity:.55;flex-shrink:0">\u25be</span>'
       +'</div>'
       +'<div id="mob-sh-mkt-list" style="display:none;position:fixed;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.85);padding:8px;min-width:140px">'
