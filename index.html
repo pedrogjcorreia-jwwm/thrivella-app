@@ -5204,6 +5204,15 @@ window.exportPhotoCache=function(){
         if(!window.STATIC_PHOTOS) window.STATIC_PHOTOS={};
         Object.assign(window.STATIC_PHOTOS, out);
         Object.assign(photoCache, out);
+        // Free up localStorage: these photos are now baked into STATIC_PHOTOS in the
+        // deployed file, so keeping them in localStorage just wastes quota and risks
+        // future uploads silently failing once the quota fills up.
+        try{
+          Object.keys(out).forEach(n=>{ localStorage.removeItem('photo_'+n); });
+          const s=JSON.parse(localStorage.getItem('scoutpro_photos')||'{}');
+          Object.keys(out).forEach(n=>{ delete s[n]; });
+          localStorage.setItem('scoutpro_photos',JSON.stringify(s));
+        }catch(e){}
         alert('✅ Fotos sincronizadas! A página vai recarregar em 35 segundos para aplicar as fotos em todos os dispositivos.');
         // Reload after Vercel deploys (~35s)
         setTimeout(()=>location.reload(), 35000);
@@ -7599,9 +7608,15 @@ function uploadPlayerPhoto(name) {
       const dataUrl = ev.target.result;
       const key = name.replace(/[^a-z0-9]/gi,'_');
       photoCache[name] = dataUrl;
-      // Always save to localStorage
-      try{localStorage.setItem('photo_'+name,dataUrl);}catch(e){}
-      try{const s=JSON.parse(localStorage.getItem('scoutpro_photos')||'{}');s[name]=dataUrl;localStorage.setItem('scoutpro_photos',JSON.stringify(s));}catch(e){}
+      // Always save to localStorage — surface quota errors instead of failing silently
+      // (a silent failure here means the photo never persists across reloads/deploys
+      // and never gets picked up by Export, so it never reaches STATIC_PHOTOS or mobile)
+      let _photoSaveOk=true, _photoSaveErr=null;
+      try{localStorage.setItem('photo_'+name,dataUrl);}catch(e){_photoSaveOk=false;_photoSaveErr=e;}
+      try{const s=JSON.parse(localStorage.getItem('scoutpro_photos')||'{}');s[name]=dataUrl;localStorage.setItem('scoutpro_photos',JSON.stringify(s));}catch(e){_photoSaveOk=false;_photoSaveErr=e;}
+      if(!_photoSaveOk){
+        alert('⚠️ Não foi possível guardar a foto de "'+name+'" localmente (armazenamento cheio: '+(_photoSaveErr&&_photoSaveErr.name||'erro')+'). A foto só vai aparecer nesta sessão — para resolver, clica "📷 Export" para enviar as fotos já guardadas para o servidor (isso liberta espaço) e depois faz upload desta foto novamente.');
+      }
       // Inject in all views
       const injectAll = (src) => {
         [['header-avatar-'+key, injectHeaderPhoto], ['avatar-'+key, injectPhoto]].forEach(([id,fn]) => {
@@ -13324,6 +13339,15 @@ window.exportPhotoCache=function(){
         if(!window.STATIC_PHOTOS) window.STATIC_PHOTOS={};
         Object.assign(window.STATIC_PHOTOS, out);
         Object.assign(photoCache, out);
+        // Free up localStorage: these photos are now baked into STATIC_PHOTOS in the
+        // deployed file, so keeping them in localStorage just wastes quota and risks
+        // future uploads silently failing once the quota fills up.
+        try{
+          Object.keys(out).forEach(n=>{ localStorage.removeItem('photo_'+n); });
+          const s=JSON.parse(localStorage.getItem('scoutpro_photos')||'{}');
+          Object.keys(out).forEach(n=>{ delete s[n]; });
+          localStorage.setItem('scoutpro_photos',JSON.stringify(s));
+        }catch(e){}
         alert('✅ Fotos sincronizadas! A página vai recarregar em 35 segundos para aplicar as fotos em todos os dispositivos.');
         // Reload after Vercel deploys (~35s)
         setTimeout(()=>location.reload(), 35000);
@@ -15719,9 +15743,15 @@ function uploadPlayerPhoto(name) {
       const dataUrl = ev.target.result;
       const key = name.replace(/[^a-z0-9]/gi,'_');
       photoCache[name] = dataUrl;
-      // Always save to localStorage
-      try{localStorage.setItem('photo_'+name,dataUrl);}catch(e){}
-      try{const s=JSON.parse(localStorage.getItem('scoutpro_photos')||'{}');s[name]=dataUrl;localStorage.setItem('scoutpro_photos',JSON.stringify(s));}catch(e){}
+      // Always save to localStorage — surface quota errors instead of failing silently
+      // (a silent failure here means the photo never persists across reloads/deploys
+      // and never gets picked up by Export, so it never reaches STATIC_PHOTOS or mobile)
+      let _photoSaveOk=true, _photoSaveErr=null;
+      try{localStorage.setItem('photo_'+name,dataUrl);}catch(e){_photoSaveOk=false;_photoSaveErr=e;}
+      try{const s=JSON.parse(localStorage.getItem('scoutpro_photos')||'{}');s[name]=dataUrl;localStorage.setItem('scoutpro_photos',JSON.stringify(s));}catch(e){_photoSaveOk=false;_photoSaveErr=e;}
+      if(!_photoSaveOk){
+        alert('⚠️ Não foi possível guardar a foto de "'+name+'" localmente (armazenamento cheio: '+(_photoSaveErr&&_photoSaveErr.name||'erro')+'). A foto só vai aparecer nesta sessão — para resolver, clica "📷 Export" para enviar as fotos já guardadas para o servidor (isso liberta espaço) e depois faz upload desta foto novamente.');
+      }
       // Inject in all views
       const injectAll = (src) => {
         [['header-avatar-'+key, injectHeaderPhoto], ['avatar-'+key, injectPhoto]].forEach(([id,fn]) => {
