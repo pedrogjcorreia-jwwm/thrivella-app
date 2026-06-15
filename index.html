@@ -26612,7 +26612,11 @@ function renderMobileElite(){
         (()=>{const s=[...PLAYERS].filter(x=>x.total_pass!=null).sort((a,b)=>(b.total_pass||0)-(a.total_pass||0));const r=s.findIndex(x=>x.name===p.name);return r<0?0:(s.length-r)/s.length;})()
       ];
       const lbls=['TALENT','PHYSICAL','OFENSIVO','DEFENSIVO','PASSING'];
-      const pcts=[Math.min(100,tiVal),Math.min(100,phVal),Math.round(vals[2]*100),Math.round(vals[3]*100),Math.round(vals[4]*100)];
+      const pcts=[Math.min(100,tiVal),Math.min(100,phVal),
+        Math.round((p.total_off||0)/35*100),
+        Math.round((p.total_def||0)/8.5*100),
+        Math.round((p.total_pass||0)/23.5*100)
+      ];
       const avgVals=[Math.min(1,PLAYERS.reduce((s,x)=>s+(x[tiKey]||0),0)/Math.max(1,PLAYERS.length)/67),Math.min(1,PLAYERS.reduce((s,x)=>s+(x.total_physical||0),0)/Math.max(1,PLAYERS.length)/25),0.5,0.5,0.5];
       function pt(i,r){const a=Math.PI*2*i/5-Math.PI/2;return[cx+r*Math.cos(a),cy+r*Math.sin(a)];}
       let svg=`<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">`;
