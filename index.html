@@ -5173,16 +5173,32 @@ window.exportPhotoCache=function(){
       const sha=meta.sha;
       const newPhotos='window.STATIC_PHOTOS = '+JSON.stringify(out)+';';
       const startMarker='window.STATIC_PHOTOS = {';
-      const startIdx=current.indexOf(startMarker);
-      if(startIdx===-1){throw new Error('STATIC_PHOTOS não encontrado.');}
-      let depth=0,endIdx=-1;
-      for(let i=startIdx+startMarker.length-1;i<current.length;i++){
-        if(current[i]==='{')depth++;
-        else if(current[i]==='}'){depth--;if(depth===0){endIdx=i;break;}}
+      // Replace ALL real assignments of STATIC_PHOTOS (file has duplicated script blocks
+      // so there are two embedded data dicts that must stay in sync — otherwise photos
+      // added on one "version" don't appear on the other).
+      let updated=current;
+      let searchFrom=0;
+      const ranges=[];
+      while(true){
+        const idx=updated.indexOf(startMarker, searchFrom);
+        if(idx===-1)break;
+        const prevCh=updated[idx-1];
+        if(prevCh==="'"||prevCh==='"'){ searchFrom=idx+startMarker.length; continue; }
+        let depth=0,endIdx=-1;
+        for(let i=idx+startMarker.length-1;i<updated.length;i++){
+          if(updated[i]==='{')depth++;
+          else if(updated[i]==='}'){depth--;if(depth===0){endIdx=i;break;}}
+        }
+        if(endIdx===-1){ searchFrom=idx+startMarker.length; continue; }
+        const endWithSemi=updated[endIdx+1]===';'?endIdx+2:endIdx+1;
+        ranges.push([idx,endWithSemi]);
+        searchFrom=endWithSemi;
       }
-      if(endIdx===-1){throw new Error('Estrutura STATIC_PHOTOS inválida.');}
-      const endWithSemi=current[endIdx+1]===';'?endIdx+2:endIdx+1;
-      const updated=current.slice(0,startIdx)+newPhotos+current.slice(endWithSemi);
+      if(!ranges.length){throw new Error('STATIC_PHOTOS não encontrado.');}
+      for(let r=ranges.length-1;r>=0;r--){
+        const seg=ranges[r];
+        updated=updated.slice(0,seg[0])+newPhotos+updated.slice(seg[1]);
+      }
       const encoded=btoa(unescape(encodeURIComponent(updated)));
       return fetch('https://api.github.com/repos/pedrogjcorreia-jwwm/thrivella-app/contents/index.html',{
         method:'PUT',
@@ -13267,16 +13283,32 @@ window.exportPhotoCache=function(){
       const sha=meta.sha;
       const newPhotos='window.STATIC_PHOTOS = '+JSON.stringify(out)+';';
       const startMarker='window.STATIC_PHOTOS = {';
-      const startIdx=current.indexOf(startMarker);
-      if(startIdx===-1){throw new Error('STATIC_PHOTOS não encontrado.');}
-      let depth=0,endIdx=-1;
-      for(let i=startIdx+startMarker.length-1;i<current.length;i++){
-        if(current[i]==='{')depth++;
-        else if(current[i]==='}'){depth--;if(depth===0){endIdx=i;break;}}
+      // Replace ALL real assignments of STATIC_PHOTOS (file has duplicated script blocks
+      // so there are two embedded data dicts that must stay in sync — otherwise photos
+      // added on one "version" don't appear on the other).
+      let updated=current;
+      let searchFrom=0;
+      const ranges=[];
+      while(true){
+        const idx=updated.indexOf(startMarker, searchFrom);
+        if(idx===-1)break;
+        const prevCh=updated[idx-1];
+        if(prevCh==="'"||prevCh==='"'){ searchFrom=idx+startMarker.length; continue; }
+        let depth=0,endIdx=-1;
+        for(let i=idx+startMarker.length-1;i<updated.length;i++){
+          if(updated[i]==='{')depth++;
+          else if(updated[i]==='}'){depth--;if(depth===0){endIdx=i;break;}}
+        }
+        if(endIdx===-1){ searchFrom=idx+startMarker.length; continue; }
+        const endWithSemi=updated[endIdx+1]===';'?endIdx+2:endIdx+1;
+        ranges.push([idx,endWithSemi]);
+        searchFrom=endWithSemi;
       }
-      if(endIdx===-1){throw new Error('Estrutura STATIC_PHOTOS inválida.');}
-      const endWithSemi=current[endIdx+1]===';'?endIdx+2:endIdx+1;
-      const updated=current.slice(0,startIdx)+newPhotos+current.slice(endWithSemi);
+      if(!ranges.length){throw new Error('STATIC_PHOTOS não encontrado.');}
+      for(let r=ranges.length-1;r>=0;r--){
+        const seg=ranges[r];
+        updated=updated.slice(0,seg[0])+newPhotos+updated.slice(seg[1]);
+      }
       const encoded=btoa(unescape(encodeURIComponent(updated)));
       return fetch('https://api.github.com/repos/pedrogjcorreia-jwwm/thrivella-app/contents/index.html',{
         method:'PUT',
