@@ -26063,7 +26063,13 @@ function renderMobileElite(){
     Object.keys(saved).forEach(k=>{if(saved[k]&&saved[k]!=='DELETE')window.photoCache[k]=saved[k];else if(saved[k]==='DELETE')delete window.photoCache[k];});
   }catch(e){}
   // Also try individual keys
-  const _simNames=PLAYERS.filter(x=>x.name!==p.name&&x.position===p.position).slice(0,4).map(x=>x.name);
+  const _simNames=PLAYERS.filter(x=>{
+    if(x.name===p.name) return false;
+    if(!x.position||!p.position) return false;
+    const xPos=x.position.split(',').map(s=>s.trim());
+    const pPos=p.position.split(',').map(s=>s.trim());
+    return xPos.some(xp=>pPos.includes(xp));
+  }).sort((a,b)=>(b.talent_index||0)-(a.talent_index||0)).slice(0,4).map(x=>x.name);
   [p.name,..._simNames].forEach(name=>{
     const lv=localStorage.getItem('photo_'+name);
     if(lv==='DELETE') delete window.photoCache[name];
