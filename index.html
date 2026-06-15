@@ -300,8 +300,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 /* Category column separators */
 .players-table td.cat-total,.players-table th.cat-total{border-left:1px solid rgba(255,255,255,0.08)}
 /* Score bar */
-.td-score-bar-wrap{display:flex;align-items:center;justify-content:center;gap:7px;width:100%}
-.td-score-num{font-family:var(--font-d);font-size:20px;font-weight:700;text-align:center}
+.td-score-bar-wrap{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:100%}
+.td-score-num{font-family:var(--font-d);font-size:19.5px;font-weight:700;text-align:center}
 .td-score-track{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;min-width:44px}
 .td-score-fill{height:100%;border-radius:2px}
 /* League badge */
@@ -6029,18 +6029,18 @@ function renderTable(){
           </div>
         </div>
       </td>
-      <td>
+      <td style="vertical-align:middle">
         <div class="td-score-bar-wrap">
           <span class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}</span>
           ${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-family:var(--font-d);font-size:7px;color:${p.liga_mult>1?'#00e5a0':'#ff7070'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}${Math.abs(Math.round((p.liga_mult-1)*100))}%</span>` : ''}
         </div>
       </td>
-      <td>
+      <td style="vertical-align:middle">
         ${p.has_phy ? `<div class="td-score-bar-wrap">
           <span class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</span>
         </div>` : '<span style="color:var(--muted2);font-size:10px">—</span>'}
       </td>
-      <td>
+      <td style="vertical-align:middle">
         <div class="td-score-bar-wrap">
           <span class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#38bdf8':'rgba(255,255,255,.3)'}">${p.transfer_score||0}</span>
         </div>
@@ -8438,8 +8438,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 /* Category column separators */
 .players-table td.cat-total,.players-table th.cat-total{border-left:1px solid rgba(255,255,255,0.08)}
 /* Score bar */
-.td-score-bar-wrap{display:flex;align-items:center;justify-content:center;gap:7px;width:100%}
-.td-score-num{font-family:var(--font-d);font-size:20px;font-weight:700;text-align:center}
+.td-score-bar-wrap{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:100%}
+.td-score-num{font-family:var(--font-d);font-size:19.5px;font-weight:700;text-align:center}
 .td-score-track{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;min-width:44px}
 .td-score-fill{height:100%;border-radius:2px}
 /* League badge */
@@ -14135,18 +14135,18 @@ function renderTable(){
           </div>
         </div>
       </td>
-      <td>
+      <td style="vertical-align:middle">
         <div class="td-score-bar-wrap">
           <span class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}</span>
           ${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-family:var(--font-d);font-size:7px;color:${p.liga_mult>1?'#00e5a0':'#ff7070'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}${Math.abs(Math.round((p.liga_mult-1)*100))}%</span>` : ''}
         </div>
       </td>
-      <td>
+      <td style="vertical-align:middle">
         ${p.has_phy ? `<div class="td-score-bar-wrap">
           <span class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</span>
         </div>` : '<span style="color:var(--muted2);font-size:10px">—</span>'}
       </td>
-      <td>
+      <td style="vertical-align:middle">
         <div class="td-score-bar-wrap">
           <span class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#38bdf8':'rgba(255,255,255,.3)'}">${p.transfer_score||0}</span>
         </div>
