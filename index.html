@@ -25129,7 +25129,7 @@ function renderMobileTable(){
     +players.map((p,i)=>{
       const ti  = Math.round(p.talent_index_pct||0);
       const ph  = Math.round((p.total_physical||0)/25*100);
-      const tr  = Math.round(p.score||0);
+      const tr  = Math.round(p.transfer_score||0);
       const metV= metricKey&&p[metricKey]!=null?(+(p[metricKey])).toFixed(1):'—';
       const ctStr = fmtCt(p.contract_end);
       const ctRed = p.contract_end&&p.contract_end.slice(2,4)==='26';
@@ -25375,6 +25375,10 @@ function renderMobileCompareView(nameA, nameB){
 }
 
 function renderMobileShadowView(){
+  if(!_shInited){
+    if(typeof shLoad==='function') shLoad();
+    _shInited=true;
+  }
   const content = document.getElementById('mob-elite-content');
   const filterBar = document.getElementById('mob-filter-bar');
   if(!content) return;
@@ -25592,6 +25596,7 @@ function renderMobileShadowView(){
       if(cur.players.indexOf(name)===-1 && cur.players.length<3) cur.players.push(name);
       cur._manual=true;
       shData.my[slotId]=cur;
+      if(typeof shSave==='function') shSave();
       renderMobileShadowView();
     };
 
@@ -25820,6 +25825,7 @@ function renderMobileShadowView(){
                       const idx = arr.indexOf(pname);
                       if(idx>-1) arr.splice(idx,1);
                       shData.my[slot.id]={players:arr, cur:0, _manual:true};
+                      if(typeof shSave==='function') shSave();
                       renderMobileShadowView();
                     };
                   } else {
@@ -26055,7 +26061,7 @@ function renderMobileElite(){
   const phVal=Math.round((p.total_physical||0)/25*100);
   const phCol=piPct>=0.7?'#00e5a0':piPct>=0.4?'#9b7fff':'rgba(160,175,195,.5)';
 
-  const tsScore=p.score||0;
+  const tsScore=p.transfer_score||0;
   const tsCol=tsScore>=75?'#00e5a0':tsScore>=50?'#00d4ff':'rgba(160,178,200,.6)';
 
   // ── Load all photos from localStorage immediately ──
