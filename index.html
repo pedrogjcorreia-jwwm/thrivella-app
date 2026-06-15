@@ -25453,9 +25453,11 @@ function renderMobileShadowView(){
           +'<span style="font-size:10px;color:#6b7d8e;white-space:nowrap;flex-shrink:0">TAL <b style="color:'+mobShTiC(talPct)+'">'+talPct+'</b>'
             +'&nbsp;&nbsp;PHY '+(hasPhy?'<b style="color:'+mobShTiC(phyPct)+'">'+phyPct+'</b>':'<span style="color:rgba(100,110,130,.6);font-size:9px">N/A</span>')+'</span>'
         +'</div>'
-        +'<div style="font-size:10px;color:rgba(0,229,160,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.team||'')+'</div>'
-        +'<div style="font-size:10px;color:rgba(180,200,220,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'
-          +bio.map(function(b,i){ return (i===bio.length-1 && ctTxt!=='\u2014') ? '<span style="color:'+ctCol+'">'+b+'</span>' : b; }).join(' \u00b7 ')
+        +'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:2px">'
+          +'<span style="font-size:10px;color:rgba(180,200,220,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0">'
+            +bio.map(function(b,i){ return (i===bio.length-1 && ctTxt!=='\u2014') ? '<span style="color:'+ctCol+'">'+b+'</span>' : b; }).join(' \u00b7 ')
+          +'</span>'
+          +'<span style="font-size:10px;color:rgba(0,229,160,.75);white-space:nowrap;flex-shrink:0">'+(p.team||'')+'</span>'
         +'</div>';
       row.onclick=onPick;
       return row;
@@ -25760,7 +25762,8 @@ function renderMobileShadowView(){
                   const cardShadow = ctExpiring ? '0 0 8px rgba(255,71,87,.35)' : ct2027 ? '0 0 8px rgba(245,158,11,.3)' : 'none';
 
                   const card = document.createElement('div');
-                  card.style.cssText = 'position:absolute;left:'+pos.x+'%;top:calc('+topPct+'% - 4px - '+(i*(CARD_H+GAP))+'px);transform:translate(-50%,-100%);width:92px;height:'+CARD_H+'px;box-sizing:border-box;background:'+cardBg+';border:1px solid '+cardBorder+';border-radius:4px;padding:2px 4px;z-index:'+(11+i)+';box-shadow:'+cardShadow+';overflow:hidden';
+                  const stackPos = players.length-1-i; // 0=best/first -> top of stack; last -> closest to dot
+                  card.style.cssText = 'position:absolute;left:'+pos.x+'%;top:calc('+topPct+'% - 4px - '+(stackPos*(CARD_H+GAP))+'px);transform:translate(-50%,-100%);width:92px;height:'+CARD_H+'px;box-sizing:border-box;background:'+cardBg+';border:1px solid '+cardBorder+';border-radius:4px;padding:2px 4px;z-index:'+(11+stackPos)+';box-shadow:'+cardShadow+';overflow:hidden';
 
                   card.innerHTML =
                     // Row 1: Name + rank badge + 2nd role badge
