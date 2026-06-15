@@ -25791,7 +25791,10 @@ function renderMobileShadowView(){
                     card.style.cursor='pointer';
                     card.onclick=function(e){
                       e.stopPropagation();
-                      shData.my[slot.id]={players:[], cur:0};
+                      const arr = shData.my[slot.id] && shData.my[slot.id].players || [];
+                      const idx = arr.indexOf(pname);
+                      if(idx>-1) arr.splice(idx,1);
+                      shData.my[slot.id]={players:arr, cur:0, _manual:true};
                       renderMobileShadowView();
                     };
                   } else {
