@@ -4707,12 +4707,10 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('rank')" class="s-desc">#</th>
                 <th onclick="sortTable('name')" style="padding:0;width:180px;max-width:180px">
                   <div style="display:flex;align-items:center;gap:4px;padding:9px 8px">
-                    <span style="display:inline-block;width:30px;text-align:center;flex-shrink:0;font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">AGE</span>
-                    <span style="display:inline-block;width:30px;text-align:center;flex-shrink:0;font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">SIZE</span>
                     <span style="margin-left:4px;font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)" data-i18n="col_player">Jogador</span>
                   </div>
                 </th>
-                <th style="font-size:9px;white-space:nowrap;color:var(--muted);min-width:95px;text-align:center">Roles</th>
+                <th onclick="sortTable('team')" style="font-size:10px;white-space:nowrap;color:var(--muted);min-width:120px;text-align:left;padding-left:10px;letter-spacing:1px;text-transform:uppercase">Clube / Liga</th>
                 <th style="white-space:nowrap;padding:0">
                   <div style="display:flex;align-items:center;gap:0;height:100%">
                     <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1;font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)" title="Talent Index = OFF+DEF+PASS, máx 67 pts" data-i18n="col_talent">Talent Index</span>
@@ -4789,7 +4787,6 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:var(--purple)">%HSR+Spr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:var(--purple)">Dist.Tot</th>
                 <th onclick="sortTable('mkt_value')" data-i18n="col_value">Valor</th>
-                <th onclick="sortTable('league')" data-i18n="col_league">Liga</th>
                 <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#ff8c00">
                   <span style="display:flex;align-items:center;gap:4px;justify-content:center">
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="opacity:.7"><circle cx="5" cy="5" r="4.5" fill="none" stroke="currentColor" stroke-width="1"></circle><path d="M5 2.5l.6 1.9h2l-1.6 1.2.6 1.9L5 6.3l-1.6 1.2.6-1.9L2.4 4.4h2z"></path></svg>
@@ -5980,6 +5977,10 @@ function renderTable(){
     const ag=ageStyle(p.age);
     const ht=htStyle(p.size);
     const htTxt=p.size>0?p.size:'—';
+    const posTokens=(p.position||'').split(',').map(s=>s.trim()).filter(Boolean);
+    const pos1=posTokens[0]||'';
+    const pos2=posTokens[1]||'';
+    const footTxt=p.foot?(/^d/i.test(p.foot)?'R':'L'):'';
     const bar=Math.max(0,Math.min(100,activeTIPct(p))).toFixed(0);
     const tiAvg=PLAYERS.reduce((s,x)=>s+(activeTI(x)||0),0)/PLAYERS.length;
     const tiAbove=activeTI(p)>=tiAvg;
@@ -6002,30 +6003,28 @@ function renderTable(){
       ondragstart="onRowDragStart(event)"
       onclick="selectPlayer('${p.name.replace(/'/g,"\'").replace(/"/g,'&quot;')}','${p.league}')">
       <td style="padding:4px 2px;width:28px" onclick="event.stopPropagation()"><button class="td-edit-btn" onclick="openEditModal(decodeURIComponent(this.dataset.n))" data-n="${encodeURIComponent(p.name)}" title="Editar"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/></svg></button></td>
-      <td class="td-rank">${rank+1}</td>
+      <td class="td-rank" style="line-height:1.3">
+        <div>${rank+1}</div>
+        <div style="margin-top:2px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.25);color:var(--accent)">${p.position_group||'WIN'}</span></div>
+      </td>
       <td>
         <div class="td-player" style="align-items:flex-start">
-          <div style="flex-shrink:0;padding-top:2px">
-            <div class="td-age-box" style="background:${ag.bg};color:${ag.col}">${p.age}</div>
-          </div>
-          <div style="flex-shrink:0;padding-top:2px">
-            <div class="td-ht-box" style="background:${ht.bg};color:${ht.col}">${htTxt}</div>
-          </div>
-
           <div>
             <div class="td-name">${p.name}</div>
-            <div class="td-info-row">
-              <span class="td-pos-inline" style="background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.25);color:var(--accent)">WIN</span>
+            <div class="td-info-row" style="flex-wrap:wrap;row-gap:3px">
+              ${pos1?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--muted2)">${pos1}</span>`:''}
+              ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
+              <span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${p.age}y</span>
+              <span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${htTxt}cm</span>
+              ${footTxt?`<span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${footTxt}</span>`:''}
               ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
-              <span class="td-club">${p.team}</span>
             </div>
           </div>
         </div>
       </td>
-      <td style="vertical-align:middle;padding:3px 4px;text-align:center;width:80px;max-width:80px">
-        <div style="display:flex;flex-wrap:nowrap;gap:3px;justify-content:center;align-items:center;overflow:hidden">
-          ${(p.position||'').split(',').map(x=>x.trim()).filter(x=>x).map(pos=>{const a=!VALID_WIN_POS.has(pos);return`<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 4px;border-radius:3px;background:${a?'rgba(255,71,87,0.15)':'rgba(255,255,255,0.06)'};border:1px solid ${a?'rgba(255,71,87,0.35)':'rgba(255,255,255,0.1)'};color:${a?'#ff4757':'var(--muted2)'}">${pos}</span>`;}).join('')}
-        </div>
+      <td style="vertical-align:middle;text-align:left;padding:6px 10px;min-width:120px">
+        <div style="font-family:var(--font-d);font-weight:700;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px">${p.team}</div>
+        <div style="margin-top:3px">${leagueBadge(p.league)}</div>
       </td>
       <td>
         <div class="td-score-bar-wrap">
@@ -6085,7 +6084,6 @@ function renderTable(){
       <td class="cat-sub cat-phys td-num" style="color:${mc('hsr_sprint_pct',p.name)}">${(p.hsr_sprint_pct!=null?p.hsr_sprint_pct.toFixed(1):'—')}%</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('total_dist',p.name)}">${(p.total_dist!=null?Math.round(p.total_dist):'—').toLocaleString()}</td>
       <td class="td-val">${fmtVal(p.mkt_value)}</td>
-      <td style="text-align:center">${leagueBadge(p.league)}</td>
       <td class="td-sf">${(()=>{
         const r = p.sf_rating;
         if(r==null||r===undefined) return '<span class="sf-rating-null">—</span>';
@@ -12814,12 +12812,10 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('rank')" class="s-desc">#</th>
                 <th onclick="sortTable('name')" style="padding:0;width:180px;max-width:180px">
                   <div style="display:flex;align-items:center;gap:4px;padding:9px 8px">
-                    <span style="display:inline-block;width:30px;text-align:center;flex-shrink:0;font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">AGE</span>
-                    <span style="display:inline-block;width:30px;text-align:center;flex-shrink:0;font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">SIZE</span>
                     <span style="margin-left:4px;font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)" data-i18n="col_player">Jogador</span>
                   </div>
                 </th>
-                <th style="font-size:9px;white-space:nowrap;color:var(--muted);min-width:95px;text-align:center">Roles</th>
+                <th onclick="sortTable('team')" style="font-size:10px;white-space:nowrap;color:var(--muted);min-width:120px;text-align:left;padding-left:10px;letter-spacing:1px;text-transform:uppercase">Clube / Liga</th>
                 <th style="white-space:nowrap;padding:0">
                   <div style="display:flex;align-items:center;gap:0;height:100%">
                     <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1;font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)" title="Talent Index = OFF+DEF+PASS, máx 67 pts" data-i18n="col_talent">Talent Index</span>
@@ -12896,7 +12892,6 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:var(--purple)">%HSR+Spr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:var(--purple)">Dist.Tot</th>
                 <th onclick="sortTable('mkt_value')" data-i18n="col_value">Valor</th>
-                <th onclick="sortTable('league')" data-i18n="col_league">Liga</th>
                 <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#ff8c00">
                   <span style="display:flex;align-items:center;gap:4px;justify-content:center">
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="opacity:.7"><circle cx="5" cy="5" r="4.5" fill="none" stroke="currentColor" stroke-width="1"></circle><path d="M5 2.5l.6 1.9h2l-1.6 1.2.6 1.9L5 6.3l-1.6 1.2.6-1.9L2.4 4.4h2z"></path></svg>
@@ -14087,6 +14082,10 @@ function renderTable(){
     const ag=ageStyle(p.age);
     const ht=htStyle(p.size);
     const htTxt=p.size>0?p.size:'—';
+    const posTokens=(p.position||'').split(',').map(s=>s.trim()).filter(Boolean);
+    const pos1=posTokens[0]||'';
+    const pos2=posTokens[1]||'';
+    const footTxt=p.foot?(/^d/i.test(p.foot)?'R':'L'):'';
     const bar=Math.max(0,Math.min(100,activeTIPct(p))).toFixed(0);
     const tiAvg=PLAYERS.reduce((s,x)=>s+(activeTI(x)||0),0)/PLAYERS.length;
     const tiAbove=activeTI(p)>=tiAvg;
@@ -14109,30 +14108,28 @@ function renderTable(){
       ondragstart="onRowDragStart(event)"
       onclick="selectPlayer('${p.name.replace(/'/g,"\'").replace(/"/g,'&quot;')}','${p.league}')">
       <td style="padding:4px 2px;width:28px" onclick="event.stopPropagation()"><button class="td-edit-btn" onclick="openEditModal(decodeURIComponent(this.dataset.n))" data-n="${encodeURIComponent(p.name)}" title="Editar"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/></svg></button></td>
-      <td class="td-rank">${rank+1}</td>
+      <td class="td-rank" style="line-height:1.3">
+        <div>${rank+1}</div>
+        <div style="margin-top:2px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.25);color:var(--accent)">${p.position_group||'WIN'}</span></div>
+      </td>
       <td>
         <div class="td-player" style="align-items:flex-start">
-          <div style="flex-shrink:0;padding-top:2px">
-            <div class="td-age-box" style="background:${ag.bg};color:${ag.col}">${p.age}</div>
-          </div>
-          <div style="flex-shrink:0;padding-top:2px">
-            <div class="td-ht-box" style="background:${ht.bg};color:${ht.col}">${htTxt}</div>
-          </div>
-
           <div>
             <div class="td-name">${p.name}</div>
-            <div class="td-info-row">
-              <span class="td-pos-inline" style="background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.25);color:var(--accent)">WIN</span>
+            <div class="td-info-row" style="flex-wrap:wrap;row-gap:3px">
+              ${pos1?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--muted2)">${pos1}</span>`:''}
+              ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
+              <span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${p.age}y</span>
+              <span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${htTxt}cm</span>
+              ${footTxt?`<span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${footTxt}</span>`:''}
               ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
-              <span class="td-club">${p.team}</span>
             </div>
           </div>
         </div>
       </td>
-      <td style="vertical-align:middle;padding:3px 4px;text-align:center;width:80px;max-width:80px">
-        <div style="display:flex;flex-wrap:nowrap;gap:3px;justify-content:center;align-items:center;overflow:hidden">
-          ${(p.position||'').split(',').map(x=>x.trim()).filter(x=>x).map(pos=>{const a=!VALID_WIN_POS.has(pos);return`<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 4px;border-radius:3px;background:${a?'rgba(255,71,87,0.15)':'rgba(255,255,255,0.06)'};border:1px solid ${a?'rgba(255,71,87,0.35)':'rgba(255,255,255,0.1)'};color:${a?'#ff4757':'var(--muted2)'}">${pos}</span>`;}).join('')}
-        </div>
+      <td style="vertical-align:middle;text-align:left;padding:6px 10px;min-width:120px">
+        <div style="font-family:var(--font-d);font-weight:700;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px">${p.team}</div>
+        <div style="margin-top:3px">${leagueBadge(p.league)}</div>
       </td>
       <td>
         <div class="td-score-bar-wrap">
@@ -14192,7 +14189,6 @@ function renderTable(){
       <td class="cat-sub cat-phys td-num" style="color:${mc('hsr_sprint_pct',p.name)}">${(p.hsr_sprint_pct!=null?p.hsr_sprint_pct.toFixed(1):'—')}%</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('total_dist',p.name)}">${(p.total_dist!=null?Math.round(p.total_dist):'—').toLocaleString()}</td>
       <td class="td-val">${fmtVal(p.mkt_value)}</td>
-      <td style="text-align:center">${leagueBadge(p.league)}</td>
       <td class="td-sf">${(()=>{
         const r = p.sf_rating;
         if(r==null||r===undefined) return '<span class="sf-rating-null">—</span>';
