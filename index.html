@@ -7383,7 +7383,15 @@ function renderCompare(){
   // Delay to let layout settle before measuring container
   requestAnimationFrame(() => { setTimeout(drawCmpRadarCanvas, 30); });
 
-  // Scroll suave até às métricas — confinado ao container view-compare (não à página)
+  // ╔═══════════════════════════════════════════════════════════════════════╗
+  // ║ ATENÇÃO — NÃO usar anchor.scrollIntoView() aqui. RECORRENTE BUG:       ║
+  // ║ scrollIntoView({block:'start'}) sobe na árvore até encontrar um       ║
+  // ║ ancestral com overflow e faz scroll da PÁGINA INTEIRA, empurrando a   ║
+  // ║ topbar para fora do ecrã. O scroll TEM de ficar confinado ao          ║
+  // ║ #view-compare via scrollBy() com a posição relativa do anchor.        ║
+  // ║ Se precisares de alterar este comportamento, mantém o cálculo de      ║
+  // ║ delta + container.scrollBy — nunca anchor.scrollIntoView direto.      ║
+  // ╚═══════════════════════════════════════════════════════════════════════╝
   setTimeout(() => {
     const anchor = document.getElementById('cmp-metrics-anchor');
     const container = document.getElementById('view-compare');
@@ -7391,7 +7399,7 @@ function renderCompare(){
       const anchorRect = anchor.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
       const delta = anchorRect.top - containerRect.top;
-      container.scrollBy({ top: delta, behavior: 'smooth' });
+      container.scrollBy({ top: delta, behavior: 'smooth' }); // NUNCA anchor.scrollIntoView()
     }
   }, 350);
 
@@ -15495,7 +15503,15 @@ function renderCompare(){
   // Delay to let layout settle before measuring container
   requestAnimationFrame(() => { setTimeout(drawCmpRadarCanvas, 30); });
 
-  // Scroll suave até às métricas — confinado ao container view-compare (não à página)
+  // ╔═══════════════════════════════════════════════════════════════════════╗
+  // ║ ATENÇÃO — NÃO usar anchor.scrollIntoView() aqui. RECORRENTE BUG:       ║
+  // ║ scrollIntoView({block:'start'}) sobe na árvore até encontrar um       ║
+  // ║ ancestral com overflow e faz scroll da PÁGINA INTEIRA, empurrando a   ║
+  // ║ topbar para fora do ecrã. O scroll TEM de ficar confinado ao          ║
+  // ║ #view-compare via scrollBy() com a posição relativa do anchor.        ║
+  // ║ Se precisares de alterar este comportamento, mantém o cálculo de      ║
+  // ║ delta + container.scrollBy — nunca anchor.scrollIntoView direto.      ║
+  // ╚═══════════════════════════════════════════════════════════════════════╝
   setTimeout(() => {
     const anchor = document.getElementById('cmp-metrics-anchor');
     const container = document.getElementById('view-compare');
@@ -15503,7 +15519,7 @@ function renderCompare(){
       const anchorRect = anchor.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
       const delta = anchorRect.top - containerRect.top;
-      container.scrollBy({ top: delta, behavior: 'smooth' });
+      container.scrollBy({ top: delta, behavior: 'smooth' }); // NUNCA anchor.scrollIntoView()
     }
   }, 350);
 
