@@ -391,7 +391,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   display:flex;align-items:center;justify-content:center;
   font-family:var(--font-d);font-size:13px;font-weight:700;
 }
-.td-name{font-family:var(--font-d);font-size:14px;font-weight:600}
+.td-name{font-family:var(--font-d);font-size:14.5px;font-weight:600}
 .td-badge-col{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0}
 .td-badge-lbl{font-family:var(--font-d);font-size:8px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted2);line-height:1}
 .td-info-row{display:flex;align-items:center;gap:6px;margin-top:2px}
@@ -6013,9 +6013,9 @@ function renderTable(){
             <div class="td-name">${p.name}</div>
             <div class="td-info-row" style="flex-wrap:wrap;row-gap:3px">
               ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
-              <span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${p.age}y</span>
-              <span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${htTxt}cm</span>
-              ${footTxt?`<span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${footTxt}</span>`:''}
+              <span style="font-family:var(--font-d);font-size:10.5px;color:var(--muted2)">${p.age}y</span>
+              <span style="font-family:var(--font-d);font-size:10.5px;color:var(--muted2)">${htTxt}cm</span>
+              ${footTxt?`<span style="font-family:var(--font-d);font-size:10.5px;color:var(--muted2)">${footTxt}</span>`:''}
               ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
             </div>
           </div>
@@ -6025,7 +6025,7 @@ function renderTable(){
         <div class="td-player" style="align-items:flex-start">
           <div>
             <div class="td-name" style="color:rgba(255,255,255,.42);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px">${p.team}</div>
-            <div class="td-info-row" style="color:rgba(0,212,255,.65)">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
+            <div class="td-info-row" style="font-size:9.5px;color:rgba(0,212,255,.65)">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
           </div>
         </div>
       </td>
@@ -8529,7 +8529,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   display:flex;align-items:center;justify-content:center;
   font-family:var(--font-d);font-size:13px;font-weight:700;
 }
-.td-name{font-family:var(--font-d);font-size:14px;font-weight:600}
+.td-name{font-family:var(--font-d);font-size:14.5px;font-weight:600}
 .td-badge-col{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0}
 .td-badge-lbl{font-family:var(--font-d);font-size:8px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted2);line-height:1}
 .td-info-row{display:flex;align-items:center;gap:6px;margin-top:2px}
@@ -14119,9 +14119,9 @@ function renderTable(){
             <div class="td-name">${p.name}</div>
             <div class="td-info-row" style="flex-wrap:wrap;row-gap:3px">
               ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
-              <span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${p.age}y</span>
-              <span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${htTxt}cm</span>
-              ${footTxt?`<span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${footTxt}</span>`:''}
+              <span style="font-family:var(--font-d);font-size:10.5px;color:var(--muted2)">${p.age}y</span>
+              <span style="font-family:var(--font-d);font-size:10.5px;color:var(--muted2)">${htTxt}cm</span>
+              ${footTxt?`<span style="font-family:var(--font-d);font-size:10.5px;color:var(--muted2)">${footTxt}</span>`:''}
               ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
             </div>
           </div>
@@ -14131,7 +14131,7 @@ function renderTable(){
         <div class="td-player" style="align-items:flex-start">
           <div>
             <div class="td-name" style="color:rgba(255,255,255,.42);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px">${p.team}</div>
-            <div class="td-info-row" style="color:rgba(0,212,255,.65)">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
+            <div class="td-info-row" style="font-size:9.5px;color:rgba(0,212,255,.65)">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
           </div>
         </div>
       </td>
