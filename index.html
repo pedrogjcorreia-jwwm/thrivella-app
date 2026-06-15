@@ -26422,15 +26422,15 @@ function renderMobileElite(){
       </div>
       <div style="font-family:'Barlow',sans-serif;font-size:12px;color:rgba(255,255,255,.4);margin-bottom:12px">${p.team||''} · <span style="color:rgba(0,212,255,.6)">${p.league||''}</span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);padding:14px 0;margin-bottom:10px;background:rgba(0,20,60,.35);border-radius:6px">
-        <div style="text-align:center;padding:0 4px">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:8.5px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Talent Index</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;color:${tiCol};line-height:1;letter-spacing:-1px">${tiVal}</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:7.5px;color:rgba(255,255,255,.35);margin-top:3px">#${tiLR} liga · TOP ${100-tiTopPct}%</div>
-        </div>
-        <div style="text-align:center;padding:0 4px;border-left:1px solid rgba(255,255,255,.08)">
+        <div style="text-align:center;padding:0 4px;border-radius:6px">
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:8.5px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Physical Index</div>
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;color:${phCol};line-height:1;letter-spacing:-1px">${phVal}</div>
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:7.5px;color:rgba(255,255,255,.35);margin-top:3px">#${piRnk} liga · ${(p.total_physical||0).toFixed(1)} pts</div>
+        </div>
+        <div style="text-align:center;padding:0 4px;border-left:1px solid rgba(255,255,255,.08);border-radius:6px;box-shadow:0 0 14px ${tiCol}40">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:8.5px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Talent Index</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;color:${tiCol};line-height:1;letter-spacing:-1px;text-shadow:0 0 10px ${tiCol}80">${tiVal}</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:7.5px;color:rgba(255,255,255,.35);margin-top:3px">#${tiLR} liga · TOP ${100-tiTopPct}%</div>
         </div>
         <div style="text-align:center;padding:0 4px;border-left:1px solid rgba(255,255,255,.08)">
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:8.5px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Transfer Score</div>
