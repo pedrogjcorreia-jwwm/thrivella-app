@@ -7383,10 +7383,16 @@ function renderCompare(){
   // Delay to let layout settle before measuring container
   requestAnimationFrame(() => { setTimeout(drawCmpRadarCanvas, 30); });
 
-  // Scroll suave até às métricas
+  // Scroll suave até às métricas — confinado ao container view-compare (não à página)
   setTimeout(() => {
     const anchor = document.getElementById('cmp-metrics-anchor');
-    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const container = document.getElementById('view-compare');
+    if (anchor && container) {
+      const anchorRect = anchor.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const delta = anchorRect.top - containerRect.top;
+      container.scrollBy({ top: delta, behavior: 'smooth' });
+    }
   }, 350);
 
   // Auto-trigger AI comparison
@@ -15489,10 +15495,16 @@ function renderCompare(){
   // Delay to let layout settle before measuring container
   requestAnimationFrame(() => { setTimeout(drawCmpRadarCanvas, 30); });
 
-  // Scroll suave até às métricas
+  // Scroll suave até às métricas — confinado ao container view-compare (não à página)
   setTimeout(() => {
     const anchor = document.getElementById('cmp-metrics-anchor');
-    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const container = document.getElementById('view-compare');
+    if (anchor && container) {
+      const anchorRect = anchor.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const delta = anchorRect.top - containerRect.top;
+      container.scrollBy({ top: delta, behavior: 'smooth' });
+    }
   }, 350);
 
   // Auto-trigger AI comparison
