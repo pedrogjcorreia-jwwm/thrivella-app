@@ -25420,16 +25420,33 @@ function renderMobileShadowView(){
     function mobShRowStyle(){
       return 'display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(0,180,200,.06);border:1px solid rgba(0,180,200,.18);border-radius:10px;padding:9px 12px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left;width:100%;box-sizing:border-box;flex-shrink:0';
     }
-    function mobShSearchStyle(){
-      return 'width:100%;box-sizing:border-box;background:rgba(0,180,200,.06);border:1px solid rgba(0,180,200,.18);border-radius:10px;padding:9px 12px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;margin-bottom:8px;flex-shrink:0';
+    function mobShSearchInput(){
+      const wrap=document.createElement('div');
+      wrap.style.cssText='position:relative;flex-shrink:0;margin-bottom:8px';
+      const icon=document.createElement('span');
+      icon.textContent='\ud83d\udd0d';
+      icon.style.cssText='position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;opacity:.7;pointer-events:none';
+      const input=document.createElement('input');
+      input.type='text';
+      input.placeholder='Pesquisar jogador...';
+      input.style.cssText='width:100%;box-sizing:border-box;background:rgba(0,180,200,.06);border:1px solid rgba(0,196,255,.4);border-radius:10px;padding:9px 12px 9px 30px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:12px';
+      wrap.appendChild(icon);
+      wrap.appendChild(input);
+      return {wrap:wrap, input:input};
     }
     function mobShPlayerRow(p, onPick){
       const ti=p.talent_index_pct!=null?Math.round(p.talent_index_pct):'\u2014';
+      const bio=(p.age?p.age+'y':'')+(p.size?' \u00b7 '+p.size+'cm':'');
       const row=document.createElement('button');
-      row.style.cssText=mobShRowStyle();
-      row.innerHTML='<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">'+p.name+'</span>'
-        +'<span style="font-size:10px;color:rgba(0,229,160,.75);white-space:nowrap;flex-shrink:0">'+(p.team||'')+'</span>'
-        +'<span style="font-size:10px;color:#6b7d8e;white-space:nowrap;flex-shrink:0">TAL <b style="color:#cde8ff">'+ti+'</b></span>';
+      row.style.cssText='display:flex;flex-direction:column;gap:2px;background:rgba(0,180,200,.06);border:1px solid rgba(0,180,200,.18);border-radius:10px;padding:8px 12px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;cursor:pointer;text-align:left;width:100%;box-sizing:border-box;flex-shrink:0';
+      row.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">'
+          +'<span style="font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">'+p.name+'</span>'
+          +'<span style="font-size:10px;color:#6b7d8e;white-space:nowrap;flex-shrink:0">TAL <b style="color:#cde8ff">'+ti+'</b></span>'
+        +'</div>'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">'
+          +'<span style="font-size:10px;color:rgba(0,229,160,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.team||'')+'</span>'
+          +(bio?'<span style="font-size:10px;color:rgba(180,200,220,.6);white-space:nowrap;flex-shrink:0">'+bio+'</span>':'')
+        +'</div>';
       row.onclick=onPick;
       return row;
     }
@@ -25450,7 +25467,7 @@ function renderMobileShadowView(){
         const slotData=(shData.my||{})[slot.id];
         const occ=slotData && slotData.players && slotData.players[0];
         const btn=document.createElement('button');
-        btn.style.cssText='background:rgba(0,180,200,.06);border:1px solid rgba(0,180,200,.18);border-radius:10px;padding:6px 4px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px';
+        btn.style.cssText='background:#060c12;border:1px solid rgba(0,196,255,.4);border-radius:10px;padding:6px 4px;color:#00c4ff;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px';
         btn.innerHTML='<div>'+slot.label+'</div>'+(occ?'<div style="font-size:8px;color:rgba(0,212,255,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">'+occ+'</div>':'<div style="font-size:8px;color:rgba(255,255,255,.3)">vazio</div>');
         btn.onclick=function(){ mobShPickPosition(slot); };
         grid.appendChild(btn);
@@ -25467,11 +25484,8 @@ function renderMobileShadowView(){
 
       const panel=mobShOverlayShell('Jogador \u2014 '+slot.label);
 
-      const search=document.createElement('input');
-      search.type='text';
-      search.placeholder='Pesquisar jogador...';
-      search.style.cssText=mobShSearchStyle();
-      panel.appendChild(search);
+      const search=mobShSearchInput();
+      panel.appendChild(search.wrap);
 
       const listWrap=document.createElement('div');
       listWrap.style.cssText='display:flex;flex-direction:column;gap:6px;overflow-y:auto;flex:1';
@@ -25492,7 +25506,7 @@ function renderMobileShadowView(){
         leagues.forEach(function(lg){ listWrap.appendChild(countryRow(lg)); });
       }
 
-      search.oninput=function(){
+      search.input.oninput=function(){
         const ft=this.value.toLowerCase().trim();
         listWrap.innerHTML='';
         if(!ft){ renderDefault(); return; }
@@ -25511,11 +25525,8 @@ function renderMobileShadowView(){
       const panel=mobShOverlayShell(lgShortLabel(league)+' \u2014 '+slot.label);
       const players=eligible.filter(function(p){return p.league===league;});
 
-      const search=document.createElement('input');
-      search.type='text';
-      search.placeholder='Pesquisar jogador...';
-      search.style.cssText=mobShSearchStyle();
-      panel.appendChild(search);
+      const search=mobShSearchInput();
+      panel.appendChild(search.wrap);
 
       const listWrap=document.createElement('div');
       listWrap.style.cssText='display:flex;flex-direction:column;gap:6px;overflow-y:auto;flex:1';
@@ -25531,7 +25542,7 @@ function renderMobileShadowView(){
         });
       }
 
-      search.oninput=function(){ render(this.value); };
+      search.input.oninput=function(){ render(this.value); };
       render('');
     }
 
