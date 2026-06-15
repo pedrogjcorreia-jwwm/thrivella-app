@@ -18411,9 +18411,10 @@ function renderPlayerID(name, league) {
     const el=document.getElementById('pid-dotmatrix-bars');if(!el)return;
     const dribQ=((p.dribles90||0)*(p.dribles_pct||0)/100);
     const lp=PLAYERS.filter(x=>x.league===p.league);
+    lp.forEach(x=>{ x._dribQ=(x.dribles90||0)*(x.dribles_pct||0)/100; });
     const metrics=[
       {l:t('m_prog_carries'), key:'prog_carries', raw:p.prog_carries!=null?parseFloat(p.prog_carries.toFixed(1)):null, inv:false},
-      {l:t('m_drib_quality'),       key:'dribles_pct',  raw:dribQ>0?parseFloat(dribQ.toFixed(1)):null, inv:false, customMax:Math.max(...lp.map(x=>((x.dribles90||0)*(x.dribles_pct||0)/100)),0.001)},
+      {l:t('m_drib_quality'),       key:'_dribQ',  raw:dribQ>0?parseFloat(dribQ.toFixed(1)):null, inv:false, customMax:Math.max(...lp.map(x=>x._dribQ),0.001)},
       {l:t('m_recep_prof'),key:'recpt_depth',  raw:p.recpt_depth!=null?parseFloat(p.recpt_depth.toFixed(1)):null,   inv:false},
       {l:t('m_shot_assist'),        key:'shot_assist',  raw:p.shot_assist!=null?parseFloat(p.shot_assist.toFixed(1)):null,   inv:false},
       {l:t('m_xa90'),            key:'xa',           raw:p.xa!=null?parseFloat(parseFloat(p.xa).toFixed(1)):null,         inv:false},
