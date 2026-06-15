@@ -25986,6 +25986,8 @@ function renderMobileElite(){
 
   const N=PLAYERS.length;
   const lgP=PLAYERS.filter(x=>x.league===p.league);
+  lgP.forEach(x=>{ x._dribQ=(x.dribles90||0)*(x.dribles_pct||0)/100; });
+  const dribQ=p._dribQ!=null?p._dribQ:((p.dribles90||0)*(p.dribles_pct||0)/100);
   function rnkL(key,inv){const s=[...lgP].filter(x=>x[key]!=null).sort((a,b)=>inv?(a[key]||0)-(b[key]||0):(b[key]||0)-(a[key]||0));return s.findIndex(x=>x.name===p.name)+1;}
   function pctL(key){const s=[...lgP].filter(x=>x[key]!=null).sort((a,b)=>(b[key]||0)-(a[key]||0));const r=s.findIndex(x=>x.name===p.name);return r<0?0:(s.length-r)/s.length;}
   function vc(key,inv){const pct=pctL(key,inv);return pct>=0.8?'#00e5a0':pct>=0.5?'#00d4ff':'rgba(160,178,200,.5)';}
@@ -26474,8 +26476,7 @@ function renderMobileElite(){
   <div class="mob-e-card">
     <div class="mob-e-sec-hdr"><span class="mob-e-sec-lbl">${t('lbl_key_perf')||'Desempenho Chave'}</span><div class="mob-e-sec-right"><span class="mob-e-col-lbl" style="width:36px;text-align:right">Val</span><span class="mob-e-col-lbl" style="width:28px;text-align:center">Rank</span></div></div>
     ${mrow(t('m_prog_carries')||'Cond. Progressivas',p.prog_carries,'prog_carries')}
-    ${mrow(t('m_drib_quality')||'Drib Quality',p.dribles_pct,'dribles_pct')}
-    ${mrow(t('m_accels90')||'Acelerações',p.accels90,'accels90')}
+    ${mrow(t('m_drib_quality')||'Drib Quality',dribQ>0?parseFloat(dribQ.toFixed(1)):null,'_dribQ')}
     ${mrow(t('m_recep_prof')||'Recep. Profundidade',p.recpt_depth,'recpt_depth')}
     ${mrow(t('m_shot_assist')||'Shot Assist',p.shot_assist,'shot_assist')}
     ${mrow(t('m_xa90')||'xA / 90',p.xa,'xa')}
