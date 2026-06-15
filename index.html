@@ -26367,7 +26367,9 @@ function renderMobileElite(){
       </div>
     </div>`;
   };
-  const sims=PLAYERS.filter(x=>x.name!==p.name&&x.position===p.position).slice(0,4).map(s=>window._renderSimCard(s,p)).join('');
+  const sims=PLAYERS.filter(x=>x.name!==p.name&&x.position===p.position)
+    .sort((a,b)=>(b.talent_index||0)-(a.talent_index||0))
+    .slice(0,4).map(s=>window._renderSimCard(s,p)).join('');
 
   const t=window.t||((k)=>k);
 
@@ -26555,7 +26557,7 @@ function renderMobileElite(){
     if(state.age==='u23') candidates=candidates.filter(x=>(x.age||99)<23);
     if(state.age==='u25') candidates=candidates.filter(x=>(x.age||99)<25);
     if(state.age==='u28') candidates=candidates.filter(x=>(x.age||99)<28);
-    candidates=candidates.slice(0,4);
+    candidates=candidates.sort((a,b)=>(b.talent_index||0)-(a.talent_index||0)).slice(0,4);
     const listEl=document.getElementById('mob-sim-list');
     const ref=PLAYERS.find(x=>x.name===state.pName);
     if(listEl) listEl.innerHTML=candidates.length?candidates.map(s=>window._renderSimCard(s,ref)).join(''):'<div style="padding:16px;text-align:center;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;color:rgba(255,255,255,.3)">Sem resultados</div>';
