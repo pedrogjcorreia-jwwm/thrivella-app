@@ -25400,7 +25400,7 @@ function renderMobileShadowView(){
       overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:20000;display:flex;align-items:flex-end;justify-content:center';
       overlay.onclick=function(e){ if(e.target===overlay) mobShCloseOverlay(); };
       var panel=document.createElement('div');
-      panel.style.cssText='width:calc(100% - 24px);max-width:420px;height:'+SH_POPUP_H+'px;margin-bottom:15px;background:#060c12;border:1px solid rgba(0,180,200,.22);border-radius:12px;padding:14px;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6)';
+      panel.style.cssText='width:calc(100% - 24px);max-width:420px;height:'+SH_POPUP_H+'px;margin-bottom:15px;background:#0d1520;border:1px solid rgba(0,212,255,.2);border-radius:16px;padding:14px;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.6)';
       overlay.appendChild(panel);
       var h=document.createElement('div');
       h.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-shrink:0';
@@ -25435,17 +25435,26 @@ function renderMobileShadowView(){
       return {wrap:wrap, input:input};
     }
     function mobShPlayerRow(p, onPick){
-      const ti=p.talent_index_pct!=null?Math.round(p.talent_index_pct):'\u2014';
-      const bio=(p.age?p.age+'y':'')+(p.size?' \u00b7 '+p.size+'cm':'');
+      const talPct = p.talent_index_pct!=null ? Math.round(p.talent_index_pct) : null;
+      const talCol = (typeof scoreColor==='function') ? scoreColor(p.talent_index||0) : '#6b7d8e';
+      const hasPhy = (p.total_physical||0) > 0;
+      const phyPct = hasPhy ? Math.round(p.total_physical/25*100) : null;
+
+      const footTxt = p.foot ? (/^d/i.test(p.foot)?'R':'L') : '';
+      const ctYear = p.contract_end ? parseInt(p.contract_end.slice(0,4)) : null;
+      const ctCol = ctYear && ctYear<=2026 ? '#ff4757' : ctYear===2027 ? '#f59e0b' : 'rgba(0,200,255,.85)';
+      const ctTxt = p.contract_end ? p.contract_end.slice(0,7) : '\u2014';
+      const bio=[ (p.age?p.age+'y':null), (p.size?p.size+'cm':null), footTxt, ctTxt ].filter(Boolean);
+
       const row=document.createElement('button');
       row.style.cssText='display:flex;flex-direction:column;gap:2px;background:rgba(0,180,200,.06);border:1px solid rgba(0,180,200,.18);border-radius:10px;padding:8px 12px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;cursor:pointer;text-align:left;width:100%;box-sizing:border-box;flex-shrink:0';
       row.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">'
           +'<span style="font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">'+p.name+'</span>'
-          +'<span style="font-size:10px;color:#6b7d8e;white-space:nowrap;flex-shrink:0">TAL <b style="color:#cde8ff">'+ti+'</b></span>'
+          +'<span style="font-size:10px;color:#6b7d8e;white-space:nowrap;flex-shrink:0">TAL <b style="color:'+talCol+'">'+(talPct!=null?talPct:'\u2014')+'</b>'
+            +'&nbsp;&nbsp;PHY '+(hasPhy?'<b style="color:#9b7fff">'+phyPct+'</b>':'<span style="color:rgba(100,110,130,.6);font-size:9px">N/A</span>')+'</span>'
         +'</div>'
-        +'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">'
-          +'<span style="font-size:10px;color:rgba(0,229,160,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.team||'')+'</span>'
-          +(bio?'<span style="font-size:10px;color:rgba(180,200,220,.6);white-space:nowrap;flex-shrink:0">'+bio+'</span>':'')
+        +'<div style="font-size:10px;color:rgba(180,200,220,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'
+          +bio.map(function(b,i){ return (i===bio.length-1 && ctTxt!=='\u2014') ? '<span style="color:'+ctCol+'">'+b+'</span>' : b; }).join(' \u00b7 ')
         +'</div>';
       row.onclick=onPick;
       return row;
@@ -25467,8 +25476,8 @@ function renderMobileShadowView(){
         const slotData=(shData.my||{})[slot.id];
         const occ=slotData && slotData.players && slotData.players[0];
         const btn=document.createElement('button');
-        btn.style.cssText='background:#060c12;border:1px solid rgba(0,196,255,.4);border-radius:10px;padding:6px 4px;color:#00c4ff;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px';
-        btn.innerHTML='<div>'+slot.label+'</div>'+(occ?'<div style="font-size:8px;color:rgba(0,212,255,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">'+occ+'</div>':'<div style="font-size:8px;color:rgba(255,255,255,.3)">vazio</div>');
+        btn.style.cssText='background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 4px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:16px;font-weight:800;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px';
+        btn.innerHTML='<div>'+slot.label+'</div>'+(occ?'<div style="font-size:9px;font-weight:700;color:rgba(0,212,255,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">'+occ+'</div>':'<div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.3)">vazio</div>');
         btn.onclick=function(){ mobShPickPosition(slot); };
         grid.appendChild(btn);
       });
