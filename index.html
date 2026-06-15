@@ -25434,9 +25434,9 @@ function renderMobileShadowView(){
       wrap.appendChild(input);
       return {wrap:wrap, input:input};
     }
+    function mobShTiC(v){return v>=80?'#00e5a0':v>=55?'#00d4ff':'rgba(160,178,200,.45)';}
     function mobShPlayerRow(p, onPick){
-      const talPct = p.talent_index_pct!=null ? Math.round(p.talent_index_pct) : null;
-      const talCol = (typeof scoreColor==='function') ? scoreColor(p.talent_index||0) : '#6b7d8e';
+      const talPct = Math.round(p.talent_index_pct||0);
       const hasPhy = (p.total_physical||0) > 0;
       const phyPct = hasPhy ? Math.round(p.total_physical/25*100) : null;
 
@@ -25450,9 +25450,10 @@ function renderMobileShadowView(){
       row.style.cssText='display:flex;flex-direction:column;gap:2px;background:rgba(0,180,200,.06);border:1px solid rgba(0,180,200,.18);border-radius:10px;padding:8px 12px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;cursor:pointer;text-align:left;width:100%;box-sizing:border-box;flex-shrink:0';
       row.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">'
           +'<span style="font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">'+p.name+'</span>'
-          +'<span style="font-size:10px;color:#6b7d8e;white-space:nowrap;flex-shrink:0">TAL <b style="color:'+talCol+'">'+(talPct!=null?talPct:'\u2014')+'</b>'
-            +'&nbsp;&nbsp;PHY '+(hasPhy?'<b style="color:#9b7fff">'+phyPct+'</b>':'<span style="color:rgba(100,110,130,.6);font-size:9px">N/A</span>')+'</span>'
+          +'<span style="font-size:10px;color:#6b7d8e;white-space:nowrap;flex-shrink:0">TAL <b style="color:'+mobShTiC(talPct)+'">'+talPct+'</b>'
+            +'&nbsp;&nbsp;PHY '+(hasPhy?'<b style="color:'+mobShTiC(phyPct)+'">'+phyPct+'</b>':'<span style="color:rgba(100,110,130,.6);font-size:9px">N/A</span>')+'</span>'
         +'</div>'
+        +'<div style="font-size:10px;color:rgba(0,229,160,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.team||'')+'</div>'
         +'<div style="font-size:10px;color:rgba(180,200,220,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'
           +bio.map(function(b,i){ return (i===bio.length-1 && ctTxt!=='\u2014') ? '<span style="color:'+ctCol+'">'+b+'</span>' : b; }).join(' \u00b7 ')
         +'</div>';
@@ -25474,11 +25475,12 @@ function renderMobileShadowView(){
       grid.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:6px;overflow-y:auto;flex:1';
       formation.slots.forEach(function(slot){
         const slotData=(shData.my||{})[slot.id];
-        const occ=slotData && slotData.players && slotData.players[0];
+        const count=(slotData && slotData.players && slotData.players.length)||0;
+        const full=count>=3;
         const btn=document.createElement('button');
-        btn.style.cssText='background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 4px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:16px;font-weight:800;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px';
-        btn.innerHTML='<div>'+slot.label+'</div>'+(occ?'<div style="font-size:9px;font-weight:700;color:rgba(0,212,255,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">'+occ+'</div>':'<div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.3)">vazio</div>');
-        btn.onclick=function(){ mobShPickPosition(slot); };
+        btn.style.cssText='background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 4px;color:#e8edf2;font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;cursor:'+(full?'default':'pointer')+';text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px'+(full?';opacity:.4':'');
+        btn.innerHTML='<div>'+slot.label+'</div><div style="font-size:9px;font-weight:700;color:'+(count>0?'rgba(0,212,255,.6)':'rgba(255,255,255,.3)')+'">'+count+'/3</div>';
+        if(!full) btn.onclick=function(){ mobShPickPosition(slot); };
         grid.appendChild(btn);
       });
       panel.appendChild(grid);
@@ -25488,7 +25490,8 @@ function renderMobileShadowView(){
     function mobShPickPosition(slot){
       const pool=(typeof PLAYERS!=='undefined' && PLAYERS && PLAYERS.length)?PLAYERS:(window.PLAYERS||[]);
       const activeTIfn=(typeof activeTI==='function')?activeTI:function(x){return x.talent_index||0;};
-      const eligible=pool.filter(function(p){return shPlayerMatchesSlot(p,slot);}).slice().sort(function(a,b){return activeTIfn(b)-activeTIfn(a);});
+      const already=((shData.my||{})[slot.id]||{}).players||[];
+      const eligible=pool.filter(function(p){return shPlayerMatchesSlot(p,slot) && already.indexOf(p.name)===-1;}).slice().sort(function(a,b){return activeTIfn(b)-activeTIfn(a);});
       const leagues=[...new Set(eligible.map(function(p){return p.league;}).filter(Boolean))].sort();
 
       const panel=mobShOverlayShell('Jogador \u2014 '+slot.label);
@@ -25558,7 +25561,10 @@ function renderMobileShadowView(){
     window.mobShAssignPlayer=function(slotId, name){
       mobShCloseOverlay();
       shData.my=shData.my||{};
-      shData.my[slotId]={players:[name], cur:0, _manual:true};
+      const cur=shData.my[slotId]||{players:[], cur:0, _manual:true};
+      if(cur.players.indexOf(name)===-1 && cur.players.length<3) cur.players.push(name);
+      cur._manual=true;
+      shData.my[slotId]=cur;
       renderMobileShadowView();
     };
 
