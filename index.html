@@ -301,7 +301,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .players-table td.cat-total,.players-table th.cat-total{border-left:1px solid rgba(255,255,255,0.08)}
 /* Score bar */
 .td-score-bar-wrap{display:flex;align-items:center;justify-content:center;gap:7px;width:100%}
-.td-score-num{font-family:var(--font-d);font-size:15px;font-weight:700;min-width:32px;text-align:right}
+.td-score-num{font-family:var(--font-d);font-size:20px;font-weight:700;text-align:center}
 .td-score-track{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;min-width:44px}
 .td-score-fill{height:100%;border-radius:2px}
 /* League badge */
@@ -6003,40 +6003,33 @@ function renderTable(){
       ondragstart="onRowDragStart(event)"
       onclick="selectPlayer('${p.name.replace(/'/g,"\'").replace(/"/g,'&quot;')}','${p.league}')">
       <td style="padding:4px 2px;width:28px" onclick="event.stopPropagation()"><button class="td-edit-btn" onclick="openEditModal(decodeURIComponent(this.dataset.n))" data-n="${encodeURIComponent(p.name)}" title="Editar"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/></svg></button></td>
-      <td class="td-rank" style="line-height:1.3">
-        <div>${rank+1}</div>
-        <div style="margin-top:2px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.25);color:var(--accent)">${p.position_group||'WIN'}</span></div>
+      <td class="td-rank" style="vertical-align:middle">
+        <div style="font-family:var(--font-d);font-size:14px;font-weight:600;line-height:1.2">${rank+1}</div>
+        <div style="margin-top:2px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(155,127,255,0.12);border:1px solid rgba(155,127,255,0.35);color:var(--purple)">${p.position_group||'WIN'}</span></div>
       </td>
       <td>
         <div class="td-player" style="align-items:flex-start">
           <div>
             <div class="td-name">${p.name}</div>
             <div class="td-info-row" style="flex-wrap:wrap;row-gap:3px">
-              ${pos1?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--muted2)">${pos1}</span>`:''}
               ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
-              <span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${p.age}y</span>
-              <span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${htTxt}cm</span>
-              ${footTxt?`<span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${footTxt}</span>`:''}
-              ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
             </div>
           </div>
         </div>
       </td>
       <td style="vertical-align:middle;text-align:left;padding:6px 10px;min-width:120px">
-        <div style="font-family:var(--font-d);font-weight:700;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px">${p.team}</div>
-        <div style="margin-top:3px">${leagueBadge(p.league)}</div>
+        <div style="font-family:var(--font-d);font-size:14px;font-weight:600;line-height:1.2;color:rgba(0,229,160,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px">${p.team}</div>
+        <div style="margin-top:2px;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(180,200,220,.6)">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
       <td>
         <div class="td-score-bar-wrap">
           <span class="td-score-num" style="color:${tiC(activeTIPct(p))}">${activeTIPct(p)}</span>
-          <span style="font-family:var(--font-d);font-size:9px;color:rgba(255,255,255,.3);margin-left:2px">${activeTI(p).toFixed(1)}</span>
           ${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-family:var(--font-d);font-size:7px;color:${p.liga_mult>1?'#00e5a0':'#ff7070'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}${Math.abs(Math.round((p.liga_mult-1)*100))}%</span>` : ''}
         </div>
       </td>
       <td>
         ${p.has_phy ? `<div class="td-score-bar-wrap">
           <span class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</span>
-          <span style="font-family:var(--font-d);font-size:9px;color:rgba(255,255,255,.3);margin-left:2px">${p.total_physical.toFixed(1)}</span>
         </div>` : '<span style="color:var(--muted2);font-size:10px">—</span>'}
       </td>
       <td>
@@ -8438,7 +8431,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .players-table td.cat-total,.players-table th.cat-total{border-left:1px solid rgba(255,255,255,0.08)}
 /* Score bar */
 .td-score-bar-wrap{display:flex;align-items:center;justify-content:center;gap:7px;width:100%}
-.td-score-num{font-family:var(--font-d);font-size:15px;font-weight:700;min-width:32px;text-align:right}
+.td-score-num{font-family:var(--font-d);font-size:20px;font-weight:700;text-align:center}
 .td-score-track{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;min-width:44px}
 .td-score-fill{height:100%;border-radius:2px}
 /* League badge */
@@ -14108,40 +14101,33 @@ function renderTable(){
       ondragstart="onRowDragStart(event)"
       onclick="selectPlayer('${p.name.replace(/'/g,"\'").replace(/"/g,'&quot;')}','${p.league}')">
       <td style="padding:4px 2px;width:28px" onclick="event.stopPropagation()"><button class="td-edit-btn" onclick="openEditModal(decodeURIComponent(this.dataset.n))" data-n="${encodeURIComponent(p.name)}" title="Editar"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/></svg></button></td>
-      <td class="td-rank" style="line-height:1.3">
-        <div>${rank+1}</div>
-        <div style="margin-top:2px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.25);color:var(--accent)">${p.position_group||'WIN'}</span></div>
+      <td class="td-rank" style="vertical-align:middle">
+        <div style="font-family:var(--font-d);font-size:14px;font-weight:600;line-height:1.2">${rank+1}</div>
+        <div style="margin-top:2px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(155,127,255,0.12);border:1px solid rgba(155,127,255,0.35);color:var(--purple)">${p.position_group||'WIN'}</span></div>
       </td>
       <td>
         <div class="td-player" style="align-items:flex-start">
           <div>
             <div class="td-name">${p.name}</div>
             <div class="td-info-row" style="flex-wrap:wrap;row-gap:3px">
-              ${pos1?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--muted2)">${pos1}</span>`:''}
               ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
-              <span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${p.age}y</span>
-              <span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${htTxt}cm</span>
-              ${footTxt?`<span style="font-family:var(--font-d);font-size:10px;color:var(--muted2)">${footTxt}</span>`:''}
-              ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
             </div>
           </div>
         </div>
       </td>
       <td style="vertical-align:middle;text-align:left;padding:6px 10px;min-width:120px">
-        <div style="font-family:var(--font-d);font-weight:700;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px">${p.team}</div>
-        <div style="margin-top:3px">${leagueBadge(p.league)}</div>
+        <div style="font-family:var(--font-d);font-size:14px;font-weight:600;line-height:1.2;color:rgba(0,229,160,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px">${p.team}</div>
+        <div style="margin-top:2px;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(180,200,220,.6)">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
       <td>
         <div class="td-score-bar-wrap">
           <span class="td-score-num" style="color:${tiC(activeTIPct(p))}">${activeTIPct(p)}</span>
-          <span style="font-family:var(--font-d);font-size:9px;color:rgba(255,255,255,.3);margin-left:2px">${activeTI(p).toFixed(1)}</span>
           ${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-family:var(--font-d);font-size:7px;color:${p.liga_mult>1?'#00e5a0':'#ff7070'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}${Math.abs(Math.round((p.liga_mult-1)*100))}%</span>` : ''}
         </div>
       </td>
       <td>
         ${p.has_phy ? `<div class="td-score-bar-wrap">
           <span class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</span>
-          <span style="font-family:var(--font-d);font-size:9px;color:rgba(255,255,255,.3);margin-left:2px">${p.total_physical.toFixed(1)}</span>
         </div>` : '<span style="color:var(--muted2);font-size:10px">—</span>'}
       </td>
       <td>
