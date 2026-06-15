@@ -7469,6 +7469,8 @@ try {
   const saved = JSON.parse(localStorage.getItem('scoutpro_photos') || '{}');
   Object.assign(photoCache, saved);
 } catch(e) {}
+// Bridge so other script blocks (mobile views) can read/write the same cache
+try{ window.photoCache = photoCache; }catch(e){}
 
 async function fetchWikiPhoto(name) {
   const avatarId = 'avatar-' + name.replace(/[^a-z0-9]/gi,'_');
@@ -15573,6 +15575,8 @@ try {
   const saved = JSON.parse(localStorage.getItem('scoutpro_photos') || '{}');
   Object.assign(photoCache, saved);
 } catch(e) {}
+// Bridge so other script blocks (mobile views) can read/write the same cache
+try{ window.photoCache = photoCache; }catch(e){}
 
 async function fetchWikiPhoto(name) {
   const avatarId = 'avatar-' + name.replace(/[^a-z0-9]/gi,'_');
@@ -21242,7 +21246,7 @@ function pid3BuildSimCards(pool, p, PLAYERS_REF) {
           /* ROW 1: Nome + posições — puxado 1mm para cima */
           '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px;margin-top:-1mm">'+
             '<div style="min-width:0">'+
-              '<div style="font-family:var(--font-d);font-size:10px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2">'+s.name+'</div>'+
+              '<div style="font-family:var(--font-d);font-size:12px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2">'+s.name+'</div>'+
               '<div style="font-size:9px;color:rgba(255,255,255,.32);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.age?s.age+'a · ':'')+s.team+'</div>'+
             '</div>'+
             '<div style="flex-shrink:0;display:flex;gap:2px;align-items:flex-start">'+
@@ -24891,6 +24895,9 @@ function sfDownload() {
 </div>
 
 <script>
+// Local reference to the shared photo cache (populated by the main script blocks)
+const photoCache = window.photoCache || {};
+
 // ── Mobile Mode Management ──
 function isMobilePortrait(){
   return window.innerWidth<1024 && ('ontouchstart' in window || navigator.maxTouchPoints>0);
