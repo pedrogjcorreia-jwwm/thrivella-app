@@ -270,100 +270,87 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 /* ── MAIN PANEL ── */
 .main-panel{display:flex;flex-direction:column;overflow:hidden;background:var(--bg0);flex:1}
 
-/* ══════════════════════════════════════════════════════════════
-   PLAYERS TABLE v3.0 — Premium analytics · Thrivella
-   ══════════════════════════════════════════════════════════════ */
+/* ── PLAYERS TABLE v2.0 ── */
 .table-wrap{flex:1;overflow:auto}
 .players-table{width:100%;border-collapse:collapse}
 
 /* ── HEADER ── */
-.players-table thead tr{border-bottom:1px solid rgba(255,255,255,.05)}
+.players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:#05080b;
-  padding:12px 10px 9px;
-  font-family:var(--font-d);font-size:8px;font-weight:800;
-  letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.22);
+  background:#06090d;
+  padding:10px 10px 8px;
+  font-family:var(--font-d);font-size:8.5px;font-weight:700;
+  letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.28);
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
-  transition:color .12s;border-bottom:1px solid rgba(255,255,255,.04);
+  transition:color .15s;
 }
-.players-table thead th:hover{color:rgba(255,255,255,.65)}
+.players-table thead th:hover{color:rgba(255,255,255,.7)}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
 /* ── ROWS ── */
 .players-table tbody tr{
-  border-bottom:1px solid rgba(255,255,255,.028);
+  border-bottom:1px solid rgba(255,255,255,.035);
   cursor:pointer;
-  transition:background .06s,box-shadow .06s;
+  transition:background .08s,box-shadow .08s;
 }
-.players-table tbody tr:nth-child(even){background:rgba(255,255,255,.01)}
+.players-table tbody tr:nth-child(even){background:rgba(255,255,255,.012)}
 .players-table tbody tr:hover{
-  background:rgba(0,160,240,.05)!important;
-  box-shadow:inset 3px 0 0 rgba(0,212,255,.85),inset 0 0 40px rgba(0,180,255,.03);
+  background:rgba(0,180,255,.055)!important;
+  box-shadow:inset 4px 0 0 rgba(0,212,255,.7),inset -1px 0 0 rgba(0,212,255,.07);
 }
 .players-table tbody tr.row-selected{
-  background:rgba(0,212,255,.055)!important;
-  box-shadow:inset 3px 0 0 var(--accent);
+  background:rgba(0,212,255,.06)!important;
+  box-shadow:inset 4px 0 0 rgba(0,212,255,.9);
 }
 .players-table tbody tr[draggable]{cursor:grab}
 .players-table tbody tr[draggable]:active{cursor:grabbing}
-.drag-over{background:rgba(0,212,255,.04)!important;outline:1px solid rgba(0,212,255,.2)}
-
-/* ── CELLS ── */
+.drag-over{background:rgba(0,212,255,.05)!important;box-shadow:inset 0 0 0 1px rgba(0,212,255,.25)}
 .players-table tbody td{
-  padding:0 8px;height:56px;
+  padding:0 8px;height:52px;
   white-space:nowrap;font-size:13px;
   text-align:center;vertical-align:middle;
 }
 .players-table tbody td:nth-child(4){text-align:left}
-.players-table td.cat-total,.players-table th.cat-total{border-left:1px solid rgba(255,255,255,.06)}
+
+/* ── COLUMN GROUP SEPARATORS ── */
+.col-sep{border-left:1px solid rgba(255,255,255,.05)!important}
+.col-sep-strong{border-left:1px solid rgba(255,255,255,.09)!important}
+.players-table td.cat-total,.players-table th.cat-total{border-left:1px solid rgba(255,255,255,.07)}
 
 /* ── SCORES ── */
 .td-score-bar-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
 .td-score-num{
-  font-family:var(--font-d);font-size:23px;font-weight:900;
-  text-align:center;letter-spacing:-1.5px;line-height:1;
+  font-family:var(--font-d);font-size:22px;font-weight:900;
+  text-align:center;letter-spacing:-1px;line-height:1;
 }
 .td-score-sub{
-  font-family:var(--font-d);font-size:7px;font-weight:800;
-  letter-spacing:2px;text-transform:uppercase;
-  color:rgba(255,255,255,.14);margin-top:4px;
-}
-.td-score-bar{
-  height:2px;border-radius:2px;margin-top:5px;
-  transition:width .3s ease;
+  font-family:var(--font-d);font-size:7.5px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.18);margin-top:3px;
 }
 .td-score-track{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;min-width:44px}
 .td-score-fill{height:100%;border-radius:2px}
 
-/* ── NUMERICS — heat-mapped via inline color ── */
-.td-num{
-  font-family:var(--font-d);font-size:13.5px;font-weight:700;
-  letter-spacing:-0.2px;
-}
-.td-val{
-  font-family:var(--font-d);font-size:13.5px;font-weight:700;
-  color:rgba(255,255,255,.55);letter-spacing:-0.2px;text-align:center;
-}
-.td-contract{
-  font-family:var(--font-d);font-size:12.5px;font-weight:700;
-  text-align:center;vertical-align:middle;letter-spacing:.2px;
-}
+/* ── NUMERICS ── */
+.td-num{font-family:var(--font-d);font-size:14px;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:-0.3px}
+.td-val{font-family:var(--font-d);font-size:14px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:-0.3px;text-align:center}
+.td-contract{font-family:var(--font-d);font-size:13px;font-weight:700;color:rgba(255,255,255,.55);text-align:center;vertical-align:middle;letter-spacing:-0.2px}
 .td-rank{text-align:center}
 
-/* ── HOVER NAME ── */
+/* ── HOVER NAME HIGHLIGHT ── */
 .players-table tbody tr:hover .td-player-name{color:#fff}
 
-/* ── PHOTO COLUMN ── */
+/* ── PHOTO CARD ── */
 .td-photo-wrap{
   width:40px;height:52px;border-radius:5px;overflow:hidden;
   background:#0a1018;position:relative;flex-shrink:0;
   border:1px solid rgba(255,255,255,.055);
 }
-.td-photo-wrap img,.td-photo-bg{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;object-position:top center;
+.td-photo-bg{
+  position:absolute;inset:0;
+  background-size:cover;background-position:top center;
 }
 .td-photo-fade{
   position:absolute;bottom:0;left:0;right:0;height:45%;
@@ -372,11 +359,10 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 }
 .td-photo-ini{
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-d);font-size:15px;font-weight:900;
+  font-family:var(--font-d);font-size:14px;font-weight:900;
   color:rgba(255,255,255,.055);letter-spacing:-1px;
   background:radial-gradient(ellipse at 50% 20%,rgba(0,160,255,.04),transparent 65%);
 }
-
 /* League badge */
 .league-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.5px;border-radius:4px;padding:3px 7px;border:1px solid;white-space:nowrap;}
 
@@ -4777,14 +4763,14 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
             <thead>
               <tr>
                 <th class="th-edit" title="Editar"></th>
-                <th onclick="sortTable('rank')" class="s-desc" style="width:32px">#</th>
-                <th style="width:50px;padding:0"></th>
-                <th onclick="sortTable('name')" style="text-align:left;padding-left:7px;min-width:155px">Jogador</th>
-                <th onclick="sortTable('age')" style="background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05)" data-lbl="Ide">Ide</th>
-                <th onclick="sortTable('size')" style="background:rgba(255,255,255,.015);border-left:none" data-lbl="Alt">Alt</th>
+                <th onclick="sortTable('rank')" class="s-desc">#</th>
+                <th style="width:48px;padding:0"></th>
+                <th onclick="sortTable('name')" style="text-align:left;padding-left:8px;min-width:155px">Jogador</th>
+                <th onclick="sortTable('age')" style="background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05)">Idade</th>
+                <th onclick="sortTable('size')" style="background:rgba(255,255,255,.015);border-left:none">Altura</th>
                 <th onclick="sortTable('foot')" style="background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
                 <th onclick="sortTable('team')" style="text-align:left;padding-left:29px;min-width:110px">Clube / Liga</th>
-                <th style="white-space:nowrap;padding:0;background:rgba(0,6,14,.55);border-left:1px solid rgba(255,255,255,.05)">
+                <th style="white-space:nowrap;padding:0;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
                   <div style="display:flex;align-items:center;gap:0;height:100%">
                     <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
                     <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — Opta difficulty" style="flex-shrink:0;background:none;border:none;padding:1px 1px;cursor:pointer;margin-right:1px;margin-left:2px;transition:all .2s;display:flex;align-items:center;justify-content:center;opacity:0.45;filter:grayscale(1) brightness(3)">
@@ -4797,8 +4783,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                     </button>
                   </div>
                 </th>
-                <th onclick="sortTable('total_physical')" style="color:#9b7fff;background:rgba(0,6,14,.55)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
-                <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,6,14,.55);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
+                <th onclick="sortTable('total_physical')" style="color:#9b7fff;background:rgba(0,8,18,.5)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
+                <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th onclick="sortTable('contract_end')" data-i18n="col_contract">Contrato</th>
                 <th onclick="sortTable('mkt_value')" data-i18n="col_value" style="white-space:nowrap">Valor</th>
                 <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0">
@@ -6124,60 +6110,59 @@ function renderTable(){
       ondragstart="onRowDragStart(event)"
       onclick="selectPlayer('${p.name.replace(/'/g,"\'").replace(/"/g,'&quot;')}','${p.league}')">
       <td style="padding:4px 2px;width:28px" onclick="event.stopPropagation()"><button class="td-edit-btn" onclick="openEditModal(decodeURIComponent(this.dataset.n))" data-n="${encodeURIComponent(p.name)}" title="Editar"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/></svg></button></td>
-      <td class="td-rank" style="width:32px;padding:0 8px;background:#05080b;border-right:1px solid rgba(255,255,255,.04)">
-        <div style="font-family:var(--font-d);font-size:12px;font-weight:900;color:rgba(255,255,255,.28);letter-spacing:-0.5px;line-height:1">${rank+1}</div>
-        <div style="margin-top:5px"><span style="font-family:var(--font-d);font-size:6.5px;font-weight:800;letter-spacing:.8px;padding:1px 3px;border-radius:2px;background:rgba(155,127,255,0.08);border:1px solid rgba(155,127,255,0.2);color:rgba(155,127,255,.6)">${p.position_group||'WIN'}</span></div>
+      <td class="td-rank" style="width:36px;padding:0 8px;background:#06090d;border-right:1px solid rgba(255,255,255,.04)">
+        <div style="font-family:var(--font-d);font-size:13px;font-weight:900;color:rgba(255,255,255,.3);letter-spacing:-0.5px;line-height:1">${rank+1}</div>
+        <div style="margin-top:4px"><span style="font-family:var(--font-d);font-size:7px;font-weight:800;letter-spacing:.6px;padding:1px 4px;border-radius:2px;background:rgba(155,127,255,0.1);border:1px solid rgba(155,127,255,0.25);color:rgba(155,127,255,.7)">${p.position_group||'WIN'}</span></div>
       </td>
       <td style="width:50px;padding:2px 3px 2px 5px;vertical-align:middle">
         <div class="td-photo-wrap">
           ${window.photoCache&&window.photoCache[p.name]
-            ? `<div class="td-photo-bg" style="background-image:url(${window.photoCache[p.name]});background-size:cover;background-position:top center"></div><div class="td-photo-fade"></div>`
+            ? `<div class="td-photo-bg" style="background-image:url(${window.photoCache[p.name]})"></div><div class="td-photo-fade"></div>`
             : `<div class="td-photo-ini">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>`}
         </div>
       </td>
-      <td style="text-align:left;padding:0 14px 0 7px;min-width:155px;max-width:210px">
-        <div class="td-player-name" style="font-family:var(--font-d);font-size:14px;font-weight:800;color:rgba(228,235,242,.88);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.05px;transition:color .1s">${p.name}</div>
-        <div style="display:flex;align-items:center;gap:3px;margin-top:5px">
-          ${pos2?`<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:2px;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.18);color:rgba(0,212,255,.8);letter-spacing:.3px">${pos2}</span>`:''}
-          ${pos1?`<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.35);letter-spacing:.3px">${pos1}</span>`:''}
-          ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:9px;opacity:.6">⚠️</span>`:''}
+      <td style="text-align:left;padding:0 12px 0 8px;min-width:155px;max-width:210px">
+        <div class="td-player-name" style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:rgba(232,237,242,.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px;transition:color .1s">${p.name}</div>
+        <div style="display:flex;align-items:center;gap:3px;margin-top:4px">
+          ${pos2?`<span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.22);color:rgba(0,212,255,.85)">${pos2}</span>`:''}
+          ${pos1?`<span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4)">${pos1}</span>`:''}
+          ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:10px;opacity:.7">⚠️</span>`:''}
         </div>
       </td>
-      <td style="text-align:center;padding:0 9px;background:rgba(255,255,255,.012);border-left:1px solid rgba(255,255,255,.045)">
-        <div style="font-family:var(--font-d);font-size:15px;font-weight:900;color:rgba(255,255,255,.65);letter-spacing:-1px;line-height:1">${p.age||'—'}</div>
-        <div style="font-family:var(--font-d);font-size:7px;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.16);margin-top:5px;text-transform:uppercase">Ide</div>
+      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05)">
+        <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px;line-height:1">${p.age||'—'}</div>
+        <div style="font-family:var(--font-d);font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.2);margin-top:4px;text-transform:uppercase">Idade</div>
       </td>
-      <td style="text-align:center;padding:0 9px;background:rgba(255,255,255,.012)">
-        <div style="font-family:var(--font-d);font-size:15px;font-weight:900;color:rgba(255,255,255,.65);letter-spacing:-1px;line-height:1">${htTxt}</div>
-        <div style="font-family:var(--font-d);font-size:7px;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.16);margin-top:5px;text-transform:uppercase">Alt</div>
+      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015)">
+        <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px;line-height:1">${htTxt}</div>
+        <div style="font-family:var(--font-d);font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.2);margin-top:4px;text-transform:uppercase">Altura</div>
       </td>
-      <td style="text-align:center;padding:0 9px;background:rgba(255,255,255,.012);border-right:1px solid rgba(255,255,255,.045)">
-        <div style="font-family:var(--font-d);font-size:15px;font-weight:900;color:rgba(255,255,255,.65);letter-spacing:-1px;line-height:1">${footTxt||'—'}</div>
-        <div style="font-family:var(--font-d);font-size:7px;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.16);margin-top:5px;text-transform:uppercase">Pé</div>
+      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.06)">
+        <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px;line-height:1">${footTxt||'—'}</div>
+        <div style="font-family:var(--font-d);font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.2);margin-top:4px;text-transform:uppercase">Pé</div>
       </td>
-      <td style="text-align:left;padding:0 10px 0 22px;min-width:115px;max-width:155px">
-        <div style="font-family:var(--font-d);font-size:13px;font-weight:700;color:rgba(255,255,255,.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.team}</div>
-        <div style="font-family:var(--font-d);font-size:9px;font-weight:600;color:rgba(0,170,210,.48);margin-top:4px;letter-spacing:.1px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
+      <td style="text-align:left;padding:0 10px 0 29px;min-width:120px;max-width:160px">
+        <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px">${p.team}</div>
+        <div style="font-family:var(--font-d);font-size:9.5px;font-weight:600;color:rgba(0,180,220,.55);margin-top:4px;letter-spacing:.2px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
-      <td style="text-align:center;padding:0 14px;background:rgba(0,6,14,.55);border-left:1px solid rgba(255,255,255,.04)">
-        ${(()=>{ const v=Math.round(activeTIPct(p)); const c=tiC(v); return `<div class="td-score-num" style="color:${c}">${v}${ligaAdjustActive&&p.liga_mult!==1.0?`<span style="font-size:7px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>`:''}</div><div class="td-score-sub">TAL</div><div class="td-score-bar" style="width:${v}%;background:${c};opacity:.35"></div>`; })()}
+      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
+        <div class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}</div>
+        <div class="td-score-sub">TAL</div>
       </td>
-      <td style="text-align:center;padding:0 14px;background:rgba(0,6,14,.55)">
+      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6)">
         ${p.has_phy
-          ? (()=>{ const v=Math.round((p.total_physical/25)*100); const c=tiC(v); return `<div class="td-score-num" style="color:${c}">${v}</div><div class="td-score-sub">PHY</div><div class="td-score-bar" style="width:${v}%;background:${c};opacity:.35"></div>`; })()
-          : `<div style="font-family:var(--font-d);font-size:11px;color:rgba(255,255,255,.12)">—</div>`}
+          ? `<div class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</div><div class="td-score-sub">PHY</div>`
+          : `<div style="font-family:var(--font-d);font-size:11px;color:rgba(255,255,255,.15)">—</div>`}
       </td>
-      <td style="text-align:center;padding:0 14px;background:rgba(0,6,14,.55);border-right:1px solid rgba(255,255,255,.04)">
-        ${(()=>{ const v=p.transfer_score||0; const c=tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.18)'; return `<div class="td-score-num" style="color:${c}">${v}</div><div class="td-score-sub">TRA</div><div class="td-score-bar" style="width:${Math.min(100,v)}%;background:${c};opacity:.35"></div>`; })()}
+      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)">
+        <div class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.2)'}">${p.transfer_score||0}</div>
+        <div class="td-score-sub">TRA</div>
       </td>
       <td class="td-contract">${(()=>{
         const yr=p.contract_end?(p.contract_end.split('-')[0]):'—';
         const fmt=p.contract_end?p.contract_end.split('-').reverse().join('/'):'—';
-        if(yr==='—') return '<span style="color:rgba(255,255,255,.18)">—</span>';
-        const col=yr==='2026'?'rgba(255,65,75,.9)':yr==='2027'?'rgba(255,170,50,.75)':'rgba(255,255,255,.38)';
-        const bg=yr==='2026'?'rgba(255,65,75,.08)':yr==='2027'?'rgba(255,170,50,.06)':'transparent';
-        const bd=yr==='2026'?'rgba(255,65,75,.25)':yr==='2027'?'rgba(255,170,50,.2)':'transparent';
-        return '<span style="color:'+col+';background:'+bg+';border:1px solid '+bd+';border-radius:4px;padding:2px 7px;font-size:11.5px">'+fmt+'</span>';
+        const col=yr==='2026'?'#ff4757':yr==='2027'?'rgba(255,179,64,.75)':'rgba(255,255,255,.45)';
+        return '<span style="color:'+col+'">'+fmt+'</span>';
       })()}</td>
       <td class="td-val">${fmtVal(p.mkt_value)}</td>
       <td class="cat-total td-num" style="color:${mc('total_off',p.name)}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
@@ -8556,100 +8541,87 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 /* ── MAIN PANEL ── */
 .main-panel{display:flex;flex-direction:column;overflow:hidden;background:var(--bg0);flex:1}
 
-/* ══════════════════════════════════════════════════════════════
-   PLAYERS TABLE v3.0 — Premium analytics · Thrivella
-   ══════════════════════════════════════════════════════════════ */
+/* ── PLAYERS TABLE v2.0 ── */
 .table-wrap{flex:1;overflow:auto}
 .players-table{width:100%;border-collapse:collapse}
 
 /* ── HEADER ── */
-.players-table thead tr{border-bottom:1px solid rgba(255,255,255,.05)}
+.players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:#05080b;
-  padding:12px 10px 9px;
-  font-family:var(--font-d);font-size:8px;font-weight:800;
-  letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.22);
+  background:#06090d;
+  padding:10px 10px 8px;
+  font-family:var(--font-d);font-size:8.5px;font-weight:700;
+  letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.28);
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
-  transition:color .12s;border-bottom:1px solid rgba(255,255,255,.04);
+  transition:color .15s;
 }
-.players-table thead th:hover{color:rgba(255,255,255,.65)}
+.players-table thead th:hover{color:rgba(255,255,255,.7)}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
 /* ── ROWS ── */
 .players-table tbody tr{
-  border-bottom:1px solid rgba(255,255,255,.028);
+  border-bottom:1px solid rgba(255,255,255,.035);
   cursor:pointer;
-  transition:background .06s,box-shadow .06s;
+  transition:background .08s,box-shadow .08s;
 }
-.players-table tbody tr:nth-child(even){background:rgba(255,255,255,.01)}
+.players-table tbody tr:nth-child(even){background:rgba(255,255,255,.012)}
 .players-table tbody tr:hover{
-  background:rgba(0,160,240,.05)!important;
-  box-shadow:inset 3px 0 0 rgba(0,212,255,.85),inset 0 0 40px rgba(0,180,255,.03);
+  background:rgba(0,180,255,.055)!important;
+  box-shadow:inset 4px 0 0 rgba(0,212,255,.7),inset -1px 0 0 rgba(0,212,255,.07);
 }
 .players-table tbody tr.row-selected{
-  background:rgba(0,212,255,.055)!important;
-  box-shadow:inset 3px 0 0 var(--accent);
+  background:rgba(0,212,255,.06)!important;
+  box-shadow:inset 4px 0 0 rgba(0,212,255,.9);
 }
 .players-table tbody tr[draggable]{cursor:grab}
 .players-table tbody tr[draggable]:active{cursor:grabbing}
-.drag-over{background:rgba(0,212,255,.04)!important;outline:1px solid rgba(0,212,255,.2)}
-
-/* ── CELLS ── */
+.drag-over{background:rgba(0,212,255,.05)!important;box-shadow:inset 0 0 0 1px rgba(0,212,255,.25)}
 .players-table tbody td{
-  padding:0 8px;height:56px;
+  padding:0 8px;height:52px;
   white-space:nowrap;font-size:13px;
   text-align:center;vertical-align:middle;
 }
 .players-table tbody td:nth-child(4){text-align:left}
-.players-table td.cat-total,.players-table th.cat-total{border-left:1px solid rgba(255,255,255,.06)}
+
+/* ── COLUMN GROUP SEPARATORS ── */
+.col-sep{border-left:1px solid rgba(255,255,255,.05)!important}
+.col-sep-strong{border-left:1px solid rgba(255,255,255,.09)!important}
+.players-table td.cat-total,.players-table th.cat-total{border-left:1px solid rgba(255,255,255,.07)}
 
 /* ── SCORES ── */
 .td-score-bar-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
 .td-score-num{
-  font-family:var(--font-d);font-size:23px;font-weight:900;
-  text-align:center;letter-spacing:-1.5px;line-height:1;
+  font-family:var(--font-d);font-size:22px;font-weight:900;
+  text-align:center;letter-spacing:-1px;line-height:1;
 }
 .td-score-sub{
-  font-family:var(--font-d);font-size:7px;font-weight:800;
-  letter-spacing:2px;text-transform:uppercase;
-  color:rgba(255,255,255,.14);margin-top:4px;
-}
-.td-score-bar{
-  height:2px;border-radius:2px;margin-top:5px;
-  transition:width .3s ease;
+  font-family:var(--font-d);font-size:7.5px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.18);margin-top:3px;
 }
 .td-score-track{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;min-width:44px}
 .td-score-fill{height:100%;border-radius:2px}
 
-/* ── NUMERICS — heat-mapped via inline color ── */
-.td-num{
-  font-family:var(--font-d);font-size:13.5px;font-weight:700;
-  letter-spacing:-0.2px;
-}
-.td-val{
-  font-family:var(--font-d);font-size:13.5px;font-weight:700;
-  color:rgba(255,255,255,.55);letter-spacing:-0.2px;text-align:center;
-}
-.td-contract{
-  font-family:var(--font-d);font-size:12.5px;font-weight:700;
-  text-align:center;vertical-align:middle;letter-spacing:.2px;
-}
+/* ── NUMERICS ── */
+.td-num{font-family:var(--font-d);font-size:14px;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:-0.3px}
+.td-val{font-family:var(--font-d);font-size:14px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:-0.3px;text-align:center}
+.td-contract{font-family:var(--font-d);font-size:13px;font-weight:700;color:rgba(255,255,255,.55);text-align:center;vertical-align:middle;letter-spacing:-0.2px}
 .td-rank{text-align:center}
 
-/* ── HOVER NAME ── */
+/* ── HOVER NAME HIGHLIGHT ── */
 .players-table tbody tr:hover .td-player-name{color:#fff}
 
-/* ── PHOTO COLUMN ── */
+/* ── PHOTO CARD ── */
 .td-photo-wrap{
   width:40px;height:52px;border-radius:5px;overflow:hidden;
   background:#0a1018;position:relative;flex-shrink:0;
   border:1px solid rgba(255,255,255,.055);
 }
-.td-photo-wrap img,.td-photo-bg{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;object-position:top center;
+.td-photo-bg{
+  position:absolute;inset:0;
+  background-size:cover;background-position:top center;
 }
 .td-photo-fade{
   position:absolute;bottom:0;left:0;right:0;height:45%;
@@ -8658,11 +8630,10 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 }
 .td-photo-ini{
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-d);font-size:15px;font-weight:900;
+  font-family:var(--font-d);font-size:14px;font-weight:900;
   color:rgba(255,255,255,.055);letter-spacing:-1px;
   background:radial-gradient(ellipse at 50% 20%,rgba(0,160,255,.04),transparent 65%);
 }
-
 /* League badge */
 .league-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.5px;border-radius:4px;padding:3px 7px;border:1px solid;white-space:nowrap;}
 
@@ -13031,14 +13002,14 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
             <thead>
               <tr>
                 <th class="th-edit" title="Editar"></th>
-                <th onclick="sortTable('rank')" class="s-desc" style="width:32px">#</th>
-                <th style="width:50px;padding:0"></th>
-                <th onclick="sortTable('name')" style="text-align:left;padding-left:7px;min-width:155px">Jogador</th>
-                <th onclick="sortTable('age')" style="background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05)" data-lbl="Ide">Ide</th>
-                <th onclick="sortTable('size')" style="background:rgba(255,255,255,.015);border-left:none" data-lbl="Alt">Alt</th>
+                <th onclick="sortTable('rank')" class="s-desc">#</th>
+                <th style="width:48px;padding:0"></th>
+                <th onclick="sortTable('name')" style="text-align:left;padding-left:8px;min-width:155px">Jogador</th>
+                <th onclick="sortTable('age')" style="background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05)">Idade</th>
+                <th onclick="sortTable('size')" style="background:rgba(255,255,255,.015);border-left:none">Altura</th>
                 <th onclick="sortTable('foot')" style="background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
                 <th onclick="sortTable('team')" style="text-align:left;padding-left:29px;min-width:110px">Clube / Liga</th>
-                <th style="white-space:nowrap;padding:0;background:rgba(0,6,14,.55);border-left:1px solid rgba(255,255,255,.05)">
+                <th style="white-space:nowrap;padding:0;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
                   <div style="display:flex;align-items:center;gap:0;height:100%">
                     <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
                     <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — Opta difficulty" style="flex-shrink:0;background:none;border:none;padding:1px 1px;cursor:pointer;margin-right:1px;margin-left:2px;transition:all .2s;display:flex;align-items:center;justify-content:center;opacity:0.45;filter:grayscale(1) brightness(3)">
@@ -13051,8 +13022,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                     </button>
                   </div>
                 </th>
-                <th onclick="sortTable('total_physical')" style="color:#9b7fff;background:rgba(0,6,14,.55)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
-                <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,6,14,.55);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
+                <th onclick="sortTable('total_physical')" style="color:#9b7fff;background:rgba(0,8,18,.5)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
+                <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th onclick="sortTable('contract_end')" data-i18n="col_contract">Contrato</th>
                 <th onclick="sortTable('mkt_value')" data-i18n="col_value" style="white-space:nowrap">Valor</th>
                 <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0">
@@ -14378,60 +14349,59 @@ function renderTable(){
       ondragstart="onRowDragStart(event)"
       onclick="selectPlayer('${p.name.replace(/'/g,"\'").replace(/"/g,'&quot;')}','${p.league}')">
       <td style="padding:4px 2px;width:28px" onclick="event.stopPropagation()"><button class="td-edit-btn" onclick="openEditModal(decodeURIComponent(this.dataset.n))" data-n="${encodeURIComponent(p.name)}" title="Editar"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/></svg></button></td>
-      <td class="td-rank" style="width:32px;padding:0 8px;background:#05080b;border-right:1px solid rgba(255,255,255,.04)">
-        <div style="font-family:var(--font-d);font-size:12px;font-weight:900;color:rgba(255,255,255,.28);letter-spacing:-0.5px;line-height:1">${rank+1}</div>
-        <div style="margin-top:5px"><span style="font-family:var(--font-d);font-size:6.5px;font-weight:800;letter-spacing:.8px;padding:1px 3px;border-radius:2px;background:rgba(155,127,255,0.08);border:1px solid rgba(155,127,255,0.2);color:rgba(155,127,255,.6)">${p.position_group||'WIN'}</span></div>
+      <td class="td-rank" style="width:36px;padding:0 8px;background:#06090d;border-right:1px solid rgba(255,255,255,.04)">
+        <div style="font-family:var(--font-d);font-size:13px;font-weight:900;color:rgba(255,255,255,.3);letter-spacing:-0.5px;line-height:1">${rank+1}</div>
+        <div style="margin-top:4px"><span style="font-family:var(--font-d);font-size:7px;font-weight:800;letter-spacing:.6px;padding:1px 4px;border-radius:2px;background:rgba(155,127,255,0.1);border:1px solid rgba(155,127,255,0.25);color:rgba(155,127,255,.7)">${p.position_group||'WIN'}</span></div>
       </td>
       <td style="width:50px;padding:2px 3px 2px 5px;vertical-align:middle">
         <div class="td-photo-wrap">
           ${window.photoCache&&window.photoCache[p.name]
-            ? `<div class="td-photo-bg" style="background-image:url(${window.photoCache[p.name]});background-size:cover;background-position:top center"></div><div class="td-photo-fade"></div>`
+            ? `<div class="td-photo-bg" style="background-image:url(${window.photoCache[p.name]})"></div><div class="td-photo-fade"></div>`
             : `<div class="td-photo-ini">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>`}
         </div>
       </td>
-      <td style="text-align:left;padding:0 14px 0 7px;min-width:155px;max-width:210px">
-        <div class="td-player-name" style="font-family:var(--font-d);font-size:14px;font-weight:800;color:rgba(228,235,242,.88);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.05px;transition:color .1s">${p.name}</div>
-        <div style="display:flex;align-items:center;gap:3px;margin-top:5px">
-          ${pos2?`<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:2px;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.18);color:rgba(0,212,255,.8);letter-spacing:.3px">${pos2}</span>`:''}
-          ${pos1?`<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.35);letter-spacing:.3px">${pos1}</span>`:''}
-          ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:9px;opacity:.6">⚠️</span>`:''}
+      <td style="text-align:left;padding:0 12px 0 8px;min-width:155px;max-width:210px">
+        <div class="td-player-name" style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:rgba(232,237,242,.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px;transition:color .1s">${p.name}</div>
+        <div style="display:flex;align-items:center;gap:3px;margin-top:4px">
+          ${pos2?`<span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.22);color:rgba(0,212,255,.85)">${pos2}</span>`:''}
+          ${pos1?`<span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4)">${pos1}</span>`:''}
+          ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:10px;opacity:.7">⚠️</span>`:''}
         </div>
       </td>
-      <td style="text-align:center;padding:0 9px;background:rgba(255,255,255,.012);border-left:1px solid rgba(255,255,255,.045)">
-        <div style="font-family:var(--font-d);font-size:15px;font-weight:900;color:rgba(255,255,255,.65);letter-spacing:-1px;line-height:1">${p.age||'—'}</div>
-        <div style="font-family:var(--font-d);font-size:7px;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.16);margin-top:5px;text-transform:uppercase">Ide</div>
+      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05)">
+        <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px;line-height:1">${p.age||'—'}</div>
+        <div style="font-family:var(--font-d);font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.2);margin-top:4px;text-transform:uppercase">Idade</div>
       </td>
-      <td style="text-align:center;padding:0 9px;background:rgba(255,255,255,.012)">
-        <div style="font-family:var(--font-d);font-size:15px;font-weight:900;color:rgba(255,255,255,.65);letter-spacing:-1px;line-height:1">${htTxt}</div>
-        <div style="font-family:var(--font-d);font-size:7px;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.16);margin-top:5px;text-transform:uppercase">Alt</div>
+      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015)">
+        <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px;line-height:1">${htTxt}</div>
+        <div style="font-family:var(--font-d);font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.2);margin-top:4px;text-transform:uppercase">Altura</div>
       </td>
-      <td style="text-align:center;padding:0 9px;background:rgba(255,255,255,.012);border-right:1px solid rgba(255,255,255,.045)">
-        <div style="font-family:var(--font-d);font-size:15px;font-weight:900;color:rgba(255,255,255,.65);letter-spacing:-1px;line-height:1">${footTxt||'—'}</div>
-        <div style="font-family:var(--font-d);font-size:7px;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.16);margin-top:5px;text-transform:uppercase">Pé</div>
+      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.06)">
+        <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px;line-height:1">${footTxt||'—'}</div>
+        <div style="font-family:var(--font-d);font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.2);margin-top:4px;text-transform:uppercase">Pé</div>
       </td>
-      <td style="text-align:left;padding:0 10px 0 22px;min-width:115px;max-width:155px">
-        <div style="font-family:var(--font-d);font-size:13px;font-weight:700;color:rgba(255,255,255,.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.team}</div>
-        <div style="font-family:var(--font-d);font-size:9px;font-weight:600;color:rgba(0,170,210,.48);margin-top:4px;letter-spacing:.1px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
+      <td style="text-align:left;padding:0 10px 0 29px;min-width:120px;max-width:160px">
+        <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px">${p.team}</div>
+        <div style="font-family:var(--font-d);font-size:9.5px;font-weight:600;color:rgba(0,180,220,.55);margin-top:4px;letter-spacing:.2px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
-      <td style="text-align:center;padding:0 14px;background:rgba(0,6,14,.55);border-left:1px solid rgba(255,255,255,.04)">
-        ${(()=>{ const v=Math.round(activeTIPct(p)); const c=tiC(v); return `<div class="td-score-num" style="color:${c}">${v}${ligaAdjustActive&&p.liga_mult!==1.0?`<span style="font-size:7px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>`:''}</div><div class="td-score-sub">TAL</div><div class="td-score-bar" style="width:${v}%;background:${c};opacity:.35"></div>`; })()}
+      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
+        <div class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}</div>
+        <div class="td-score-sub">TAL</div>
       </td>
-      <td style="text-align:center;padding:0 14px;background:rgba(0,6,14,.55)">
+      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6)">
         ${p.has_phy
-          ? (()=>{ const v=Math.round((p.total_physical/25)*100); const c=tiC(v); return `<div class="td-score-num" style="color:${c}">${v}</div><div class="td-score-sub">PHY</div><div class="td-score-bar" style="width:${v}%;background:${c};opacity:.35"></div>`; })()
-          : `<div style="font-family:var(--font-d);font-size:11px;color:rgba(255,255,255,.12)">—</div>`}
+          ? `<div class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</div><div class="td-score-sub">PHY</div>`
+          : `<div style="font-family:var(--font-d);font-size:11px;color:rgba(255,255,255,.15)">—</div>`}
       </td>
-      <td style="text-align:center;padding:0 14px;background:rgba(0,6,14,.55);border-right:1px solid rgba(255,255,255,.04)">
-        ${(()=>{ const v=p.transfer_score||0; const c=tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.18)'; return `<div class="td-score-num" style="color:${c}">${v}</div><div class="td-score-sub">TRA</div><div class="td-score-bar" style="width:${Math.min(100,v)}%;background:${c};opacity:.35"></div>`; })()}
+      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)">
+        <div class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.2)'}">${p.transfer_score||0}</div>
+        <div class="td-score-sub">TRA</div>
       </td>
       <td class="td-contract">${(()=>{
         const yr=p.contract_end?(p.contract_end.split('-')[0]):'—';
         const fmt=p.contract_end?p.contract_end.split('-').reverse().join('/'):'—';
-        if(yr==='—') return '<span style="color:rgba(255,255,255,.18)">—</span>';
-        const col=yr==='2026'?'rgba(255,65,75,.9)':yr==='2027'?'rgba(255,170,50,.75)':'rgba(255,255,255,.38)';
-        const bg=yr==='2026'?'rgba(255,65,75,.08)':yr==='2027'?'rgba(255,170,50,.06)':'transparent';
-        const bd=yr==='2026'?'rgba(255,65,75,.25)':yr==='2027'?'rgba(255,170,50,.2)':'transparent';
-        return '<span style="color:'+col+';background:'+bg+';border:1px solid '+bd+';border-radius:4px;padding:2px 7px;font-size:11.5px">'+fmt+'</span>';
+        const col=yr==='2026'?'#ff4757':yr==='2027'?'rgba(255,179,64,.75)':'rgba(255,255,255,.45)';
+        return '<span style="color:'+col+'">'+fmt+'</span>';
       })()}</td>
       <td class="td-val">${fmtVal(p.mkt_value)}</td>
       <td class="cat-total td-num" style="color:${mc('total_off',p.name)}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
