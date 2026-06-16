@@ -350,7 +350,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 
 /* ── PHOTO CARD ── */
 .td-photo-wrap{
-  width:40px;height:52px;border-radius:5px;overflow:hidden;
+  width:40px;height:43px;border-radius:5px;overflow:hidden;
   background:#0a1018;position:relative;flex-shrink:0;
   border:1px solid rgba(255,255,255,.055);
 }
@@ -4796,9 +4796,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th style="text-align:left;padding-left:29px;min-width:110px">
                   <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
                 </th>
-                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05)" title="Talent Index" data-i18n="col_talent">TAL</th>
-                <th onclick="sortTable('total_physical')" style="color:#fff" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
-                <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
+                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05);background:linear-gradient(180deg,#0c1420 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%)!important" title="Talent Index" data-i18n="col_talent">TAL</th>
+                <th onclick="sortTable('total_physical')" style="color:#fff;background:linear-gradient(180deg,#0c1420 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%)!important" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
+                <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05);background:linear-gradient(180deg,#0c1420 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%)!important" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th id="th-contract-dd" style="width:120px;cursor:default"></th>
                 <th id="th-mktval-dd" style="white-space:nowrap;width:80px;cursor:default"></th>
                 <th class="cat-total cat-off-total" style="color:#fff;white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
@@ -6249,18 +6249,18 @@ function renderTable(){
       ondragstart="onRowDragStart(event)"
       onclick="selectPlayer('${p.name.replace(/'/g,"\'").replace(/"/g,'&quot;')}','${p.league}')">
       <td style="padding:4px 2px;width:28px" onclick="event.stopPropagation()"><button class="td-edit-btn" onclick="openEditModal(decodeURIComponent(this.dataset.n))" data-n="${encodeURIComponent(p.name)}" title="Editar"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/></svg></button></td>
-      <td class="td-rank" style="width:36px;padding:0 8px;background:#06090d;border-right:1px solid rgba(255,255,255,.04);padding-right:calc(8px + 1mm)">
+      <td class="td-rank" style="width:36px;padding:9px 8px 0;background:#06090d;border-right:1px solid rgba(255,255,255,.04);padding-right:calc(8px + 1mm);vertical-align:top">
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.3);letter-spacing:-.5px;line-height:1;text-align:center">${rank+1}</div>
         <div style="margin-top:4px"><span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(155,127,255,0.08);border:1px solid rgba(155,127,255,0.22);color:rgba(155,127,255,.8)">${p.position_group||'WIN'}</span></div>
       </td>
-      <td style="width:50px;padding:2px 3px 2px calc(5px + 1.5mm);vertical-align:middle">
+      <td style="width:50px;padding:9px 3px 0 calc(5px + 1.5mm);vertical-align:top">
         <div class="td-photo-wrap">
           ${window.photoCache&&window.photoCache[p.name]
             ? `<div class="td-photo-bg" style="background-image:url(${window.photoCache[p.name]})"></div><div class="td-photo-fade"></div>`
             : `<div class="td-photo-ini">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>`}
         </div>
       </td>
-      <td style="text-align:left;padding:0 calc(12px - 1mm) 0 calc(8px + 1.5mm);min-width:calc(155px - 3mm);max-width:calc(210px - 3mm)">
+      <td style="text-align:left;padding:9px calc(12px - 1mm) 0 calc(8px + 1.5mm);min-width:calc(155px - 3mm);max-width:calc(210px - 3mm);vertical-align:top">
         <div class="td-player-name" style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:rgba(232,237,242,.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px;transition:color .1s">${p.name}</div>
         <div style="display:flex;align-items:center;gap:3px;margin-top:4px">
           ${pos2?`<span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.22);color:rgba(0,212,255,.85)">${pos2}</span>`:''}
@@ -6268,19 +6268,19 @@ function renderTable(){
           ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:10px;opacity:.7">⚠️</span>`:''}
         </div>
       </td>
-      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:9px 10px 0;background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05);vertical-align:top">
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px;line-height:1">${p.age||'—'}</div>
         <div style="font-family:var(--font-d);font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.2);margin-top:4px;text-transform:uppercase">Idade</div>
       </td>
-      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015)">
+      <td style="text-align:center;padding:9px 10px 0;background:rgba(255,255,255,.015);vertical-align:top">
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px;line-height:1">${htTxt}</div>
         <div style="font-family:var(--font-d);font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.2);margin-top:4px;text-transform:uppercase">Altura</div>
       </td>
-      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.06)">
+      <td style="text-align:center;padding:9px 10px 0;background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.06);vertical-align:top">
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px;line-height:1">${footTxt||'—'}</div>
         <div style="font-family:var(--font-d);font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.2);margin-top:4px;text-transform:uppercase">Pé</div>
       </td>
-      <td style="text-align:left;padding:0 10px 0 29px;min-width:120px;max-width:160px">
+      <td style="text-align:left;padding:9px 10px 0 29px;min-width:120px;max-width:160px;vertical-align:top">
         <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px">${p.team}</div>
         <div style="font-family:var(--font-d);font-size:9.5px;font-weight:600;color:rgba(0,180,220,.55);margin-top:4px;letter-spacing:.2px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
@@ -8768,7 +8768,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 
 /* ── PHOTO CARD ── */
 .td-photo-wrap{
-  width:40px;height:52px;border-radius:5px;overflow:hidden;
+  width:40px;height:43px;border-radius:5px;overflow:hidden;
   background:#0a1018;position:relative;flex-shrink:0;
   border:1px solid rgba(255,255,255,.055);
 }
@@ -13182,9 +13182,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th style="text-align:left;padding-left:29px;min-width:110px">
                   <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
                 </th>
-                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05)" title="Talent Index" data-i18n="col_talent">TAL</th>
-                <th onclick="sortTable('total_physical')" style="color:#fff" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
-                <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
+                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05);background:linear-gradient(180deg,#0c1420 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%)!important" title="Talent Index" data-i18n="col_talent">TAL</th>
+                <th onclick="sortTable('total_physical')" style="color:#fff;background:linear-gradient(180deg,#0c1420 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%)!important" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
+                <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05);background:linear-gradient(180deg,#0c1420 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%)!important" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th id="th-contract-dd" style="width:120px;cursor:default"></th>
                 <th id="th-mktval-dd" style="white-space:nowrap;width:80px;cursor:default"></th>
                 <th class="cat-total cat-off-total" style="color:#fff;white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
@@ -14635,18 +14635,18 @@ function renderTable(){
       ondragstart="onRowDragStart(event)"
       onclick="selectPlayer('${p.name.replace(/'/g,"\'").replace(/"/g,'&quot;')}','${p.league}')">
       <td style="padding:4px 2px;width:28px" onclick="event.stopPropagation()"><button class="td-edit-btn" onclick="openEditModal(decodeURIComponent(this.dataset.n))" data-n="${encodeURIComponent(p.name)}" title="Editar"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/></svg></button></td>
-      <td class="td-rank" style="width:36px;padding:0 8px;background:#06090d;border-right:1px solid rgba(255,255,255,.04);padding-right:calc(8px + 1mm)">
+      <td class="td-rank" style="width:36px;padding:9px 8px 0;background:#06090d;border-right:1px solid rgba(255,255,255,.04);padding-right:calc(8px + 1mm);vertical-align:top">
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.3);letter-spacing:-.5px;line-height:1;text-align:center">${rank+1}</div>
         <div style="margin-top:4px"><span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(155,127,255,0.08);border:1px solid rgba(155,127,255,0.22);color:rgba(155,127,255,.8)">${p.position_group||'WIN'}</span></div>
       </td>
-      <td style="width:50px;padding:2px 3px 2px calc(5px + 1.5mm);vertical-align:middle">
+      <td style="width:50px;padding:9px 3px 0 calc(5px + 1.5mm);vertical-align:top">
         <div class="td-photo-wrap">
           ${window.photoCache&&window.photoCache[p.name]
             ? `<div class="td-photo-bg" style="background-image:url(${window.photoCache[p.name]})"></div><div class="td-photo-fade"></div>`
             : `<div class="td-photo-ini">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>`}
         </div>
       </td>
-      <td style="text-align:left;padding:0 calc(12px - 1mm) 0 calc(8px + 1.5mm);min-width:calc(155px - 3mm);max-width:calc(210px - 3mm)">
+      <td style="text-align:left;padding:9px calc(12px - 1mm) 0 calc(8px + 1.5mm);min-width:calc(155px - 3mm);max-width:calc(210px - 3mm);vertical-align:top">
         <div class="td-player-name" style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:rgba(232,237,242,.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px;transition:color .1s">${p.name}</div>
         <div style="display:flex;align-items:center;gap:3px;margin-top:4px">
           ${pos2?`<span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.22);color:rgba(0,212,255,.85)">${pos2}</span>`:''}
@@ -14654,19 +14654,19 @@ function renderTable(){
           ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:10px;opacity:.7">⚠️</span>`:''}
         </div>
       </td>
-      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:9px 10px 0;background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05);vertical-align:top">
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px;line-height:1">${p.age||'—'}</div>
         <div style="font-family:var(--font-d);font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.2);margin-top:4px;text-transform:uppercase">Idade</div>
       </td>
-      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015)">
+      <td style="text-align:center;padding:9px 10px 0;background:rgba(255,255,255,.015);vertical-align:top">
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px;line-height:1">${htTxt}</div>
         <div style="font-family:var(--font-d);font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.2);margin-top:4px;text-transform:uppercase">Altura</div>
       </td>
-      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.06)">
+      <td style="text-align:center;padding:9px 10px 0;background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.06);vertical-align:top">
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px;line-height:1">${footTxt||'—'}</div>
         <div style="font-family:var(--font-d);font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.2);margin-top:4px;text-transform:uppercase">Pé</div>
       </td>
-      <td style="text-align:left;padding:0 10px 0 29px;min-width:120px;max-width:160px">
+      <td style="text-align:left;padding:9px 10px 0 29px;min-width:120px;max-width:160px;vertical-align:top">
         <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px">${p.team}</div>
         <div style="font-family:var(--font-d);font-size:9.5px;font-weight:600;color:rgba(0,180,220,.55);margin-top:4px;letter-spacing:.2px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
