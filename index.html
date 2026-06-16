@@ -2344,7 +2344,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 }
 
 /* ═══ MOBILE PORTRAIT POPUP ═══ */
-#mobile-popup{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+#mobile-popup{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);pointer-events:none}
+#mobile-popup.show{pointer-events:auto}
 #mobile-popup.show{display:flex}
 .mob-sheet{background:#0d1520;border:1px solid rgba(0,212,255,.2);border-radius:16px;padding:24px 20px 32px;width:100%;max-width:480px;animation:fadeIn .2s ease}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}} @keyframes fadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
@@ -10732,7 +10733,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 }
 
 /* ═══ MOBILE PORTRAIT POPUP ═══ */
-#mobile-popup{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+#mobile-popup{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);pointer-events:none}
+#mobile-popup.show{pointer-events:auto}
 #mobile-popup.show{display:flex}
 .mob-sheet{background:#0d1520;border:1px solid rgba(0,212,255,.2);border-radius:16px;padding:24px 20px 32px;width:100%;max-width:480px;animation:fadeIn .2s ease}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}} @keyframes fadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
@@ -25399,7 +25401,12 @@ function sfDownload() {
 if(!window.photoCache) window.photoCache = {};
 // ── Mobile Mode Management ──
 function isMobilePortrait(){
-  return window.innerWidth<1024 && ('ontouchstart' in window || navigator.maxTouchPoints>0);
+  // Width is the primary signal — touch support alone causes false positives on
+  // touchscreen laptops/desktops (Surface, 2-in-1s) where innerWidth can still be <1024
+  // in a normal desktop browser window. Require BOTH a narrow viewport AND portrait
+  // aspect ratio (mobile phones are taller than wide; desktop windows resized narrow
+  // are usually still wider than tall or close to square).
+  return window.innerWidth<768 && window.innerHeight>window.innerWidth;
 }
 
 function checkMobileOrientation(){
