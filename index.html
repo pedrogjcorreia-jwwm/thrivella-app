@@ -6027,13 +6027,13 @@ window._tblFilters = window._tblFilters || {age:'',mktval:'',contract:'',height:
 function dkDD(id, opts, selectedVal){
   const sel = opts.find(([v])=>v===selectedVal);
   const selLabel = sel ? sel[1] : opts[0][1];
-  const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:6px 12px;font-family:var(--font-d);font-size:11px;color:rgba(220,235,250,.85);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,180,255,.12)'" onmouseout="this.style.background=''">${l}</div>`).join('');
+  const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:7px 13px;font-family:var(--font-d);font-size:10.5px;font-weight:600;letter-spacing:.3px;color:rgba(220,235,250,.8);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,180,255,.12)'" onmouseout="this.style.background=''">${l}</div>`).join('');
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:3px;cursor:pointer">
+    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:3px;cursor:pointer;font-family:var(--font-d);font-size:8.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${selectedVal?'var(--accent)':'rgba(255,255,255,.28)'};transition:color .15s">
       <span>${selLabel}</span>
-      <span style="font-size:7px;opacity:${selectedVal?'.9':'.4'};color:${selectedVal?'var(--accent)':'inherit'}">▾</span>
+      <span style="font-size:7px;opacity:${selectedVal?'.9':'.4'}">▾</span>
     </div>
-    <div id="dkdd-${id}" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:240px;overflow-y:auto;min-width:90px">
+    <div id="dkdd-${id}" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:240px;overflow-y:auto;min-width:100px">
       ${items}
     </div>
   </div>`;
@@ -14337,13 +14337,13 @@ window._tblFilters = window._tblFilters || {age:'',mktval:'',contract:'',height:
 function dkDD(id, opts, selectedVal){
   const sel = opts.find(([v])=>v===selectedVal);
   const selLabel = sel ? sel[1] : opts[0][1];
-  const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:6px 12px;font-family:var(--font-d);font-size:11px;color:rgba(220,235,250,.85);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,180,255,.12)'" onmouseout="this.style.background=''">${l}</div>`).join('');
+  const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:7px 13px;font-family:var(--font-d);font-size:10.5px;font-weight:600;letter-spacing:.3px;color:rgba(220,235,250,.8);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,180,255,.12)'" onmouseout="this.style.background=''">${l}</div>`).join('');
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:3px;cursor:pointer">
+    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:3px;cursor:pointer;font-family:var(--font-d);font-size:8.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${selectedVal?'var(--accent)':'rgba(255,255,255,.28)'};transition:color .15s">
       <span>${selLabel}</span>
-      <span style="font-size:7px;opacity:${selectedVal?'.9':'.4'};color:${selectedVal?'var(--accent)':'inherit'}">▾</span>
+      <span style="font-size:7px;opacity:${selectedVal?'.9':'.4'}">▾</span>
     </div>
-    <div id="dkdd-${id}" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:240px;overflow-y:auto;min-width:90px">
+    <div id="dkdd-${id}" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:240px;overflow-y:auto;min-width:100px">
       ${items}
     </div>
   </div>`;
