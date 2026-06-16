@@ -290,7 +290,12 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   overflow:hidden;
 }
 .players-table thead th:hover{background:linear-gradient(180deg,rgba(0,212,255,.07) 0%,rgba(0,212,255,.07) 91.6%,var(--accent) 100%);color:#fff}
-.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 91.6%,rgba(0,212,255,.55) 100%)!important}
+.players-table thead th.th-sf{background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 91.6%,rgba(0,212,255,.55) 100%)!important}
+/* Category group headers (Off/Def/Pass/Fís): slightly lighter base so they read as a parent group, distinct from single metrics like TAL/PHY/TRA */
+.players-table thead th.cat-total{background:linear-gradient(180deg,#10151c 0%,#10151c 91.6%,rgba(0,212,255,.55) 100%)!important}
+/* Dropdown columns: elevated flat background, no cyan sort-line — visually distinct from sortable columns */
+.players-table thead th.th-dropdown{background:rgba(255,255,255,.035)!important}
+.players-table thead th.th-dropdown:hover{background:rgba(0,212,255,.06)!important}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -4765,36 +4770,35 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 
       <!-- TABLE VIEW -->
       <div id="view-table" style="display: flex; flex-direction: column; flex: 1 1 0%; overflow: hidden; height: 100%;">
+        <div style="flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;padding:8px 14px;background:#05080b;border-bottom:1px solid rgba(255,255,255,.05)">
+          <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — ajusta o Talent Index pela dificuldade da liga (Opta)" style="display:flex;align-items:center;gap:6px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.3);border-radius:6px;padding:5px 12px;cursor:pointer;transition:all .2s">
+            <span style="font-family:var(--font-d);font-size:9px;font-weight:800;letter-spacing:.4px;color:var(--green);background:rgba(0,229,160,.18);border-radius:3px;padding:1px 5px">AI</span>
+            <span style="font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.3px;color:rgba(255,255,255,.75)">Ajustar Talent Index pela Liga</span>
+          </button>
+        </div>
         <div class="table-wrap" id="table-wrap">
           <table class="players-table">
             <thead>
               <tr>
                 <th class="th-edit" title="Editar"></th>
-                <th onclick="sortTable('rank')" style="padding:0;height:100%;cursor:default">
+                <th onclick="sortTable('rank')" class="th-dropdown" style="padding:0;height:100%;cursor:default">
                   <div style="display:flex;align-items:center;justify-content:center;height:100%;box-sizing:border-box">
                     <span id="th-pos-dd" style="cursor:default;margin-left:0.5mm"></span>
                   </div>
                 </th>
                 <th style="width:48px;padding:0"></th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:8px;min-width:155px">Jogador</th>
-                <th id="th-age-dd" style="border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
-                <th id="th-height-dd" style="cursor:default"></th>
-                <th id="th-foot-dd" style="border-right:1px solid rgba(255,255,255,.05);cursor:default"></th>
+                <th id="th-age-dd" class="th-dropdown" style="border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
+                <th id="th-height-dd" class="th-dropdown" style="cursor:default"></th>
+                <th id="th-foot-dd" class="th-dropdown" style="border-right:1px solid rgba(255,255,255,.05);cursor:default"></th>
                 <th style="text-align:left;padding-left:29px;min-width:110px">
                   <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
                 </th>
-                <th style="white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.05)">
-                  <div style="display:flex;align-items:center;justify-content:center;gap:0;height:100%;box-sizing:border-box">
-                    <span onclick="sortTable('score')" style="cursor:pointer;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
-                    <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — Opta difficulty" style="flex-shrink:0;width:20px;height:20px;border-radius:5px;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.35);cursor:pointer;margin-right:2px;margin-left:3px;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0">
-                      <span style="font-family:var(--font-d);font-size:8px;font-weight:800;letter-spacing:.3px;color:var(--green)">AI</span>
-                    </button>
-                  </div>
-                </th>
+                <th onclick="sortTable('score')" style="white-space:nowrap" title="Talent Index" data-i18n="col_talent">TAL</th>
                 <th onclick="sortTable('total_physical')" style="color:#fff" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
                 <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
-                <th id="th-contract-dd" style="width:120px;cursor:default"></th>
-                <th id="th-mktval-dd" style="white-space:nowrap;width:80px;cursor:default"></th>
+                <th id="th-contract-dd" class="th-dropdown" style="width:120px;cursor:default"></th>
+                <th id="th-mktval-dd" class="th-dropdown" style="white-space:nowrap;width:80px;cursor:default"></th>
                 <th class="cat-total cat-off-total" style="color:#fff;white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_off')" class="cat-sort" data-i18n="cat_off">Off ↕</span>
@@ -4848,7 +4852,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th class="cat-sub cat-phys" onclick="sortTable('sprints90')" style="color:#fff">NrSpr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:#fff">%HSR+Spr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:#fff">Dist.Tot</th>
-                <th id="th-metric-dd" style="width:80px;cursor:default;border-left:1px solid rgba(255,255,255,.08)"></th>
+                <th id="th-metric-dd" class="th-dropdown" style="width:90px;cursor:default;border-left:2px solid var(--accent);box-shadow:inset 0 0 12px rgba(0,212,255,.08)"></th>
                 <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#fff;width:calc(60px - 4mm)">
                   <span style="display:flex;align-items:center;justify-content:center">
                     <img src="https://www.sofascore.com/static/images/sofascore-share-logo.png" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=sofascore.com&sz=32'" style="height:16px;width:16px;border-radius:3px;object-fit:cover" alt="SofaScore">
@@ -5715,12 +5719,13 @@ function toggleLigaAdjust() {
     p.talent_index_adj_pct = Math.round(p.talent_index_adj / 67 * 1000) / 10;
     p.liga_mult            = m;
   });
-  // AI pill button (table header)
+  // AI toolbar button (above table)
   const _btnTh = document.getElementById('btn-liga-adjust-th');
   if (_btnTh) {
-    _btnTh.style.background = ligaAdjustActive ? 'rgba(0,229,160,.28)' : 'rgba(0,229,160,.12)';
-    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(0,229,160,.8)' : 'rgba(0,229,160,.35)';
-    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.08)' : 'scale(1)';
+    _btnTh.style.background = ligaAdjustActive ? 'rgba(0,229,160,.22)' : 'rgba(0,229,160,.1)';
+    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(0,229,160,.7)' : 'rgba(0,229,160,.3)';
+    const _lbl = _btnTh.querySelector('span:last-child');
+    if (_lbl) _lbl.textContent = ligaAdjustActive ? 'Talent Index ajustado pela Liga ✓' : 'Ajustar Talent Index pela Liga';
   }
   // Flyout button
   const _btnFl = document.getElementById('btn-liga-adjust');
@@ -6130,7 +6135,7 @@ function renderTable(){
     const lgEl=document.getElementById('th-league-dd');
     if(lgEl) lgEl.innerHTML=dkLeagueDD();
     const mtEl=document.getElementById('th-metric-dd');
-    if(mtEl) mtEl.innerHTML=dkDD('metric',[['','Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric);
+    if(mtEl) mtEl.innerHTML=dkDD('metric',[['','+ Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric);
     const posEl=document.getElementById('th-pos-dd');
     if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos);
   })();
@@ -8700,7 +8705,12 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   overflow:hidden;
 }
 .players-table thead th:hover{background:linear-gradient(180deg,rgba(0,212,255,.07) 0%,rgba(0,212,255,.07) 91.6%,var(--accent) 100%);color:#fff}
-.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 91.6%,rgba(0,212,255,.55) 100%)!important}
+.players-table thead th.th-sf{background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 91.6%,rgba(0,212,255,.55) 100%)!important}
+/* Category group headers (Off/Def/Pass/Fís): slightly lighter base so they read as a parent group, distinct from single metrics like TAL/PHY/TRA */
+.players-table thead th.cat-total{background:linear-gradient(180deg,#10151c 0%,#10151c 91.6%,rgba(0,212,255,.55) 100%)!important}
+/* Dropdown columns: elevated flat background, no cyan sort-line — visually distinct from sortable columns */
+.players-table thead th.th-dropdown{background:rgba(255,255,255,.035)!important}
+.players-table thead th.th-dropdown:hover{background:rgba(0,212,255,.06)!important}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -13143,36 +13153,35 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 
       <!-- TABLE VIEW -->
       <div id="view-table" style="display: flex; flex-direction: column; flex: 1 1 0%; overflow: hidden; height: 100%;">
+        <div style="flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;padding:8px 14px;background:#05080b;border-bottom:1px solid rgba(255,255,255,.05)">
+          <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — ajusta o Talent Index pela dificuldade da liga (Opta)" style="display:flex;align-items:center;gap:6px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.3);border-radius:6px;padding:5px 12px;cursor:pointer;transition:all .2s">
+            <span style="font-family:var(--font-d);font-size:9px;font-weight:800;letter-spacing:.4px;color:var(--green);background:rgba(0,229,160,.18);border-radius:3px;padding:1px 5px">AI</span>
+            <span style="font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.3px;color:rgba(255,255,255,.75)">Ajustar Talent Index pela Liga</span>
+          </button>
+        </div>
         <div class="table-wrap" id="table-wrap">
           <table class="players-table">
             <thead>
               <tr>
                 <th class="th-edit" title="Editar"></th>
-                <th onclick="sortTable('rank')" style="padding:0;height:100%;cursor:default">
+                <th onclick="sortTable('rank')" class="th-dropdown" style="padding:0;height:100%;cursor:default">
                   <div style="display:flex;align-items:center;justify-content:center;height:100%;box-sizing:border-box">
                     <span id="th-pos-dd" style="cursor:default;margin-left:0.5mm"></span>
                   </div>
                 </th>
                 <th style="width:48px;padding:0"></th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:8px;min-width:155px">Jogador</th>
-                <th id="th-age-dd" style="border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
-                <th id="th-height-dd" style="cursor:default"></th>
-                <th id="th-foot-dd" style="border-right:1px solid rgba(255,255,255,.05);cursor:default"></th>
+                <th id="th-age-dd" class="th-dropdown" style="border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
+                <th id="th-height-dd" class="th-dropdown" style="cursor:default"></th>
+                <th id="th-foot-dd" class="th-dropdown" style="border-right:1px solid rgba(255,255,255,.05);cursor:default"></th>
                 <th style="text-align:left;padding-left:29px;min-width:110px">
                   <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
                 </th>
-                <th style="white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.05)">
-                  <div style="display:flex;align-items:center;justify-content:center;gap:0;height:100%;box-sizing:border-box">
-                    <span onclick="sortTable('score')" style="cursor:pointer;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
-                    <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — Opta difficulty" style="flex-shrink:0;width:20px;height:20px;border-radius:5px;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.35);cursor:pointer;margin-right:2px;margin-left:3px;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0">
-                      <span style="font-family:var(--font-d);font-size:8px;font-weight:800;letter-spacing:.3px;color:var(--green)">AI</span>
-                    </button>
-                  </div>
-                </th>
+                <th onclick="sortTable('score')" style="white-space:nowrap" title="Talent Index" data-i18n="col_talent">TAL</th>
                 <th onclick="sortTable('total_physical')" style="color:#fff" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
                 <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
-                <th id="th-contract-dd" style="width:120px;cursor:default"></th>
-                <th id="th-mktval-dd" style="white-space:nowrap;width:80px;cursor:default"></th>
+                <th id="th-contract-dd" class="th-dropdown" style="width:120px;cursor:default"></th>
+                <th id="th-mktval-dd" class="th-dropdown" style="white-space:nowrap;width:80px;cursor:default"></th>
                 <th class="cat-total cat-off-total" style="color:#fff;white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_off')" class="cat-sort" data-i18n="cat_off">Off ↕</span>
@@ -13226,7 +13235,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th class="cat-sub cat-phys" onclick="sortTable('sprints90')" style="color:#fff">NrSpr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:#fff">%HSR+Spr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:#fff">Dist.Tot</th>
-                <th id="th-metric-dd" style="width:80px;cursor:default;border-left:1px solid rgba(255,255,255,.08)"></th>
+                <th id="th-metric-dd" class="th-dropdown" style="width:90px;cursor:default;border-left:2px solid var(--accent);box-shadow:inset 0 0 12px rgba(0,212,255,.08)"></th>
                 <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#fff;width:calc(60px - 4mm)">
                   <span style="display:flex;align-items:center;justify-content:center">
                     <img src="https://www.sofascore.com/static/images/sofascore-share-logo.png" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=sofascore.com&sz=32'" style="height:16px;width:16px;border-radius:3px;object-fit:cover" alt="SofaScore">
@@ -14093,12 +14102,13 @@ function toggleLigaAdjust() {
     p.talent_index_adj_pct = Math.round(p.talent_index_adj / 67 * 1000) / 10;
     p.liga_mult            = m;
   });
-  // AI pill button (table header)
+  // AI toolbar button (above table)
   const _btnTh = document.getElementById('btn-liga-adjust-th');
   if (_btnTh) {
-    _btnTh.style.background = ligaAdjustActive ? 'rgba(0,229,160,.28)' : 'rgba(0,229,160,.12)';
-    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(0,229,160,.8)' : 'rgba(0,229,160,.35)';
-    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.08)' : 'scale(1)';
+    _btnTh.style.background = ligaAdjustActive ? 'rgba(0,229,160,.22)' : 'rgba(0,229,160,.1)';
+    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(0,229,160,.7)' : 'rgba(0,229,160,.3)';
+    const _lbl = _btnTh.querySelector('span:last-child');
+    if (_lbl) _lbl.textContent = ligaAdjustActive ? 'Talent Index ajustado pela Liga ✓' : 'Ajustar Talent Index pela Liga';
   }
   // Flyout button
   const _btnFl = document.getElementById('btn-liga-adjust');
@@ -14508,7 +14518,7 @@ function renderTable(){
     const lgEl=document.getElementById('th-league-dd');
     if(lgEl) lgEl.innerHTML=dkLeagueDD();
     const mtEl=document.getElementById('th-metric-dd');
-    if(mtEl) mtEl.innerHTML=dkDD('metric',[['','Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric);
+    if(mtEl) mtEl.innerHTML=dkDD('metric',[['','+ Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric);
     const posEl=document.getElementById('th-pos-dd');
     if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos);
   })();
