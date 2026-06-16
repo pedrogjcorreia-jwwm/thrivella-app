@@ -4767,8 +4767,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('rank')" class="s-desc">#</th>
                 <th style="width:48px;padding:0"></th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:8px;min-width:155px">Jogador</th>
-                <th onclick="sortTable('age')" style="background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05)">Idade</th>
-                <th onclick="sortTable('size')" style="background:rgba(255,255,255,.015);border-left:none">Altura</th>
+                <th id="th-age-dd" style="background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
+                <th id="th-height-dd" style="background:rgba(255,255,255,.015);cursor:default"></th>
                 <th onclick="sortTable('foot')" style="background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
                 <th onclick="sortTable('team')" style="text-align:left;padding-left:29px;min-width:110px">Clube / Liga</th>
                 <th style="white-space:nowrap;padding:0;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
@@ -4786,8 +4786,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 </th>
                 <th onclick="sortTable('total_physical')" style="color:#9b7fff;background:rgba(0,8,18,.5)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
                 <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
-                <th onclick="sortTable('contract_end')" data-i18n="col_contract" style="width:120px">Contrato</th>
-                <th onclick="sortTable('mkt_value')" data-i18n="col_value" style="white-space:nowrap;width:80px">Valor</th>
+                <th id="th-contract-dd" style="width:120px;cursor:default"></th>
+                <th id="th-mktval-dd" style="white-space:nowrap;width:80px;cursor:default"></th>
                 <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_off')" class="cat-sort" data-i18n="cat_off">Off ↕</span>
@@ -6021,15 +6021,85 @@ function clearQuickFilters(){
   renderTable();
 }
 
+
+// ── DESKTOP TABLE HEADER FILTERS (dropdown style, mobile-like) ──────────────
+window._tblFilters = window._tblFilters || {age:'',mktval:'',contract:'',height:''};
+function dkDD(id, opts, selectedVal){
+  const sel = opts.find(([v])=>v===selectedVal);
+  const selLabel = sel ? sel[1] : opts[0][1];
+  const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:6px 12px;font-family:var(--font-d);font-size:11px;color:rgba(220,235,250,.85);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,180,255,.12)'" onmouseout="this.style.background=''">${l}</div>`).join('');
+  return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
+    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:3px;cursor:pointer">
+      <span>${selLabel}</span>
+      <span style="font-size:7px;opacity:${selectedVal?'.9':'.4'};color:${selectedVal?'var(--accent)':'inherit'}">▾</span>
+    </div>
+    <div id="dkdd-${id}" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:240px;overflow-y:auto;min-width:90px">
+      ${items}
+    </div>
+  </div>`;
+}
+window.dkDDToggle = function(id){
+  document.querySelectorAll('.dk-dd > div[id^="dkdd-"]').forEach(el=>{ if(el.id!=='dkdd-'+id) el.style.display='none'; });
+  const list = document.getElementById('dkdd-'+id);
+  if(!list) return;
+  const isOpen = list.style.display==='block';
+  if(isOpen){ list.style.display='none'; return; }
+  const trigger = list.parentElement.querySelector('div');
+  const r = trigger.getBoundingClientRect();
+  list.style.left = r.left+'px';
+  list.style.top = (r.bottom+4)+'px';
+  list.style.display='block';
+};
+window.dkDDSelect = function(id, val){
+  window._tblFilters[id] = val;
+  const list = document.getElementById('dkdd-'+id);
+  if(list) list.style.display='none';
+  renderTable();
+};
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.dk-dd')) document.querySelectorAll('.dk-dd > div[id^="dkdd-"]').forEach(el=>el.style.display='none');
+});
+
 function renderTable(){
   updateTopBadges();
   const tiC=(v)=>v>=80?'var(--green)':v>=55?'var(--accent)':'rgba(255,255,255,.3)';
   const qf=window._quickFilters||{};
+  const tf=window._tblFilters||{};
+  const currYear2=new Date().getFullYear();
+  // Populate header dropdown filters (Idade/Altura/Contrato/Valor)
+  (function(){
+    const ageEl=document.getElementById('th-age-dd');
+    if(ageEl) ageEl.innerHTML=dkDD('age',[['','Idade'],['u21','Sub-21'],['u23','Sub-23'],['u25','Sub-25'],['2529','25-29'],['30p','30+']],tf.age);
+    const htEl=document.getElementById('th-height-dd');
+    if(htEl) htEl.innerHTML=dkDD('height',[['','Altura'],['u175','<175'],['175184','175-184'],['185194','185-194'],['195p','195+']],tf.height);
+    const ctEl=document.getElementById('th-contract-dd');
+    if(ctEl) ctEl.innerHTML=dkDD('contract',[['','Contrato'],['exp','A expirar'],[String(currYear2),'Fim '+currYear2],[String(currYear2+1),'Fim '+(currYear2+1)],[String(currYear2+2),'Fim '+(currYear2+2)]],tf.contract);
+    const mvEl=document.getElementById('th-mktval-dd');
+    if(mvEl) mvEl.innerHTML=dkDD('mktval',[['','Valor'],['u500k','<500K'],['500k1_5m','500K-1.5M'],['1_5m3m','1.5M-3M'],['3mp','3M+']],tf.mktval);
+  })();
   const players=[...getFiltered()].filter(p=>{
     if(qf.name&&!p.name.toLowerCase().includes(qf.name.toLowerCase()))return false;
     if(qf.hMin&&(p.size||0)<qf.hMin)return false;
     if(qf.hMax&&(p.size||0)>qf.hMax)return false;
     if(qf.foot){const ft=p.foot?(/^d/i.test(p.foot)?'R':'L'):'';if(ft!==qf.foot)return false;}
+    if(tf.age==='u21'&&!((p.age||99)<21))return false;
+    if(tf.age==='u23'&&!((p.age||99)<23))return false;
+    if(tf.age==='u25'&&!((p.age||99)<25))return false;
+    if(tf.age==='2529'&&!((p.age||0)>=25&&(p.age||0)<=29))return false;
+    if(tf.age==='30p'&&!((p.age||0)>=30))return false;
+    if(tf.height==='u175'&&!((p.size||0)<175))return false;
+    if(tf.height==='175184'&&!((p.size||0)>=175&&(p.size||0)<=184))return false;
+    if(tf.height==='185194'&&!((p.size||0)>=185&&(p.size||0)<=194))return false;
+    if(tf.height==='195p'&&!((p.size||0)>=195))return false;
+    if(tf.mktval==='u500k'&&!((p.mkt_value||0)<500000))return false;
+    if(tf.mktval==='500k1_5m'&&!((p.mkt_value||0)>=500000&&(p.mkt_value||0)<1500000))return false;
+    if(tf.mktval==='1_5m3m'&&!((p.mkt_value||0)>=1500000&&(p.mkt_value||0)<3000000))return false;
+    if(tf.mktval==='3mp'&&!((p.mkt_value||0)>=3000000))return false;
+    if(tf.contract){
+      const yr=p.contract_end?p.contract_end.split('-')[0]:'';
+      if(tf.contract==='exp'&&!(yr&&parseInt(yr)<=currYear2))return false;
+      if(tf.contract!=='exp'&&yr!==tf.contract)return false;
+    }
     return true;
   }).sort((a,b)=>{
     const k=tableSort.key==='score'?(ligaAdjustActive?'talent_index_adj':'talent_index'):tableSort.key;
@@ -13007,8 +13077,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('rank')" class="s-desc">#</th>
                 <th style="width:48px;padding:0"></th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:8px;min-width:155px">Jogador</th>
-                <th onclick="sortTable('age')" style="background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05)">Idade</th>
-                <th onclick="sortTable('size')" style="background:rgba(255,255,255,.015);border-left:none">Altura</th>
+                <th id="th-age-dd" style="background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
+                <th id="th-height-dd" style="background:rgba(255,255,255,.015);cursor:default"></th>
                 <th onclick="sortTable('foot')" style="background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
                 <th onclick="sortTable('team')" style="text-align:left;padding-left:29px;min-width:110px">Clube / Liga</th>
                 <th style="white-space:nowrap;padding:0;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
@@ -13026,8 +13096,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 </th>
                 <th onclick="sortTable('total_physical')" style="color:#9b7fff;background:rgba(0,8,18,.5)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
                 <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
-                <th onclick="sortTable('contract_end')" data-i18n="col_contract" style="width:120px">Contrato</th>
-                <th onclick="sortTable('mkt_value')" data-i18n="col_value" style="white-space:nowrap;width:80px">Valor</th>
+                <th id="th-contract-dd" style="width:120px;cursor:default"></th>
+                <th id="th-mktval-dd" style="white-space:nowrap;width:80px;cursor:default"></th>
                 <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_off')" class="cat-sort" data-i18n="cat_off">Off ↕</span>
@@ -14261,15 +14331,85 @@ function clearQuickFilters(){
   renderTable();
 }
 
+
+// ── DESKTOP TABLE HEADER FILTERS (dropdown style, mobile-like) ──────────────
+window._tblFilters = window._tblFilters || {age:'',mktval:'',contract:'',height:''};
+function dkDD(id, opts, selectedVal){
+  const sel = opts.find(([v])=>v===selectedVal);
+  const selLabel = sel ? sel[1] : opts[0][1];
+  const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:6px 12px;font-family:var(--font-d);font-size:11px;color:rgba(220,235,250,.85);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,180,255,.12)'" onmouseout="this.style.background=''">${l}</div>`).join('');
+  return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
+    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:3px;cursor:pointer">
+      <span>${selLabel}</span>
+      <span style="font-size:7px;opacity:${selectedVal?'.9':'.4'};color:${selectedVal?'var(--accent)':'inherit'}">▾</span>
+    </div>
+    <div id="dkdd-${id}" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:240px;overflow-y:auto;min-width:90px">
+      ${items}
+    </div>
+  </div>`;
+}
+window.dkDDToggle = function(id){
+  document.querySelectorAll('.dk-dd > div[id^="dkdd-"]').forEach(el=>{ if(el.id!=='dkdd-'+id) el.style.display='none'; });
+  const list = document.getElementById('dkdd-'+id);
+  if(!list) return;
+  const isOpen = list.style.display==='block';
+  if(isOpen){ list.style.display='none'; return; }
+  const trigger = list.parentElement.querySelector('div');
+  const r = trigger.getBoundingClientRect();
+  list.style.left = r.left+'px';
+  list.style.top = (r.bottom+4)+'px';
+  list.style.display='block';
+};
+window.dkDDSelect = function(id, val){
+  window._tblFilters[id] = val;
+  const list = document.getElementById('dkdd-'+id);
+  if(list) list.style.display='none';
+  renderTable();
+};
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.dk-dd')) document.querySelectorAll('.dk-dd > div[id^="dkdd-"]').forEach(el=>el.style.display='none');
+});
+
 function renderTable(){
   updateTopBadges();
   const tiC=(v)=>v>=80?'var(--green)':v>=55?'var(--accent)':'rgba(255,255,255,.3)';
   const qf=window._quickFilters||{};
+  const tf=window._tblFilters||{};
+  const currYear2=new Date().getFullYear();
+  // Populate header dropdown filters (Idade/Altura/Contrato/Valor)
+  (function(){
+    const ageEl=document.getElementById('th-age-dd');
+    if(ageEl) ageEl.innerHTML=dkDD('age',[['','Idade'],['u21','Sub-21'],['u23','Sub-23'],['u25','Sub-25'],['2529','25-29'],['30p','30+']],tf.age);
+    const htEl=document.getElementById('th-height-dd');
+    if(htEl) htEl.innerHTML=dkDD('height',[['','Altura'],['u175','<175'],['175184','175-184'],['185194','185-194'],['195p','195+']],tf.height);
+    const ctEl=document.getElementById('th-contract-dd');
+    if(ctEl) ctEl.innerHTML=dkDD('contract',[['','Contrato'],['exp','A expirar'],[String(currYear2),'Fim '+currYear2],[String(currYear2+1),'Fim '+(currYear2+1)],[String(currYear2+2),'Fim '+(currYear2+2)]],tf.contract);
+    const mvEl=document.getElementById('th-mktval-dd');
+    if(mvEl) mvEl.innerHTML=dkDD('mktval',[['','Valor'],['u500k','<500K'],['500k1_5m','500K-1.5M'],['1_5m3m','1.5M-3M'],['3mp','3M+']],tf.mktval);
+  })();
   const players=[...getFiltered()].filter(p=>{
     if(qf.name&&!p.name.toLowerCase().includes(qf.name.toLowerCase()))return false;
     if(qf.hMin&&(p.size||0)<qf.hMin)return false;
     if(qf.hMax&&(p.size||0)>qf.hMax)return false;
     if(qf.foot){const ft=p.foot?(/^d/i.test(p.foot)?'R':'L'):'';if(ft!==qf.foot)return false;}
+    if(tf.age==='u21'&&!((p.age||99)<21))return false;
+    if(tf.age==='u23'&&!((p.age||99)<23))return false;
+    if(tf.age==='u25'&&!((p.age||99)<25))return false;
+    if(tf.age==='2529'&&!((p.age||0)>=25&&(p.age||0)<=29))return false;
+    if(tf.age==='30p'&&!((p.age||0)>=30))return false;
+    if(tf.height==='u175'&&!((p.size||0)<175))return false;
+    if(tf.height==='175184'&&!((p.size||0)>=175&&(p.size||0)<=184))return false;
+    if(tf.height==='185194'&&!((p.size||0)>=185&&(p.size||0)<=194))return false;
+    if(tf.height==='195p'&&!((p.size||0)>=195))return false;
+    if(tf.mktval==='u500k'&&!((p.mkt_value||0)<500000))return false;
+    if(tf.mktval==='500k1_5m'&&!((p.mkt_value||0)>=500000&&(p.mkt_value||0)<1500000))return false;
+    if(tf.mktval==='1_5m3m'&&!((p.mkt_value||0)>=1500000&&(p.mkt_value||0)<3000000))return false;
+    if(tf.mktval==='3mp'&&!((p.mkt_value||0)>=3000000))return false;
+    if(tf.contract){
+      const yr=p.contract_end?p.contract_end.split('-')[0]:'';
+      if(tf.contract==='exp'&&!(yr&&parseInt(yr)<=currYear2))return false;
+      if(tf.contract!=='exp'&&yr!==tf.contract)return false;
+    }
     return true;
   }).sort((a,b)=>{
     const k=tableSort.key==='score'?(ligaAdjustActive?'talent_index_adj':'talent_index'):tableSort.key;
