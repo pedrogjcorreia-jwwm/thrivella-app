@@ -6132,7 +6132,7 @@ function renderTable(){
     const mtEl=document.getElementById('th-metric-dd');
     if(mtEl) mtEl.innerHTML=dkDD('metric',[['','Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric);
     const posEl=document.getElementById('th-pos-dd');
-    if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos,true);
+    if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos);
   })();
   const players=[...getFiltered()].filter(p=>{
     if(qf.name&&!p.name.toLowerCase().includes(qf.name.toLowerCase()))return false;
@@ -14510,7 +14510,7 @@ function renderTable(){
     const mtEl=document.getElementById('th-metric-dd');
     if(mtEl) mtEl.innerHTML=dkDD('metric',[['','Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric);
     const posEl=document.getElementById('th-pos-dd');
-    if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos,true);
+    if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos);
   })();
   const players=[...getFiltered()].filter(p=>{
     if(qf.name&&!p.name.toLowerCase().includes(qf.name.toLowerCase()))return false;
