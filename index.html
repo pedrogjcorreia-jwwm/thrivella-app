@@ -388,7 +388,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   color:rgba(255,255,255,.18);transition:all .15s;
 }
 .td-edit-btn:hover{background:rgba(0,212,255,.12);color:#00d4ff;}
-.th-edit{width:28px;padding:4px 0!important;text-align:center;}
+.th-edit{width:calc(28px - 1mm);padding:4px 0!important;text-align:center;}
 /* ── EDIT MODAL ── */
 .edit-modal-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);
@@ -4767,7 +4767,12 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
             <thead>
               <tr>
                 <th class="th-edit" title="Editar"></th>
-                <th onclick="sortTable('rank')" class="s-desc">#</th>
+                <th style="padding:0">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:1px">
+                    <span onclick="sortTable('rank')" class="s-desc" style="cursor:pointer;padding:6px 6px 0">#</span>
+                    <span id="th-pos-dd" style="cursor:default"></span>
+                  </div>
+                </th>
                 <th style="width:48px;padding:0"></th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:8px;min-width:155px">Jogador</th>
                 <th id="th-age-dd" style="border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
@@ -4841,10 +4846,10 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th class="cat-sub cat-phys" onclick="sortTable('sprints90')" style="color:#fff">NrSpr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:#fff">%HSR+Spr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:#fff">Dist.Tot</th>
-                <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#fff;padding-left:calc(8px + 1mm)">
-                  <span style="display:flex;align-items:center;gap:4px;justify-content:center">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="opacity:.7"><circle cx="5" cy="5" r="4.5" fill="none" stroke="currentColor" stroke-width="1"></circle><path d="M5 2.5l.6 1.9h2l-1.6 1.2.6 1.9L5 6.3l-1.6 1.2.6-1.9L2.4 4.4h2z"></path></svg>
-                    SofaScore
+                <th id="th-metric-dd" style="width:80px;cursor:default;border-left:1px solid rgba(255,255,255,.08)"></th>
+                <th onclick="sortTable('sf_rating')" class="th-sf s-desc" title="Rating médio SofaScore 2025/26" style="color:#fff;width:calc(60px - 4mm)">
+                  <span style="display:flex;align-items:center;gap:3px;justify-content:center">
+                    <svg width="13" height="13" viewBox="0 0 10 10" fill="currentColor" style="opacity:.85"><circle cx="5" cy="5" r="4.5" fill="none" stroke="currentColor" stroke-width="1"></circle><path d="M5 2.5l.6 1.9h2l-1.6 1.2.6 1.9L5 6.3l-1.6 1.2.6-1.9L2.4 4.4h2z"></path></svg>
                   </span>
                 </th>
               </tr>
@@ -6095,6 +6100,7 @@ window.dkDDSelect = function(id, val){
   window._tblFilters[id] = val;
   const list = document.getElementById('dkdd-'+id);
   if(list) list.style.display='none';
+  if(id==='metric'&&val) tableSort={key:val,dir:-1};
   renderTable();
 };
 document.addEventListener('click', function(e){
@@ -6121,6 +6127,10 @@ function renderTable(){
     if(footEl) footEl.innerHTML=dkDD('foot',[['','Pé'],['R','Direito'],['L','Esquerdo']],tf.foot);
     const lgEl=document.getElementById('th-league-dd');
     if(lgEl) lgEl.innerHTML=dkLeagueDD();
+    const mtEl=document.getElementById('th-metric-dd');
+    if(mtEl) mtEl.innerHTML=dkDD('metric',[['','Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric);
+    const posEl=document.getElementById('th-pos-dd');
+    if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos);
   })();
   const players=[...getFiltered()].filter(p=>{
     if(qf.name&&!p.name.toLowerCase().includes(qf.name.toLowerCase()))return false;
@@ -6147,6 +6157,7 @@ function renderTable(){
     }
     if(tf.foot){const ft2=p.foot?(/^d/i.test(p.foot)?'R':'L'):'';if(ft2!==tf.foot)return false;}
     if(tf.leagues&&tf.leagues.size>0&&!tf.leagues.has(p.league))return false;
+    if(tf.pos&&(p.position_group||'').toUpperCase()!==tf.pos)return false;
     return true;
   }).sort((a,b)=>{
     const k=tableSort.key==='score'?(ligaAdjustActive?'talent_index_adj':'talent_index'):tableSort.key;
@@ -6316,6 +6327,14 @@ function renderTable(){
       <td class="cat-sub cat-phys td-num" style="color:${mc('sprints90',p.name)}">${(p.sprints90!=null?p.sprints90.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('hsr_sprint_pct',p.name)}">${(p.hsr_sprint_pct!=null?p.hsr_sprint_pct.toFixed(1):'—')}%</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('total_dist',p.name)}">${(p.total_dist!=null?Math.round(p.total_dist):'—').toLocaleString()}</td>
+      <td style="text-align:center;padding:0 8px;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">${(()=>{
+        const mk=window._tblFilters?.metric||'';
+        if(!mk) return '<span style="color:rgba(255,255,255,.15);font-size:11px">—</span>';
+        const v=p[mk];
+        const isPct=mk.includes('_pct');
+        const disp=v==null?'—':(isPct?v.toFixed(1)+'%':(typeof v==='number'?(Number.isInteger(v)?v:v.toFixed(2)):v));
+        return '<div class="td-score-num" style="font-size:16px;color:'+mc(mk,p.name)+'">'+disp+'</div>';
+      })()}</td>
       <td class="td-sf" style="padding-left:calc(8px + 1mm)">${(()=>{
         const r = p.sf_rating;
         if(r==null||r===undefined) return '<span class="sf-rating-null">—</span>';
@@ -8777,7 +8796,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   color:rgba(255,255,255,.18);transition:all .15s;
 }
 .td-edit-btn:hover{background:rgba(0,212,255,.12);color:#00d4ff;}
-.th-edit{width:28px;padding:4px 0!important;text-align:center;}
+.th-edit{width:calc(28px - 1mm);padding:4px 0!important;text-align:center;}
 /* ── EDIT MODAL ── */
 .edit-modal-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);
@@ -13124,7 +13143,12 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
             <thead>
               <tr>
                 <th class="th-edit" title="Editar"></th>
-                <th onclick="sortTable('rank')" class="s-desc">#</th>
+                <th style="padding:0">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:1px">
+                    <span onclick="sortTable('rank')" class="s-desc" style="cursor:pointer;padding:6px 6px 0">#</span>
+                    <span id="th-pos-dd" style="cursor:default"></span>
+                  </div>
+                </th>
                 <th style="width:48px;padding:0"></th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:8px;min-width:155px">Jogador</th>
                 <th id="th-age-dd" style="border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
@@ -13198,10 +13222,10 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th class="cat-sub cat-phys" onclick="sortTable('sprints90')" style="color:#fff">NrSpr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:#fff">%HSR+Spr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:#fff">Dist.Tot</th>
-                <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#fff;padding-left:calc(8px + 1mm)">
-                  <span style="display:flex;align-items:center;gap:4px;justify-content:center">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="opacity:.7"><circle cx="5" cy="5" r="4.5" fill="none" stroke="currentColor" stroke-width="1"></circle><path d="M5 2.5l.6 1.9h2l-1.6 1.2.6 1.9L5 6.3l-1.6 1.2.6-1.9L2.4 4.4h2z"></path></svg>
-                    SofaScore
+                <th id="th-metric-dd" style="width:80px;cursor:default;border-left:1px solid rgba(255,255,255,.08)"></th>
+                <th onclick="sortTable('sf_rating')" class="th-sf s-desc" title="Rating médio SofaScore 2025/26" style="color:#fff;width:calc(60px - 4mm)">
+                  <span style="display:flex;align-items:center;gap:3px;justify-content:center">
+                    <svg width="13" height="13" viewBox="0 0 10 10" fill="currentColor" style="opacity:.85"><circle cx="5" cy="5" r="4.5" fill="none" stroke="currentColor" stroke-width="1"></circle><path d="M5 2.5l.6 1.9h2l-1.6 1.2.6 1.9L5 6.3l-1.6 1.2.6-1.9L2.4 4.4h2z"></path></svg>
                   </span>
                 </th>
               </tr>
@@ -14452,6 +14476,7 @@ window.dkDDSelect = function(id, val){
   window._tblFilters[id] = val;
   const list = document.getElementById('dkdd-'+id);
   if(list) list.style.display='none';
+  if(id==='metric'&&val) tableSort={key:val,dir:-1};
   renderTable();
 };
 document.addEventListener('click', function(e){
@@ -14478,6 +14503,10 @@ function renderTable(){
     if(footEl) footEl.innerHTML=dkDD('foot',[['','Pé'],['R','Direito'],['L','Esquerdo']],tf.foot);
     const lgEl=document.getElementById('th-league-dd');
     if(lgEl) lgEl.innerHTML=dkLeagueDD();
+    const mtEl=document.getElementById('th-metric-dd');
+    if(mtEl) mtEl.innerHTML=dkDD('metric',[['','Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric);
+    const posEl=document.getElementById('th-pos-dd');
+    if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos);
   })();
   const players=[...getFiltered()].filter(p=>{
     if(qf.name&&!p.name.toLowerCase().includes(qf.name.toLowerCase()))return false;
@@ -14504,6 +14533,7 @@ function renderTable(){
     }
     if(tf.foot){const ft2=p.foot?(/^d/i.test(p.foot)?'R':'L'):'';if(ft2!==tf.foot)return false;}
     if(tf.leagues&&tf.leagues.size>0&&!tf.leagues.has(p.league))return false;
+    if(tf.pos&&(p.position_group||'').toUpperCase()!==tf.pos)return false;
     return true;
   }).sort((a,b)=>{
     const k=tableSort.key==='score'?(ligaAdjustActive?'talent_index_adj':'talent_index'):tableSort.key;
@@ -14673,6 +14703,14 @@ function renderTable(){
       <td class="cat-sub cat-phys td-num" style="color:${mc('sprints90',p.name)}">${(p.sprints90!=null?p.sprints90.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('hsr_sprint_pct',p.name)}">${(p.hsr_sprint_pct!=null?p.hsr_sprint_pct.toFixed(1):'—')}%</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('total_dist',p.name)}">${(p.total_dist!=null?Math.round(p.total_dist):'—').toLocaleString()}</td>
+      <td style="text-align:center;padding:0 8px;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">${(()=>{
+        const mk=window._tblFilters?.metric||'';
+        if(!mk) return '<span style="color:rgba(255,255,255,.15);font-size:11px">—</span>';
+        const v=p[mk];
+        const isPct=mk.includes('_pct');
+        const disp=v==null?'—':(isPct?v.toFixed(1)+'%':(typeof v==='number'?(Number.isInteger(v)?v:v.toFixed(2)):v));
+        return '<div class="td-score-num" style="font-size:16px;color:'+mc(mk,p.name)+'">'+disp+'</div>';
+      })()}</td>
       <td class="td-sf" style="padding-left:calc(8px + 1mm)">${(()=>{
         const r = p.sf_rating;
         if(r==null||r===undefined) return '<span class="sf-rating-null">—</span>';
