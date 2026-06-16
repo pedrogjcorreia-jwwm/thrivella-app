@@ -4849,7 +4849,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:#fff">%HSR+Spr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:#fff">Dist.Tot</th>
                 <th id="th-metric-dd" style="width:80px;cursor:default;border-left:1px solid rgba(255,255,255,.08)"></th>
-                <th onclick="sortTable('sf_rating')" class="th-sf s-desc" title="Rating médio SofaScore 2025/26" style="color:#fff;width:calc(60px - 4mm)">
+                <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#fff;width:calc(60px - 4mm)">
                   <span style="display:flex;align-items:center;justify-content:center">
                     <img src="https://www.sofascore.com/static/images/sofascore-share-logo.png" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=sofascore.com&sz=32'" style="height:16px;width:16px;border-radius:3px;object-fit:cover" alt="SofaScore">
                   </span>
@@ -6029,14 +6029,14 @@ function clearQuickFilters(){
 
 // ── DESKTOP TABLE HEADER FILTERS (dropdown style, mobile-like) ──────────────
 window._tblFilters = window._tblFilters || {age:'',mktval:'',contract:'',height:''};
-function dkDD(id, opts, selectedVal){
+function dkDD(id, opts, selectedVal, hideArrow){
   const sel = opts.find(([v])=>v===selectedVal);
   const selLabel = sel ? sel[1] : opts[0][1];
   const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:8px 14px;font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.2px;color:rgba(225,238,250,.85);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,212,255,.1)'" onmouseout="this.style.background=''">${l}</div>`).join('');
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
     <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${selectedVal?'var(--accent)':'rgba(255,255,255,.88)'};transition:color .15s">
       <span>${selLabel}</span>
-      <span style="font-size:11px;opacity:${selectedVal?'1':'.7'};color:${selectedVal?'var(--accent)':'rgba(0,212,255,.55)'};line-height:0">▾</span>
+      ${hideArrow?'':'<span style="font-size:11px;opacity:'+(selectedVal?'1':'.7')+';color:'+(selectedVal?'var(--accent)':'rgba(0,212,255,.55)')+';line-height:0">▾</span>'}
     </div>
     <div id="dkdd-${id}" style="display:none;position:fixed;background:#0c1118;border:1px solid rgba(0,212,255,.2);border-radius:7px;z-index:9999;box-shadow:0 12px 32px rgba(0,0,0,.9);max-height:260px;overflow-y:auto;min-width:110px;padding:4px 0">
       ${items}
@@ -6132,7 +6132,7 @@ function renderTable(){
     const mtEl=document.getElementById('th-metric-dd');
     if(mtEl) mtEl.innerHTML=dkDD('metric',[['','Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric);
     const posEl=document.getElementById('th-pos-dd');
-    if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos);
+    if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos,true);
   })();
   const players=[...getFiltered()].filter(p=>{
     if(qf.name&&!p.name.toLowerCase().includes(qf.name.toLowerCase()))return false;
@@ -13227,7 +13227,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:#fff">%HSR+Spr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:#fff">Dist.Tot</th>
                 <th id="th-metric-dd" style="width:80px;cursor:default;border-left:1px solid rgba(255,255,255,.08)"></th>
-                <th onclick="sortTable('sf_rating')" class="th-sf s-desc" title="Rating médio SofaScore 2025/26" style="color:#fff;width:calc(60px - 4mm)">
+                <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#fff;width:calc(60px - 4mm)">
                   <span style="display:flex;align-items:center;justify-content:center">
                     <img src="https://www.sofascore.com/static/images/sofascore-share-logo.png" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=sofascore.com&sz=32'" style="height:16px;width:16px;border-radius:3px;object-fit:cover" alt="SofaScore">
                   </span>
@@ -14407,14 +14407,14 @@ function clearQuickFilters(){
 
 // ── DESKTOP TABLE HEADER FILTERS (dropdown style, mobile-like) ──────────────
 window._tblFilters = window._tblFilters || {age:'',mktval:'',contract:'',height:''};
-function dkDD(id, opts, selectedVal){
+function dkDD(id, opts, selectedVal, hideArrow){
   const sel = opts.find(([v])=>v===selectedVal);
   const selLabel = sel ? sel[1] : opts[0][1];
   const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:8px 14px;font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.2px;color:rgba(225,238,250,.85);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,212,255,.1)'" onmouseout="this.style.background=''">${l}</div>`).join('');
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
     <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${selectedVal?'var(--accent)':'rgba(255,255,255,.88)'};transition:color .15s">
       <span>${selLabel}</span>
-      <span style="font-size:11px;opacity:${selectedVal?'1':'.7'};color:${selectedVal?'var(--accent)':'rgba(0,212,255,.55)'};line-height:0">▾</span>
+      ${hideArrow?'':'<span style="font-size:11px;opacity:'+(selectedVal?'1':'.7')+';color:'+(selectedVal?'var(--accent)':'rgba(0,212,255,.55)')+';line-height:0">▾</span>'}
     </div>
     <div id="dkdd-${id}" style="display:none;position:fixed;background:#0c1118;border:1px solid rgba(0,212,255,.2);border-radius:7px;z-index:9999;box-shadow:0 12px 32px rgba(0,0,0,.9);max-height:260px;overflow-y:auto;min-width:110px;padding:4px 0">
       ${items}
@@ -14510,7 +14510,7 @@ function renderTable(){
     const mtEl=document.getElementById('th-metric-dd');
     if(mtEl) mtEl.innerHTML=dkDD('metric',[['','Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric);
     const posEl=document.getElementById('th-pos-dd');
-    if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos);
+    if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos,true);
   })();
   const players=[...getFiltered()].filter(p=>{
     if(qf.name&&!p.name.toLowerCase().includes(qf.name.toLowerCase()))return false;
