@@ -278,14 +278,15 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:#06090d;
+  background:linear-gradient(180deg,#0d2a45 0%,#0a1f38 60%,#081729 100%);
   padding:10px 10px 8px;
-  font-family:var(--font-d);font-size:8.5px;font-weight:700;
-  letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.28);
+  font-family:var(--font-d);font-size:9px;font-weight:700;
+  letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.82);
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
   transition:color .15s;
+  border-bottom:1px solid rgba(0,180,255,.18);
 }
-.players-table thead th:hover{color:rgba(255,255,255,.7)}
+.players-table thead th:hover{color:#fff}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -4769,8 +4770,10 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:8px;min-width:155px">Jogador</th>
                 <th id="th-age-dd" style="background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
                 <th id="th-height-dd" style="background:rgba(255,255,255,.015);cursor:default"></th>
-                <th onclick="sortTable('foot')" style="background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
-                <th onclick="sortTable('team')" style="text-align:left;padding-left:29px;min-width:110px">Clube / Liga</th>
+                <th id="th-foot-dd" style="background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.05);cursor:default"></th>
+                <th style="text-align:left;padding-left:29px;min-width:110px">
+                  <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
+                </th>
                 <th style="white-space:nowrap;padding:0;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
                   <div style="display:flex;align-items:center;gap:0;height:100%">
                     <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
@@ -6029,9 +6032,9 @@ function dkDD(id, opts, selectedVal){
   const selLabel = sel ? sel[1] : opts[0][1];
   const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:7px 13px;font-family:var(--font-d);font-size:10.5px;font-weight:600;letter-spacing:.3px;color:rgba(220,235,250,.8);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,180,255,.12)'" onmouseout="this.style.background=''">${l}</div>`).join('');
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:3px;cursor:pointer;font-family:var(--font-d);font-size:8.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${selectedVal?'var(--accent)':'rgba(255,255,255,.28)'};transition:color .15s">
+    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.82)'};transition:color .15s">
       <span>${selLabel}</span>
-      <span style="font-size:7px;opacity:${selectedVal?'.9':'.4'}">▾</span>
+      <span style="font-size:8px;opacity:.85;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.55)'}">▾</span>
     </div>
     <div id="dkdd-${id}" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:240px;overflow-y:auto;min-width:100px">
       ${items}
@@ -6050,6 +6053,49 @@ window.dkDDToggle = function(id){
   list.style.top = (r.bottom+4)+'px';
   list.style.display='block';
 };
+
+window._tblFilters.leagues = window._tblFilters.leagues || new Set();
+function dkLeagueDD(){
+  const allLeagues = [...new Set(PLAYERS.map(p=>p.league))].sort((a,b)=>{
+    const ca=LEAGUE_CONFIG[a],cb=LEAGUE_CONFIG[b];
+    return (ca?.display||a).localeCompare(cb?.display||b);
+  });
+  const sel = window._tblFilters.leagues;
+  const selLabel = sel.size===0 ? 'Liga' : (sel.size===1 ? (LEAGUE_CONFIG[[...sel][0]]?.display||[...sel][0]) : sel.size+' ligas');
+  const isActive = sel.size>0;
+  const items = allLeagues.map(lg=>{
+    const cfg=LEAGUE_CONFIG[lg]; const name=cfg?.display||lg;
+    const checked = sel.has(lg);
+    return `<label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:5px 10px;border-radius:3px;user-select:none" onmouseenter="this.style.background='rgba(0,180,255,.1)'" onmouseleave="this.style.background=''">
+      <input type="checkbox" ${checked?'checked':''} value="${lg}" onchange="dkLeagueToggle('${lg}')" style="accent-color:var(--accent);cursor:pointer;margin:0">
+      <span style="font-family:var(--font-d);font-size:10.5px;font-weight:600;color:rgba(220,235,250,.85)">${name}</span>
+    </label>`;
+  }).join('');
+  return `<div class="dk-dd" data-id="league" style="position:relative;display:inline-flex">
+    <div onclick="event.stopPropagation();dkDDToggle('league')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${isActive?'#5fe0ff':'rgba(0,180,220,.7)'}">
+      <span>${selLabel}</span>
+      <span style="font-size:8px;opacity:.85">▾</span>
+    </div>
+    <div id="dkdd-league" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:280px;overflow-y:auto;min-width:140px">
+      ${items}
+    </div>
+  </div>`;
+}
+window.dkLeagueToggle = function(lg){
+  const sel = window._tblFilters.leagues;
+  if(sel.has(lg)) sel.delete(lg); else sel.add(lg);
+  renderTable();
+  setTimeout(()=>{
+    const list = document.getElementById('dkdd-league');
+    if(list) list.style.display='block';
+    const trigger = document.querySelector('.dk-dd[data-id="league"] > div');
+    if(trigger && list){
+      const r = trigger.getBoundingClientRect();
+      list.style.left = r.left+'px'; list.style.top=(r.bottom+4)+'px';
+    }
+  },0);
+};
+
 window.dkDDSelect = function(id, val){
   window._tblFilters[id] = val;
   const list = document.getElementById('dkdd-'+id);
@@ -6076,6 +6122,10 @@ function renderTable(){
     if(ctEl) ctEl.innerHTML=dkDD('contract',[['','Contrato'],['exp','A expirar'],[String(currYear2),'Fim '+currYear2],[String(currYear2+1),'Fim '+(currYear2+1)],[String(currYear2+2),'Fim '+(currYear2+2)]],tf.contract);
     const mvEl=document.getElementById('th-mktval-dd');
     if(mvEl) mvEl.innerHTML=dkDD('mktval',[['','Valor'],['u500k','<500K'],['500k1_5m','500K-1.5M'],['1_5m3m','1.5M-3M'],['3mp','3M+']],tf.mktval);
+    const footEl=document.getElementById('th-foot-dd');
+    if(footEl) footEl.innerHTML=dkDD('foot',[['','Pé'],['R','Direito'],['L','Esquerdo']],tf.foot);
+    const lgEl=document.getElementById('th-league-dd');
+    if(lgEl) lgEl.innerHTML=dkLeagueDD();
   })();
   const players=[...getFiltered()].filter(p=>{
     if(qf.name&&!p.name.toLowerCase().includes(qf.name.toLowerCase()))return false;
@@ -6100,6 +6150,8 @@ function renderTable(){
       if(tf.contract==='exp'&&!(yr&&parseInt(yr)<=currYear2))return false;
       if(tf.contract!=='exp'&&yr!==tf.contract)return false;
     }
+    if(tf.foot){const ft2=p.foot?(/^d/i.test(p.foot)?'R':'L'):'';if(ft2!==tf.foot)return false;}
+    if(tf.leagues&&tf.leagues.size>0&&!tf.leagues.has(p.league))return false;
     return true;
   }).sort((a,b)=>{
     const k=tableSort.key==='score'?(ligaAdjustActive?'talent_index_adj':'talent_index'):tableSort.key;
@@ -8620,14 +8672,15 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:#06090d;
+  background:linear-gradient(180deg,#0d2a45 0%,#0a1f38 60%,#081729 100%);
   padding:10px 10px 8px;
-  font-family:var(--font-d);font-size:8.5px;font-weight:700;
-  letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.28);
+  font-family:var(--font-d);font-size:9px;font-weight:700;
+  letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.82);
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
   transition:color .15s;
+  border-bottom:1px solid rgba(0,180,255,.18);
 }
-.players-table thead th:hover{color:rgba(255,255,255,.7)}
+.players-table thead th:hover{color:#fff}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -13079,8 +13132,10 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:8px;min-width:155px">Jogador</th>
                 <th id="th-age-dd" style="background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
                 <th id="th-height-dd" style="background:rgba(255,255,255,.015);cursor:default"></th>
-                <th onclick="sortTable('foot')" style="background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
-                <th onclick="sortTable('team')" style="text-align:left;padding-left:29px;min-width:110px">Clube / Liga</th>
+                <th id="th-foot-dd" style="background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.05);cursor:default"></th>
+                <th style="text-align:left;padding-left:29px;min-width:110px">
+                  <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
+                </th>
                 <th style="white-space:nowrap;padding:0;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
                   <div style="display:flex;align-items:center;gap:0;height:100%">
                     <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
@@ -14339,9 +14394,9 @@ function dkDD(id, opts, selectedVal){
   const selLabel = sel ? sel[1] : opts[0][1];
   const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:7px 13px;font-family:var(--font-d);font-size:10.5px;font-weight:600;letter-spacing:.3px;color:rgba(220,235,250,.8);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,180,255,.12)'" onmouseout="this.style.background=''">${l}</div>`).join('');
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:3px;cursor:pointer;font-family:var(--font-d);font-size:8.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:${selectedVal?'var(--accent)':'rgba(255,255,255,.28)'};transition:color .15s">
+    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.82)'};transition:color .15s">
       <span>${selLabel}</span>
-      <span style="font-size:7px;opacity:${selectedVal?'.9':'.4'}">▾</span>
+      <span style="font-size:8px;opacity:.85;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.55)'}">▾</span>
     </div>
     <div id="dkdd-${id}" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:240px;overflow-y:auto;min-width:100px">
       ${items}
@@ -14360,6 +14415,49 @@ window.dkDDToggle = function(id){
   list.style.top = (r.bottom+4)+'px';
   list.style.display='block';
 };
+
+window._tblFilters.leagues = window._tblFilters.leagues || new Set();
+function dkLeagueDD(){
+  const allLeagues = [...new Set(PLAYERS.map(p=>p.league))].sort((a,b)=>{
+    const ca=LEAGUE_CONFIG[a],cb=LEAGUE_CONFIG[b];
+    return (ca?.display||a).localeCompare(cb?.display||b);
+  });
+  const sel = window._tblFilters.leagues;
+  const selLabel = sel.size===0 ? 'Liga' : (sel.size===1 ? (LEAGUE_CONFIG[[...sel][0]]?.display||[...sel][0]) : sel.size+' ligas');
+  const isActive = sel.size>0;
+  const items = allLeagues.map(lg=>{
+    const cfg=LEAGUE_CONFIG[lg]; const name=cfg?.display||lg;
+    const checked = sel.has(lg);
+    return `<label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:5px 10px;border-radius:3px;user-select:none" onmouseenter="this.style.background='rgba(0,180,255,.1)'" onmouseleave="this.style.background=''">
+      <input type="checkbox" ${checked?'checked':''} value="${lg}" onchange="dkLeagueToggle('${lg}')" style="accent-color:var(--accent);cursor:pointer;margin:0">
+      <span style="font-family:var(--font-d);font-size:10.5px;font-weight:600;color:rgba(220,235,250,.85)">${name}</span>
+    </label>`;
+  }).join('');
+  return `<div class="dk-dd" data-id="league" style="position:relative;display:inline-flex">
+    <div onclick="event.stopPropagation();dkDDToggle('league')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${isActive?'#5fe0ff':'rgba(0,180,220,.7)'}">
+      <span>${selLabel}</span>
+      <span style="font-size:8px;opacity:.85">▾</span>
+    </div>
+    <div id="dkdd-league" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:280px;overflow-y:auto;min-width:140px">
+      ${items}
+    </div>
+  </div>`;
+}
+window.dkLeagueToggle = function(lg){
+  const sel = window._tblFilters.leagues;
+  if(sel.has(lg)) sel.delete(lg); else sel.add(lg);
+  renderTable();
+  setTimeout(()=>{
+    const list = document.getElementById('dkdd-league');
+    if(list) list.style.display='block';
+    const trigger = document.querySelector('.dk-dd[data-id="league"] > div');
+    if(trigger && list){
+      const r = trigger.getBoundingClientRect();
+      list.style.left = r.left+'px'; list.style.top=(r.bottom+4)+'px';
+    }
+  },0);
+};
+
 window.dkDDSelect = function(id, val){
   window._tblFilters[id] = val;
   const list = document.getElementById('dkdd-'+id);
@@ -14386,6 +14484,10 @@ function renderTable(){
     if(ctEl) ctEl.innerHTML=dkDD('contract',[['','Contrato'],['exp','A expirar'],[String(currYear2),'Fim '+currYear2],[String(currYear2+1),'Fim '+(currYear2+1)],[String(currYear2+2),'Fim '+(currYear2+2)]],tf.contract);
     const mvEl=document.getElementById('th-mktval-dd');
     if(mvEl) mvEl.innerHTML=dkDD('mktval',[['','Valor'],['u500k','<500K'],['500k1_5m','500K-1.5M'],['1_5m3m','1.5M-3M'],['3mp','3M+']],tf.mktval);
+    const footEl=document.getElementById('th-foot-dd');
+    if(footEl) footEl.innerHTML=dkDD('foot',[['','Pé'],['R','Direito'],['L','Esquerdo']],tf.foot);
+    const lgEl=document.getElementById('th-league-dd');
+    if(lgEl) lgEl.innerHTML=dkLeagueDD();
   })();
   const players=[...getFiltered()].filter(p=>{
     if(qf.name&&!p.name.toLowerCase().includes(qf.name.toLowerCase()))return false;
@@ -14410,6 +14512,8 @@ function renderTable(){
       if(tf.contract==='exp'&&!(yr&&parseInt(yr)<=currYear2))return false;
       if(tf.contract!=='exp'&&yr!==tf.contract)return false;
     }
+    if(tf.foot){const ft2=p.foot?(/^d/i.test(p.foot)?'R':'L'):'';if(ft2!==tf.foot)return false;}
+    if(tf.leagues&&tf.leagues.size>0&&!tf.leagues.has(p.league))return false;
     return true;
   }).sort((a,b)=>{
     const k=tableSort.key==='score'?(ligaAdjustActive?'talent_index_adj':'talent_index'):tableSort.key;
