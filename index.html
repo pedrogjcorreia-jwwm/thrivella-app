@@ -392,7 +392,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 }
 .td-edit-btn:hover{background:rgba(0,212,255,.12);color:#00d4ff;}
 .th-edit{width:calc(28px - 1mm);padding:4px 0!important;text-align:center;}
-.th-edit-ai{width:calc(28px - 1mm);text-align:center;transition:opacity .15s;background:linear-gradient(90deg,#00e5a0 0%,#00c4ff 100%)!important}
+.th-edit-ai{width:calc(28px - 1mm);text-align:center;transition:opacity .15s;background:linear-gradient(90deg,#0a3a2e 0%,#060c18 100%)!important}
 .th-edit-ai:hover{opacity:.85}
 /* ── EDIT MODAL ── */
 .edit-modal-overlay{
@@ -4771,10 +4771,12 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
           <table class="players-table">
             <thead>
               <tr>
-                <th class="th-edit-ai" style="padding:0;cursor:pointer" onclick="toggleLigaAdjust()" title="Ajustar Talent Index pela dificuldade da liga (Opta)">
-                  <button id="btn-liga-adjust-th" style="width:100%;height:100%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">
-                    <span style="font-family:var(--font-d);font-size:9px;font-weight:900;letter-spacing:.3px;color:#fff">AI</span>
-                  </button>
+                <th class="th-edit-ai" style="padding:0" title="Ajustar Talent Index pela dificuldade da liga (Opta)">
+                  <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">
+                    <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" style="width:20px;height:20px;border-radius:5px;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.35);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0">
+                      <span style="font-family:var(--font-d);font-size:8px;font-weight:800;letter-spacing:.3px;color:var(--green)">AI</span>
+                    </button>
+                  </div>
                 </th>
                 <th onclick="sortTable('rank')" style="padding:0;height:100%;cursor:default">
                   <div style="display:flex;align-items:center;justify-content:center;height:100%;box-sizing:border-box">
@@ -5714,12 +5716,12 @@ function toggleLigaAdjust() {
     p.talent_index_adj_pct = Math.round(p.talent_index_adj / 67 * 1000) / 10;
     p.liga_mult            = m;
   });
-  // AI button (embedded in Edit column header, gradient bg)
+  // AI pill button (embedded in Edit column header)
   const _btnTh = document.getElementById('btn-liga-adjust-th');
   if (_btnTh) {
-    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.15)' : 'scale(1)';
-    const _span = _btnTh.querySelector('span');
-    if (_span) _span.style.textShadow = ligaAdjustActive ? '0 0 8px rgba(255,255,255,.9)' : 'none';
+    _btnTh.style.background = ligaAdjustActive ? 'rgba(0,229,160,.28)' : 'rgba(0,229,160,.12)';
+    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(0,229,160,.8)' : 'rgba(0,229,160,.35)';
+    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.08)' : 'scale(1)';
   }
   // Flyout button
   const _btnFl = document.getElementById('btn-liga-adjust');
@@ -8801,7 +8803,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 }
 .td-edit-btn:hover{background:rgba(0,212,255,.12);color:#00d4ff;}
 .th-edit{width:calc(28px - 1mm);padding:4px 0!important;text-align:center;}
-.th-edit-ai{width:calc(28px - 1mm);text-align:center;transition:opacity .15s;background:linear-gradient(90deg,#00e5a0 0%,#00c4ff 100%)!important}
+.th-edit-ai{width:calc(28px - 1mm);text-align:center;transition:opacity .15s;background:linear-gradient(90deg,#0a3a2e 0%,#060c18 100%)!important}
 .th-edit-ai:hover{opacity:.85}
 /* ── EDIT MODAL ── */
 .edit-modal-overlay{
@@ -13148,10 +13150,12 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
           <table class="players-table">
             <thead>
               <tr>
-                <th class="th-edit-ai" style="padding:0;cursor:pointer" onclick="toggleLigaAdjust()" title="Ajustar Talent Index pela dificuldade da liga (Opta)">
-                  <button id="btn-liga-adjust-th" style="width:100%;height:100%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">
-                    <span style="font-family:var(--font-d);font-size:9px;font-weight:900;letter-spacing:.3px;color:#fff">AI</span>
-                  </button>
+                <th class="th-edit-ai" style="padding:0" title="Ajustar Talent Index pela dificuldade da liga (Opta)">
+                  <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">
+                    <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" style="width:20px;height:20px;border-radius:5px;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.35);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0">
+                      <span style="font-family:var(--font-d);font-size:8px;font-weight:800;letter-spacing:.3px;color:var(--green)">AI</span>
+                    </button>
+                  </div>
                 </th>
                 <th onclick="sortTable('rank')" style="padding:0;height:100%;cursor:default">
                   <div style="display:flex;align-items:center;justify-content:center;height:100%;box-sizing:border-box">
@@ -14091,12 +14095,12 @@ function toggleLigaAdjust() {
     p.talent_index_adj_pct = Math.round(p.talent_index_adj / 67 * 1000) / 10;
     p.liga_mult            = m;
   });
-  // AI button (embedded in Edit column header, gradient bg)
+  // AI pill button (embedded in Edit column header)
   const _btnTh = document.getElementById('btn-liga-adjust-th');
   if (_btnTh) {
-    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.15)' : 'scale(1)';
-    const _span = _btnTh.querySelector('span');
-    if (_span) _span.style.textShadow = ligaAdjustActive ? '0 0 8px rgba(255,255,255,.9)' : 'none';
+    _btnTh.style.background = ligaAdjustActive ? 'rgba(0,229,160,.28)' : 'rgba(0,229,160,.12)';
+    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(0,229,160,.8)' : 'rgba(0,229,160,.35)';
+    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.08)' : 'scale(1)';
   }
   // Flyout button
   const _btnFl = document.getElementById('btn-liga-adjust');
