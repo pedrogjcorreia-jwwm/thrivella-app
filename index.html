@@ -279,17 +279,15 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .players-table thead tr{background:#0a0e14}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:#0a0e14;
-  padding:11px 10px 9px;
+  background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 88%,rgba(0,212,255,.55) 100%);
+  padding:11px 10px 10px;
   font-family:var(--font-d);font-size:10px;font-weight:700;
   letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.88);
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
   transition:color .15s,background .15s;
-  border-bottom:2px solid transparent;
-  border-image:linear-gradient(90deg,transparent,rgba(0,212,255,.4) 20%,rgba(0,212,255,.4) 80%,transparent) 1;
 }
-.players-table thead th:hover{background:rgba(0,212,255,.06);color:#fff}
-.players-table thead th.cat-total,.players-table thead th.th-sf{background:#0a0e14!important}
+.players-table thead th:hover{background:linear-gradient(180deg,rgba(0,212,255,.07) 0%,rgba(0,212,255,.07) 88%,var(--accent) 100%);color:#fff}
+.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 88%,rgba(0,212,255,.55) 100%)!important}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -4780,13 +4778,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th style="white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.05)">
                   <div style="display:flex;align-items:center;gap:0;height:100%">
                     <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
-                    <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — Opta difficulty" style="flex-shrink:0;background:none;border:none;padding:1px 1px;cursor:pointer;margin-right:1px;margin-left:2px;transition:all .2s;display:flex;align-items:center;justify-content:center;opacity:0.45;filter:grayscale(1) brightness(3)">
-                      <svg viewBox="0 0 28 22" width="18" height="14" style="display:block;overflow:visible">
-                        <defs><linearGradient id="spkGrad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#a855f7"/><stop offset="50%" style="stop-color:#8b5cf6"/><stop offset="100%" style="stop-color:#3b82f6"/></linearGradient></defs>
-                        <path d="M10 1 L11.5 7 L18 8.5 L11.5 10 L10 16 L8.5 10 L2 8.5 L8.5 7 Z" fill="url(#spkGrad)"/>
-                        <path d="M22 0 L23 3.5 L26.5 4.5 L23 5.5 L22 9 L21 5.5 L17.5 4.5 L21 3.5 Z" fill="url(#spkGrad)" opacity="0.85"/>
-                        <path d="M23 13 L23.8 15.5 L26.5 16 L23.8 16.5 L23 19 L22.2 16.5 L19.5 16 L22.2 15.5 Z" fill="url(#spkGrad)" opacity="0.7"/>
-                      </svg>
+                    <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — Opta difficulty" style="flex-shrink:0;width:20px;height:20px;border-radius:5px;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.35);cursor:pointer;margin-right:2px;margin-left:3px;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0">
+                      <span style="font-family:var(--font-d);font-size:8px;font-weight:800;letter-spacing:.3px;color:var(--green)">AI</span>
                     </button>
                   </div>
                 </th>
@@ -5714,14 +5707,12 @@ function toggleLigaAdjust() {
     p.talent_index_adj_pct = Math.round(p.talent_index_adj / 67 * 1000) / 10;
     p.liga_mult            = m;
   });
-  // Sparkle icon (table header)
+  // AI pill button (table header)
   const _btnTh = document.getElementById('btn-liga-adjust-th');
   if (_btnTh) {
-    _btnTh.style.opacity   = ligaAdjustActive ? '1' : '0.45';
-    _btnTh.style.filter    = ligaAdjustActive
-      ? 'brightness(0) saturate(100%) invert(70%) sepia(100%) saturate(400%) hue-rotate(165deg) brightness(1.2)'
-      : 'grayscale(1) brightness(3)';
-    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.15)' : 'scale(1)';
+    _btnTh.style.background = ligaAdjustActive ? 'rgba(0,229,160,.28)' : 'rgba(0,229,160,.12)';
+    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(0,229,160,.8)' : 'rgba(0,229,160,.35)';
+    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.08)' : 'scale(1)';
   }
   // Flyout button
   const _btnFl = document.getElementById('btn-liga-adjust');
@@ -6037,7 +6028,7 @@ function dkDD(id, opts, selectedVal){
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
     <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${selectedVal?'var(--accent)':'rgba(255,255,255,.88)'};transition:color .15s">
       <span>${selLabel}</span>
-      <span style="font-size:7px;opacity:${selectedVal?'1':'.45'};color:${selectedVal?'var(--accent)':'rgba(255,255,255,.5)'}">▾</span>
+      <span style="font-size:11px;opacity:${selectedVal?'1':'.6'};color:${selectedVal?'var(--accent)':'rgba(255,255,255,.55)'};line-height:0">▾</span>
     </div>
     <div id="dkdd-${id}" style="display:none;position:fixed;background:#0c1118;border:1px solid rgba(0,212,255,.2);border-radius:7px;z-index:9999;box-shadow:0 12px 32px rgba(0,0,0,.9);max-height:260px;overflow-y:auto;min-width:110px;padding:4px 0">
       ${items}
@@ -6077,7 +6068,7 @@ function dkLeagueDD(){
   return `<div class="dk-dd" data-id="league" style="position:relative;display:inline-flex">
     <div onclick="event.stopPropagation();dkDDToggle('league')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:${isActive?'var(--accent)':'rgba(255,255,255,.88)'}">
       <span>${selLabel}</span>
-      <span style="font-size:7px;opacity:${isActive?'1':'.45'};color:${isActive?'var(--accent)':'rgba(255,255,255,.5)'}">▾</span>
+      <span style="font-size:11px;opacity:${isActive?'1':'.6'};color:${isActive?'var(--accent)':'rgba(255,255,255,.55)'};line-height:0">▾</span>
     </div>
     <div id="dkdd-league" style="display:none;position:fixed;background:#0c1118;border:1px solid rgba(0,212,255,.2);border-radius:7px;z-index:9999;box-shadow:0 12px 32px rgba(0,0,0,.9);max-height:300px;overflow-y:auto;min-width:150px;padding:5px 0">
       ${items}
@@ -8676,17 +8667,15 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .players-table thead tr{background:#0a0e14}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:#0a0e14;
-  padding:11px 10px 9px;
+  background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 88%,rgba(0,212,255,.55) 100%);
+  padding:11px 10px 10px;
   font-family:var(--font-d);font-size:10px;font-weight:700;
   letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.88);
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
   transition:color .15s,background .15s;
-  border-bottom:2px solid transparent;
-  border-image:linear-gradient(90deg,transparent,rgba(0,212,255,.4) 20%,rgba(0,212,255,.4) 80%,transparent) 1;
 }
-.players-table thead th:hover{background:rgba(0,212,255,.06);color:#fff}
-.players-table thead th.cat-total,.players-table thead th.th-sf{background:#0a0e14!important}
+.players-table thead th:hover{background:linear-gradient(180deg,rgba(0,212,255,.07) 0%,rgba(0,212,255,.07) 88%,var(--accent) 100%);color:#fff}
+.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 88%,rgba(0,212,255,.55) 100%)!important}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -13145,13 +13134,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th style="white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.05)">
                   <div style="display:flex;align-items:center;gap:0;height:100%">
                     <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
-                    <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — Opta difficulty" style="flex-shrink:0;background:none;border:none;padding:1px 1px;cursor:pointer;margin-right:1px;margin-left:2px;transition:all .2s;display:flex;align-items:center;justify-content:center;opacity:0.45;filter:grayscale(1) brightness(3)">
-                      <svg viewBox="0 0 28 22" width="18" height="14" style="display:block;overflow:visible">
-                        <defs><linearGradient id="spkGrad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#a855f7"/><stop offset="50%" style="stop-color:#8b5cf6"/><stop offset="100%" style="stop-color:#3b82f6"/></linearGradient></defs>
-                        <path d="M10 1 L11.5 7 L18 8.5 L11.5 10 L10 16 L8.5 10 L2 8.5 L8.5 7 Z" fill="url(#spkGrad)"/>
-                        <path d="M22 0 L23 3.5 L26.5 4.5 L23 5.5 L22 9 L21 5.5 L17.5 4.5 L21 3.5 Z" fill="url(#spkGrad)" opacity="0.85"/>
-                        <path d="M23 13 L23.8 15.5 L26.5 16 L23.8 16.5 L23 19 L22.2 16.5 L19.5 16 L22.2 15.5 Z" fill="url(#spkGrad)" opacity="0.7"/>
-                      </svg>
+                    <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — Opta difficulty" style="flex-shrink:0;width:20px;height:20px;border-radius:5px;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.35);cursor:pointer;margin-right:2px;margin-left:3px;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0">
+                      <span style="font-family:var(--font-d);font-size:8px;font-weight:800;letter-spacing:.3px;color:var(--green)">AI</span>
                     </button>
                   </div>
                 </th>
@@ -14079,14 +14063,12 @@ function toggleLigaAdjust() {
     p.talent_index_adj_pct = Math.round(p.talent_index_adj / 67 * 1000) / 10;
     p.liga_mult            = m;
   });
-  // Sparkle icon (table header)
+  // AI pill button (table header)
   const _btnTh = document.getElementById('btn-liga-adjust-th');
   if (_btnTh) {
-    _btnTh.style.opacity   = ligaAdjustActive ? '1' : '0.45';
-    _btnTh.style.filter    = ligaAdjustActive
-      ? 'brightness(0) saturate(100%) invert(70%) sepia(100%) saturate(400%) hue-rotate(165deg) brightness(1.2)'
-      : 'grayscale(1) brightness(3)';
-    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.15)' : 'scale(1)';
+    _btnTh.style.background = ligaAdjustActive ? 'rgba(0,229,160,.28)' : 'rgba(0,229,160,.12)';
+    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(0,229,160,.8)' : 'rgba(0,229,160,.35)';
+    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.08)' : 'scale(1)';
   }
   // Flyout button
   const _btnFl = document.getElementById('btn-liga-adjust');
@@ -14402,7 +14384,7 @@ function dkDD(id, opts, selectedVal){
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
     <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${selectedVal?'var(--accent)':'rgba(255,255,255,.88)'};transition:color .15s">
       <span>${selLabel}</span>
-      <span style="font-size:7px;opacity:${selectedVal?'1':'.45'};color:${selectedVal?'var(--accent)':'rgba(255,255,255,.5)'}">▾</span>
+      <span style="font-size:11px;opacity:${selectedVal?'1':'.6'};color:${selectedVal?'var(--accent)':'rgba(255,255,255,.55)'};line-height:0">▾</span>
     </div>
     <div id="dkdd-${id}" style="display:none;position:fixed;background:#0c1118;border:1px solid rgba(0,212,255,.2);border-radius:7px;z-index:9999;box-shadow:0 12px 32px rgba(0,0,0,.9);max-height:260px;overflow-y:auto;min-width:110px;padding:4px 0">
       ${items}
@@ -14442,7 +14424,7 @@ function dkLeagueDD(){
   return `<div class="dk-dd" data-id="league" style="position:relative;display:inline-flex">
     <div onclick="event.stopPropagation();dkDDToggle('league')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:${isActive?'var(--accent)':'rgba(255,255,255,.88)'}">
       <span>${selLabel}</span>
-      <span style="font-size:7px;opacity:${isActive?'1':'.45'};color:${isActive?'var(--accent)':'rgba(255,255,255,.5)'}">▾</span>
+      <span style="font-size:11px;opacity:${isActive?'1':'.6'};color:${isActive?'var(--accent)':'rgba(255,255,255,.55)'};line-height:0">▾</span>
     </div>
     <div id="dkdd-league" style="display:none;position:fixed;background:#0c1118;border:1px solid rgba(0,212,255,.2);border-radius:7px;z-index:9999;box-shadow:0 12px 32px rgba(0,0,0,.9);max-height:300px;overflow-y:auto;min-width:150px;padding:5px 0">
       ${items}
