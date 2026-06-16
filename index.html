@@ -279,15 +279,15 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .players-table thead tr{background:#0a0e14}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 88%,rgba(0,212,255,.55) 100%);
-  padding:11px 10px 10px;
+  background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 91.6%,rgba(0,212,255,.55) 100%);
+  padding:calc(11px + 0.75mm) 10px calc(10px + 0.75mm);
   font-family:var(--font-d);font-size:10px;font-weight:700;
   letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.88);
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
   transition:color .15s,background .15s;
 }
-.players-table thead th:hover{background:linear-gradient(180deg,rgba(0,212,255,.07) 0%,rgba(0,212,255,.07) 88%,var(--accent) 100%);color:#fff}
-.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 88%,rgba(0,212,255,.55) 100%)!important}
+.players-table thead th:hover{background:linear-gradient(180deg,rgba(0,212,255,.07) 0%,rgba(0,212,255,.07) 91.6%,var(--accent) 100%);color:#fff}
+.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 91.6%,rgba(0,212,255,.55) 100%)!important}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -4769,9 +4769,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('rank')" class="s-desc">#</th>
                 <th style="width:48px;padding:0"></th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:8px;min-width:155px">Jogador</th>
-                <th id="th-age-dd" style="background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
-                <th id="th-height-dd" style="background:rgba(255,255,255,.015);cursor:default"></th>
-                <th id="th-foot-dd" style="background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.05);cursor:default"></th>
+                <th id="th-age-dd" style="border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
+                <th id="th-height-dd" style="cursor:default"></th>
+                <th id="th-foot-dd" style="border-right:1px solid rgba(255,255,255,.05);cursor:default"></th>
                 <th style="text-align:left;padding-left:29px;min-width:110px">
                   <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
                 </th>
@@ -8667,15 +8667,15 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .players-table thead tr{background:#0a0e14}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 88%,rgba(0,212,255,.55) 100%);
-  padding:11px 10px 10px;
+  background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 91.6%,rgba(0,212,255,.55) 100%);
+  padding:calc(11px + 0.75mm) 10px calc(10px + 0.75mm);
   font-family:var(--font-d);font-size:10px;font-weight:700;
   letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.88);
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
   transition:color .15s,background .15s;
 }
-.players-table thead th:hover{background:linear-gradient(180deg,rgba(0,212,255,.07) 0%,rgba(0,212,255,.07) 88%,var(--accent) 100%);color:#fff}
-.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 88%,rgba(0,212,255,.55) 100%)!important}
+.players-table thead th:hover{background:linear-gradient(180deg,rgba(0,212,255,.07) 0%,rgba(0,212,255,.07) 91.6%,var(--accent) 100%);color:#fff}
+.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#0a0e14 0%,#0a0e14 91.6%,rgba(0,212,255,.55) 100%)!important}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -13125,9 +13125,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('rank')" class="s-desc">#</th>
                 <th style="width:48px;padding:0"></th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:8px;min-width:155px">Jogador</th>
-                <th id="th-age-dd" style="background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
-                <th id="th-height-dd" style="background:rgba(255,255,255,.015);cursor:default"></th>
-                <th id="th-foot-dd" style="background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.05);cursor:default"></th>
+                <th id="th-age-dd" style="border-left:1px solid rgba(255,255,255,.05);cursor:default"></th>
+                <th id="th-height-dd" style="cursor:default"></th>
+                <th id="th-foot-dd" style="border-right:1px solid rgba(255,255,255,.05);cursor:default"></th>
                 <th style="text-align:left;padding-left:29px;min-width:110px">
                   <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
                 </th>
