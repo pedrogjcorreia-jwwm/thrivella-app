@@ -6253,7 +6253,7 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.3);letter-spacing:-.5px;line-height:1;text-align:center">${rank+1}</div>
         <div style="margin-top:calc(4px + 0.5mm)"><span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(155,127,255,0.08);border:1px solid rgba(155,127,255,0.22);color:rgba(155,127,255,.8)">${p.position_group||'WIN'}</span></div>
       </td>
-      <td style="width:50px;padding:calc(6px - 0.5mm) 3px 0 calc(5px + 1.5mm);vertical-align:top">
+      <td style="width:50px;padding:0 3px 0 calc(5px + 1.5mm);vertical-align:middle">
         <div class="td-photo-wrap">
           ${window.photoCache&&window.photoCache[p.name]
             ? `<div class="td-photo-bg" style="background-image:url(${window.photoCache[p.name]})"></div><div class="td-photo-fade"></div>`
@@ -14639,7 +14639,7 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.3);letter-spacing:-.5px;line-height:1;text-align:center">${rank+1}</div>
         <div style="margin-top:calc(4px + 0.5mm)"><span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(155,127,255,0.08);border:1px solid rgba(155,127,255,0.22);color:rgba(155,127,255,.8)">${p.position_group||'WIN'}</span></div>
       </td>
-      <td style="width:50px;padding:calc(6px - 0.5mm) 3px 0 calc(5px + 1.5mm);vertical-align:top">
+      <td style="width:50px;padding:0 3px 0 calc(5px + 1.5mm);vertical-align:middle">
         <div class="td-photo-wrap">
           ${window.photoCache&&window.photoCache[p.name]
             ? `<div class="td-photo-bg" style="background-image:url(${window.photoCache[p.name]})"></div><div class="td-photo-fade"></div>`
