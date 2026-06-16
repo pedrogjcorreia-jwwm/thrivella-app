@@ -4710,7 +4710,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th style="width:44px;padding:0"></th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:12px;min-width:150px">Jogador</th>
                 <th onclick="sortTable('age')" style="background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">Idade</th>
-                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.08)">Altura</th>
+                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02)">Altura</th>
                 <th onclick="sortTable('foot')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
                 <th onclick="sortTable('team')" style="text-align:left;padding-left:21px;min-width:110px">Clube / Liga</th>
                 <th style="white-space:nowrap;padding:0;background:rgba(0,10,24,.4);border-left:1px solid rgba(255,255,255,.06)">
@@ -6057,9 +6057,12 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(200,220,240,.55);line-height:1">${rank+1}</div>
         <div style="margin-top:3px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(155,127,255,0.12);border:1px solid rgba(155,127,255,0.35);color:var(--purple)">${p.position_group||'WIN'}</span></div>
       </td>
-      <td style="width:44px;padding:6px 4px 6px 8px;vertical-align:middle">
-        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#0d1e35,#162640);border:1px solid rgba(0,180,255,.2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;position:relative">
-          ${window.photoCache&&window.photoCache[p.name]?`<img src="${window.photoCache[p.name]}" style="width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%">`:`<span style="font-family:var(--font-d);font-size:11px;font-weight:800;color:rgba(0,212,255,.6);letter-spacing:-0.5px">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</span>`}
+      <td style="width:52px;padding:3px 4px 3px 6px;vertical-align:middle">
+        <div style="width:44px;height:52px;border-radius:6px;overflow:hidden;background:#0b1624;position:relative;border:1px solid rgba(255,255,255,.07);flex-shrink:0">
+          ${window.photoCache&&window.photoCache[p.name]
+            ? `<div style="position:absolute;inset:0;background-image:url(${window.photoCache[p.name]});background-size:cover;background-position:top center"></div>`
+            : `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span style="font-family:var(--font-d);font-size:13px;font-weight:900;color:rgba(255,255,255,.08)">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</span></div>`}
+          <div style="position:absolute;bottom:0;left:0;right:0;height:35%;background:linear-gradient(to bottom,transparent,#0b1624);pointer-events:none"></div>
         </div>
       </td>
       <td style="text-align:left;padding:7px 10px 7px 12px;min-width:150px;max-width:200px">
@@ -6074,7 +6077,7 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${p.age||'—'}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Idade</div>
       </td>
-      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.08)">
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02)">
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${htTxt}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Altura</div>
       </td>
@@ -6102,8 +6105,8 @@ function renderTable(){
       <td class="td-contract">${(()=>{
         const yr=p.contract_end?(p.contract_end.split('-')[0]):'—';
         const fmt=p.contract_end?p.contract_end.split('-').reverse().join('/'):'—';
-        if(yr==='2026') return '<div class="td-contract-box">'+fmt+'</div>';
-        return '<span style="color:var(--muted)">'+fmt+'</span>';
+        const col=yr==='2026'?'#ff4757':yr==='2027'?'rgba(255,179,64,.75)':'rgba(255,255,255,.45)';
+        return '<span style="color:'+col+'">'+fmt+'</span>';
       })()}</td>
       <td class="td-val">${fmtVal(p.mkt_value)}</td>
       <td class="cat-total td-num" style="color:${mc('total_off',p.name)}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
@@ -12890,7 +12893,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th style="width:44px;padding:0"></th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:12px;min-width:150px">Jogador</th>
                 <th onclick="sortTable('age')" style="background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">Idade</th>
-                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.08)">Altura</th>
+                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02)">Altura</th>
                 <th onclick="sortTable('foot')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
                 <th onclick="sortTable('team')" style="text-align:left;padding-left:21px;min-width:110px">Clube / Liga</th>
                 <th style="white-space:nowrap;padding:0;background:rgba(0,10,24,.4);border-left:1px solid rgba(255,255,255,.06)">
@@ -14237,9 +14240,12 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(200,220,240,.55);line-height:1">${rank+1}</div>
         <div style="margin-top:3px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(155,127,255,0.12);border:1px solid rgba(155,127,255,0.35);color:var(--purple)">${p.position_group||'WIN'}</span></div>
       </td>
-      <td style="width:44px;padding:6px 4px 6px 8px;vertical-align:middle">
-        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#0d1e35,#162640);border:1px solid rgba(0,180,255,.2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;position:relative">
-          ${window.photoCache&&window.photoCache[p.name]?`<img src="${window.photoCache[p.name]}" style="width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%">`:`<span style="font-family:var(--font-d);font-size:11px;font-weight:800;color:rgba(0,212,255,.6);letter-spacing:-0.5px">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</span>`}
+      <td style="width:52px;padding:3px 4px 3px 6px;vertical-align:middle">
+        <div style="width:44px;height:52px;border-radius:6px;overflow:hidden;background:#0b1624;position:relative;border:1px solid rgba(255,255,255,.07);flex-shrink:0">
+          ${window.photoCache&&window.photoCache[p.name]
+            ? `<div style="position:absolute;inset:0;background-image:url(${window.photoCache[p.name]});background-size:cover;background-position:top center"></div>`
+            : `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span style="font-family:var(--font-d);font-size:13px;font-weight:900;color:rgba(255,255,255,.08)">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</span></div>`}
+          <div style="position:absolute;bottom:0;left:0;right:0;height:35%;background:linear-gradient(to bottom,transparent,#0b1624);pointer-events:none"></div>
         </div>
       </td>
       <td style="text-align:left;padding:7px 10px 7px 12px;min-width:150px;max-width:200px">
@@ -14254,7 +14260,7 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${p.age||'—'}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Idade</div>
       </td>
-      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.08)">
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02)">
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${htTxt}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Altura</div>
       </td>
@@ -14282,8 +14288,8 @@ function renderTable(){
       <td class="td-contract">${(()=>{
         const yr=p.contract_end?(p.contract_end.split('-')[0]):'—';
         const fmt=p.contract_end?p.contract_end.split('-').reverse().join('/'):'—';
-        if(yr==='2026') return '<div class="td-contract-box">'+fmt+'</div>';
-        return '<span style="color:var(--muted)">'+fmt+'</span>';
+        const col=yr==='2026'?'#ff4757':yr==='2027'?'rgba(255,179,64,.75)':'rgba(255,255,255,.45)';
+        return '<span style="color:'+col+'">'+fmt+'</span>';
       })()}</td>
       <td class="td-val">${fmtVal(p.mkt_value)}</td>
       <td class="cat-total td-num" style="color:${mc('total_off',p.name)}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
