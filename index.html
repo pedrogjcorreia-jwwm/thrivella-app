@@ -393,6 +393,11 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .td-edit-btn:hover{background:rgba(0,212,255,.12);color:#00d4ff;}
 .th-edit{width:calc(28px - 1mm);padding:4px 0!important;text-align:center;}
 .th-edit-ai{width:calc(28px - 1mm);text-align:center;transition:opacity .15s}
+@keyframes aiPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(80,255,150,.55);border-color:rgba(80,255,150,.5)}
+  50%{box-shadow:0 0 7px 2px rgba(80,255,150,.85);border-color:rgba(120,255,170,.95)}
+}
+#btn-liga-adjust-th.ai-pulse{animation:aiPulse 2.4s ease-in-out infinite}
 .th-edit-ai:hover{opacity:.85}
 /* ── EDIT MODAL ── */
 .edit-modal-overlay{
@@ -4773,8 +4778,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
               <tr>
                 <th class="th-edit-ai" style="padding:0" title="Ajustar Talent Index pela dificuldade da liga (Opta)">
                   <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">
-                    <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" style="width:16px;height:16px;border-radius:4px;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.35);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0">
-                      <span style="font-family:var(--font-d);font-size:6.5px;font-weight:800;letter-spacing:.2px;color:var(--green)">AI</span>
+                    <button id="btn-liga-adjust-th" class="ai-pulse" onclick="toggleLigaAdjust()" style="width:16px;height:16px;border-radius:4px;background:rgba(120,255,170,.18);border:1px solid rgba(120,255,170,.5);cursor:pointer;transition:background .2s,border-color .2s;display:flex;align-items:center;justify-content:center;padding:0">
+                      <span style="font-family:var(--font-d);font-size:6.5px;font-weight:800;letter-spacing:.2px;color:#d4ffe0">AI</span>
                     </button>
                   </div>
                 </th>
@@ -4791,9 +4796,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th style="text-align:left;padding-left:29px;min-width:110px">
                   <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
                 </th>
-                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05)" title="Talent Index" data-i18n="col_talent">TAL</th>
-                <th onclick="sortTable('total_physical')" style="color:#fff" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
-                <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
+                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05);background:#0b1624!important" title="Talent Index" data-i18n="col_talent">TAL</th>
+                <th onclick="sortTable('total_physical')" style="color:#fff;background:#0b1624!important" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
+                <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05);background:#0b1624!important" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th id="th-contract-dd" style="width:120px;cursor:default"></th>
                 <th id="th-mktval-dd" style="white-space:nowrap;width:80px;cursor:default"></th>
                 <th class="cat-total cat-off-total" style="color:#fff;white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
@@ -5719,9 +5724,10 @@ function toggleLigaAdjust() {
   // AI pill button (embedded in Edit column header)
   const _btnTh = document.getElementById('btn-liga-adjust-th');
   if (_btnTh) {
-    _btnTh.style.background = ligaAdjustActive ? 'rgba(0,229,160,.28)' : 'rgba(0,229,160,.12)';
-    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(0,229,160,.8)' : 'rgba(0,229,160,.35)';
+    _btnTh.style.background = ligaAdjustActive ? 'rgba(120,255,170,.32)' : 'rgba(120,255,170,.18)';
+    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(120,255,170,.9)' : 'rgba(120,255,170,.5)';
     _btnTh.style.transform = ligaAdjustActive ? 'scale(1.08)' : 'scale(1)';
+    _btnTh.classList.toggle('ai-pulse', !ligaAdjustActive);
   }
   // Flyout button
   const _btnFl = document.getElementById('btn-liga-adjust');
@@ -6030,12 +6036,13 @@ function clearQuickFilters(){
 
 // ── DESKTOP TABLE HEADER FILTERS (dropdown style, mobile-like) ──────────────
 window._tblFilters = window._tblFilters || {age:'',mktval:'',contract:'',height:''};
-function dkDD(id, opts, selectedVal, hideArrow){
+function dkDD(id, opts, selectedVal, hideArrow, forceAccent){
   const sel = opts.find(([v])=>v===selectedVal);
   const selLabel = sel ? sel[1] : opts[0][1];
+  const labelColor = forceAccent ? 'var(--accent)' : (selectedVal?'var(--accent)':'rgba(255,255,255,.88)');
   const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:8px 14px;font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.2px;color:rgba(225,238,250,.85);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,212,255,.1)'" onmouseout="this.style.background=''">${l}</div>`).join('');
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${selectedVal?'var(--accent)':'rgba(255,255,255,.88)'};transition:color .15s">
+    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${labelColor};transition:color .15s">
       <span>${selLabel}</span>
       ${hideArrow?'':'<span style="font-size:11px;opacity:'+(selectedVal?'1':'.7')+';color:'+(selectedVal?'var(--accent)':'rgba(0,212,255,.55)')+';line-height:0">▾</span>'}
     </div>
@@ -6131,7 +6138,7 @@ function renderTable(){
     const lgEl=document.getElementById('th-league-dd');
     if(lgEl) lgEl.innerHTML=dkLeagueDD();
     const mtEl=document.getElementById('th-metric-dd');
-    if(mtEl) mtEl.innerHTML=dkDD('metric',[['','Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric);
+    if(mtEl) mtEl.innerHTML=dkDD('metric',[['','Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric,false,true);
     const posEl=document.getElementById('th-pos-dd');
     if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos);
   })();
@@ -6277,16 +6284,16 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px">${p.team}</div>
         <div style="font-family:var(--font-d);font-size:9.5px;font-weight:600;color:rgba(0,180,220,.55);margin-top:4px;letter-spacing:.2px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
-      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:0 12px;background:#0b1624;border-left:1px solid rgba(255,255,255,.05)">
         <div class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}</div>
         <div class="td-score-sub">TAL</div>
       </td>
-      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6)">
+      <td style="text-align:center;padding:0 12px;background:#0b1624">
         ${p.has_phy
           ? `<div class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</div><div class="td-score-sub">PHY</div>`
           : `<div style="font-family:var(--font-d);font-size:11px;color:rgba(255,255,255,.15)">—</div>`}
       </td>
-      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:0 12px;background:#0b1624;border-right:1px solid rgba(255,255,255,.05)">
         <div class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.2)'}">${p.transfer_score||0}</div>
         <div class="td-score-sub">TRA</div>
       </td>
@@ -8804,6 +8811,11 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .td-edit-btn:hover{background:rgba(0,212,255,.12);color:#00d4ff;}
 .th-edit{width:calc(28px - 1mm);padding:4px 0!important;text-align:center;}
 .th-edit-ai{width:calc(28px - 1mm);text-align:center;transition:opacity .15s}
+@keyframes aiPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(80,255,150,.55);border-color:rgba(80,255,150,.5)}
+  50%{box-shadow:0 0 7px 2px rgba(80,255,150,.85);border-color:rgba(120,255,170,.95)}
+}
+#btn-liga-adjust-th.ai-pulse{animation:aiPulse 2.4s ease-in-out infinite}
 .th-edit-ai:hover{opacity:.85}
 /* ── EDIT MODAL ── */
 .edit-modal-overlay{
@@ -13152,8 +13164,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
               <tr>
                 <th class="th-edit-ai" style="padding:0" title="Ajustar Talent Index pela dificuldade da liga (Opta)">
                   <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">
-                    <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" style="width:16px;height:16px;border-radius:4px;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.35);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0">
-                      <span style="font-family:var(--font-d);font-size:6.5px;font-weight:800;letter-spacing:.2px;color:var(--green)">AI</span>
+                    <button id="btn-liga-adjust-th" class="ai-pulse" onclick="toggleLigaAdjust()" style="width:16px;height:16px;border-radius:4px;background:rgba(120,255,170,.18);border:1px solid rgba(120,255,170,.5);cursor:pointer;transition:background .2s,border-color .2s;display:flex;align-items:center;justify-content:center;padding:0">
+                      <span style="font-family:var(--font-d);font-size:6.5px;font-weight:800;letter-spacing:.2px;color:#d4ffe0">AI</span>
                     </button>
                   </div>
                 </th>
@@ -13170,9 +13182,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th style="text-align:left;padding-left:29px;min-width:110px">
                   <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
                 </th>
-                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05)" title="Talent Index" data-i18n="col_talent">TAL</th>
-                <th onclick="sortTable('total_physical')" style="color:#fff" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
-                <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
+                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05);background:#0b1624!important" title="Talent Index" data-i18n="col_talent">TAL</th>
+                <th onclick="sortTable('total_physical')" style="color:#fff;background:#0b1624!important" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
+                <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05);background:#0b1624!important" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th id="th-contract-dd" style="width:120px;cursor:default"></th>
                 <th id="th-mktval-dd" style="white-space:nowrap;width:80px;cursor:default"></th>
                 <th class="cat-total cat-off-total" style="color:#fff;white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
@@ -14098,9 +14110,10 @@ function toggleLigaAdjust() {
   // AI pill button (embedded in Edit column header)
   const _btnTh = document.getElementById('btn-liga-adjust-th');
   if (_btnTh) {
-    _btnTh.style.background = ligaAdjustActive ? 'rgba(0,229,160,.28)' : 'rgba(0,229,160,.12)';
-    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(0,229,160,.8)' : 'rgba(0,229,160,.35)';
+    _btnTh.style.background = ligaAdjustActive ? 'rgba(120,255,170,.32)' : 'rgba(120,255,170,.18)';
+    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(120,255,170,.9)' : 'rgba(120,255,170,.5)';
     _btnTh.style.transform = ligaAdjustActive ? 'scale(1.08)' : 'scale(1)';
+    _btnTh.classList.toggle('ai-pulse', !ligaAdjustActive);
   }
   // Flyout button
   const _btnFl = document.getElementById('btn-liga-adjust');
@@ -14409,12 +14422,13 @@ function clearQuickFilters(){
 
 // ── DESKTOP TABLE HEADER FILTERS (dropdown style, mobile-like) ──────────────
 window._tblFilters = window._tblFilters || {age:'',mktval:'',contract:'',height:''};
-function dkDD(id, opts, selectedVal, hideArrow){
+function dkDD(id, opts, selectedVal, hideArrow, forceAccent){
   const sel = opts.find(([v])=>v===selectedVal);
   const selLabel = sel ? sel[1] : opts[0][1];
+  const labelColor = forceAccent ? 'var(--accent)' : (selectedVal?'var(--accent)':'rgba(255,255,255,.88)');
   const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:8px 14px;font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.2px;color:rgba(225,238,250,.85);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,212,255,.1)'" onmouseout="this.style.background=''">${l}</div>`).join('');
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${selectedVal?'var(--accent)':'rgba(255,255,255,.88)'};transition:color .15s">
+    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${labelColor};transition:color .15s">
       <span>${selLabel}</span>
       ${hideArrow?'':'<span style="font-size:11px;opacity:'+(selectedVal?'1':'.7')+';color:'+(selectedVal?'var(--accent)':'rgba(0,212,255,.55)')+';line-height:0">▾</span>'}
     </div>
@@ -14510,7 +14524,7 @@ function renderTable(){
     const lgEl=document.getElementById('th-league-dd');
     if(lgEl) lgEl.innerHTML=dkLeagueDD();
     const mtEl=document.getElementById('th-metric-dd');
-    if(mtEl) mtEl.innerHTML=dkDD('metric',[['','Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric);
+    if(mtEl) mtEl.innerHTML=dkDD('metric',[['','Métrica'],['xg','xG'],['xa','xA'],['shots90','Rem/90'],['goals_per_shot','%Gol/Rem'],['dribles90','Drib/90'],['dribles_pct','%Drib'],['crosses90','Cruz/90'],['crosses_pct','%Cruz'],['box_touches','BoxTch'],['prog_carries','ProgC'],['accels90','Acel/90'],['recpt_depth','RecvProf'],['def_duels','Duel/90'],['def_duels_pct','%Duel'],['adj_intercept','Intrc'],['passes90','Pass/90'],['passes_pct','%Pass'],['shot_assist','AstRem'],['box_passes','BoxPass'],['box_passes_pct','%BoxP'],['max_speed','V.Máx'],['hsr90','HSR/90'],['sprint_dist90','Sprint/90'],['sprints90','NrSpr'],['hsr_sprint_pct','%HSR+Spr'],['total_dist','Dist.Tot']],tf.metric,false,true);
     const posEl=document.getElementById('th-pos-dd');
     if(posEl) posEl.innerHTML=dkDD('pos',[['','Pos'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']],tf.pos);
   })();
@@ -14656,16 +14670,16 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px">${p.team}</div>
         <div style="font-family:var(--font-d);font-size:9.5px;font-weight:600;color:rgba(0,180,220,.55);margin-top:4px;letter-spacing:.2px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
-      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:0 12px;background:#0b1624;border-left:1px solid rgba(255,255,255,.05)">
         <div class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}</div>
         <div class="td-score-sub">TAL</div>
       </td>
-      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6)">
+      <td style="text-align:center;padding:0 12px;background:#0b1624">
         ${p.has_phy
           ? `<div class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</div><div class="td-score-sub">PHY</div>`
           : `<div style="font-family:var(--font-d);font-size:11px;color:rgba(255,255,255,.15)">—</div>`}
       </td>
-      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:0 12px;background:#0b1624;border-right:1px solid rgba(255,255,255,.05)">
         <div class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.2)'}">${p.transfer_score||0}</div>
         <div class="td-score-sub">TRA</div>
       </td>
