@@ -278,13 +278,13 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:linear-gradient(180deg,#0d2a45 0%,#0a1f38 60%,#081729 100%);
+  background:linear-gradient(180deg,#0a1f38 0%,#06182c 50%,#040f1f 100%);
   padding:10px 10px 8px;
-  font-family:var(--font-d);font-size:9px;font-weight:700;
+  font-family:var(--font-d);font-size:9.5px;font-weight:700;
   letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.82);
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
   transition:color .15s;
-  border-bottom:1px solid rgba(0,180,255,.18);
+  border-bottom:1px solid rgba(0,180,255,.14);
 }
 .players-table thead th:hover{color:#fff}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
@@ -6032,7 +6032,7 @@ function dkDD(id, opts, selectedVal){
   const selLabel = sel ? sel[1] : opts[0][1];
   const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:7px 13px;font-family:var(--font-d);font-size:10.5px;font-weight:600;letter-spacing:.3px;color:rgba(220,235,250,.8);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,180,255,.12)'" onmouseout="this.style.background=''">${l}</div>`).join('');
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.82)'};transition:color .15s">
+    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.82)'};transition:color .15s">
       <span>${selLabel}</span>
       <span style="font-size:8px;opacity:.85;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.55)'}">▾</span>
     </div>
@@ -6072,7 +6072,7 @@ function dkLeagueDD(){
     </label>`;
   }).join('');
   return `<div class="dk-dd" data-id="league" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('league')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${isActive?'#5fe0ff':'rgba(0,180,220,.7)'}">
+    <div onclick="event.stopPropagation();dkDDToggle('league')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${isActive?'#5fe0ff':'rgba(0,180,220,.7)'}">
       <span>${selLabel}</span>
       <span style="font-size:8px;opacity:.85">▾</span>
     </div>
@@ -8672,13 +8672,13 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:linear-gradient(180deg,#0d2a45 0%,#0a1f38 60%,#081729 100%);
+  background:linear-gradient(180deg,#0a1f38 0%,#06182c 50%,#040f1f 100%);
   padding:10px 10px 8px;
-  font-family:var(--font-d);font-size:9px;font-weight:700;
+  font-family:var(--font-d);font-size:9.5px;font-weight:700;
   letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.82);
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
   transition:color .15s;
-  border-bottom:1px solid rgba(0,180,255,.18);
+  border-bottom:1px solid rgba(0,180,255,.14);
 }
 .players-table thead th:hover{color:#fff}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
@@ -14394,7 +14394,7 @@ function dkDD(id, opts, selectedVal){
   const selLabel = sel ? sel[1] : opts[0][1];
   const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:7px 13px;font-family:var(--font-d);font-size:10.5px;font-weight:600;letter-spacing:.3px;color:rgba(220,235,250,.8);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,180,255,.12)'" onmouseout="this.style.background=''">${l}</div>`).join('');
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.82)'};transition:color .15s">
+    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.82)'};transition:color .15s">
       <span>${selLabel}</span>
       <span style="font-size:8px;opacity:.85;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.55)'}">▾</span>
     </div>
@@ -14434,7 +14434,7 @@ function dkLeagueDD(){
     </label>`;
   }).join('');
   return `<div class="dk-dd" data-id="league" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('league')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${isActive?'#5fe0ff':'rgba(0,180,220,.7)'}">
+    <div onclick="event.stopPropagation();dkDDToggle('league')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${isActive?'#5fe0ff':'rgba(0,180,220,.7)'}">
       <span>${selLabel}</span>
       <span style="font-size:8px;opacity:.85">▾</span>
     </div>
