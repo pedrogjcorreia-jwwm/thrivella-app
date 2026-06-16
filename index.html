@@ -4841,7 +4841,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th class="cat-sub cat-phys" onclick="sortTable('sprints90')" style="color:var(--purple)">NrSpr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:var(--purple)">%HSR+Spr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:var(--purple)">Dist.Tot</th>
-                <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#ff8c00">
+                <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#ff8c00;padding-left:calc(8px + 1mm)">
                   <span style="display:flex;align-items:center;gap:4px;justify-content:center">
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="opacity:.7"><circle cx="5" cy="5" r="4.5" fill="none" stroke="currentColor" stroke-width="1"></circle><path d="M5 2.5l.6 1.9h2l-1.6 1.2.6 1.9L5 6.3l-1.6 1.2.6-1.9L2.4 4.4h2z"></path></svg>
                     SofaScore
@@ -6122,7 +6122,7 @@ function renderTable(){
             : `<div class="td-photo-ini">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>`}
         </div>
       </td>
-      <td style="text-align:left;padding:0 12px 0 calc(8px + 1.5mm);min-width:calc(155px - 2mm);max-width:calc(210px - 2mm)">
+      <td style="text-align:left;padding:0 calc(12px - 1mm) 0 calc(8px + 1.5mm);min-width:calc(155px - 2mm);max-width:calc(210px - 2mm)">
         <div class="td-player-name" style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:rgba(232,237,242,.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px;transition:color .1s">${p.name}</div>
         <div style="display:flex;align-items:center;gap:3px;margin-top:4px">
           ${pos2?`<span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.22);color:rgba(0,212,255,.85)">${pos2}</span>`:''}
@@ -6199,7 +6199,7 @@ function renderTable(){
       <td class="cat-sub cat-phys td-num" style="color:${mc('sprints90',p.name)}">${(p.sprints90!=null?p.sprints90.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('hsr_sprint_pct',p.name)}">${(p.hsr_sprint_pct!=null?p.hsr_sprint_pct.toFixed(1):'—')}%</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('total_dist',p.name)}">${(p.total_dist!=null?Math.round(p.total_dist):'—').toLocaleString()}</td>
-      <td class="td-sf">${(()=>{
+      <td class="td-sf" style="padding-left:calc(8px + 1mm)">${(()=>{
         const r = p.sf_rating;
         if(r==null||r===undefined) return '<span class="sf-rating-null">—</span>';
         const cls = r>=7.5?'high':r<6.5?'low':'';
@@ -13081,7 +13081,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th class="cat-sub cat-phys" onclick="sortTable('sprints90')" style="color:var(--purple)">NrSpr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:var(--purple)">%HSR+Spr</th>
                 <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:var(--purple)">Dist.Tot</th>
-                <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#ff8c00">
+                <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#ff8c00;padding-left:calc(8px + 1mm)">
                   <span style="display:flex;align-items:center;gap:4px;justify-content:center">
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="opacity:.7"><circle cx="5" cy="5" r="4.5" fill="none" stroke="currentColor" stroke-width="1"></circle><path d="M5 2.5l.6 1.9h2l-1.6 1.2.6 1.9L5 6.3l-1.6 1.2.6-1.9L2.4 4.4h2z"></path></svg>
                     SofaScore
@@ -14362,7 +14362,7 @@ function renderTable(){
             : `<div class="td-photo-ini">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>`}
         </div>
       </td>
-      <td style="text-align:left;padding:0 12px 0 calc(8px + 1.5mm);min-width:calc(155px - 2mm);max-width:calc(210px - 2mm)">
+      <td style="text-align:left;padding:0 calc(12px - 1mm) 0 calc(8px + 1.5mm);min-width:calc(155px - 2mm);max-width:calc(210px - 2mm)">
         <div class="td-player-name" style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:rgba(232,237,242,.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px;transition:color .1s">${p.name}</div>
         <div style="display:flex;align-items:center;gap:3px;margin-top:4px">
           ${pos2?`<span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.22);color:rgba(0,212,255,.85)">${pos2}</span>`:''}
@@ -14439,7 +14439,7 @@ function renderTable(){
       <td class="cat-sub cat-phys td-num" style="color:${mc('sprints90',p.name)}">${(p.sprints90!=null?p.sprints90.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('hsr_sprint_pct',p.name)}">${(p.hsr_sprint_pct!=null?p.hsr_sprint_pct.toFixed(1):'—')}%</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('total_dist',p.name)}">${(p.total_dist!=null?Math.round(p.total_dist):'—').toLocaleString()}</td>
-      <td class="td-sf">${(()=>{
+      <td class="td-sf" style="padding-left:calc(8px + 1mm)">${(()=>{
         const r = p.sf_rating;
         if(r==null||r===undefined) return '<span class="sf-rating-null">—</span>';
         const cls = r>=7.5?'high':r<6.5?'low':'';
