@@ -276,11 +276,11 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 
 /* ── HEADER ── */
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
-.players-table thead tr{background:#060c18;height:46px}
+.players-table thead tr{background:#0b1624;height:46px}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
   height:46px;max-height:46px;
-  background:linear-gradient(180deg,#060c18 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%);
+  background:linear-gradient(180deg,#0b1624 0%,#0b1624 91.6%,rgba(0,212,255,.55) 100%);
   padding:calc(11px + 0.75mm) 10px calc(10px + 0.75mm);
   font-family:var(--font-d);font-size:10px;font-weight:700;
   letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.88);
@@ -290,7 +290,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   overflow:hidden;
 }
 .players-table thead th:hover{background:linear-gradient(180deg,rgba(0,212,255,.07) 0%,rgba(0,212,255,.07) 91.6%,var(--accent) 100%);color:#fff}
-.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#060c18 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%)!important}
+.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#0b1624 0%,#0b1624 91.6%,rgba(0,212,255,.55) 100%)!important}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -323,7 +323,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .col-sep{border-left:1px solid rgba(255,255,255,.05)!important}
 .col-sep-strong{border-left:1px solid rgba(255,255,255,.09)!important}
 .players-table tbody td.cat-total{background:rgba(0,6,14,.6)!important;padding:0 12px}
-.players-table thead th.cat-total{background:#060c18!important}
+.players-table thead th.cat-total{background:#0b1624!important}
 
 /* ── SCORES ── */
 .td-score-bar-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
@@ -393,11 +393,11 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .td-edit-btn:hover{background:rgba(0,212,255,.12);color:#00d4ff;}
 .th-edit{width:calc(28px - 1mm);padding:4px 0!important;text-align:center;}
 .th-edit-ai{width:calc(28px - 1mm);text-align:center;transition:opacity .15s}
-@keyframes aiPulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(80,255,150,.55);border-color:rgba(80,255,150,.5)}
-  50%{box-shadow:0 0 7px 2px rgba(80,255,150,.85);border-color:rgba(120,255,170,.95)}
+@keyframes liagaAiPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(120,255,170,.35);border-color:rgba(120,255,170,.45);background:rgba(120,255,170,.15)}
+  50%{box-shadow:0 0 9px 3px rgba(120,255,170,.7);border-color:rgba(150,255,190,1);background:rgba(120,255,170,.35)}
 }
-#btn-liga-adjust-th.ai-pulse{animation:aiPulse 2.4s ease-in-out infinite}
+#btn-liga-adjust-th.ai-pulse{animation:liagaAiPulse 4s ease-in-out infinite}
 .th-edit-ai:hover{opacity:.85}
 /* ── EDIT MODAL ── */
 .edit-modal-overlay{
@@ -4796,9 +4796,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th style="text-align:left;padding-left:29px;min-width:110px">
                   <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
                 </th>
-                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05);background:#0b1624!important" title="Talent Index" data-i18n="col_talent">TAL</th>
-                <th onclick="sortTable('total_physical')" style="color:#fff;background:#0b1624!important" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
-                <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05);background:#0b1624!important" title="Transfer Score" data-i18n="col_transfer">TRA</th>
+                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05)" title="Talent Index" data-i18n="col_talent">TAL</th>
+                <th onclick="sortTable('total_physical')" style="color:#fff" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
+                <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th id="th-contract-dd" style="width:120px;cursor:default"></th>
                 <th id="th-mktval-dd" style="white-space:nowrap;width:80px;cursor:default"></th>
                 <th class="cat-total cat-off-total" style="color:#fff;white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
@@ -6284,16 +6284,16 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px">${p.team}</div>
         <div style="font-family:var(--font-d);font-size:9.5px;font-weight:600;color:rgba(0,180,220,.55);margin-top:4px;letter-spacing:.2px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
-      <td style="text-align:center;padding:0 12px;background:#0b1624;border-left:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
         <div class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}</div>
         <div class="td-score-sub">TAL</div>
       </td>
-      <td style="text-align:center;padding:0 12px;background:#0b1624">
+      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6)">
         ${p.has_phy
           ? `<div class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</div><div class="td-score-sub">PHY</div>`
           : `<div style="font-family:var(--font-d);font-size:11px;color:rgba(255,255,255,.15)">—</div>`}
       </td>
-      <td style="text-align:center;padding:0 12px;background:#0b1624;border-right:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)">
         <div class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.2)'}">${p.transfer_score||0}</div>
         <div class="td-score-sub">TRA</div>
       </td>
@@ -8694,11 +8694,11 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 
 /* ── HEADER ── */
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
-.players-table thead tr{background:#060c18;height:46px}
+.players-table thead tr{background:#0b1624;height:46px}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
   height:46px;max-height:46px;
-  background:linear-gradient(180deg,#060c18 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%);
+  background:linear-gradient(180deg,#0b1624 0%,#0b1624 91.6%,rgba(0,212,255,.55) 100%);
   padding:calc(11px + 0.75mm) 10px calc(10px + 0.75mm);
   font-family:var(--font-d);font-size:10px;font-weight:700;
   letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.88);
@@ -8708,7 +8708,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   overflow:hidden;
 }
 .players-table thead th:hover{background:linear-gradient(180deg,rgba(0,212,255,.07) 0%,rgba(0,212,255,.07) 91.6%,var(--accent) 100%);color:#fff}
-.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#060c18 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%)!important}
+.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#0b1624 0%,#0b1624 91.6%,rgba(0,212,255,.55) 100%)!important}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -8741,7 +8741,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .col-sep{border-left:1px solid rgba(255,255,255,.05)!important}
 .col-sep-strong{border-left:1px solid rgba(255,255,255,.09)!important}
 .players-table tbody td.cat-total{background:rgba(0,6,14,.6)!important;padding:0 12px}
-.players-table thead th.cat-total{background:#060c18!important}
+.players-table thead th.cat-total{background:#0b1624!important}
 
 /* ── SCORES ── */
 .td-score-bar-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
@@ -8811,11 +8811,11 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .td-edit-btn:hover{background:rgba(0,212,255,.12);color:#00d4ff;}
 .th-edit{width:calc(28px - 1mm);padding:4px 0!important;text-align:center;}
 .th-edit-ai{width:calc(28px - 1mm);text-align:center;transition:opacity .15s}
-@keyframes aiPulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(80,255,150,.55);border-color:rgba(80,255,150,.5)}
-  50%{box-shadow:0 0 7px 2px rgba(80,255,150,.85);border-color:rgba(120,255,170,.95)}
+@keyframes liagaAiPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(120,255,170,.35);border-color:rgba(120,255,170,.45);background:rgba(120,255,170,.15)}
+  50%{box-shadow:0 0 9px 3px rgba(120,255,170,.7);border-color:rgba(150,255,190,1);background:rgba(120,255,170,.35)}
 }
-#btn-liga-adjust-th.ai-pulse{animation:aiPulse 2.4s ease-in-out infinite}
+#btn-liga-adjust-th.ai-pulse{animation:liagaAiPulse 4s ease-in-out infinite}
 .th-edit-ai:hover{opacity:.85}
 /* ── EDIT MODAL ── */
 .edit-modal-overlay{
@@ -13182,9 +13182,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th style="text-align:left;padding-left:29px;min-width:110px">
                   <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
                 </th>
-                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05);background:#0b1624!important" title="Talent Index" data-i18n="col_talent">TAL</th>
-                <th onclick="sortTable('total_physical')" style="color:#fff;background:#0b1624!important" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
-                <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05);background:#0b1624!important" title="Transfer Score" data-i18n="col_transfer">TRA</th>
+                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05)" title="Talent Index" data-i18n="col_talent">TAL</th>
+                <th onclick="sortTable('total_physical')" style="color:#fff" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
+                <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th id="th-contract-dd" style="width:120px;cursor:default"></th>
                 <th id="th-mktval-dd" style="white-space:nowrap;width:80px;cursor:default"></th>
                 <th class="cat-total cat-off-total" style="color:#fff;white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
@@ -14670,16 +14670,16 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px">${p.team}</div>
         <div style="font-family:var(--font-d);font-size:9.5px;font-weight:600;color:rgba(0,180,220,.55);margin-top:4px;letter-spacing:.2px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
-      <td style="text-align:center;padding:0 12px;background:#0b1624;border-left:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
         <div class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}</div>
         <div class="td-score-sub">TAL</div>
       </td>
-      <td style="text-align:center;padding:0 12px;background:#0b1624">
+      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6)">
         ${p.has_phy
           ? `<div class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</div><div class="td-score-sub">PHY</div>`
           : `<div style="font-family:var(--font-d);font-size:11px;color:rgba(255,255,255,.15)">—</div>`}
       </td>
-      <td style="text-align:center;padding:0 12px;background:#0b1624;border-right:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)">
         <div class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.2)'}">${p.transfer_score||0}</div>
         <div class="td-score-sub">TRA</div>
       </td>
