@@ -276,7 +276,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 
 /* ── HEADER ── */
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
-.players-table thead tr{background:#060c18;height:46px}
+.players-table thead tr{background:linear-gradient(90deg,#00e5a0 0%,#0a3a4a 6%,#060c18 18%,#060c18 100%);height:46px}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
   height:46px;max-height:46px;
@@ -392,6 +392,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 }
 .td-edit-btn:hover{background:rgba(0,212,255,.12);color:#00d4ff;}
 .th-edit{width:calc(28px - 1mm);padding:4px 0!important;text-align:center;}
+.th-edit-ai{width:calc(28px - 1mm);text-align:center;transition:opacity .15s}
+.th-edit-ai:hover{opacity:.85}
 /* ── EDIT MODAL ── */
 .edit-modal-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);
@@ -4769,7 +4771,11 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
           <table class="players-table">
             <thead>
               <tr>
-                <th class="th-edit" title="Editar"></th>
+                <th class="th-edit-ai" style="padding:0;cursor:pointer" onclick="toggleLigaAdjust()" title="Ajustar Talent Index pela dificuldade da liga (Opta)">
+                  <button id="btn-liga-adjust-th" style="width:100%;height:100%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">
+                    <span style="font-family:var(--font-d);font-size:9px;font-weight:900;letter-spacing:.3px;color:#fff">AI</span>
+                  </button>
+                </th>
                 <th onclick="sortTable('rank')" style="padding:0;height:100%;cursor:default">
                   <div style="display:flex;align-items:center;justify-content:center;height:100%;box-sizing:border-box">
                     <span id="th-pos-dd" style="cursor:default;margin-left:0.5mm"></span>
@@ -4783,14 +4789,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th style="text-align:left;padding-left:29px;min-width:110px">
                   <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
                 </th>
-                <th style="white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.05)">
-                  <div style="display:flex;align-items:center;justify-content:center;gap:0;height:100%;box-sizing:border-box">
-                    <span onclick="sortTable('score')" style="cursor:pointer;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
-                    <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — Opta difficulty" style="flex-shrink:0;width:20px;height:20px;border-radius:5px;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.35);cursor:pointer;margin-right:2px;margin-left:3px;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0">
-                      <span style="font-family:var(--font-d);font-size:8px;font-weight:800;letter-spacing:.3px;color:var(--green)">AI</span>
-                    </button>
-                  </div>
-                </th>
+                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05)" title="Talent Index" data-i18n="col_talent">TAL</th>
                 <th onclick="sortTable('total_physical')" style="color:#fff" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
                 <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th id="th-contract-dd" style="width:120px;cursor:default"></th>
@@ -5715,12 +5714,12 @@ function toggleLigaAdjust() {
     p.talent_index_adj_pct = Math.round(p.talent_index_adj / 67 * 1000) / 10;
     p.liga_mult            = m;
   });
-  // AI pill button (table header)
+  // AI button (embedded in Edit column header, gradient bg)
   const _btnTh = document.getElementById('btn-liga-adjust-th');
   if (_btnTh) {
-    _btnTh.style.background = ligaAdjustActive ? 'rgba(0,229,160,.28)' : 'rgba(0,229,160,.12)';
-    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(0,229,160,.8)' : 'rgba(0,229,160,.35)';
-    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.08)' : 'scale(1)';
+    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.15)' : 'scale(1)';
+    const _span = _btnTh.querySelector('span');
+    if (_span) _span.style.textShadow = ligaAdjustActive ? '0 0 8px rgba(255,255,255,.9)' : 'none';
   }
   // Flyout button
   const _btnFl = document.getElementById('btn-liga-adjust');
@@ -8686,7 +8685,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 
 /* ── HEADER ── */
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
-.players-table thead tr{background:#060c18;height:46px}
+.players-table thead tr{background:linear-gradient(90deg,#00e5a0 0%,#0a3a4a 6%,#060c18 18%,#060c18 100%);height:46px}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
   height:46px;max-height:46px;
@@ -8802,6 +8801,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 }
 .td-edit-btn:hover{background:rgba(0,212,255,.12);color:#00d4ff;}
 .th-edit{width:calc(28px - 1mm);padding:4px 0!important;text-align:center;}
+.th-edit-ai{width:calc(28px - 1mm);text-align:center;transition:opacity .15s}
+.th-edit-ai:hover{opacity:.85}
 /* ── EDIT MODAL ── */
 .edit-modal-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);
@@ -13147,7 +13148,11 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
           <table class="players-table">
             <thead>
               <tr>
-                <th class="th-edit" title="Editar"></th>
+                <th class="th-edit-ai" style="padding:0;cursor:pointer" onclick="toggleLigaAdjust()" title="Ajustar Talent Index pela dificuldade da liga (Opta)">
+                  <button id="btn-liga-adjust-th" style="width:100%;height:100%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">
+                    <span style="font-family:var(--font-d);font-size:9px;font-weight:900;letter-spacing:.3px;color:#fff">AI</span>
+                  </button>
+                </th>
                 <th onclick="sortTable('rank')" style="padding:0;height:100%;cursor:default">
                   <div style="display:flex;align-items:center;justify-content:center;height:100%;box-sizing:border-box">
                     <span id="th-pos-dd" style="cursor:default;margin-left:0.5mm"></span>
@@ -13161,14 +13166,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th style="text-align:left;padding-left:29px;min-width:110px">
                   <span onclick="sortTable('team')" style="cursor:pointer">Clube</span> / <span id="th-league-dd" style="display:inline-flex;cursor:default"></span>
                 </th>
-                <th style="white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.05)">
-                  <div style="display:flex;align-items:center;justify-content:center;gap:0;height:100%;box-sizing:border-box">
-                    <span onclick="sortTable('score')" style="cursor:pointer;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
-                    <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — Opta difficulty" style="flex-shrink:0;width:20px;height:20px;border-radius:5px;background:rgba(0,229,160,.12);border:1px solid rgba(0,229,160,.35);cursor:pointer;margin-right:2px;margin-left:3px;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0">
-                      <span style="font-family:var(--font-d);font-size:8px;font-weight:800;letter-spacing:.3px;color:var(--green)">AI</span>
-                    </button>
-                  </div>
-                </th>
+                <th onclick="sortTable('score')" style="white-space:nowrap;border-left:1px solid rgba(255,255,255,.05)" title="Talent Index" data-i18n="col_talent">TAL</th>
                 <th onclick="sortTable('total_physical')" style="color:#fff" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
                 <th onclick="sortTable('transfer_score')" style="color:#fff;border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th id="th-contract-dd" style="width:120px;cursor:default"></th>
@@ -14093,12 +14091,12 @@ function toggleLigaAdjust() {
     p.talent_index_adj_pct = Math.round(p.talent_index_adj / 67 * 1000) / 10;
     p.liga_mult            = m;
   });
-  // AI pill button (table header)
+  // AI button (embedded in Edit column header, gradient bg)
   const _btnTh = document.getElementById('btn-liga-adjust-th');
   if (_btnTh) {
-    _btnTh.style.background = ligaAdjustActive ? 'rgba(0,229,160,.28)' : 'rgba(0,229,160,.12)';
-    _btnTh.style.borderColor = ligaAdjustActive ? 'rgba(0,229,160,.8)' : 'rgba(0,229,160,.35)';
-    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.08)' : 'scale(1)';
+    _btnTh.style.transform = ligaAdjustActive ? 'scale(1.15)' : 'scale(1)';
+    const _span = _btnTh.querySelector('span');
+    if (_span) _span.style.textShadow = ligaAdjustActive ? '0 0 8px rgba(255,255,255,.9)' : 'none';
   }
   // Flyout button
   const _btnFl = document.getElementById('btn-liga-adjust');
