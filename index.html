@@ -6164,7 +6164,7 @@ function renderTable(){
         const col=yr==='2026'?'#ff4757':yr==='2027'?'rgba(255,179,64,.75)':'rgba(255,255,255,.45)';
         return '<span style="color:'+col+'">'+fmt+'</span>';
       })()}</td>
-      <td class="td-val">${fmtVal(p.mkt_value)}</td>
+      <td class="td-val" style="padding-left:calc(8px + 2.5mm)">${fmtVal(p.mkt_value)}</td>
       <td class="cat-total td-num" style="color:${mc('total_off',p.name)}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xg',p.name)}">${(p.xg!=null?p.xg.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xa',p.name)}">${(p.xa!=null?p.xa.toFixed(2):'—')}</td>
@@ -14403,7 +14403,7 @@ function renderTable(){
         const col=yr==='2026'?'#ff4757':yr==='2027'?'rgba(255,179,64,.75)':'rgba(255,255,255,.45)';
         return '<span style="color:'+col+'">'+fmt+'</span>';
       })()}</td>
-      <td class="td-val">${fmtVal(p.mkt_value)}</td>
+      <td class="td-val" style="padding-left:calc(8px + 2.5mm)">${fmtVal(p.mkt_value)}</td>
       <td class="cat-total td-num" style="color:${mc('total_off',p.name)}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xg',p.name)}">${(p.xg!=null?p.xg.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xa',p.name)}">${(p.xa!=null?p.xa.toFixed(2):'—')}</td>
