@@ -278,15 +278,15 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:linear-gradient(180deg,#0a1f38 0%,#06182c 50%,#040f1f 100%);
+  background:#0e2c4a;
   padding:10px 10px 8px;
   font-family:var(--font-d);font-size:9.5px;font-weight:700;
-  letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.82);
+  letter-spacing:1.6px;text-transform:uppercase;color:#fff;
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
-  transition:color .15s;
-  border-bottom:1px solid rgba(0,180,255,.14);
+  transition:opacity .15s;
+  border-bottom:1px solid rgba(0,180,255,.2);
 }
-.players-table thead th:hover{color:#fff}
+.players-table thead th:hover{opacity:.85}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -4787,64 +4787,64 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                     </button>
                   </div>
                 </th>
-                <th onclick="sortTable('total_physical')" style="color:#9b7fff;background:rgba(0,8,18,.5)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
-                <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
+                <th onclick="sortTable('total_physical')" style="color:#fff;background:rgba(0,8,18,.5)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
+                <th onclick="sortTable('transfer_score')" style="color:#fff;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th id="th-contract-dd" style="width:120px;cursor:default"></th>
                 <th id="th-mktval-dd" style="white-space:nowrap;width:80px;cursor:default"></th>
-                <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
+                <th class="cat-total cat-off-total" style="color:#fff;white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_off')" class="cat-sort" data-i18n="cat_off">Off ↕</span>
                     <button class="cat-expand" onclick="toggleCat('off')" title="Expandir métricas">+</button>
                   </div>
                 </th>
-                <th class="cat-sub cat-off" onclick="sortTable('xg')" style="color:var(--green)">xG</th>
-                <th class="cat-sub cat-off" onclick="sortTable('xa')" style="color:var(--green)">xA</th>
-                <th class="cat-sub cat-off" onclick="sortTable('goals_np')" style="color:var(--green)" data-i18n="col_goals">Golos</th>
-                <th class="cat-sub cat-off" onclick="sortTable('shots90')" style="color:var(--green)">Rem/90</th>
-                <th class="cat-sub cat-off" onclick="sortTable('goals_per_shot')" style="color:var(--green)">%Gol/Rem</th>
-                <th class="cat-sub cat-off" onclick="sortTable('dribles90')" style="color:var(--green)">Drib/90</th>
-                <th class="cat-sub cat-off" onclick="sortTable('dribles_pct')" style="color:var(--green)">%Drib</th>
-                <th class="cat-sub cat-off" onclick="sortTable('crosses90')" style="color:var(--green)">Cruz/90</th>
-                <th class="cat-sub cat-off" onclick="sortTable('crosses_pct')" style="color:var(--green)">%Cruz</th>
-                <th class="cat-sub cat-off" onclick="sortTable('box_touches')" style="color:var(--green)">BoxTch</th>
-                <th class="cat-sub cat-off" onclick="sortTable('prog_carries')" style="color:var(--green)">ProgC</th>
-                <th class="cat-sub cat-off" onclick="sortTable('accels90')" style="color:var(--green)">Acel/90</th>
-                <th class="cat-sub cat-off" onclick="sortTable('recpt_depth')" style="color:var(--green)">RecvProf</th>
-                <th class="cat-total cat-def-total" style="color:var(--red);white-space:nowrap;padding:0">
+                <th class="cat-sub cat-off" onclick="sortTable('xg')" style="color:#fff">xG</th>
+                <th class="cat-sub cat-off" onclick="sortTable('xa')" style="color:#fff">xA</th>
+                <th class="cat-sub cat-off" onclick="sortTable('goals_np')" style="color:#fff" data-i18n="col_goals">Golos</th>
+                <th class="cat-sub cat-off" onclick="sortTable('shots90')" style="color:#fff">Rem/90</th>
+                <th class="cat-sub cat-off" onclick="sortTable('goals_per_shot')" style="color:#fff">%Gol/Rem</th>
+                <th class="cat-sub cat-off" onclick="sortTable('dribles90')" style="color:#fff">Drib/90</th>
+                <th class="cat-sub cat-off" onclick="sortTable('dribles_pct')" style="color:#fff">%Drib</th>
+                <th class="cat-sub cat-off" onclick="sortTable('crosses90')" style="color:#fff">Cruz/90</th>
+                <th class="cat-sub cat-off" onclick="sortTable('crosses_pct')" style="color:#fff">%Cruz</th>
+                <th class="cat-sub cat-off" onclick="sortTable('box_touches')" style="color:#fff">BoxTch</th>
+                <th class="cat-sub cat-off" onclick="sortTable('prog_carries')" style="color:#fff">ProgC</th>
+                <th class="cat-sub cat-off" onclick="sortTable('accels90')" style="color:#fff">Acel/90</th>
+                <th class="cat-sub cat-off" onclick="sortTable('recpt_depth')" style="color:#fff">RecvProf</th>
+                <th class="cat-total cat-def-total" style="color:#fff;white-space:nowrap;padding:0">
                   <div class="cat-header">
                     <span onclick="sortTable('total_def')" class="cat-sort" data-i18n="cat_def">Def ↕</span>
                     <button class="cat-expand" onclick="toggleCat('def')" title="Expandir métricas">+</button>
                   </div>
                 </th>
-                <th class="cat-sub cat-def" onclick="sortTable('def_duels')" style="color:var(--red)">Duel/90</th>
-                <th class="cat-sub cat-def" onclick="sortTable('def_duels_pct')" style="color:var(--red)">%Duel</th>
-                <th class="cat-sub cat-def" onclick="sortTable('adj_intercept')" style="color:var(--red)">Intrc</th>
-                <th class="cat-sub cat-def" onclick="sortTable('fouls')" style="color:var(--red)" data-i18n="col_fouls">Falt</th>
-                <th class="cat-sub cat-def" onclick="sortTable('yellows')" style="color:var(--red)" data-i18n="col_yellows">Amar</th>
-                <th class="cat-total cat-pass-total" style="color:var(--accent);white-space:nowrap;padding:0">
+                <th class="cat-sub cat-def" onclick="sortTable('def_duels')" style="color:#fff">Duel/90</th>
+                <th class="cat-sub cat-def" onclick="sortTable('def_duels_pct')" style="color:#fff">%Duel</th>
+                <th class="cat-sub cat-def" onclick="sortTable('adj_intercept')" style="color:#fff">Intrc</th>
+                <th class="cat-sub cat-def" onclick="sortTable('fouls')" style="color:#fff" data-i18n="col_fouls">Falt</th>
+                <th class="cat-sub cat-def" onclick="sortTable('yellows')" style="color:#fff" data-i18n="col_yellows">Amar</th>
+                <th class="cat-total cat-pass-total" style="color:#fff;white-space:nowrap;padding:0">
                   <div class="cat-header">
                     <span onclick="sortTable('total_pass')" class="cat-sort" data-i18n="cat_pass">Pass ↕</span>
                     <button class="cat-expand" onclick="toggleCat('pass')" title="Expandir métricas">+</button>
                   </div>
                 </th>
-                <th class="cat-sub cat-pass" onclick="sortTable('passes90')" style="color:var(--accent)">Pass/90</th>
-                <th class="cat-sub cat-pass" onclick="sortTable('passes_pct')" style="color:var(--accent)">%Pass</th>
-                <th class="cat-sub cat-pass" onclick="sortTable('shot_assist')" style="color:var(--accent)">AstRem</th>
-                <th class="cat-sub cat-pass" onclick="sortTable('box_passes')" style="color:var(--accent)">BoxPass</th>
-                <th class="cat-sub cat-pass" onclick="sortTable('box_passes_pct')" style="color:var(--accent)">%BoxP</th>
-                <th class="cat-total cat-phys-total" style="color:var(--purple);white-space:nowrap;padding:0;border-right:1px solid rgba(255,255,255,.08)">
+                <th class="cat-sub cat-pass" onclick="sortTable('passes90')" style="color:#fff">Pass/90</th>
+                <th class="cat-sub cat-pass" onclick="sortTable('passes_pct')" style="color:#fff">%Pass</th>
+                <th class="cat-sub cat-pass" onclick="sortTable('shot_assist')" style="color:#fff">AstRem</th>
+                <th class="cat-sub cat-pass" onclick="sortTable('box_passes')" style="color:#fff">BoxPass</th>
+                <th class="cat-sub cat-pass" onclick="sortTable('box_passes_pct')" style="color:#fff">%BoxP</th>
+                <th class="cat-total cat-phys-total" style="color:#fff;white-space:nowrap;padding:0;border-right:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_physical')" class="cat-sort" data-i18n="cat_phys">Fís ↕</span>
                     <button class="cat-expand" onclick="toggleCat('phys')" title="Expandir métricas">+</button>
                   </div>
                 </th>
-                <th class="cat-sub cat-phys" onclick="sortTable('max_speed')" style="color:var(--purple)">V.Máx</th>
-                <th class="cat-sub cat-phys" onclick="sortTable('hsr90')" style="color:var(--purple)">HSR/90</th>
-                <th class="cat-sub cat-phys" onclick="sortTable('sprint_dist90')" style="color:var(--purple)">Sprint/90</th>
-                <th class="cat-sub cat-phys" onclick="sortTable('sprints90')" style="color:var(--purple)">NrSpr</th>
-                <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:var(--purple)">%HSR+Spr</th>
-                <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:var(--purple)">Dist.Tot</th>
-                <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#ff8c00;padding-left:calc(8px + 1mm)">
+                <th class="cat-sub cat-phys" onclick="sortTable('max_speed')" style="color:#fff">V.Máx</th>
+                <th class="cat-sub cat-phys" onclick="sortTable('hsr90')" style="color:#fff">HSR/90</th>
+                <th class="cat-sub cat-phys" onclick="sortTable('sprint_dist90')" style="color:#fff">Sprint/90</th>
+                <th class="cat-sub cat-phys" onclick="sortTable('sprints90')" style="color:#fff">NrSpr</th>
+                <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:#fff">%HSR+Spr</th>
+                <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:#fff">Dist.Tot</th>
+                <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#fff;padding-left:calc(8px + 1mm)">
                   <span style="display:flex;align-items:center;gap:4px;justify-content:center">
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="opacity:.7"><circle cx="5" cy="5" r="4.5" fill="none" stroke="currentColor" stroke-width="1"></circle><path d="M5 2.5l.6 1.9h2l-1.6 1.2.6 1.9L5 6.3l-1.6 1.2.6-1.9L2.4 4.4h2z"></path></svg>
                     SofaScore
@@ -8672,15 +8672,15 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:linear-gradient(180deg,#0a1f38 0%,#06182c 50%,#040f1f 100%);
+  background:#0e2c4a;
   padding:10px 10px 8px;
   font-family:var(--font-d);font-size:9.5px;font-weight:700;
-  letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.82);
+  letter-spacing:1.6px;text-transform:uppercase;color:#fff;
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
-  transition:color .15s;
-  border-bottom:1px solid rgba(0,180,255,.14);
+  transition:opacity .15s;
+  border-bottom:1px solid rgba(0,180,255,.2);
 }
-.players-table thead th:hover{color:#fff}
+.players-table thead th:hover{opacity:.85}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -13149,64 +13149,64 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                     </button>
                   </div>
                 </th>
-                <th onclick="sortTable('total_physical')" style="color:#9b7fff;background:rgba(0,8,18,.5)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
-                <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
+                <th onclick="sortTable('total_physical')" style="color:#fff;background:rgba(0,8,18,.5)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
+                <th onclick="sortTable('transfer_score')" style="color:#fff;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th id="th-contract-dd" style="width:120px;cursor:default"></th>
                 <th id="th-mktval-dd" style="white-space:nowrap;width:80px;cursor:default"></th>
-                <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
+                <th class="cat-total cat-off-total" style="color:#fff;white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_off')" class="cat-sort" data-i18n="cat_off">Off ↕</span>
                     <button class="cat-expand" onclick="toggleCat('off')" title="Expandir métricas">+</button>
                   </div>
                 </th>
-                <th class="cat-sub cat-off" onclick="sortTable('xg')" style="color:var(--green)">xG</th>
-                <th class="cat-sub cat-off" onclick="sortTable('xa')" style="color:var(--green)">xA</th>
-                <th class="cat-sub cat-off" onclick="sortTable('goals_np')" style="color:var(--green)" data-i18n="col_goals">Golos</th>
-                <th class="cat-sub cat-off" onclick="sortTable('shots90')" style="color:var(--green)">Rem/90</th>
-                <th class="cat-sub cat-off" onclick="sortTable('goals_per_shot')" style="color:var(--green)">%Gol/Rem</th>
-                <th class="cat-sub cat-off" onclick="sortTable('dribles90')" style="color:var(--green)">Drib/90</th>
-                <th class="cat-sub cat-off" onclick="sortTable('dribles_pct')" style="color:var(--green)">%Drib</th>
-                <th class="cat-sub cat-off" onclick="sortTable('crosses90')" style="color:var(--green)">Cruz/90</th>
-                <th class="cat-sub cat-off" onclick="sortTable('crosses_pct')" style="color:var(--green)">%Cruz</th>
-                <th class="cat-sub cat-off" onclick="sortTable('box_touches')" style="color:var(--green)">BoxTch</th>
-                <th class="cat-sub cat-off" onclick="sortTable('prog_carries')" style="color:var(--green)">ProgC</th>
-                <th class="cat-sub cat-off" onclick="sortTable('accels90')" style="color:var(--green)">Acel/90</th>
-                <th class="cat-sub cat-off" onclick="sortTable('recpt_depth')" style="color:var(--green)">RecvProf</th>
-                <th class="cat-total cat-def-total" style="color:var(--red);white-space:nowrap;padding:0">
+                <th class="cat-sub cat-off" onclick="sortTable('xg')" style="color:#fff">xG</th>
+                <th class="cat-sub cat-off" onclick="sortTable('xa')" style="color:#fff">xA</th>
+                <th class="cat-sub cat-off" onclick="sortTable('goals_np')" style="color:#fff" data-i18n="col_goals">Golos</th>
+                <th class="cat-sub cat-off" onclick="sortTable('shots90')" style="color:#fff">Rem/90</th>
+                <th class="cat-sub cat-off" onclick="sortTable('goals_per_shot')" style="color:#fff">%Gol/Rem</th>
+                <th class="cat-sub cat-off" onclick="sortTable('dribles90')" style="color:#fff">Drib/90</th>
+                <th class="cat-sub cat-off" onclick="sortTable('dribles_pct')" style="color:#fff">%Drib</th>
+                <th class="cat-sub cat-off" onclick="sortTable('crosses90')" style="color:#fff">Cruz/90</th>
+                <th class="cat-sub cat-off" onclick="sortTable('crosses_pct')" style="color:#fff">%Cruz</th>
+                <th class="cat-sub cat-off" onclick="sortTable('box_touches')" style="color:#fff">BoxTch</th>
+                <th class="cat-sub cat-off" onclick="sortTable('prog_carries')" style="color:#fff">ProgC</th>
+                <th class="cat-sub cat-off" onclick="sortTable('accels90')" style="color:#fff">Acel/90</th>
+                <th class="cat-sub cat-off" onclick="sortTable('recpt_depth')" style="color:#fff">RecvProf</th>
+                <th class="cat-total cat-def-total" style="color:#fff;white-space:nowrap;padding:0">
                   <div class="cat-header">
                     <span onclick="sortTable('total_def')" class="cat-sort" data-i18n="cat_def">Def ↕</span>
                     <button class="cat-expand" onclick="toggleCat('def')" title="Expandir métricas">+</button>
                   </div>
                 </th>
-                <th class="cat-sub cat-def" onclick="sortTable('def_duels')" style="color:var(--red)">Duel/90</th>
-                <th class="cat-sub cat-def" onclick="sortTable('def_duels_pct')" style="color:var(--red)">%Duel</th>
-                <th class="cat-sub cat-def" onclick="sortTable('adj_intercept')" style="color:var(--red)">Intrc</th>
-                <th class="cat-sub cat-def" onclick="sortTable('fouls')" style="color:var(--red)" data-i18n="col_fouls">Falt</th>
-                <th class="cat-sub cat-def" onclick="sortTable('yellows')" style="color:var(--red)" data-i18n="col_yellows">Amar</th>
-                <th class="cat-total cat-pass-total" style="color:var(--accent);white-space:nowrap;padding:0">
+                <th class="cat-sub cat-def" onclick="sortTable('def_duels')" style="color:#fff">Duel/90</th>
+                <th class="cat-sub cat-def" onclick="sortTable('def_duels_pct')" style="color:#fff">%Duel</th>
+                <th class="cat-sub cat-def" onclick="sortTable('adj_intercept')" style="color:#fff">Intrc</th>
+                <th class="cat-sub cat-def" onclick="sortTable('fouls')" style="color:#fff" data-i18n="col_fouls">Falt</th>
+                <th class="cat-sub cat-def" onclick="sortTable('yellows')" style="color:#fff" data-i18n="col_yellows">Amar</th>
+                <th class="cat-total cat-pass-total" style="color:#fff;white-space:nowrap;padding:0">
                   <div class="cat-header">
                     <span onclick="sortTable('total_pass')" class="cat-sort" data-i18n="cat_pass">Pass ↕</span>
                     <button class="cat-expand" onclick="toggleCat('pass')" title="Expandir métricas">+</button>
                   </div>
                 </th>
-                <th class="cat-sub cat-pass" onclick="sortTable('passes90')" style="color:var(--accent)">Pass/90</th>
-                <th class="cat-sub cat-pass" onclick="sortTable('passes_pct')" style="color:var(--accent)">%Pass</th>
-                <th class="cat-sub cat-pass" onclick="sortTable('shot_assist')" style="color:var(--accent)">AstRem</th>
-                <th class="cat-sub cat-pass" onclick="sortTable('box_passes')" style="color:var(--accent)">BoxPass</th>
-                <th class="cat-sub cat-pass" onclick="sortTable('box_passes_pct')" style="color:var(--accent)">%BoxP</th>
-                <th class="cat-total cat-phys-total" style="color:var(--purple);white-space:nowrap;padding:0;border-right:1px solid rgba(255,255,255,.08)">
+                <th class="cat-sub cat-pass" onclick="sortTable('passes90')" style="color:#fff">Pass/90</th>
+                <th class="cat-sub cat-pass" onclick="sortTable('passes_pct')" style="color:#fff">%Pass</th>
+                <th class="cat-sub cat-pass" onclick="sortTable('shot_assist')" style="color:#fff">AstRem</th>
+                <th class="cat-sub cat-pass" onclick="sortTable('box_passes')" style="color:#fff">BoxPass</th>
+                <th class="cat-sub cat-pass" onclick="sortTable('box_passes_pct')" style="color:#fff">%BoxP</th>
+                <th class="cat-total cat-phys-total" style="color:#fff;white-space:nowrap;padding:0;border-right:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_physical')" class="cat-sort" data-i18n="cat_phys">Fís ↕</span>
                     <button class="cat-expand" onclick="toggleCat('phys')" title="Expandir métricas">+</button>
                   </div>
                 </th>
-                <th class="cat-sub cat-phys" onclick="sortTable('max_speed')" style="color:var(--purple)">V.Máx</th>
-                <th class="cat-sub cat-phys" onclick="sortTable('hsr90')" style="color:var(--purple)">HSR/90</th>
-                <th class="cat-sub cat-phys" onclick="sortTable('sprint_dist90')" style="color:var(--purple)">Sprint/90</th>
-                <th class="cat-sub cat-phys" onclick="sortTable('sprints90')" style="color:var(--purple)">NrSpr</th>
-                <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:var(--purple)">%HSR+Spr</th>
-                <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:var(--purple)">Dist.Tot</th>
-                <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#ff8c00;padding-left:calc(8px + 1mm)">
+                <th class="cat-sub cat-phys" onclick="sortTable('max_speed')" style="color:#fff">V.Máx</th>
+                <th class="cat-sub cat-phys" onclick="sortTable('hsr90')" style="color:#fff">HSR/90</th>
+                <th class="cat-sub cat-phys" onclick="sortTable('sprint_dist90')" style="color:#fff">Sprint/90</th>
+                <th class="cat-sub cat-phys" onclick="sortTable('sprints90')" style="color:#fff">NrSpr</th>
+                <th class="cat-sub cat-phys" onclick="sortTable('hsr_sprint_pct')" style="color:#fff">%HSR+Spr</th>
+                <th class="cat-sub cat-phys" onclick="sortTable('total_dist')" style="color:#fff">Dist.Tot</th>
+                <th onclick="sortTable('sf_rating')" class="th-sf" title="Rating médio SofaScore 2025/26" style="color:#fff;padding-left:calc(8px + 1mm)">
                   <span style="display:flex;align-items:center;gap:4px;justify-content:center">
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="opacity:.7"><circle cx="5" cy="5" r="4.5" fill="none" stroke="currentColor" stroke-width="1"></circle><path d="M5 2.5l.6 1.9h2l-1.6 1.2.6 1.9L5 6.3l-1.6 1.2.6-1.9L2.4 4.4h2z"></path></svg>
                     SofaScore
