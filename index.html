@@ -4786,8 +4786,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 </th>
                 <th onclick="sortTable('total_physical')" style="color:#9b7fff;background:rgba(0,8,18,.5)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
                 <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
-                <th onclick="sortTable('contract_end')" data-i18n="col_contract">Contrato</th>
-                <th onclick="sortTable('mkt_value')" data-i18n="col_value" style="white-space:nowrap;min-width:calc(70px + 4.5mm)">Valor</th>
+                <th onclick="sortTable('contract_end')" data-i18n="col_contract" style="width:120px">Contrato</th>
+                <th onclick="sortTable('mkt_value')" data-i18n="col_value" style="white-space:nowrap;width:80px">Valor</th>
                 <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_off')" class="cat-sort" data-i18n="cat_off">Off ↕</span>
@@ -6159,13 +6159,13 @@ function renderTable(){
         <div class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.2)'}">${p.transfer_score||0}</div>
         <div class="td-score-sub">TRA</div>
       </td>
-      <td class="td-contract">${(()=>{
+      <td class="td-contract" style="width:120px">${(()=>{
         const yr=p.contract_end?(p.contract_end.split('-')[0]):'—';
         const fmt=p.contract_end?p.contract_end.split('-').reverse().join('/'):'—';
         const col=yr==='2026'?'#ff4757':yr==='2027'?'rgba(255,179,64,.75)':'rgba(255,255,255,.45)';
         return '<span style="color:'+col+'">'+fmt+'</span>';
       })()}</td>
-      <td class="td-val" style="min-width:calc(70px + 4.5mm)">${fmtVal(p.mkt_value)}</td>
+      <td class="td-val" style="width:80px">${fmtVal(p.mkt_value)}</td>
       <td class="cat-total td-num" style="border-left:1px solid rgba(255,255,255,.08);color:${p.total_off!=null?tiC(Math.round(p.total_off/35*100)):'rgba(255,255,255,.18)'}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xg',p.name)}">${(p.xg!=null?p.xg.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xa',p.name)}">${(p.xa!=null?p.xa.toFixed(2):'—')}</td>
@@ -13026,8 +13026,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 </th>
                 <th onclick="sortTable('total_physical')" style="color:#9b7fff;background:rgba(0,8,18,.5)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
                 <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
-                <th onclick="sortTable('contract_end')" data-i18n="col_contract">Contrato</th>
-                <th onclick="sortTable('mkt_value')" data-i18n="col_value" style="white-space:nowrap;min-width:calc(70px + 4.5mm)">Valor</th>
+                <th onclick="sortTable('contract_end')" data-i18n="col_contract" style="width:120px">Contrato</th>
+                <th onclick="sortTable('mkt_value')" data-i18n="col_value" style="white-space:nowrap;width:80px">Valor</th>
                 <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_off')" class="cat-sort" data-i18n="cat_off">Off ↕</span>
@@ -14399,13 +14399,13 @@ function renderTable(){
         <div class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.2)'}">${p.transfer_score||0}</div>
         <div class="td-score-sub">TRA</div>
       </td>
-      <td class="td-contract">${(()=>{
+      <td class="td-contract" style="width:120px">${(()=>{
         const yr=p.contract_end?(p.contract_end.split('-')[0]):'—';
         const fmt=p.contract_end?p.contract_end.split('-').reverse().join('/'):'—';
         const col=yr==='2026'?'#ff4757':yr==='2027'?'rgba(255,179,64,.75)':'rgba(255,255,255,.45)';
         return '<span style="color:'+col+'">'+fmt+'</span>';
       })()}</td>
-      <td class="td-val" style="min-width:calc(70px + 4.5mm)">${fmtVal(p.mkt_value)}</td>
+      <td class="td-val" style="width:80px">${fmtVal(p.mkt_value)}</td>
       <td class="cat-total td-num" style="border-left:1px solid rgba(255,255,255,.08);color:${p.total_off!=null?tiC(Math.round(p.total_off/35*100)):'rgba(255,255,255,.18)'}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xg',p.name)}">${(p.xg!=null?p.xg.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xa',p.name)}">${(p.xa!=null?p.xa.toFixed(2):'—')}</td>
