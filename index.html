@@ -402,8 +402,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .td-club{font-size:11px;color:var(--muted);margin-top:1px}
 .td-pos{font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:.5px;color:var(--accent);opacity:.8}
 .td-score{font-family:var(--font-d);font-size:16px;font-weight:700}
-.td-num{font-family:var(--font-d);font-size:13px;font-weight:500;color:var(--muted)}
-.td-contract{font-family:var(--font-d);font-size:12px;font-weight:600;text-align:center;vertical-align:middle}
+.td-num{font-family:var(--font-d);font-size:14px;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:-0.3px}
+.td-contract{font-family:var(--font-d);font-size:14px;font-weight:700;color:rgba(255,255,255,.6);text-align:center;vertical-align:middle;letter-spacing:-0.2px}
 .td-contract-box{
   display:inline-flex;align-items:center;justify-content:center;
   font-family:var(--font-d);font-size:12px;font-weight:700;
@@ -411,7 +411,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   border:1px solid rgba(255,71,87,0.35);
   border-radius:5px;padding:2px 7px;white-space:nowrap;
 }
-.td-val{font-family:var(--font-d);font-size:12px;color:var(--muted)}
+.td-val{font-family:var(--font-d);font-size:14px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:-0.3px;text-align:center}
 
 /* Category expand */
 .cat-header{display:flex;align-items:center;gap:4px;padding:9px 10px;white-space:nowrap}
@@ -4709,7 +4709,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('rank')" class="s-desc">#</th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:12px;min-width:150px">Jogador</th>
                 <th onclick="sortTable('age')" style="background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">Idade</th>
-                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02)">Altura</th>
+                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.08)">Altura</th>
                 <th onclick="sortTable('foot')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
                 <th onclick="sortTable('team')" style="text-align:left;padding-left:21px;min-width:110px">Clube / Liga</th>
                 <th style="white-space:nowrap;padding:0;background:rgba(0,10,24,.4);border-left:1px solid rgba(255,255,255,.06)">
@@ -6059,8 +6059,8 @@ function renderTable(){
       <td style="text-align:left;padding:7px 10px 7px 12px;min-width:150px;max-width:200px">
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.2px">${p.name}</div>
         <div style="display:flex;align-items:center;gap:4px;margin-top:3px;flex-wrap:wrap">
-          ${pos1?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.55)">${pos1}</span>`:''}
           ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
+          ${pos1?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.55)">${pos1}</span>`:''}
           ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
         </div>
       </td>
@@ -6068,7 +6068,7 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${p.age||'—'}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Idade</div>
       </td>
-      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02)">
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.08)">
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${htTxt}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Altura</div>
       </td>
@@ -8608,8 +8608,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .td-club{font-size:11px;color:var(--muted);margin-top:1px}
 .td-pos{font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:.5px;color:var(--accent);opacity:.8}
 .td-score{font-family:var(--font-d);font-size:16px;font-weight:700}
-.td-num{font-family:var(--font-d);font-size:13px;font-weight:500;color:var(--muted)}
-.td-contract{font-family:var(--font-d);font-size:12px;font-weight:600;text-align:center;vertical-align:middle}
+.td-num{font-family:var(--font-d);font-size:14px;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:-0.3px}
+.td-contract{font-family:var(--font-d);font-size:14px;font-weight:700;color:rgba(255,255,255,.6);text-align:center;vertical-align:middle;letter-spacing:-0.2px}
 .td-contract-box{
   display:inline-flex;align-items:center;justify-content:center;
   font-family:var(--font-d);font-size:12px;font-weight:700;
@@ -8617,7 +8617,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   border:1px solid rgba(255,71,87,0.35);
   border-radius:5px;padding:2px 7px;white-space:nowrap;
 }
-.td-val{font-family:var(--font-d);font-size:12px;color:var(--muted)}
+.td-val{font-family:var(--font-d);font-size:14px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:-0.3px;text-align:center}
 
 /* Category expand */
 .cat-header{display:flex;align-items:center;gap:4px;padding:9px 10px;white-space:nowrap}
@@ -12883,7 +12883,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('rank')" class="s-desc">#</th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:12px;min-width:150px">Jogador</th>
                 <th onclick="sortTable('age')" style="background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">Idade</th>
-                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02)">Altura</th>
+                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.08)">Altura</th>
                 <th onclick="sortTable('foot')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
                 <th onclick="sortTable('team')" style="text-align:left;padding-left:21px;min-width:110px">Clube / Liga</th>
                 <th style="white-space:nowrap;padding:0;background:rgba(0,10,24,.4);border-left:1px solid rgba(255,255,255,.06)">
@@ -14233,8 +14233,8 @@ function renderTable(){
       <td style="text-align:left;padding:7px 10px 7px 12px;min-width:150px;max-width:200px">
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.2px">${p.name}</div>
         <div style="display:flex;align-items:center;gap:4px;margin-top:3px;flex-wrap:wrap">
-          ${pos1?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.55)">${pos1}</span>`:''}
           ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
+          ${pos1?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.55)">${pos1}</span>`:''}
           ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
         </div>
       </td>
@@ -14242,7 +14242,7 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${p.age||'—'}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Idade</div>
       </td>
-      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02)">
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.08)">
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${htTxt}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Altura</div>
       </td>
