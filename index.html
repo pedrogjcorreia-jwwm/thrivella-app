@@ -276,11 +276,11 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 
 /* ── HEADER ── */
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
-.players-table thead tr{background:#0b1624;height:46px}
+.players-table thead tr{background:#060c18;height:46px}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
   height:46px;max-height:46px;
-  background:linear-gradient(180deg,#0b1624 0%,#0b1624 91.6%,rgba(0,212,255,.55) 100%);
+  background:linear-gradient(180deg,#060c18 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%);
   padding:calc(11px + 0.75mm) 10px calc(10px + 0.75mm);
   font-family:var(--font-d);font-size:10px;font-weight:700;
   letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.88);
@@ -290,7 +290,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   overflow:hidden;
 }
 .players-table thead th:hover{background:linear-gradient(180deg,rgba(0,212,255,.07) 0%,rgba(0,212,255,.07) 91.6%,var(--accent) 100%);color:#fff}
-.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#0b1624 0%,#0b1624 91.6%,rgba(0,212,255,.55) 100%)!important}
+.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#060c18 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%)!important}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -323,7 +323,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .col-sep{border-left:1px solid rgba(255,255,255,.05)!important}
 .col-sep-strong{border-left:1px solid rgba(255,255,255,.09)!important}
 .players-table tbody td.cat-total{background:rgba(0,6,14,.6)!important;padding:0 12px}
-.players-table thead th.cat-total{background:#0b1624!important}
+.players-table thead th.cat-total{background:#060c18!important}
 
 /* ── SCORES ── */
 .td-score-bar-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
@@ -394,10 +394,10 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .th-edit{width:calc(28px - 1mm);padding:4px 0!important;text-align:center;}
 .th-edit-ai{width:calc(28px - 1mm);text-align:center;transition:opacity .15s}
 @keyframes liagaAiPulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(120,255,170,.35);border-color:rgba(120,255,170,.45);background:rgba(120,255,170,.15)}
-  50%{box-shadow:0 0 9px 3px rgba(120,255,170,.7);border-color:rgba(150,255,190,1);background:rgba(120,255,170,.35)}
+  0%,100%{box-shadow:0 0 0 0 rgba(120,255,170,.25);border-color:rgba(120,255,170,.4);background:rgba(120,255,170,.15)}
+  50%{box-shadow:0 0 4px 1px rgba(120,255,170,.4);border-color:rgba(150,255,190,.75);background:rgba(120,255,170,.24)}
 }
-#btn-liga-adjust-th.ai-pulse{animation:liagaAiPulse 4s ease-in-out infinite}
+#btn-liga-adjust-th.ai-pulse{animation:liagaAiPulse 8s ease-in-out infinite}
 .th-edit-ai:hover{opacity:.85}
 /* ── EDIT MODAL ── */
 .edit-modal-overlay{
@@ -6250,7 +6250,7 @@ function renderTable(){
       onclick="selectPlayer('${p.name.replace(/'/g,"\'").replace(/"/g,'&quot;')}','${p.league}')">
       <td style="padding:4px 2px;width:28px" onclick="event.stopPropagation()"><button class="td-edit-btn" onclick="openEditModal(decodeURIComponent(this.dataset.n))" data-n="${encodeURIComponent(p.name)}" title="Editar"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/></svg></button></td>
       <td class="td-rank" style="width:36px;padding:0 8px;background:#06090d;border-right:1px solid rgba(255,255,255,.04);padding-right:calc(8px + 1mm)">
-        <div style="font-family:var(--font-d);font-size:13px;font-weight:900;color:rgba(255,255,255,.3);letter-spacing:-0.5px;line-height:1">${rank+1}</div>
+        <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.3);letter-spacing:-.5px;line-height:1;text-align:center">${rank+1}</div>
         <div style="margin-top:4px"><span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(155,127,255,0.08);border:1px solid rgba(155,127,255,0.22);color:rgba(155,127,255,.8)">${p.position_group||'WIN'}</span></div>
       </td>
       <td style="width:50px;padding:2px 3px 2px calc(5px + 1.5mm);vertical-align:middle">
@@ -8694,11 +8694,11 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 
 /* ── HEADER ── */
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
-.players-table thead tr{background:#0b1624;height:46px}
+.players-table thead tr{background:#060c18;height:46px}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
   height:46px;max-height:46px;
-  background:linear-gradient(180deg,#0b1624 0%,#0b1624 91.6%,rgba(0,212,255,.55) 100%);
+  background:linear-gradient(180deg,#060c18 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%);
   padding:calc(11px + 0.75mm) 10px calc(10px + 0.75mm);
   font-family:var(--font-d);font-size:10px;font-weight:700;
   letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.88);
@@ -8708,7 +8708,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   overflow:hidden;
 }
 .players-table thead th:hover{background:linear-gradient(180deg,rgba(0,212,255,.07) 0%,rgba(0,212,255,.07) 91.6%,var(--accent) 100%);color:#fff}
-.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#0b1624 0%,#0b1624 91.6%,rgba(0,212,255,.55) 100%)!important}
+.players-table thead th.cat-total,.players-table thead th.th-sf{background:linear-gradient(180deg,#060c18 0%,#060c18 91.6%,rgba(0,212,255,.55) 100%)!important}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -8741,7 +8741,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .col-sep{border-left:1px solid rgba(255,255,255,.05)!important}
 .col-sep-strong{border-left:1px solid rgba(255,255,255,.09)!important}
 .players-table tbody td.cat-total{background:rgba(0,6,14,.6)!important;padding:0 12px}
-.players-table thead th.cat-total{background:#0b1624!important}
+.players-table thead th.cat-total{background:#060c18!important}
 
 /* ── SCORES ── */
 .td-score-bar-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
@@ -8812,10 +8812,10 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .th-edit{width:calc(28px - 1mm);padding:4px 0!important;text-align:center;}
 .th-edit-ai{width:calc(28px - 1mm);text-align:center;transition:opacity .15s}
 @keyframes liagaAiPulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(120,255,170,.35);border-color:rgba(120,255,170,.45);background:rgba(120,255,170,.15)}
-  50%{box-shadow:0 0 9px 3px rgba(120,255,170,.7);border-color:rgba(150,255,190,1);background:rgba(120,255,170,.35)}
+  0%,100%{box-shadow:0 0 0 0 rgba(120,255,170,.25);border-color:rgba(120,255,170,.4);background:rgba(120,255,170,.15)}
+  50%{box-shadow:0 0 4px 1px rgba(120,255,170,.4);border-color:rgba(150,255,190,.75);background:rgba(120,255,170,.24)}
 }
-#btn-liga-adjust-th.ai-pulse{animation:liagaAiPulse 4s ease-in-out infinite}
+#btn-liga-adjust-th.ai-pulse{animation:liagaAiPulse 8s ease-in-out infinite}
 .th-edit-ai:hover{opacity:.85}
 /* ── EDIT MODAL ── */
 .edit-modal-overlay{
@@ -14636,7 +14636,7 @@ function renderTable(){
       onclick="selectPlayer('${p.name.replace(/'/g,"\'").replace(/"/g,'&quot;')}','${p.league}')">
       <td style="padding:4px 2px;width:28px" onclick="event.stopPropagation()"><button class="td-edit-btn" onclick="openEditModal(decodeURIComponent(this.dataset.n))" data-n="${encodeURIComponent(p.name)}" title="Editar"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/></svg></button></td>
       <td class="td-rank" style="width:36px;padding:0 8px;background:#06090d;border-right:1px solid rgba(255,255,255,.04);padding-right:calc(8px + 1mm)">
-        <div style="font-family:var(--font-d);font-size:13px;font-weight:900;color:rgba(255,255,255,.3);letter-spacing:-0.5px;line-height:1">${rank+1}</div>
+        <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.3);letter-spacing:-.5px;line-height:1;text-align:center">${rank+1}</div>
         <div style="margin-top:4px"><span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(155,127,255,0.08);border:1px solid rgba(155,127,255,0.22);color:rgba(155,127,255,.8)">${p.position_group||'WIN'}</span></div>
       </td>
       <td style="width:50px;padding:2px 3px 2px calc(5px + 1.5mm);vertical-align:middle">
