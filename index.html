@@ -4709,8 +4709,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('rank')" class="s-desc">#</th>
                 <th style="width:44px;padding:0"></th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:12px;min-width:150px">Jogador</th>
-                <th onclick="sortTable('age')" style="background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">Idade</th>
-                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02)">Altura</th>
+                <th onclick="sortTable('age')" style="background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05)">Idade</th>
+                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02);border-left:none">Altura</th>
                 <th onclick="sortTable('foot')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
                 <th onclick="sortTable('team')" style="text-align:left;padding-left:21px;min-width:110px">Clube / Liga</th>
                 <th style="white-space:nowrap;padding:0;background:rgba(0,10,24,.4);border-left:1px solid rgba(255,255,255,.06)">
@@ -6057,8 +6057,8 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(200,220,240,.55);line-height:1">${rank+1}</div>
         <div style="margin-top:3px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(155,127,255,0.12);border:1px solid rgba(155,127,255,0.35);color:var(--purple)">${p.position_group||'WIN'}</span></div>
       </td>
-      <td style="width:52px;padding:3px 4px 3px 6px;vertical-align:middle">
-        <div style="width:44px;height:52px;border-radius:6px;overflow:hidden;background:#0b1624;position:relative;border:1px solid rgba(255,255,255,.07);flex-shrink:0">
+      <td style="width:52px;padding:1px 4px 1px 6px;vertical-align:middle">
+        <div style="width:44px;height:48px;border-radius:6px;overflow:hidden;background:#0b1624;position:relative;border:1px solid rgba(255,255,255,.07);flex-shrink:0">
           ${window.photoCache&&window.photoCache[p.name]
             ? `<div style="position:absolute;inset:0;background-image:url(${window.photoCache[p.name]});background-size:cover;background-position:top center"></div>`
             : `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span style="font-family:var(--font-d);font-size:13px;font-weight:900;color:rgba(255,255,255,.08)">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</span></div>`}
@@ -6073,7 +6073,7 @@ function renderTable(){
           ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
         </div>
       </td>
-      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05)">
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${p.age||'—'}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Idade</div>
       </td>
@@ -12892,8 +12892,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('rank')" class="s-desc">#</th>
                 <th style="width:44px;padding:0"></th>
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:12px;min-width:150px">Jogador</th>
-                <th onclick="sortTable('age')" style="background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">Idade</th>
-                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02)">Altura</th>
+                <th onclick="sortTable('age')" style="background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05)">Idade</th>
+                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02);border-left:none">Altura</th>
                 <th onclick="sortTable('foot')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
                 <th onclick="sortTable('team')" style="text-align:left;padding-left:21px;min-width:110px">Clube / Liga</th>
                 <th style="white-space:nowrap;padding:0;background:rgba(0,10,24,.4);border-left:1px solid rgba(255,255,255,.06)">
@@ -14240,8 +14240,8 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(200,220,240,.55);line-height:1">${rank+1}</div>
         <div style="margin-top:3px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(155,127,255,0.12);border:1px solid rgba(155,127,255,0.35);color:var(--purple)">${p.position_group||'WIN'}</span></div>
       </td>
-      <td style="width:52px;padding:3px 4px 3px 6px;vertical-align:middle">
-        <div style="width:44px;height:52px;border-radius:6px;overflow:hidden;background:#0b1624;position:relative;border:1px solid rgba(255,255,255,.07);flex-shrink:0">
+      <td style="width:52px;padding:1px 4px 1px 6px;vertical-align:middle">
+        <div style="width:44px;height:48px;border-radius:6px;overflow:hidden;background:#0b1624;position:relative;border:1px solid rgba(255,255,255,.07);flex-shrink:0">
           ${window.photoCache&&window.photoCache[p.name]
             ? `<div style="position:absolute;inset:0;background-image:url(${window.photoCache[p.name]});background-size:cover;background-position:top center"></div>`
             : `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span style="font-family:var(--font-d);font-size:13px;font-weight:900;color:rgba(255,255,255,.08)">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</span></div>`}
@@ -14256,7 +14256,7 @@ function renderTable(){
           ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
         </div>
       </td>
-      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05)">
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${p.age||'—'}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Idade</div>
       </td>
