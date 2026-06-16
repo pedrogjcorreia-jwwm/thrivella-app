@@ -4788,7 +4788,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th onclick="sortTable('contract_end')" data-i18n="col_contract">Contrato</th>
                 <th onclick="sortTable('mkt_value')" data-i18n="col_value" style="white-space:nowrap">Valor</th>
-                <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0">
+                <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_off')" class="cat-sort" data-i18n="cat_off">Off ↕</span>
                     <button class="cat-expand" onclick="toggleCat('off')" title="Expandir métricas">+</button>
@@ -4829,7 +4829,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th class="cat-sub cat-pass" onclick="sortTable('shot_assist')" style="color:var(--accent)">AstRem</th>
                 <th class="cat-sub cat-pass" onclick="sortTable('box_passes')" style="color:var(--accent)">BoxPass</th>
                 <th class="cat-sub cat-pass" onclick="sortTable('box_passes_pct')" style="color:var(--accent)">%BoxP</th>
-                <th class="cat-total cat-phys-total" style="color:var(--purple);white-space:nowrap;padding:0">
+                <th class="cat-total cat-phys-total" style="color:var(--purple);white-space:nowrap;padding:0;border-right:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_physical')" class="cat-sort" data-i18n="cat_phys">Fís ↕</span>
                     <button class="cat-expand" onclick="toggleCat('phys')" title="Expandir métricas">+</button>
@@ -6122,7 +6122,7 @@ function renderTable(){
             : `<div class="td-photo-ini">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>`}
         </div>
       </td>
-      <td style="text-align:left;padding:0 12px 0 8px;min-width:155px;max-width:210px">
+      <td style="text-align:left;padding:0 12px 0 8px;min-width:calc(155px - 2mm);max-width:calc(210px - 2mm)">
         <div class="td-player-name" style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:rgba(232,237,242,.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px;transition:color .1s">${p.name}</div>
         <div style="display:flex;align-items:center;gap:3px;margin-top:4px">
           ${pos2?`<span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.22);color:rgba(0,212,255,.85)">${pos2}</span>`:''}
@@ -6165,8 +6165,8 @@ function renderTable(){
         const col=yr==='2026'?'#ff4757':yr==='2027'?'rgba(255,179,64,.75)':'rgba(255,255,255,.45)';
         return '<span style="color:'+col+'">'+fmt+'</span>';
       })()}</td>
-      <td class="td-val" style="padding-left:calc(8px + 2.5mm)">${fmtVal(p.mkt_value)}</td>
-      <td class="cat-total td-num" style="color:${p.total_off!=null?tiC(Math.round(p.total_off/35*100)):'rgba(255,255,255,.18)'}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
+      <td class="td-val" style="padding-left:calc(8px + 4.5mm)">${fmtVal(p.mkt_value)}</td>
+      <td class="cat-total td-num" style="border-left:1px solid rgba(255,255,255,.08);color:${p.total_off!=null?tiC(Math.round(p.total_off/35*100)):'rgba(255,255,255,.18)'}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xg',p.name)}">${(p.xg!=null?p.xg.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xa',p.name)}">${(p.xa!=null?p.xa.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('goals_np',p.name)}">${p.goals_np||0}</td>
@@ -6192,7 +6192,7 @@ function renderTable(){
       <td class="cat-sub cat-pass td-num" style="color:${mc('shot_assist',p.name)}">${(p.shot_assist!=null?p.shot_assist.toFixed(2):'—')}</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('box_passes',p.name)}">${(p.box_passes!=null?p.box_passes.toFixed(2):'—')}</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('box_passes_pct',p.name)}">${(p.box_passes_pct!=null?p.box_passes_pct.toFixed(1):'—')}%</td>
-      <td class="cat-total td-num" style="color:${p.total_physical!=null?tiC(Math.round(p.total_physical/25*100)):'rgba(255,255,255,.18)'}">${(p.total_physical!=null?p.total_physical.toFixed(1):'—')}</td>
+      <td class="cat-total td-num" style="border-right:1px solid rgba(255,255,255,.08);color:${p.total_physical!=null?tiC(Math.round(p.total_physical/25*100)):'rgba(255,255,255,.18)'}">${(p.total_physical!=null?p.total_physical.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('max_speed',p.name)}">${(p.max_speed!=null?p.max_speed.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('hsr90',p.name)}">${(p.hsr90!=null?Math.round(p.hsr90):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('sprint_dist90',p.name)}">${(p.sprint_dist90!=null?Math.round(p.sprint_dist90):'—')}</td>
@@ -13028,7 +13028,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th onclick="sortTable('contract_end')" data-i18n="col_contract">Contrato</th>
                 <th onclick="sortTable('mkt_value')" data-i18n="col_value" style="white-space:nowrap">Valor</th>
-                <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0">
+                <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0;border-left:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_off')" class="cat-sort" data-i18n="cat_off">Off ↕</span>
                     <button class="cat-expand" onclick="toggleCat('off')" title="Expandir métricas">+</button>
@@ -13069,7 +13069,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th class="cat-sub cat-pass" onclick="sortTable('shot_assist')" style="color:var(--accent)">AstRem</th>
                 <th class="cat-sub cat-pass" onclick="sortTable('box_passes')" style="color:var(--accent)">BoxPass</th>
                 <th class="cat-sub cat-pass" onclick="sortTable('box_passes_pct')" style="color:var(--accent)">%BoxP</th>
-                <th class="cat-total cat-phys-total" style="color:var(--purple);white-space:nowrap;padding:0">
+                <th class="cat-total cat-phys-total" style="color:var(--purple);white-space:nowrap;padding:0;border-right:1px solid rgba(255,255,255,.08)">
                   <div class="cat-header">
                     <span onclick="sortTable('total_physical')" class="cat-sort" data-i18n="cat_phys">Fís ↕</span>
                     <button class="cat-expand" onclick="toggleCat('phys')" title="Expandir métricas">+</button>
@@ -14362,7 +14362,7 @@ function renderTable(){
             : `<div class="td-photo-ini">${(p.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>`}
         </div>
       </td>
-      <td style="text-align:left;padding:0 12px 0 8px;min-width:155px;max-width:210px">
+      <td style="text-align:left;padding:0 12px 0 8px;min-width:calc(155px - 2mm);max-width:calc(210px - 2mm)">
         <div class="td-player-name" style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:rgba(232,237,242,.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px;transition:color .1s">${p.name}</div>
         <div style="display:flex;align-items:center;gap:3px;margin-top:4px">
           ${pos2?`<span style="font-family:var(--font-d);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.22);color:rgba(0,212,255,.85)">${pos2}</span>`:''}
@@ -14405,8 +14405,8 @@ function renderTable(){
         const col=yr==='2026'?'#ff4757':yr==='2027'?'rgba(255,179,64,.75)':'rgba(255,255,255,.45)';
         return '<span style="color:'+col+'">'+fmt+'</span>';
       })()}</td>
-      <td class="td-val" style="padding-left:calc(8px + 2.5mm)">${fmtVal(p.mkt_value)}</td>
-      <td class="cat-total td-num" style="color:${p.total_off!=null?tiC(Math.round(p.total_off/35*100)):'rgba(255,255,255,.18)'}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
+      <td class="td-val" style="padding-left:calc(8px + 4.5mm)">${fmtVal(p.mkt_value)}</td>
+      <td class="cat-total td-num" style="border-left:1px solid rgba(255,255,255,.08);color:${p.total_off!=null?tiC(Math.round(p.total_off/35*100)):'rgba(255,255,255,.18)'}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xg',p.name)}">${(p.xg!=null?p.xg.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xa',p.name)}">${(p.xa!=null?p.xa.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('goals_np',p.name)}">${p.goals_np||0}</td>
@@ -14432,7 +14432,7 @@ function renderTable(){
       <td class="cat-sub cat-pass td-num" style="color:${mc('shot_assist',p.name)}">${(p.shot_assist!=null?p.shot_assist.toFixed(2):'—')}</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('box_passes',p.name)}">${(p.box_passes!=null?p.box_passes.toFixed(2):'—')}</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('box_passes_pct',p.name)}">${(p.box_passes_pct!=null?p.box_passes_pct.toFixed(1):'—')}%</td>
-      <td class="cat-total td-num" style="color:${p.total_physical!=null?tiC(Math.round(p.total_physical/25*100)):'rgba(255,255,255,.18)'}">${(p.total_physical!=null?p.total_physical.toFixed(1):'—')}</td>
+      <td class="cat-total td-num" style="border-right:1px solid rgba(255,255,255,.08);color:${p.total_physical!=null?tiC(Math.round(p.total_physical/25*100)):'rgba(255,255,255,.18)'}">${(p.total_physical!=null?p.total_physical.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('max_speed',p.name)}">${(p.max_speed!=null?p.max_speed.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('hsr90',p.name)}">${(p.hsr90!=null?Math.round(p.hsr90):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('sprint_dist90',p.name)}">${(p.sprint_dist90!=null?Math.round(p.sprint_dist90):'—')}</td>
