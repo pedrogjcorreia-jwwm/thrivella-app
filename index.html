@@ -276,18 +276,20 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 
 /* ── HEADER ── */
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
+.players-table thead tr{background:#0a0e14}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:#0a2138;
-  padding:10px 10px 8px;
-  font-family:var(--font-d);font-size:9.5px;font-weight:700;
-  letter-spacing:1.6px;text-transform:uppercase;color:#fff;
+  background:#0a0e14;
+  padding:11px 10px 9px;
+  font-family:var(--font-d);font-size:10px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.88);
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
-  transition:opacity .15s;
-  border-bottom:1px solid rgba(0,212,255,.25);
+  transition:color .15s,background .15s;
+  border-bottom:2px solid transparent;
+  border-image:linear-gradient(90deg,transparent,rgba(0,212,255,.4) 20%,rgba(0,212,255,.4) 80%,transparent) 1;
 }
-.players-table thead th:hover{opacity:.85}
-.players-table thead th.cat-total,.players-table thead th.th-sf{background:#0a2138!important}
+.players-table thead th:hover{background:rgba(0,212,255,.06);color:#fff}
+.players-table thead th.cat-total,.players-table thead th.th-sf{background:#0a0e14!important}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -320,7 +322,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .col-sep{border-left:1px solid rgba(255,255,255,.05)!important}
 .col-sep-strong{border-left:1px solid rgba(255,255,255,.09)!important}
 .players-table tbody td.cat-total{background:rgba(0,6,14,.6)!important;padding:0 12px}
-.players-table thead th.cat-total{background:#0a2138!important}
+.players-table thead th.cat-total{background:#0a0e14!important}
 
 /* ── SCORES ── */
 .td-score-bar-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
@@ -6031,13 +6033,13 @@ window._tblFilters = window._tblFilters || {age:'',mktval:'',contract:'',height:
 function dkDD(id, opts, selectedVal){
   const sel = opts.find(([v])=>v===selectedVal);
   const selLabel = sel ? sel[1] : opts[0][1];
-  const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:7px 13px;font-family:var(--font-d);font-size:10.5px;font-weight:600;letter-spacing:.3px;color:rgba(220,235,250,.8);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,180,255,.12)'" onmouseout="this.style.background=''">${l}</div>`).join('');
+  const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:8px 14px;font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.2px;color:rgba(225,238,250,.85);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,212,255,.1)'" onmouseout="this.style.background=''">${l}</div>`).join('');
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.82)'};transition:color .15s">
+    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${selectedVal?'var(--accent)':'rgba(255,255,255,.88)'};transition:color .15s">
       <span>${selLabel}</span>
-      <span style="font-size:8px;opacity:.85;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.55)'}">▾</span>
+      <span style="font-size:7px;opacity:${selectedVal?'1':'.45'};color:${selectedVal?'var(--accent)':'rgba(255,255,255,.5)'}">▾</span>
     </div>
-    <div id="dkdd-${id}" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:240px;overflow-y:auto;min-width:100px">
+    <div id="dkdd-${id}" style="display:none;position:fixed;background:#0c1118;border:1px solid rgba(0,212,255,.2);border-radius:7px;z-index:9999;box-shadow:0 12px 32px rgba(0,0,0,.9);max-height:260px;overflow-y:auto;min-width:110px;padding:4px 0">
       ${items}
     </div>
   </div>`;
@@ -6067,17 +6069,17 @@ function dkLeagueDD(){
   const items = allLeagues.map(lg=>{
     const cfg=LEAGUE_CONFIG[lg]; const name=cfg?.display||lg;
     const checked = sel.has(lg);
-    return `<label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:5px 10px;border-radius:3px;user-select:none" onmouseenter="this.style.background='rgba(0,180,255,.1)'" onmouseleave="this.style.background=''">
+    return `<label style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:7px 12px;border-radius:4px;user-select:none" onmouseenter="this.style.background='rgba(0,212,255,.1)'" onmouseleave="this.style.background=''">
       <input type="checkbox" ${checked?'checked':''} value="${lg}" onchange="dkLeagueToggle('${lg}')" style="accent-color:var(--accent);cursor:pointer;margin:0">
-      <span style="font-family:var(--font-d);font-size:10.5px;font-weight:600;color:rgba(220,235,250,.85)">${name}</span>
+      <span style="font-family:var(--font-d);font-size:11px;font-weight:600;color:rgba(225,238,250,.85)">${name}</span>
     </label>`;
   }).join('');
   return `<div class="dk-dd" data-id="league" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('league')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${isActive?'#5fe0ff':'rgba(0,180,220,.7)'}">
+    <div onclick="event.stopPropagation();dkDDToggle('league')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:${isActive?'var(--accent)':'rgba(255,255,255,.88)'}">
       <span>${selLabel}</span>
-      <span style="font-size:8px;opacity:.85">▾</span>
+      <span style="font-size:7px;opacity:${isActive?'1':'.45'};color:${isActive?'var(--accent)':'rgba(255,255,255,.5)'}">▾</span>
     </div>
-    <div id="dkdd-league" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:280px;overflow-y:auto;min-width:140px">
+    <div id="dkdd-league" style="display:none;position:fixed;background:#0c1118;border:1px solid rgba(0,212,255,.2);border-radius:7px;z-index:9999;box-shadow:0 12px 32px rgba(0,0,0,.9);max-height:300px;overflow-y:auto;min-width:150px;padding:5px 0">
       ${items}
     </div>
   </div>`;
@@ -8671,18 +8673,20 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 
 /* ── HEADER ── */
 .players-table thead tr{border-bottom:1px solid rgba(255,255,255,.04)}
+.players-table thead tr{background:#0a0e14}
 .players-table thead th{
   position:sticky;top:0;z-index:5;
-  background:#0a2138;
-  padding:10px 10px 8px;
-  font-family:var(--font-d);font-size:9.5px;font-weight:700;
-  letter-spacing:1.6px;text-transform:uppercase;color:#fff;
+  background:#0a0e14;
+  padding:11px 10px 9px;
+  font-family:var(--font-d);font-size:10px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.88);
   text-align:center;cursor:pointer;white-space:nowrap;user-select:none;
-  transition:opacity .15s;
-  border-bottom:1px solid rgba(0,212,255,.25);
+  transition:color .15s,background .15s;
+  border-bottom:2px solid transparent;
+  border-image:linear-gradient(90deg,transparent,rgba(0,212,255,.4) 20%,rgba(0,212,255,.4) 80%,transparent) 1;
 }
-.players-table thead th:hover{opacity:.85}
-.players-table thead th.cat-total,.players-table thead th.th-sf{background:#0a2138!important}
+.players-table thead th:hover{background:rgba(0,212,255,.06);color:#fff}
+.players-table thead th.cat-total,.players-table thead th.th-sf{background:#0a0e14!important}
 .players-table thead th.s-asc::after{content:' ↑';color:var(--accent);letter-spacing:0}
 .players-table thead th.s-desc::after{content:' ↓';color:var(--accent);letter-spacing:0}
 
@@ -8715,7 +8719,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 .col-sep{border-left:1px solid rgba(255,255,255,.05)!important}
 .col-sep-strong{border-left:1px solid rgba(255,255,255,.09)!important}
 .players-table tbody td.cat-total{background:rgba(0,6,14,.6)!important;padding:0 12px}
-.players-table thead th.cat-total{background:#0a2138!important}
+.players-table thead th.cat-total{background:#0a0e14!important}
 
 /* ── SCORES ── */
 .td-score-bar-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
@@ -14394,13 +14398,13 @@ window._tblFilters = window._tblFilters || {age:'',mktval:'',contract:'',height:
 function dkDD(id, opts, selectedVal){
   const sel = opts.find(([v])=>v===selectedVal);
   const selLabel = sel ? sel[1] : opts[0][1];
-  const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:7px 13px;font-family:var(--font-d);font-size:10.5px;font-weight:600;letter-spacing:.3px;color:rgba(220,235,250,.8);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,180,255,.12)'" onmouseout="this.style.background=''">${l}</div>`).join('');
+  const items = opts.map(([v,l])=>`<div onclick="dkDDSelect('${id}','${v}')" style="padding:8px 14px;font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.2px;color:rgba(225,238,250,.85);cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,212,255,.1)'" onmouseout="this.style.background=''">${l}</div>`).join('');
   return `<div class="dk-dd" data-id="${id}" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.82)'};transition:color .15s">
+    <div onclick="event.stopPropagation();dkDDToggle('${id}')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${selectedVal?'var(--accent)':'rgba(255,255,255,.88)'};transition:color .15s">
       <span>${selLabel}</span>
-      <span style="font-size:8px;opacity:.85;color:${selectedVal?'#5fe0ff':'rgba(255,255,255,.55)'}">▾</span>
+      <span style="font-size:7px;opacity:${selectedVal?'1':'.45'};color:${selectedVal?'var(--accent)':'rgba(255,255,255,.5)'}">▾</span>
     </div>
-    <div id="dkdd-${id}" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:240px;overflow-y:auto;min-width:100px">
+    <div id="dkdd-${id}" style="display:none;position:fixed;background:#0c1118;border:1px solid rgba(0,212,255,.2);border-radius:7px;z-index:9999;box-shadow:0 12px 32px rgba(0,0,0,.9);max-height:260px;overflow-y:auto;min-width:110px;padding:4px 0">
       ${items}
     </div>
   </div>`;
@@ -14430,17 +14434,17 @@ function dkLeagueDD(){
   const items = allLeagues.map(lg=>{
     const cfg=LEAGUE_CONFIG[lg]; const name=cfg?.display||lg;
     const checked = sel.has(lg);
-    return `<label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:5px 10px;border-radius:3px;user-select:none" onmouseenter="this.style.background='rgba(0,180,255,.1)'" onmouseleave="this.style.background=''">
+    return `<label style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:7px 12px;border-radius:4px;user-select:none" onmouseenter="this.style.background='rgba(0,212,255,.1)'" onmouseleave="this.style.background=''">
       <input type="checkbox" ${checked?'checked':''} value="${lg}" onchange="dkLeagueToggle('${lg}')" style="accent-color:var(--accent);cursor:pointer;margin:0">
-      <span style="font-family:var(--font-d);font-size:10.5px;font-weight:600;color:rgba(220,235,250,.85)">${name}</span>
+      <span style="font-family:var(--font-d);font-size:11px;font-weight:600;color:rgba(225,238,250,.85)">${name}</span>
     </label>`;
   }).join('');
   return `<div class="dk-dd" data-id="league" style="position:relative;display:inline-flex">
-    <div onclick="event.stopPropagation();dkDDToggle('league')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${isActive?'#5fe0ff':'rgba(0,180,220,.7)'}">
+    <div onclick="event.stopPropagation();dkDDToggle('league')" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:${isActive?'var(--accent)':'rgba(255,255,255,.88)'}">
       <span>${selLabel}</span>
-      <span style="font-size:8px;opacity:.85">▾</span>
+      <span style="font-size:7px;opacity:${isActive?'1':'.45'};color:${isActive?'var(--accent)':'rgba(255,255,255,.5)'}">▾</span>
     </div>
-    <div id="dkdd-league" style="display:none;position:fixed;background:#0d1622;border:1px solid rgba(0,180,255,.25);border-radius:6px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.85);max-height:280px;overflow-y:auto;min-width:140px">
+    <div id="dkdd-league" style="display:none;position:fixed;background:#0c1118;border:1px solid rgba(0,212,255,.2);border-radius:7px;z-index:9999;box-shadow:0 12px 32px rgba(0,0,0,.9);max-height:300px;overflow-y:auto;min-width:150px;padding:5px 0">
       ${items}
     </div>
   </div>`;
