@@ -4707,24 +4707,17 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
               <tr>
                 <th class="th-edit" title="Editar"></th>
                 <th onclick="sortTable('rank')" class="s-desc">#</th>
-                <th onclick="sortTable('name')" style="padding:0;width:180px;max-width:180px">
-                  <div style="display:flex;align-items:center;gap:4px;padding:9px 8px">
-                    <span style="margin-left:4px;font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)" data-i18n="col_player">Jogador</span>
-                  </div>
-                </th>
-                <th onclick="sortTable('team')" style="font-size:10px;white-space:nowrap;color:var(--muted);min-width:120px;text-align:left;padding-left:10px;letter-spacing:1px;text-transform:uppercase">Clube / Liga</th>
-                <th style="white-space:nowrap;padding:0">
+                <th onclick="sortTable('name')" style="text-align:left;padding-left:12px;min-width:150px">Jogador</th>
+                <th onclick="sortTable('age')" style="background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">Idade</th>
+                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02)">Altura</th>
+                <th onclick="sortTable('foot')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
+                <th onclick="sortTable('team')" style="text-align:left;padding-left:10px;min-width:110px">Clube / Liga</th>
+                <th style="white-space:nowrap;padding:0;background:rgba(0,10,24,.4);border-left:1px solid rgba(255,255,255,.06)">
                   <div style="display:flex;align-items:center;gap:0;height:100%">
-                    <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1;font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)" title="Talent Index = OFF+DEF+PASS, máx 67 pts" data-i18n="col_talent">Talent Index</span>
+                    <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
                     <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — Opta difficulty" style="flex-shrink:0;background:none;border:none;padding:1px 1px;cursor:pointer;margin-right:1px;margin-left:2px;transition:all .2s;display:flex;align-items:center;justify-content:center;opacity:0.45;filter:grayscale(1) brightness(3)">
                       <svg viewBox="0 0 28 22" width="18" height="14" style="display:block;overflow:visible">
-                        <defs>
-                          <linearGradient id="spkGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-                            <stop offset="0%" style="stop-color:#a855f7"/>
-                            <stop offset="50%" style="stop-color:#8b5cf6"/>
-                            <stop offset="100%" style="stop-color:#3b82f6"/>
-                          </linearGradient>
-                        </defs>
+                        <defs><linearGradient id="spkGrad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#a855f7"/><stop offset="50%" style="stop-color:#8b5cf6"/><stop offset="100%" style="stop-color:#3b82f6"/></linearGradient></defs>
                         <path d="M10 1 L11.5 7 L18 8.5 L11.5 10 L10 16 L8.5 10 L2 8.5 L8.5 7 Z" fill="url(#spkGrad)"/>
                         <path d="M22 0 L23 3.5 L26.5 4.5 L23 5.5 L22 9 L21 5.5 L17.5 4.5 L21 3.5 Z" fill="url(#spkGrad)" opacity="0.85"/>
                         <path d="M23 13 L23.8 15.5 L26.5 16 L23.8 16.5 L23 19 L22.2 16.5 L19.5 16 L22.2 15.5 Z" fill="url(#spkGrad)" opacity="0.7"/>
@@ -4732,8 +4725,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                     </button>
                   </div>
                 </th>
-                <th onclick="sortTable('total_physical')" style="color:#9b7fff;border-left:2px solid rgba(155,127,255,0.3)" title="Physical Index (só jogadores PHY)" data-i18n="col_phys_idx">Phys Index</th>
-                <th onclick="sortTable('transfer_score')" style="color:#f59e0b;white-space:nowrap" title="Transfer Score — avaliação de transferência" data-i18n="col_transfer">Transfer Score</th>
+                <th onclick="sortTable('total_physical')" style="color:#9b7fff;background:rgba(0,10,24,.4)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
+                <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,10,24,.4);border-right:1px solid rgba(255,255,255,.06)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th onclick="sortTable('contract_end')" data-i18n="col_contract">Contrato</th>
                 <th onclick="sortTable('mkt_value')" data-i18n="col_value" style="white-space:nowrap">Valor</th>
                 <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0">
@@ -4795,25 +4788,6 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                     SofaScore
                   </span>
                 </th>
-              </tr>
-              <tr id="table-filter-row" style="background:var(--bg0);position:sticky;top:36px;z-index:4;border-bottom:1px solid rgba(255,255,255,0.06)">
-                <td colspan="2" style="padding:0"></td>
-                <td style="padding:3px 8px">
-                  <input id="filter-name" type="text" placeholder="Nome..." oninput="applyQuickFilters()" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:3px 7px;font-family:var(--font-d);font-size:10px;color:var(--text);outline:none">
-                </td>
-                <td colspan="5" style="padding:3px 8px">
-                  <div style="display:flex;align-items:center;gap:5px">
-                    <input id="filter-height-min" type="number" placeholder="Alt min" oninput="applyQuickFilters()" style="width:54px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:3px 5px;font-family:var(--font-d);font-size:10px;color:var(--text);outline:none">
-                    <input id="filter-height-max" type="number" placeholder="Alt max" oninput="applyQuickFilters()" style="width:54px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:3px 5px;font-family:var(--font-d);font-size:10px;color:var(--text);outline:none">
-                    <select id="filter-foot" onchange="applyQuickFilters()" style="background:#0d1520;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:3px 5px;font-family:var(--font-d);font-size:10px;color:var(--text);outline:none">
-                      <option value="">Pé</option>
-                      <option value="R">&#x1F9B5; Dto</option>
-                      <option value="L">&#x1F9B5; Esq</option>
-                    </select>
-                    <button onclick="clearQuickFilters()" title="Limpar filtros" style="background:none;border:none;color:rgba(255,255,255,0.25);font-size:11px;cursor:pointer;padding:1px 3px;line-height:1">✕</button>
-                  </div>
-                </td>
-                <td colspan="99" style="padding:0"></td>
               </tr>
             </thead>
             <tbody id="table-body"></tbody>
@@ -6000,7 +5974,7 @@ function renderTable(){
     return true;
   }).sort((a,b)=>{
     const k=tableSort.key==='score'?(ligaAdjustActive?'talent_index_adj':'talent_index'):tableSort.key;
-    if(k==='name'||k==='league'||k==='position')
+    if(k==='name'||k==='league'||k==='position'||k==='team'||k==='foot')
       return tableSort.dir*(a[k]||'').localeCompare(b[k]||'');
     if(k==='contract_end')
       return tableSort.dir*((a[k]||'').localeCompare(b[k]||''));
@@ -6078,47 +6052,45 @@ function renderTable(){
       ondragstart="onRowDragStart(event)"
       onclick="selectPlayer('${p.name.replace(/'/g,"\'").replace(/"/g,'&quot;')}','${p.league}')">
       <td style="padding:4px 2px;width:28px" onclick="event.stopPropagation()"><button class="td-edit-btn" onclick="openEditModal(decodeURIComponent(this.dataset.n))" data-n="${encodeURIComponent(p.name)}" title="Editar"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/></svg></button></td>
-      <td class="td-rank">
-        <div class="td-name">${rank+1}</div>
-        <div class="td-info-row" style="justify-content:center"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(155,127,255,0.12);border:1px solid rgba(155,127,255,0.35);color:var(--purple)">${p.position_group||'WIN'}</span></div>
+      <td class="td-rank" style="background:linear-gradient(180deg,#040e1c,#061528);border-right:1px solid rgba(0,180,255,.1)">
+        <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(200,220,240,.55);line-height:1">${rank+1}</div>
+        <div style="margin-top:3px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(155,127,255,0.12);border:1px solid rgba(155,127,255,0.35);color:var(--purple)">${p.position_group||'WIN'}</span></div>
       </td>
-      <td>
-        <div class="td-player" style="align-items:flex-start">
-          <div>
-            <div class="td-name">${p.name}</div>
-            <div class="td-info-row" style="flex-wrap:wrap;row-gap:3px">
-              ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
-              <span style="font-family:var(--font-d);font-size:10.5px;color:var(--muted2)">${p.age}y</span>
-              <span style="font-family:var(--font-d);font-size:10.5px;color:var(--muted2)">${htTxt}cm</span>
-              ${footTxt?`<span style="font-family:var(--font-d);font-size:10.5px;color:var(--muted2)">${footTxt}</span>`:''}
-              ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
-            </div>
-          </div>
+      <td style="text-align:left;padding:7px 10px 7px 12px;min-width:150px;max-width:200px">
+        <div style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.2px">${p.name}</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:3px;flex-wrap:wrap">
+          ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
+          ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
         </div>
       </td>
-      <td style="text-align:left;min-width:120px">
-        <div class="td-player" style="align-items:flex-start">
-          <div>
-            <div class="td-name" style="color:rgba(255,255,255,.42);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px">${p.team}</div>
-            <div class="td-info-row" style="font-size:9.5px;color:rgba(0,212,255,.65)">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
-          </div>
-        </div>
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">
+        <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${p.age||'—'}</div>
+        <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Idade</div>
       </td>
-      <td style="vertical-align:middle">
-        <div class="td-score-bar-wrap">
-          <span class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}</span>
-          ${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-family:var(--font-d);font-size:7px;color:${p.liga_mult>1?'#00e5a0':'#ff7070'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}${Math.abs(Math.round((p.liga_mult-1)*100))}%</span>` : ''}
-        </div>
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02)">
+        <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${htTxt}</div>
+        <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Altura</div>
       </td>
-      <td style="vertical-align:middle;border-left:2px solid rgba(155,127,255,0.2)">
-        ${p.has_phy ? `<div class="td-score-bar-wrap">
-          <span class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</span>
-        </div>` : '<span style="color:var(--muted2);font-size:10px">—</span>'}
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">
+        <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${footTxt||'—'}</div>
+        <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Pé</div>
       </td>
-      <td style="vertical-align:middle">
-        <div class="td-score-bar-wrap">
-          <span class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#38bdf8':'rgba(255,255,255,.3)'}">${p.transfer_score||0}</span>
+      <td style="text-align:left;padding:7px 8px 7px 10px;min-width:110px;max-width:150px">
+        <div style="font-family:var(--font-d);font-size:13px;font-weight:600;color:rgba(255,255,255,.42);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.team}</div>
+        <div style="font-family:var(--font-d);font-size:9px;color:rgba(0,212,255,.6);margin-top:3px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
+      </td>
+      <td style="text-align:center;padding:6px 10px;background:rgba(0,10,24,.4);border-left:1px solid rgba(255,255,255,.06)">
+        <div class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">
+          ${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff7070'};margin-left:1px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}
         </div>
+        <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.2);margin-top:2px;text-transform:uppercase">TAL</div>
+      </td>
+      <td style="text-align:center;padding:6px 10px;background:rgba(0,10,24,.4)">
+        ${p.has_phy ? `<div class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</div><div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.2);margin-top:2px;text-transform:uppercase">PHY</div>` : '<span style="color:var(--muted2);font-size:11px">—</span>'}
+      </td>
+      <td style="text-align:center;padding:6px 10px;background:rgba(0,10,24,.4);border-right:1px solid rgba(255,255,255,.06)">
+        <div class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#38bdf8':'rgba(255,255,255,.3)'}">${p.transfer_score||0}</div>
+        <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.2);margin-top:2px;text-transform:uppercase">TRA</div>
       </td>
       <td class="td-contract">${(()=>{
         const yr=p.contract_end?(p.contract_end.split('-')[0]):'—';
@@ -12908,24 +12880,17 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
               <tr>
                 <th class="th-edit" title="Editar"></th>
                 <th onclick="sortTable('rank')" class="s-desc">#</th>
-                <th onclick="sortTable('name')" style="padding:0;width:180px;max-width:180px">
-                  <div style="display:flex;align-items:center;gap:4px;padding:9px 8px">
-                    <span style="margin-left:4px;font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)" data-i18n="col_player">Jogador</span>
-                  </div>
-                </th>
-                <th onclick="sortTable('team')" style="font-size:10px;white-space:nowrap;color:var(--muted);min-width:120px;text-align:left;padding-left:10px;letter-spacing:1px;text-transform:uppercase">Clube / Liga</th>
-                <th style="white-space:nowrap;padding:0">
+                <th onclick="sortTable('name')" style="text-align:left;padding-left:12px;min-width:150px">Jogador</th>
+                <th onclick="sortTable('age')" style="background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">Idade</th>
+                <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02)">Altura</th>
+                <th onclick="sortTable('foot')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
+                <th onclick="sortTable('team')" style="text-align:left;padding-left:10px;min-width:110px">Clube / Liga</th>
+                <th style="white-space:nowrap;padding:0;background:rgba(0,10,24,.4);border-left:1px solid rgba(255,255,255,.06)">
                   <div style="display:flex;align-items:center;gap:0;height:100%">
-                    <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1;font-family:var(--font-d);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)" title="Talent Index = OFF+DEF+PASS, máx 67 pts" data-i18n="col_talent">Talent Index</span>
+                    <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
                     <button id="btn-liga-adjust-th" onclick="toggleLigaAdjust()" title="Liga Adjust — Opta difficulty" style="flex-shrink:0;background:none;border:none;padding:1px 1px;cursor:pointer;margin-right:1px;margin-left:2px;transition:all .2s;display:flex;align-items:center;justify-content:center;opacity:0.45;filter:grayscale(1) brightness(3)">
                       <svg viewBox="0 0 28 22" width="18" height="14" style="display:block;overflow:visible">
-                        <defs>
-                          <linearGradient id="spkGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-                            <stop offset="0%" style="stop-color:#a855f7"/>
-                            <stop offset="50%" style="stop-color:#8b5cf6"/>
-                            <stop offset="100%" style="stop-color:#3b82f6"/>
-                          </linearGradient>
-                        </defs>
+                        <defs><linearGradient id="spkGrad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#a855f7"/><stop offset="50%" style="stop-color:#8b5cf6"/><stop offset="100%" style="stop-color:#3b82f6"/></linearGradient></defs>
                         <path d="M10 1 L11.5 7 L18 8.5 L11.5 10 L10 16 L8.5 10 L2 8.5 L8.5 7 Z" fill="url(#spkGrad)"/>
                         <path d="M22 0 L23 3.5 L26.5 4.5 L23 5.5 L22 9 L21 5.5 L17.5 4.5 L21 3.5 Z" fill="url(#spkGrad)" opacity="0.85"/>
                         <path d="M23 13 L23.8 15.5 L26.5 16 L23.8 16.5 L23 19 L22.2 16.5 L19.5 16 L22.2 15.5 Z" fill="url(#spkGrad)" opacity="0.7"/>
@@ -12933,8 +12898,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                     </button>
                   </div>
                 </th>
-                <th onclick="sortTable('total_physical')" style="color:#9b7fff;border-left:2px solid rgba(155,127,255,0.3)" title="Physical Index (só jogadores PHY)" data-i18n="col_phys_idx">Phys Index</th>
-                <th onclick="sortTable('transfer_score')" style="color:#f59e0b;white-space:nowrap" title="Transfer Score — avaliação de transferência" data-i18n="col_transfer">Transfer Score</th>
+                <th onclick="sortTable('total_physical')" style="color:#9b7fff;background:rgba(0,10,24,.4)" title="Physical Index" data-i18n="col_phys_idx">PHY</th>
+                <th onclick="sortTable('transfer_score')" style="color:#f59e0b;background:rgba(0,10,24,.4);border-right:1px solid rgba(255,255,255,.06)" title="Transfer Score" data-i18n="col_transfer">TRA</th>
                 <th onclick="sortTable('contract_end')" data-i18n="col_contract">Contrato</th>
                 <th onclick="sortTable('mkt_value')" data-i18n="col_value" style="white-space:nowrap">Valor</th>
                 <th class="cat-total cat-off-total" style="color:var(--green);white-space:nowrap;padding:0">
@@ -12996,25 +12961,6 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                     SofaScore
                   </span>
                 </th>
-              </tr>
-              <tr id="table-filter-row" style="background:var(--bg0);position:sticky;top:36px;z-index:4;border-bottom:1px solid rgba(255,255,255,0.06)">
-                <td colspan="2" style="padding:0"></td>
-                <td style="padding:3px 8px">
-                  <input id="filter-name" type="text" placeholder="Nome..." oninput="applyQuickFilters()" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:3px 7px;font-family:var(--font-d);font-size:10px;color:var(--text);outline:none">
-                </td>
-                <td colspan="5" style="padding:3px 8px">
-                  <div style="display:flex;align-items:center;gap:5px">
-                    <input id="filter-height-min" type="number" placeholder="Alt min" oninput="applyQuickFilters()" style="width:54px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:3px 5px;font-family:var(--font-d);font-size:10px;color:var(--text);outline:none">
-                    <input id="filter-height-max" type="number" placeholder="Alt max" oninput="applyQuickFilters()" style="width:54px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:3px 5px;font-family:var(--font-d);font-size:10px;color:var(--text);outline:none">
-                    <select id="filter-foot" onchange="applyQuickFilters()" style="background:#0d1520;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:3px 5px;font-family:var(--font-d);font-size:10px;color:var(--text);outline:none">
-                      <option value="">Pé</option>
-                      <option value="R">&#x1F9B5; Dto</option>
-                      <option value="L">&#x1F9B5; Esq</option>
-                    </select>
-                    <button onclick="clearQuickFilters()" title="Limpar filtros" style="background:none;border:none;color:rgba(255,255,255,0.25);font-size:11px;cursor:pointer;padding:1px 3px;line-height:1">✕</button>
-                  </div>
-                </td>
-                <td colspan="99" style="padding:0"></td>
               </tr>
             </thead>
             <tbody id="table-body"></tbody>
@@ -14201,7 +14147,7 @@ function renderTable(){
     return true;
   }).sort((a,b)=>{
     const k=tableSort.key==='score'?(ligaAdjustActive?'talent_index_adj':'talent_index'):tableSort.key;
-    if(k==='name'||k==='league'||k==='position')
+    if(k==='name'||k==='league'||k==='position'||k==='team'||k==='foot')
       return tableSort.dir*(a[k]||'').localeCompare(b[k]||'');
     if(k==='contract_end')
       return tableSort.dir*((a[k]||'').localeCompare(b[k]||''));
@@ -14279,47 +14225,45 @@ function renderTable(){
       ondragstart="onRowDragStart(event)"
       onclick="selectPlayer('${p.name.replace(/'/g,"\'").replace(/"/g,'&quot;')}','${p.league}')">
       <td style="padding:4px 2px;width:28px" onclick="event.stopPropagation()"><button class="td-edit-btn" onclick="openEditModal(decodeURIComponent(this.dataset.n))" data-n="${encodeURIComponent(p.name)}" title="Editar"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/></svg></button></td>
-      <td class="td-rank">
-        <div class="td-name">${rank+1}</div>
-        <div class="td-info-row" style="justify-content:center"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(155,127,255,0.12);border:1px solid rgba(155,127,255,0.35);color:var(--purple)">${p.position_group||'WIN'}</span></div>
+      <td class="td-rank" style="background:linear-gradient(180deg,#040e1c,#061528);border-right:1px solid rgba(0,180,255,.1)">
+        <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(200,220,240,.55);line-height:1">${rank+1}</div>
+        <div style="margin-top:3px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;padding:1px 4px;border-radius:3px;background:rgba(155,127,255,0.12);border:1px solid rgba(155,127,255,0.35);color:var(--purple)">${p.position_group||'WIN'}</span></div>
       </td>
-      <td>
-        <div class="td-player" style="align-items:flex-start">
-          <div>
-            <div class="td-name">${p.name}</div>
-            <div class="td-info-row" style="flex-wrap:wrap;row-gap:3px">
-              ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
-              <span style="font-family:var(--font-d);font-size:10.5px;color:var(--muted2)">${p.age}y</span>
-              <span style="font-family:var(--font-d);font-size:10.5px;color:var(--muted2)">${htTxt}cm</span>
-              ${footTxt?`<span style="font-family:var(--font-d);font-size:10.5px;color:var(--muted2)">${footTxt}</span>`:''}
-              ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
-            </div>
-          </div>
+      <td style="text-align:left;padding:7px 10px 7px 12px;min-width:150px;max-width:200px">
+        <div style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.2px">${p.name}</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:3px;flex-wrap:wrap">
+          ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
+          ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
         </div>
       </td>
-      <td style="text-align:left;min-width:120px">
-        <div class="td-player" style="align-items:flex-start">
-          <div>
-            <div class="td-name" style="color:rgba(255,255,255,.42);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px">${p.team}</div>
-            <div class="td-info-row" style="font-size:9.5px;color:rgba(0,212,255,.65)">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
-          </div>
-        </div>
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">
+        <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${p.age||'—'}</div>
+        <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Idade</div>
       </td>
-      <td style="vertical-align:middle">
-        <div class="td-score-bar-wrap">
-          <span class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}</span>
-          ${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-family:var(--font-d);font-size:7px;color:${p.liga_mult>1?'#00e5a0':'#ff7070'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}${Math.abs(Math.round((p.liga_mult-1)*100))}%</span>` : ''}
-        </div>
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02)">
+        <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${htTxt}</div>
+        <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Altura</div>
       </td>
-      <td style="vertical-align:middle;border-left:2px solid rgba(155,127,255,0.2)">
-        ${p.has_phy ? `<div class="td-score-bar-wrap">
-          <span class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</span>
-        </div>` : '<span style="color:var(--muted2);font-size:10px">—</span>'}
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">
+        <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${footTxt||'—'}</div>
+        <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Pé</div>
       </td>
-      <td style="vertical-align:middle">
-        <div class="td-score-bar-wrap">
-          <span class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#38bdf8':'rgba(255,255,255,.3)'}">${p.transfer_score||0}</span>
+      <td style="text-align:left;padding:7px 8px 7px 10px;min-width:110px;max-width:150px">
+        <div style="font-family:var(--font-d);font-size:13px;font-weight:600;color:rgba(255,255,255,.42);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.team}</div>
+        <div style="font-family:var(--font-d);font-size:9px;color:rgba(0,212,255,.6);margin-top:3px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
+      </td>
+      <td style="text-align:center;padding:6px 10px;background:rgba(0,10,24,.4);border-left:1px solid rgba(255,255,255,.06)">
+        <div class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">
+          ${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff7070'};margin-left:1px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}
         </div>
+        <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.2);margin-top:2px;text-transform:uppercase">TAL</div>
+      </td>
+      <td style="text-align:center;padding:6px 10px;background:rgba(0,10,24,.4)">
+        ${p.has_phy ? `<div class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</div><div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.2);margin-top:2px;text-transform:uppercase">PHY</div>` : '<span style="color:var(--muted2);font-size:11px">—</span>'}
+      </td>
+      <td style="text-align:center;padding:6px 10px;background:rgba(0,10,24,.4);border-right:1px solid rgba(255,255,255,.06)">
+        <div class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#38bdf8':'rgba(255,255,255,.3)'}">${p.transfer_score||0}</div>
+        <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.2);margin-top:2px;text-transform:uppercase">TRA</div>
       </td>
       <td class="td-contract">${(()=>{
         const yr=p.contract_end?(p.contract_end.split('-')[0]):'—';
