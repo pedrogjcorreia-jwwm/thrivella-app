@@ -4710,8 +4710,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:12px;min-width:150px">Jogador</th>
                 <th onclick="sortTable('age')" style="background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">Idade</th>
                 <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02)">Altura</th>
-                <th onclick="sortTable('foot')" style="background:rgba(255,255,255,0.02);border-right:2px solid rgba(255,255,255,.08)">Pé</th>
-                <th onclick="sortTable('team')" style="text-align:left;padding-left:10px;min-width:110px">Clube / Liga</th>
+                <th onclick="sortTable('foot')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
+                <th onclick="sortTable('team')" style="text-align:left;padding-left:21px;min-width:110px">Clube / Liga</th>
                 <th style="white-space:nowrap;padding:0;background:rgba(0,10,24,.4);border-left:1px solid rgba(255,255,255,.06)">
                   <div style="display:flex;align-items:center;gap:0;height:100%">
                     <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
@@ -6059,9 +6059,9 @@ function renderTable(){
       <td style="text-align:left;padding:7px 10px 7px 12px;min-width:150px;max-width:200px">
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.2px">${p.name}</div>
         <div style="display:flex;align-items:center;gap:4px;margin-top:3px;flex-wrap:wrap">
+          ${pos1?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.55)">${pos1}</span>`:''}
           ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
           ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
-          ${p.age?`<span style="font-family:var(--font-d);font-size:9px;color:rgba(255,255,255,.28)">${p.age}a · ${htTxt}cm${footTxt?' · '+footTxt:''}</span>`:''}
         </div>
       </td>
       <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">
@@ -6072,11 +6072,11 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${htTxt}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Altura</div>
       </td>
-      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-right:2px solid rgba(255,255,255,.08)">
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${footTxt||'—'}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Pé</div>
       </td>
-      <td style="text-align:left;padding:7px 8px 7px 10px;min-width:110px;max-width:150px">
+      <td style="text-align:left;padding:7px 8px 7px 21px;min-width:110px;max-width:150px">
         <div style="font-family:var(--font-d);font-size:13px;font-weight:600;color:rgba(255,255,255,.42);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.team}</div>
         <div style="font-family:var(--font-d);font-size:9px;color:rgba(0,212,255,.6);margin-top:3px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
@@ -12884,8 +12884,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
                 <th onclick="sortTable('name')" style="text-align:left;padding-left:12px;min-width:150px">Jogador</th>
                 <th onclick="sortTable('age')" style="background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">Idade</th>
                 <th onclick="sortTable('size')" style="background:rgba(255,255,255,0.02)">Altura</th>
-                <th onclick="sortTable('foot')" style="background:rgba(255,255,255,0.02);border-right:2px solid rgba(255,255,255,.08)">Pé</th>
-                <th onclick="sortTable('team')" style="text-align:left;padding-left:10px;min-width:110px">Clube / Liga</th>
+                <th onclick="sortTable('foot')" style="background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">Pé</th>
+                <th onclick="sortTable('team')" style="text-align:left;padding-left:21px;min-width:110px">Clube / Liga</th>
                 <th style="white-space:nowrap;padding:0;background:rgba(0,10,24,.4);border-left:1px solid rgba(255,255,255,.06)">
                   <div style="display:flex;align-items:center;gap:0;height:100%">
                     <span onclick="sortTable('score')" style="cursor:pointer;padding:9px 6px;flex:1" title="Talent Index" data-i18n="col_talent">TAL</span>
@@ -14233,9 +14233,9 @@ function renderTable(){
       <td style="text-align:left;padding:7px 10px 7px 12px;min-width:150px;max-width:200px">
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.2px">${p.name}</div>
         <div style="display:flex;align-items:center;gap:4px;margin-top:3px;flex-wrap:wrap">
+          ${pos1?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.55)">${pos1}</span>`:''}
           ${pos2?`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--accent)">${pos2}</span>`:''}
           ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:11px">⚠️</span>`:''}
-          ${p.age?`<span style="font-family:var(--font-d);font-size:9px;color:rgba(255,255,255,.28)">${p.age}a · ${htTxt}cm${footTxt?' · '+footTxt:''}</span>`:''}
         </div>
       </td>
       <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">
@@ -14246,11 +14246,11 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${htTxt}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Altura</div>
       </td>
-      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-right:2px solid rgba(255,255,255,.08)">
+      <td style="text-align:center;padding:6px 8px;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,.05)">
         <div style="font-family:var(--font-d);font-size:14.5px;font-weight:700;color:rgba(255,255,255,.75);line-height:1">${footTxt||'—'}</div>
         <div style="font-family:var(--font-d);font-size:8px;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-top:3px;text-transform:uppercase">Pé</div>
       </td>
-      <td style="text-align:left;padding:7px 8px 7px 10px;min-width:110px;max-width:150px">
+      <td style="text-align:left;padding:7px 8px 7px 21px;min-width:110px;max-width:150px">
         <div style="font-family:var(--font-d);font-size:13px;font-weight:600;color:rgba(255,255,255,.42);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.team}</div>
         <div style="font-family:var(--font-d);font-size:9px;color:rgba(0,212,255,.6);margin-top:3px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
