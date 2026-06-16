@@ -6166,7 +6166,7 @@ function renderTable(){
         return '<span style="color:'+col+'">'+fmt+'</span>';
       })()}</td>
       <td class="td-val" style="padding-left:calc(8px + 2.5mm)">${fmtVal(p.mkt_value)}</td>
-      <td class="cat-total td-num" style="color:${mc('total_off',p.name)}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
+      <td class="cat-total td-num" style="color:${p.total_off!=null?tiC(Math.round(p.total_off/35*100)):'rgba(255,255,255,.18)'}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xg',p.name)}">${(p.xg!=null?p.xg.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xa',p.name)}">${(p.xa!=null?p.xa.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('goals_np',p.name)}">${p.goals_np||0}</td>
@@ -6180,19 +6180,19 @@ function renderTable(){
       <td class="cat-sub cat-off td-num" style="color:${mc('prog_carries',p.name)}">${(p.prog_carries!=null?p.prog_carries.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('accels90',p.name)}">${(p.accels90!=null?p.accels90.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('recpt_depth',p.name)}">${(p.recpt_depth!=null?p.recpt_depth.toFixed(2):'—')}</td>
-      <td class="cat-total td-num" style="color:${mc('total_def',p.name)}">${(p.total_def!=null?p.total_def.toFixed(1):'—')}</td>
+      <td class="cat-total td-num" style="color:${p.total_def!=null?tiC(Math.round(p.total_def/8.5*100)):'rgba(255,255,255,.18)'}">${(p.total_def!=null?p.total_def.toFixed(1):'—')}</td>
       <td class="cat-sub cat-def td-num" style="color:${mc('def_duels',p.name)}">${(p.def_duels!=null?p.def_duels.toFixed(2):'—')}</td>
       <td class="cat-sub cat-def td-num" style="color:${mc('def_duels_pct',p.name)}">${(p.def_duels_pct!=null?p.def_duels_pct.toFixed(1):'—')}%</td>
       <td class="cat-sub cat-def td-num" style="color:${mc('adj_intercept',p.name)}">${(p.adj_intercept!=null?p.adj_intercept.toFixed(2):'—')}</td>
       <td class="cat-sub cat-def td-num" style="color:${mc('fouls',p.name)}">${(p.fouls!=null?p.fouls.toFixed(2):'—')}</td>
       <td class="cat-sub cat-def td-num" style="color:${mc('yellows',p.name)}">${(p.yellows!=null?p.yellows.toFixed(2):'—')}</td>
-      <td class="cat-total td-num" style="color:${mc('total_pass',p.name)}">${(p.total_pass!=null?p.total_pass.toFixed(1):'—')}</td>
+      <td class="cat-total td-num" style="color:${p.total_pass!=null?tiC(Math.round(p.total_pass/23.5*100)):'rgba(255,255,255,.18)'}">${(p.total_pass!=null?p.total_pass.toFixed(1):'—')}</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('passes90',p.name)}">${(p.passes90!=null?p.passes90.toFixed(1):'—')}</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('passes_pct',p.name)}">${(p.passes_pct!=null?p.passes_pct.toFixed(1):'—')}%</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('shot_assist',p.name)}">${(p.shot_assist!=null?p.shot_assist.toFixed(2):'—')}</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('box_passes',p.name)}">${(p.box_passes!=null?p.box_passes.toFixed(2):'—')}</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('box_passes_pct',p.name)}">${(p.box_passes_pct!=null?p.box_passes_pct.toFixed(1):'—')}%</td>
-      <td class="cat-total td-num" style="color:${mc('total_physical',p.name)}">${(p.total_physical!=null?p.total_physical.toFixed(1):'—')}</td>
+      <td class="cat-total td-num" style="color:${p.total_physical!=null?tiC(Math.round(p.total_physical/25*100)):'rgba(255,255,255,.18)'}">${(p.total_physical!=null?p.total_physical.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('max_speed',p.name)}">${(p.max_speed!=null?p.max_speed.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('hsr90',p.name)}">${(p.hsr90!=null?Math.round(p.hsr90):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('sprint_dist90',p.name)}">${(p.sprint_dist90!=null?Math.round(p.sprint_dist90):'—')}</td>
@@ -14406,7 +14406,7 @@ function renderTable(){
         return '<span style="color:'+col+'">'+fmt+'</span>';
       })()}</td>
       <td class="td-val" style="padding-left:calc(8px + 2.5mm)">${fmtVal(p.mkt_value)}</td>
-      <td class="cat-total td-num" style="color:${mc('total_off',p.name)}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
+      <td class="cat-total td-num" style="color:${p.total_off!=null?tiC(Math.round(p.total_off/35*100)):'rgba(255,255,255,.18)'}">${(p.total_off!=null?p.total_off.toFixed(1):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xg',p.name)}">${(p.xg!=null?p.xg.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('xa',p.name)}">${(p.xa!=null?p.xa.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('goals_np',p.name)}">${p.goals_np||0}</td>
@@ -14420,19 +14420,19 @@ function renderTable(){
       <td class="cat-sub cat-off td-num" style="color:${mc('prog_carries',p.name)}">${(p.prog_carries!=null?p.prog_carries.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('accels90',p.name)}">${(p.accels90!=null?p.accels90.toFixed(2):'—')}</td>
       <td class="cat-sub cat-off td-num" style="color:${mc('recpt_depth',p.name)}">${(p.recpt_depth!=null?p.recpt_depth.toFixed(2):'—')}</td>
-      <td class="cat-total td-num" style="color:${mc('total_def',p.name)}">${(p.total_def!=null?p.total_def.toFixed(1):'—')}</td>
+      <td class="cat-total td-num" style="color:${p.total_def!=null?tiC(Math.round(p.total_def/8.5*100)):'rgba(255,255,255,.18)'}">${(p.total_def!=null?p.total_def.toFixed(1):'—')}</td>
       <td class="cat-sub cat-def td-num" style="color:${mc('def_duels',p.name)}">${(p.def_duels!=null?p.def_duels.toFixed(2):'—')}</td>
       <td class="cat-sub cat-def td-num" style="color:${mc('def_duels_pct',p.name)}">${(p.def_duels_pct!=null?p.def_duels_pct.toFixed(1):'—')}%</td>
       <td class="cat-sub cat-def td-num" style="color:${mc('adj_intercept',p.name)}">${(p.adj_intercept!=null?p.adj_intercept.toFixed(2):'—')}</td>
       <td class="cat-sub cat-def td-num" style="color:${mc('fouls',p.name)}">${(p.fouls!=null?p.fouls.toFixed(2):'—')}</td>
       <td class="cat-sub cat-def td-num" style="color:${mc('yellows',p.name)}">${(p.yellows!=null?p.yellows.toFixed(2):'—')}</td>
-      <td class="cat-total td-num" style="color:${mc('total_pass',p.name)}">${(p.total_pass!=null?p.total_pass.toFixed(1):'—')}</td>
+      <td class="cat-total td-num" style="color:${p.total_pass!=null?tiC(Math.round(p.total_pass/23.5*100)):'rgba(255,255,255,.18)'}">${(p.total_pass!=null?p.total_pass.toFixed(1):'—')}</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('passes90',p.name)}">${(p.passes90!=null?p.passes90.toFixed(1):'—')}</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('passes_pct',p.name)}">${(p.passes_pct!=null?p.passes_pct.toFixed(1):'—')}%</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('shot_assist',p.name)}">${(p.shot_assist!=null?p.shot_assist.toFixed(2):'—')}</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('box_passes',p.name)}">${(p.box_passes!=null?p.box_passes.toFixed(2):'—')}</td>
       <td class="cat-sub cat-pass td-num" style="color:${mc('box_passes_pct',p.name)}">${(p.box_passes_pct!=null?p.box_passes_pct.toFixed(1):'—')}%</td>
-      <td class="cat-total td-num" style="color:${mc('total_physical',p.name)}">${(p.total_physical!=null?p.total_physical.toFixed(1):'—')}</td>
+      <td class="cat-total td-num" style="color:${p.total_physical!=null?tiC(Math.round(p.total_physical/25*100)):'rgba(255,255,255,.18)'}">${(p.total_physical!=null?p.total_physical.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('max_speed',p.name)}">${(p.max_speed!=null?p.max_speed.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('hsr90',p.name)}">${(p.hsr90!=null?Math.round(p.hsr90):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('sprint_dist90',p.name)}">${(p.sprint_dist90!=null?Math.round(p.sprint_dist90):'—')}</td>
