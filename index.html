@@ -6268,24 +6268,24 @@ function renderTable(){
           ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:10px;opacity:.7">⚠️</span>`:''}
         </div>
       </td>
-      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05);vertical-align:middle">
+      <td style="text-align:center;padding:0 calc(10px - 0.5mm);background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05);vertical-align:middle">
         <span style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px">${p.age||'—'}</span>
       </td>
       <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);vertical-align:middle">
         <span style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px">${htTxt}</span>
       </td>
-      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.06);vertical-align:middle">
+      <td style="text-align:center;padding:0 calc(10px - 0.5mm);background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.06);vertical-align:middle">
         <span style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px">${footTxt||'—'}</span>
       </td>
       <td style="text-align:left;padding:9px 10px 0 29px;min-width:120px;max-width:160px;vertical-align:top">
         <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px">${p.team}</div>
         <div style="font-family:var(--font-d);font-size:9.5px;font-weight:600;color:rgba(0,180,220,.55);margin-top:4px;letter-spacing:.2px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
-      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:0 calc(12px + 0.5mm);background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
         <div class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}</div>
         <div class="td-score-sub">TAL</div>
       </td>
-      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6)">
+      <td style="text-align:center;padding:0 calc(12px + 0.5mm);background:rgba(0,6,14,.6)">
         ${p.has_phy
           ? `<div class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</div><div class="td-score-sub">PHY</div>`
           : `<div style="font-family:var(--font-d);font-size:11px;color:rgba(255,255,255,.15)">—</div>`}
@@ -14651,24 +14651,24 @@ function renderTable(){
           ${hasWinAlert(p)?`<span title="Verificar posição: ${getWinAlertPos(p).join(', ')}" style="cursor:help;font-size:10px;opacity:.7">⚠️</span>`:''}
         </div>
       </td>
-      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05);vertical-align:middle">
+      <td style="text-align:center;padding:0 calc(10px - 0.5mm);background:rgba(255,255,255,.015);border-left:1px solid rgba(255,255,255,.05);vertical-align:middle">
         <span style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px">${p.age||'—'}</span>
       </td>
       <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);vertical-align:middle">
         <span style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px">${htTxt}</span>
       </td>
-      <td style="text-align:center;padding:0 10px;background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.06);vertical-align:middle">
+      <td style="text-align:center;padding:0 calc(10px - 0.5mm);background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.06);vertical-align:middle">
         <span style="font-family:var(--font-d);font-size:15px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:-.5px">${footTxt||'—'}</span>
       </td>
       <td style="text-align:left;padding:9px 10px 0 29px;min-width:120px;max-width:160px;vertical-align:top">
         <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px">${p.team}</div>
         <div style="font-family:var(--font-d);font-size:9.5px;font-weight:600;color:rgba(0,180,220,.55);margin-top:4px;letter-spacing:.2px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
-      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
+      <td style="text-align:center;padding:0 calc(12px + 0.5mm);background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
         <div class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}</div>
         <div class="td-score-sub">TAL</div>
       </td>
-      <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6)">
+      <td style="text-align:center;padding:0 calc(12px + 0.5mm);background:rgba(0,6,14,.6)">
         ${p.has_phy
           ? `<div class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</div><div class="td-score-sub">PHY</div>`
           : `<div style="font-family:var(--font-d);font-size:11px;color:rgba(255,255,255,.15)">—</div>`}
