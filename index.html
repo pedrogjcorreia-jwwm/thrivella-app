@@ -322,7 +322,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 /* ── COLUMN GROUP SEPARATORS ── */
 .col-sep{border-left:1px solid rgba(255,255,255,.05)!important}
 .col-sep-strong{border-left:1px solid rgba(255,255,255,.09)!important}
-.players-table tbody td.cat-total{padding:0 12px}
+.players-table tbody td.cat-total{background:rgba(0,6,14,.6)!important;padding:0 12px}
 .players-table thead th.cat-total{background:#060c18!important}
 
 /* ── SCORES ── */
@@ -6285,16 +6285,16 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:9.5px;font-weight:600;color:rgba(0,180,220,.55);margin-top:4px;letter-spacing:.2px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
       <td style="text-align:center;padding:0 calc(12px + 0.5mm);background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
-        <div class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}</div>
+        <div class="td-score-num" style="color:rgba(255,255,255,.7)">${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}</div>
         <div class="td-score-sub">TAL</div>
       </td>
       <td style="text-align:center;padding:0 calc(12px + 0.5mm);background:rgba(0,6,14,.6)">
         ${p.has_phy
-          ? `<div class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</div><div class="td-score-sub">PHY</div>`
+          ? `<div class="td-score-num" style="color:rgba(255,255,255,.7)">${Math.round((p.total_physical/25)*100)}</div><div class="td-score-sub">PHY</div>`
           : `<div style="font-family:var(--font-d);font-size:11px;color:rgba(255,255,255,.15)">—</div>`}
       </td>
       <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)">
-        <div class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.2)'}">${p.transfer_score||0}</div>
+        <div class="td-score-num" style="color:rgba(255,255,255,.7)">${p.transfer_score||0}</div>
         <div class="td-score-sub">TRA</div>
       </td>
       <td class="td-contract" style="width:120px">${(()=>{
@@ -8740,7 +8740,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 /* ── COLUMN GROUP SEPARATORS ── */
 .col-sep{border-left:1px solid rgba(255,255,255,.05)!important}
 .col-sep-strong{border-left:1px solid rgba(255,255,255,.09)!important}
-.players-table tbody td.cat-total{padding:0 12px}
+.players-table tbody td.cat-total{background:rgba(0,6,14,.6)!important;padding:0 12px}
 .players-table thead th.cat-total{background:#060c18!important}
 
 /* ── SCORES ── */
@@ -14671,16 +14671,16 @@ function renderTable(){
         <div style="font-family:var(--font-d);font-size:9.5px;font-weight:600;color:rgba(0,180,220,.55);margin-top:4px;letter-spacing:.2px">${LEAGUE_CONFIG[p.league]?.display||p.league}</div>
       </td>
       <td style="text-align:center;padding:0 calc(12px + 0.5mm);background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">
-        <div class="td-score-num" style="color:${tiC(Math.round(activeTIPct(p)))}">${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}</div>
+        <div class="td-score-num" style="color:rgba(255,255,255,.7)">${Math.round(activeTIPct(p))}${ligaAdjustActive && p.liga_mult!==1.0 ? `<span style="font-size:8px;color:${p.liga_mult>1?'#00e5a0':'#ff5050'};margin-left:2px">${p.liga_mult>1?'▲':'▼'}</span>` : ''}</div>
         <div class="td-score-sub">TAL</div>
       </td>
       <td style="text-align:center;padding:0 calc(12px + 0.5mm);background:rgba(0,6,14,.6)">
         ${p.has_phy
-          ? `<div class="td-score-num" style="color:${tiC(Math.round((p.total_physical/25)*100))}">${Math.round((p.total_physical/25)*100)}</div><div class="td-score-sub">PHY</div>`
+          ? `<div class="td-score-num" style="color:rgba(255,255,255,.7)">${Math.round((p.total_physical/25)*100)}</div><div class="td-score-sub">PHY</div>`
           : `<div style="font-family:var(--font-d);font-size:11px;color:rgba(255,255,255,.15)">—</div>`}
       </td>
       <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)">
-        <div class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.2)'}">${p.transfer_score||0}</div>
+        <div class="td-score-num" style="color:rgba(255,255,255,.7)">${p.transfer_score||0}</div>
         <div class="td-score-sub">TRA</div>
       </td>
       <td class="td-contract" style="width:120px">${(()=>{
