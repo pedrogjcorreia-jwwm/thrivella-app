@@ -25622,6 +25622,47 @@ function renderMobileTable(){
       </div>
     </div>`;
   }
+  // Multi-select league dropdown (checkboxes), mirrors desktop dkLeagueDD pattern
+  window._mobLeagueSel = window._mobLeagueSel || new Set();
+  function mkMultiDD(id, label, allOpts){
+    const sel = window._mobLeagueSel;
+    const selLabel = sel.size===0 ? label : (sel.size===1 ? (allOpts.find(([v])=>v===[...sel][0])?.[1]||label) : sel.size+' ligas');
+    const isActive = sel.size>0;
+    const items = allOpts.map(([v,l])=>{
+      const checked = sel.has(v);
+      return `<label style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:7px 10px;white-space:nowrap" onclick="event.stopPropagation()">
+        <input type="checkbox" ${checked?'checked':''} onchange="mobLeagueToggle('${v}')" style="accent-color:#00d4ff;cursor:pointer;margin:0;flex-shrink:0">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(200,225,255,.85)">${l}</span>
+      </label>`;
+    }).join('');
+    const quickRow = `<div style="display:flex;gap:6px;padding:6px 10px;border-bottom:1px solid rgba(0,180,255,.15)">
+      <button onclick="event.stopPropagation();mobLeagueSelectAll(true)" style="flex:1;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:#00d4ff;border-radius:3px;padding:3px 0;cursor:pointer">Todas</button>
+      <button onclick="event.stopPropagation();mobLeagueSelectAll(false)" style="flex:1;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);color:rgba(200,225,255,.6);border-radius:3px;padding:3px 0;cursor:pointer">Nenhuma</button>
+    </div>`;
+    return `<div class="sim-dd" id="${id}" style="position:relative;flex-shrink:0">
+      <div onclick="mobRkToggle('${id}')" style="display:flex;align-items:center;gap:4px;height:24px;padding:0 8px;background:#0d1e35;border:1px solid ${isActive?'rgba(0,212,255,.6)':'rgba(0,180,255,.22)'};border-radius:5px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:${isActive?'#00d4ff':'rgba(200,225,255,.85)'};white-space:nowrap;min-width:40px">
+        <span id="${id}-lbl" style="overflow:hidden;text-overflow:ellipsis">${selLabel}</span>
+        <span style="font-size:8px;opacity:.55;flex-shrink:0">▾</span>
+      </div>
+      <div id="${id}-list" style="display:none;position:fixed;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.85);max-height:280px;overflow-y:auto;min-width:140px">
+        ${quickRow}
+        ${items}
+      </div>
+    </div>`;
+  }
+  window.mobLeagueToggle = function(lg){
+    const sel = window._mobLeagueSel;
+    if(sel.has(lg)) sel.delete(lg); else sel.add(lg);
+    renderMobileTable();
+    setTimeout(()=>{ const list=document.getElementById('mob-f-league-list'); if(list) list.style.display='block'; },0);
+  };
+  window.mobLeagueSelectAll = function(all){
+    const sel = window._mobLeagueSel;
+    sel.clear();
+    if(all){ leagues.forEach(l=>sel.add(l)); }
+    renderMobileTable();
+    setTimeout(()=>{ const list=document.getElementById('mob-f-league-list'); if(list) list.style.display='block'; },0);
+  };
   window.mobRkSelect = function(id, val, lbl){
     const dd=document.getElementById(id);
     if(dd) dd.dataset.val=val;
@@ -25636,7 +25677,6 @@ function renderMobileTable(){
   const fSep = '<span style="width:1px;height:16px;background:rgba(0,212,255,.2);margin:0 2px;flex-shrink:0"></span>';
 
   const prev = {
-    league: getRkVal('mob-f-league'),
     pos:    getRkVal('mob-f-pos'),
     sort:   getRkVal('mob-f-sort')||'talent_index_pct',
     age:    getRkVal('mob-f-age'),
@@ -25656,7 +25696,7 @@ function renderMobileTable(){
     filterBar.innerHTML =
       '<button style="'+btnStyle+'" onclick="document.getElementById(\'mob-rk-scroll\').scrollLeft-=80">‹</button>'
       +'<div id="mob-rk-scroll" style="display:flex;align-items:center;gap:5px;flex:1;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:0 4px">'
-        +fLbl('Liga')+mkDD('mob-f-league','Liga',leagueOpts,prev.league)
+        +fLbl('Liga')+mkMultiDD('mob-f-league','Liga',leagueOpts.slice(1))
         +fSep+fLbl('Pos')+mkDD('mob-f-pos','Pos',posOpts,prev.pos)
         +fSep+fLbl('Index')+mkDD('mob-f-sort','Index',sortOpts,prev.sort)
         +fSep+fLbl('Idade')+mkDD('mob-f-age','Idade',ageOpts,prev.age)
@@ -25666,7 +25706,7 @@ function renderMobileTable(){
       +'<button style="'+btnStyle+'" onclick="document.getElementById(\'mob-rk-scroll\').scrollLeft+=80">›</button>';
   }
 
-  const leagueFil = getRkVal('mob-f-league');
+  const leagueSel = window._mobLeagueSel || new Set();
   const posFil    = getRkVal('mob-f-pos');
   const sortKey   = getRkVal('mob-f-sort')||'talent_index_pct';
   const ageFil    = getRkVal('mob-f-age');
@@ -25676,7 +25716,7 @@ function renderMobileTable(){
   const activeSortKey = metricKey||sortKey;
 
   let players = [...(PLAYERS||[])];
-  if(leagueFil) players=players.filter(p=>p.league===leagueFil);
+  if(leagueSel.size>0) players=players.filter(p=>leagueSel.has(p.league));
   if(posFil) players=players.filter(p=>{
     const g=(p.position_group||'').toUpperCase();
     return g===posFil;
