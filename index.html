@@ -6337,7 +6337,7 @@ function renderTable(){
       <td class="cat-sub cat-phys td-num" style="color:${mc('sprints90',p.name)}">${(p.sprints90!=null?p.sprints90.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('hsr_sprint_pct',p.name)}">${(p.hsr_sprint_pct!=null?p.hsr_sprint_pct.toFixed(1):'—')}%</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('total_dist',p.name)}">${(p.total_dist!=null?Math.round(p.total_dist):'—').toLocaleString()}</td>
-      <td style="text-align:center;padding:0 8px;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">${(()=>{
+      <td style="text-align:center;padding:0 8px;background:linear-gradient(135deg,rgba(0,40,70,.55) 0%,rgba(0,10,24,.65) 100%);border-left:1px solid rgba(0,180,255,.12)">${(()=>{
         const mk=window._tblFilters?.metric||'';
         if(!mk) return '<span style="color:rgba(255,255,255,.15);font-size:11px">—</span>';
         const v=p[mk];
@@ -14723,7 +14723,7 @@ function renderTable(){
       <td class="cat-sub cat-phys td-num" style="color:${mc('sprints90',p.name)}">${(p.sprints90!=null?p.sprints90.toFixed(1):'—')}</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('hsr_sprint_pct',p.name)}">${(p.hsr_sprint_pct!=null?p.hsr_sprint_pct.toFixed(1):'—')}%</td>
       <td class="cat-sub cat-phys td-num" style="color:${mc('total_dist',p.name)}">${(p.total_dist!=null?Math.round(p.total_dist):'—').toLocaleString()}</td>
-      <td style="text-align:center;padding:0 8px;background:rgba(0,6,14,.6);border-left:1px solid rgba(255,255,255,.05)">${(()=>{
+      <td style="text-align:center;padding:0 8px;background:linear-gradient(135deg,rgba(0,40,70,.55) 0%,rgba(0,10,24,.65) 100%);border-left:1px solid rgba(0,180,255,.12)">${(()=>{
         const mk=window._tblFilters?.metric||'';
         if(!mk) return '<span style="color:rgba(255,255,255,.15);font-size:11px">—</span>';
         const v=p[mk];
