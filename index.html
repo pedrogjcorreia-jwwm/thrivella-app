@@ -23222,7 +23222,7 @@ function shRenderPitch(formation, tabData){
       const _probe=document.createElement('div');
       _probe.className='sh-pcard';
       _probe.style.cssText='position:absolute;visibility:hidden;left:-9999px;top:-9999px;width:'+cardW+'px;';
-      _probe.innerHTML='<div class="sh-pcard-r1"><div class="sh-pcard-name">Probe Name</div><span class="sh-pcard-rank">#1st</span><span class="sh-pcard-pos">CM</span></div><div class="sh-pcard-r2"><span class="sh-pcard-sub">99y · 199cm</span><span class="sh-pcard-ct">Cont 2099-99</span></div><div class="sh-pcard-r3"><div class="sh-pcard-stat sc">TAL <b>99</b></div><div class="sh-pcard-stat of">PHY <b>99</b></div><div class="sh-pcard-stat ph">TRA <b>99</b></div></div>';
+      _probe.innerHTML='<div class="sh-pcard-r1"><div class="sh-pcard-name">Probe Name</div><span class="sh-pcard-rank">99 R</span><span class="sh-pcard-pos">CM</span></div><div class="sh-pcard-r2"><span class="sh-pcard-sub">99y · 199cm</span><span class="sh-pcard-ct">Cont 2099-99</span></div><div class="sh-pcard-r3"><div class="sh-pcard-stat sc">TAL <b>99</b></div><div class="sh-pcard-stat of">PHY <b>99</b></div><div class="sh-pcard-stat ph">TRA <b>99</b></div></div>';
       document.body.appendChild(_probe);
       cardH=_probe.offsetHeight||52;
       document.body.removeChild(_probe);
@@ -23267,7 +23267,8 @@ function shRenderPitch(formation, tabData){
         const phyPct=p.total_physical!=null?Math.round((p.total_physical/25)*100):0;
         const traPct=Math.round(p.transfer_score||0);
         const rnk=rnkSorted.findIndex(x=>x.name===name)+1;
-        const rnkTxt=rnk===1?'#1st':rnk===2?'#2nd':rnk===3?'#3rd':'#'+rnk+'th';
+        const footTxt=p.foot?(/^d/i.test(p.foot)?'R':'L'):'';
+        const rnkTxt=rnk+(footTxt?' '+footTxt:'');
         const firstPos=(p.position||'').split(',')[0].trim();
         const addBtn=''; // actions shown in row below
 
