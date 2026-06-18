@@ -26517,7 +26517,11 @@ function renderMobileShadowView(){
                         if(pl){
                           window.selectedPlayer = pl;
                           try{ if(typeof selectedPlayer!=='undefined') selectedPlayer = pl; }catch(_e){}
-                          if(typeof renderMobileElite==='function') renderMobileElite();
+                          // Use the proper view-switch (updates bottom nav active tab + rebuilds
+                          // the filter bar for Player ID) instead of calling the renderer
+                          // directly, which left the Shadow tab/filter bar stuck on screen.
+                          if(typeof mobGoToView==='function') mobGoToView('playerid');
+                          else if(typeof renderMobileElite==='function') renderMobileElite();
                         }
                       };
                     }
