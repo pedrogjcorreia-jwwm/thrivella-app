@@ -26036,6 +26036,59 @@ function renderMobileShadowView(){
       return m[1].slice(0,3).toUpperCase()+m[2];
     }
 
+    // Multi-select league dropdown for Shadow Team mobile (checkboxes), mirrors
+    // the desktop shSelectedLeagues / #sh-league-checkboxes pattern, and the
+    // mkMultiDD checklist already used in mobile Rankings.
+    function mkMultiDDsh(id, allLeagues){
+      var sel = (typeof shSelectedLeagues!=='undefined') ? shSelectedLeagues : new Set();
+      var selLabel = sel.size===0 ? 'Liga: Todas' : (sel.size===1 ? lgShortLabel([...sel][0]) : sel.size+' ligas');
+      var isActive = sel.size>0;
+      var items = allLeagues.map(function(lg){
+        var cfg = (typeof LEAGUE_CONFIG!=='undefined') ? LEAGUE_CONFIG[lg] : null;
+        var name = (cfg && cfg.display) || lg;
+        var checked = sel.size===0 || sel.has(lg);
+        return '<label style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:7px 10px;white-space:nowrap" onclick="event.stopPropagation()">'
+          +'<input type="checkbox" '+(checked?'checked':'')+' onchange="mobShLeagueToggle(\''+lg+'\')" style="accent-color:#00d4ff;cursor:pointer;margin:0;flex-shrink:0">'
+          +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;color:rgba(200,225,255,.85)">'+name+'</span>'
+        +'</label>';
+      }).join('');
+      var quickRow = '<div style="display:flex;gap:6px;padding:6px 10px;border-bottom:1px solid rgba(0,180,255,.15)">'
+        +'<button onclick="event.stopPropagation();mobShLeagueSelectAll(true)" style="flex:1;font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:700;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:#00d4ff;border-radius:3px;padding:3px 0;cursor:pointer">Todas</button>'
+        +'<button onclick="event.stopPropagation();mobShLeagueSelectAll(false)" style="flex:1;font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:700;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);color:rgba(200,225,255,.6);border-radius:3px;padding:3px 0;cursor:pointer">Nenhuma</button>'
+      +'</div>';
+      return '<div class="sim-dd" id="'+id+'" style="position:relative;flex-shrink:0">'
+        +'<div onclick="mobRkToggle(\''+id+'\')" style="display:flex;align-items:center;gap:4px;height:28px;padding:0 8px;background:#0a1420;border:1px solid '+(isActive?'rgba(0,212,255,.7)':'rgba(0,212,255,.25)')+';border-radius:5px;cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;color:'+(isActive?'#00d4ff':'#e8edf2')+';white-space:nowrap;box-sizing:border-box">'
+          +'<span id="'+id+'-lbl" style="overflow:hidden;text-overflow:ellipsis;max-width:90px">'+selLabel+'</span>'
+          +'<span style="font-size:8px;opacity:.55;flex-shrink:0">\u25be</span>'
+        +'</div>'
+        +'<div id="'+id+'-list" style="display:none;position:fixed;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.85);max-height:280px;overflow-y:auto;min-width:160px">'+quickRow+items+'</div>'
+      +'</div>';
+    }
+    window.mobShLeagueToggle = function(lg){
+      if(typeof shSelectedLeagues==='undefined') return;
+      // Materialize "all" (empty set) into an explicit full set before toggling one off
+      if(shSelectedLeagues.size===0){
+        var allLg=[...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))];
+        shSelectedLeagues = new Set(allLg);
+      }
+      if(shSelectedLeagues.has(lg)) shSelectedLeagues.delete(lg); else shSelectedLeagues.add(lg);
+      var allLg2=[...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))];
+      if(shSelectedLeagues.size===allLg2.length) shSelectedLeagues=new Set();
+      if(typeof shResetAndRender==='function') shResetAndRender();
+      renderMobileShadowView();
+      setTimeout(function(){ var list=document.getElementById('mob-sh-lg-list'); if(list) list.style.display='block'; },0);
+    };
+    window.mobShLeagueSelectAll = function(all){
+      // Matches desktop shSelectAllLeagues() behaviour exactly (empty Set = "all"
+      // in shFilterPlayers, so both buttons currently resolve to showing every
+      // league - this mirrors the existing desktop logic rather than introducing
+      // a different behaviour on mobile only).
+      shSelectedLeagues = new Set();
+      if(typeof shResetAndRender==='function') shResetAndRender();
+      renderMobileShadowView();
+      setTimeout(function(){ var list=document.getElementById('mob-sh-lg-list'); if(list) list.style.display='block'; },0);
+    };
+
     // ── Manual squad builder (My Shadow): + adds a player via Position -> League -> Player
     window.mobShCloseOverlay = function(){
       var ov=document.getElementById('mob-sh-add-overlay');
@@ -26231,7 +26284,7 @@ function renderMobileShadowView(){
       var dd=document.getElementById(id);
       if(dd) dd.dataset.val=val;
       var l=document.getElementById(id+'-lbl');
-      if(l) l.textContent=(id==='mob-sh-lg') ? lgShortLabel(val) : lbl;
+      if(l) l.textContent=lbl;
       var list=document.getElementById(id+'-list');
       if(list) list.style.display='none';
       if(id==='mob-sh-fm'){
@@ -26239,19 +26292,15 @@ function renderMobileShadowView(){
         if(s) s.value=val;
         if(typeof shResetAndRender==='function') shResetAndRender();
         renderMobileShadowView();
-      } else if(id==='mob-sh-lg'){
-        if(typeof shSelectedLeagues!=='undefined'){
-          shSelectedLeagues = (val==='all') ? new Set() : new Set([val]);
-        }
-        if(typeof shResetAndRender==='function') shResetAndRender();
-        renderMobileShadowView();
       }
     };
 
     var fmOpts=[['3-4-3','3-4-3'],['4-3-3','4-3-3'],['4-4-2','4-4-2'],['3-5-2','3-5-2']];
     var curFm=(document.getElementById('sh-formation')||{}).value||'3-4-3';
-    var curLg=(typeof shSelectedLeagues!=='undefined' && shSelectedLeagues.size===1) ? [...shSelectedLeagues][0] : 'all';
-    var lgOptsArr=[['all','Liga: Todas']].concat([...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))].sort().map(function(l){return [l, lgShortLabel(l)+' \u2014 '+l];}));
+    var allLeaguesArr=[...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))].sort(function(a,b){
+      var ca=(typeof LEAGUE_CONFIG!=='undefined')?LEAGUE_CONFIG[a]:null, cb=(typeof LEAGUE_CONFIG!=='undefined')?LEAGUE_CONFIG[b]:null;
+      return ((ca&&ca.display)||a).localeCompare((cb&&cb.display)||b);
+    });
 
     window.mobShMktInput = function(v){
       var lbl=document.getElementById('mob-sh-mkt-lbl');
@@ -26292,7 +26341,7 @@ function renderMobileShadowView(){
       <button style="${scrollBtnStyle}" onclick="document.getElementById('mob-sh-scroll').scrollLeft-=80">\u2039</button>
       <div id="mob-sh-scroll" style="display:flex;align-items:center;gap:6px;flex:1;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:0 4px">
       ${mkDDsh('mob-sh-fm', fmOpts, curFm)}
-      ${mkDDsh('mob-sh-lg', lgOptsArr, curLg)}
+      ${mkMultiDDsh('mob-sh-lg', allLeaguesArr)}
       ${mktDD}
       ${aiBtn}
       <button onclick="if(typeof shSelectTab==='function')shSelectTab('my',this);setTimeout(renderMobileShadowView,300)" style="${tabBtnStyle('my')};cursor:pointer">My Shadow</button>
