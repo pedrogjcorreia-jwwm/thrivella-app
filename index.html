@@ -26041,12 +26041,13 @@ function renderMobileShadowView(){
     // mkMultiDD checklist already used in mobile Rankings.
     function mkMultiDDsh(id, allLeagues){
       var sel = (typeof shSelectedLeagues!=='undefined') ? shSelectedLeagues : new Set();
-      var selLabel = sel.size===0 ? 'Liga: Todas' : (sel.size===1 ? lgShortLabel([...sel][0]) : sel.size+' ligas');
+      var isNoneMode = sel.has('__none__');
+      var selLabel = isNoneMode ? '0 ligas' : (sel.size===0 ? 'Liga: Todas' : (sel.size===1 ? lgShortLabel([...sel][0]) : sel.size+' ligas'));
       var isActive = sel.size>0;
       var items = allLeagues.map(function(lg){
         var cfg = (typeof LEAGUE_CONFIG!=='undefined') ? LEAGUE_CONFIG[lg] : null;
         var name = (cfg && cfg.display) || lg;
-        var checked = sel.size===0 || sel.has(lg);
+        var checked = !isNoneMode && (sel.size===0 || sel.has(lg));
         return '<label style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:7px 10px;white-space:nowrap" onclick="event.stopPropagation()">'
           +'<input type="checkbox" '+(checked?'checked':'')+' onchange="mobShLeagueToggle(\''+lg+'\')" style="accent-color:#00d4ff;cursor:pointer;margin:0;flex-shrink:0">'
           +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;color:rgba(200,225,255,.85)">'+name+'</span>'
@@ -26064,26 +26065,32 @@ function renderMobileShadowView(){
         +'<div id="'+id+'-list" style="display:none;position:fixed;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.85);max-height:280px;overflow-y:auto;min-width:160px">'+quickRow+items+'</div>'
       +'</div>';
     }
+    // Sentinel value so "none selected" can be represented explicitly as a
+    // non-empty Set (shSelectedLeagues.size===0 means "all" everywhere else
+    // in the codebase, e.g. shFilterPlayers/shGetLeague - this lets the mobile
+    // checklist support "deselect everything, then pick leagues one by one"
+    // without changing that existing meaning for desktop).
+    var SH_NONE_SENTINEL = '__none__';
     window.mobShLeagueToggle = function(lg){
       if(typeof shSelectedLeagues==='undefined') return;
-      // Materialize "all" (empty set) into an explicit full set before toggling one off
+      // Materialize "all" (empty set) or "none" (sentinel) into an explicit
+      // full set before toggling one off/on
       if(shSelectedLeagues.size===0){
         var allLg=[...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))];
         shSelectedLeagues = new Set(allLg);
+      } else if(shSelectedLeagues.has(SH_NONE_SENTINEL)){
+        shSelectedLeagues = new Set();
       }
       if(shSelectedLeagues.has(lg)) shSelectedLeagues.delete(lg); else shSelectedLeagues.add(lg);
       var allLg2=[...new Set((PLAYERS||[]).map(function(p){return p.league;}).filter(Boolean))];
       if(shSelectedLeagues.size===allLg2.length) shSelectedLeagues=new Set();
+      else if(shSelectedLeagues.size===0) shSelectedLeagues=new Set([SH_NONE_SENTINEL]);
       if(typeof shResetAndRender==='function') shResetAndRender();
       renderMobileShadowView();
       setTimeout(function(){ var list=document.getElementById('mob-sh-lg-list'); if(list) list.style.display='block'; },0);
     };
     window.mobShLeagueSelectAll = function(all){
-      // Matches desktop shSelectAllLeagues() behaviour exactly (empty Set = "all"
-      // in shFilterPlayers, so both buttons currently resolve to showing every
-      // league - this mirrors the existing desktop logic rather than introducing
-      // a different behaviour on mobile only).
-      shSelectedLeagues = new Set();
+      shSelectedLeagues = all ? new Set() : new Set([SH_NONE_SENTINEL]);
       if(typeof shResetAndRender==='function') shResetAndRender();
       renderMobileShadowView();
       setTimeout(function(){ var list=document.getElementById('mob-sh-lg-list'); if(list) list.style.display='block'; },0);
