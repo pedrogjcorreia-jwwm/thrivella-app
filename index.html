@@ -23425,6 +23425,7 @@ function shRemoveFromSlot(tabId,slotId,idx){
   sd.players.splice(idx,1);
   sd.cur=Math.max(0,Math.min(sd.cur,sd.players.length-1));
   sd._manual=true;
+  shSave();
   if(shSidePlayer && !sd.players.includes(shSidePlayer)) shCloseSide();
   shRender();
 
@@ -23682,6 +23683,7 @@ function shPickPlayer(name){
     sd.players.push(name);
     sd._manual=true;
   }
+  shSave();
   shClosePicker();
   shRender();
 }
@@ -23713,6 +23715,7 @@ function shImportAuto(tabId, slotId, e) {
   const toAdd = eligible.slice(0, 6 - existing.length);
   toAdd.forEach(p => sd.players.push(p.name));
   sd._manual = true;
+  shSave();
   shRender();
 }
 
@@ -23761,6 +23764,7 @@ function shManagerRemove(idx) {
   if (!sd) return;
   sd.players.splice(idx, 1);
   sd._manual = true;
+  shSave();
   // Re-render manager list
   shOpenManager(tabId, slotId, null);
   shRender();
@@ -24058,6 +24062,7 @@ function shSquadAdd(slotId, name){
     sd.players.push(name);
     sd._manual=true;
   }
+  shSave();
   shRender();
   shSquadRender();
 }
