@@ -5010,7 +5010,15 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
           <div id="sh-side-panel" style="width:0;flex-shrink:0;overflow:hidden;transition:width .2s;background:var(--bg1);border-left:1px solid var(--border);display:flex;flex-direction:column"></div>
           <div class="sh-cmp-panel" id="sh-cmp-panel">
             <div class="sh-cmp-hd"><div class="sh-cmp-title">Comparar</div><button class="sh-cmp-x" onclick="shCloseCompare()">×</button></div>
-            <div class="sh-cmp-picker"><span style="font-family:var(--font-d);font-size:10px;color:var(--muted);flex-shrink:0">vs.</span><select id="sh-cmp-select" onchange="shRenderCompare()" style="flex:1;font-family:var(--font-d);font-size:11px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:4px 8px"><option value="">— Escolher jogador —</option></select></div>
+            <div class="sh-cmp-picker" style="flex-direction:column;align-items:stretch;gap:6px;position:relative">
+              <div style="display:flex;align-items:center;gap:6px">
+                <span style="font-family:var(--font-d);font-size:10px;color:var(--muted);flex-shrink:0">vs.</span>
+                <input id="sh-cmp-search" type="text" autocomplete="off" placeholder="Procurar jogador..." oninput="shCmpSearch()" onfocus="shCmpSearch()" style="flex:1;font-family:var(--font-d);font-size:11px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:4px 8px;outline:none">
+                <select id="sh-cmp-posfilter" onchange="shCmpSearch()" style="flex-shrink:0;font-family:var(--font-d);font-size:11px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:4px 6px"><option value="">Pos: Todas</option></select>
+              </div>
+              <div id="sh-cmp-results" style="display:none;position:absolute;top:34px;left:0;right:0;z-index:60;max-height:240px;overflow-y:auto;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;box-shadow:0 8px 28px rgba(0,0,0,.6)"></div>
+              <select id="sh-cmp-select" onchange="shRenderCompare()" style="display:none"></select>
+            </div>
             <div class="sh-cmp-cols" id="sh-cmp-cols"></div>
           </div>
           <div class="sh-metrics-panel" id="sh-metrics-panel">
@@ -15998,27 +16006,21 @@ function shOpenCompare(playerName, slotId) {
   const sidePan = document.getElementById('sh-side-panel');
   if(sidePan) sidePan.style.width = '680px';
 
-  // Populate the B picker
+  // Free search picker (texto livre + filtro de posicao)
   const sel = document.getElementById('sh-cmp-select');
-  if(sel){
-    const formation = SH_FORMATIONS[shGetFormation()];
-    const slot = formation ? formation.slots.find(s=>s.id===slotId) : null;
-    const GROUP_MAP = {'CB':'CB','LCB':'CB','RCB':'CB','LWB':'WB','RWB':'WB','DM':'CM','CM':'CM','LW':'WIN','RW':'WIN','CF':'CF','GK':'GK'};
-    const myGroup = slot ? (GROUP_MAP[slot.label]||slot.label) : '';
-    const sameGroupLabels = Object.entries(GROUP_MAP).filter(([,g])=>g===myGroup).map(([l])=>l);
-    const sameGroupSlots = formation ? formation.slots.filter(s=>sameGroupLabels.includes(s.label)) : [];
-    const inSlot = [];
-    sameGroupSlots.forEach(cs => {
-      const sd = shData[shCurrentTab]&&shData[shCurrentTab][cs.id];
-      if(sd) sd.players.forEach(n=>{ if(n!==playerName && !inSlot.includes(n)) inSlot.push(n); });
-    });
-    const candidates = PLAYERS
-      .filter(p => p.name !== playerName && (slot ? shPlayerMatchesSlot(p, slot) : true))
-      .sort((a,b) => (inSlot.includes(b.name)?1:0)-(inSlot.includes(a.name)?1:0) || (b.score||0)-(a.score||0));
-    sel.innerHTML = '<option value="">— Escolher jogador B —</option>' +
-      candidates.map(p=>'<option value="'+p.name+'">'+(inSlot.includes(p.name)?'★ ':'')+p.name+' — '+(p.team||'')+'</option>').join('');
-    if(inSlot.length>0) sel.value = inSlot[0];
+  if(sel) sel.innerHTML = '<option value=""></option>';
+  const _cmpInp = document.getElementById('sh-cmp-search');
+  if(_cmpInp) _cmpInp.value = '';
+  const _cmpRes = document.getElementById('sh-cmp-results');
+  if(_cmpRes){ _cmpRes.style.display='none'; _cmpRes.innerHTML=''; }
+  const _cmpPosf = document.getElementById('sh-cmp-posfilter');
+  if(_cmpPosf){
+    const _pA = PLAYERS.find(x=>x.name===playerName);
+    const _grps = [...new Set(PLAYERS.map(x=>x.position_group).filter(Boolean))].sort();
+    _cmpPosf.innerHTML = '<option value="">Pos: Todas</option>' + _grps.map(g=>'<option value="'+g+'">'+g+'</option>').join('');
+    _cmpPosf.value = (_pA && _pA.position_group) ? _pA.position_group : '';
   }
+  shCmpSearch();
 
   const panel = document.getElementById('sh-cmp-panel');
   if(panel) panel.classList.add('open');
@@ -16032,6 +16034,34 @@ function shCloseCompare() {
   if(sidePan) sidePan.style.width = '331px';
   _shCmpPlayerA = null;
 }
+window.shCmpSearch = function(){
+  const inp = document.getElementById('sh-cmp-search');
+  const posf = document.getElementById('sh-cmp-posfilter');
+  const res = document.getElementById('sh-cmp-results');
+  if(!res) return;
+  const q = ((inp&&inp.value)||'').trim().toLowerCase();
+  const pos = posf ? posf.value : '';
+  let pool = PLAYERS.filter(p => p.name !== _shCmpPlayerA);
+  if(pos) pool = pool.filter(p => p.position_group===pos || (p.position||'').split(',').map(z=>z.trim()).includes(pos));
+  if(q) pool = pool.filter(p => (p.name||'').toLowerCase().includes(q) || (p.team||'').toLowerCase().includes(q));
+  pool = pool.sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,40);
+  if(!pool.length){ res.innerHTML='<div style="padding:6px 8px;font-family:var(--font-d);font-size:11px;color:var(--muted)">Sem resultados</div>'; res.style.display='block'; return; }
+  res.innerHTML = pool.map(p=>{
+    const nm=(p.name||'').replace(/'/g,"\\'");
+    const sub=((p.position||'').split(',')[0]||'')+' · '+(p.team||'');
+    return '<div onmousedown="shCmpPick(\''+nm+'\')" style="padding:5px 8px;cursor:pointer;font-family:var(--font-d);font-size:11px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:8px" onmouseenter="this.style.background=\'rgba(0,212,255,.08)\'" onmouseleave="this.style.background=\'\'"><span style="color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</span><span style="color:var(--muted);flex-shrink:0;white-space:nowrap">'+sub+'</span></div>';
+  }).join('');
+  res.style.display='block';
+};
+window.shCmpPick = function(name){
+  const sel = document.getElementById('sh-cmp-select');
+  const inp = document.getElementById('sh-cmp-search');
+  const res = document.getElementById('sh-cmp-results');
+  if(sel){ if(![...sel.options].some(o=>o.value===name)) sel.add(new Option(name,name)); sel.value=name; }
+  if(inp) inp.value=name;
+  if(res){ res.style.display='none'; res.innerHTML=''; }
+  shRenderCompare();
+};
 
 function shRenderCompare() {
   const cols = document.getElementById('sh-cmp-cols');
