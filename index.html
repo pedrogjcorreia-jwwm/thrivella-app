@@ -5012,9 +5012,9 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
             <div class="sh-cmp-hd"><div class="sh-cmp-title">Comparar</div><button class="sh-cmp-x" onclick="shCloseCompare()">×</button></div>
             <div class="sh-cmp-picker" style="flex-direction:column;align-items:stretch;gap:6px;position:relative">
               <div style="display:flex;align-items:center;gap:6px">
-                <span id="sh-cmp-aname" style="flex:1;min-width:0;font-family:var(--font-d);font-size:11px;font-weight:700;color:#378ADD;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:4px 8px;background:var(--bg3);border:1px solid rgba(55,138,221,.45);border-radius:4px;text-align:center">—</span>
+                <span id="sh-cmp-aname" style="flex:1;min-width:0;font-family:var(--font-d);font-size:12.5px;font-weight:700;color:#378ADD;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:7px 10px;background:var(--bg3);border:1px solid rgba(55,138,221,.45);border-radius:4px;text-align:left">—</span>
                 <select id="sh-cmp-posfilter" onchange="shCmpSearch()" style="flex-shrink:0;font-family:var(--font-d);font-size:11px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:4px 6px"><option value="">Pos: Todas</option></select>
-                <input id="sh-cmp-search" type="text" autocomplete="off" placeholder="Jogador 2..." oninput="shCmpSearch()" onfocus="shCmpSearch()" style="flex:1;font-family:var(--font-d);font-size:11px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:4px 8px;outline:none">
+                <input id="sh-cmp-search" type="text" autocomplete="off" placeholder="Jogador 2..." oninput="shCmpSearch()" onfocus="shCmpSearch()" style="flex:1;font-family:var(--font-d);font-size:12.5px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:7px 10px;outline:none;text-align:left">
               </div>
               <div id="sh-cmp-results" style="display:none;position:absolute;top:34px;left:0;right:0;z-index:60;max-height:240px;overflow-y:auto;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;box-shadow:0 8px 28px rgba(0,0,0,.6)"></div>
               <select id="sh-cmp-select" onchange="shRenderCompare()" style="display:none"></select>
@@ -15999,7 +15999,7 @@ let _shCmpSlotId  = null;
 
 function shOpenCompare(playerName, slotId) {
   _shCmpPlayerA = playerName;
-  try{ const _an=document.getElementById('sh-cmp-aname'); if(_an) _an.textContent=playerName; }catch(e){}
+  try{ const _an=document.getElementById('sh-cmp-aname'); const _pa=PLAYERS.find(x=>x.name===playerName); if(_an) _an.textContent=playerName+((_pa&&_pa.team)?' — '+_pa.team:''); }catch(e){}
   _shCmpSlotId  = slotId;
 
   // Close metrics panel if open
@@ -16060,7 +16060,7 @@ window.shCmpPick = function(name){
   const inp = document.getElementById('sh-cmp-search');
   const res = document.getElementById('sh-cmp-results');
   if(sel){ if(![...sel.options].some(o=>o.value===name)) sel.add(new Option(name,name)); sel.value=name; }
-  if(inp) inp.value=name;
+  if(inp){ const _pk=PLAYERS.find(x=>x.name===name); inp.value=name+((_pk&&_pk.team)?' — '+_pk.team:''); }
   if(res){ res.style.display='none'; res.innerHTML=''; }
   shRenderCompare();
 };
@@ -16223,8 +16223,8 @@ function _reflowCompareVertical(){
     body.querySelectorAll('.cmp-bar-row').forEach(row=>{
       row.style.cssText='display:grid;grid-template-columns:40px 1fr 80px 1fr 40px;align-items:center;gap:4px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03);min-height:22px;box-sizing:border-box;width:100%';
       const ch=Array.from(row.children);
-      if(ch[0]){ch[0].style.paddingLeft='10px';ch[0].style.textAlign='right';ch[0].style.display='flex';ch[0].style.alignItems='center';ch[0].style.justifyContent='flex-end';}
-      if(ch[ch.length-1]){ch[ch.length-1].style.paddingRight='10px';ch[ch.length-1].style.textAlign='left';ch[ch.length-1].style.display='flex';ch[ch.length-1].style.alignItems='center';ch[ch.length-1].style.justifyContent='flex-start';}
+      if(ch[0]){ch[0].style.padding='0 6px';ch[0].style.textAlign='center';ch[0].style.display='flex';ch[0].style.alignItems='center';ch[0].style.justifyContent='center';}
+      if(ch[ch.length-1]){ch[ch.length-1].style.padding='0 6px';ch[ch.length-1].style.textAlign='center';ch[ch.length-1].style.display='flex';ch[ch.length-1].style.alignItems='center';ch[ch.length-1].style.justifyContent='center';}
       // Symmetric padding on bar cells — equal gap from label and value box
       if(ch[1]) ch[1].style.padding='0 6px';
       if(ch[3]) ch[3].style.padding='0 6px';
@@ -16287,9 +16287,11 @@ function shRenderCompare() {
         const cards=Array.from(headerRow.querySelectorAll('.cmp-card'));
         if(cards.length>=2){ const grid=document.createElement('div'); grid.style.cssText='display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.06)'; cards.slice(0,2).forEach((c,ci)=>{const cl=c.cloneNode(true); cl.style.cssText='min-width:0;overflow:hidden;box-sizing:border-box;'+(ci===0?'border-right:1px solid rgba(255,255,255,.06)':''); grid.appendChild(cl);}); cols.appendChild(grid); }
       }
+      const _gapC=document.createElement('div'); _gapC.style.cssText='height:19px;background:#060c12'; cols.appendChild(_gapC);
       // 3. Metricas (cmp-table sem o header-row)
       const cmpTable=cmpBody.querySelector('.cmp-table');
       if(cmpTable){ const tc=cmpTable.cloneNode(true); const h=tc.querySelector('.cmp-header-row'); if(h) h.remove(); tc.style.cssText='width:100%;box-sizing:border-box'; cols.appendChild(tc); }
+      const _gapA=document.createElement('div'); _gapA.style.cssText='height:19px;background:#060c12'; cols.appendChild(_gapA);
       // 4. AI Scout Assistant
       const aiSec=document.getElementById('cmp-ai-section');
       if(aiSec){ const ac=aiSec.cloneNode(true); ac.style.cssText='width:100%;box-sizing:border-box'; cols.appendChild(ac); }
