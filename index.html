@@ -5013,8 +5013,8 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
             <div class="sh-cmp-picker" style="flex-direction:column;align-items:stretch;gap:6px;position:relative">
               <div style="display:flex;align-items:center;gap:6px">
                 <span style="font-family:var(--font-d);font-size:10px;color:var(--muted);flex-shrink:0">vs.</span>
-                <input id="sh-cmp-search" type="text" autocomplete="off" placeholder="Procurar jogador..." oninput="shCmpSearch()" onfocus="shCmpSearch()" style="flex:1;font-family:var(--font-d);font-size:11px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:4px 8px;outline:none">
                 <select id="sh-cmp-posfilter" onchange="shCmpSearch()" style="flex-shrink:0;font-family:var(--font-d);font-size:11px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:4px 6px"><option value="">Pos: Todas</option></select>
+                <input id="sh-cmp-search" type="text" autocomplete="off" placeholder="Procurar jogador..." oninput="shCmpSearch()" onfocus="shCmpSearch()" style="flex:1;font-family:var(--font-d);font-size:11px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:4px;padding:4px 8px;outline:none">
               </div>
               <div id="sh-cmp-results" style="display:none;position:absolute;top:34px;left:0;right:0;z-index:60;max-height:240px;overflow-y:auto;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;box-shadow:0 8px 28px rgba(0,0,0,.6)"></div>
               <select id="sh-cmp-select" onchange="shRenderCompare()" style="display:none"></select>
@@ -15175,7 +15175,9 @@ function shOpenSide(name, slotId){
       <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;margin-top:2px">
         <button onclick="shOpenNoteByName('${shCurrentTab}','${shSideSlotId||''}','${name}')" style="font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.4px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:#f59e0b;border-radius:4px;padding:4px 8px;cursor:pointer;white-space:nowrap" title="Criar/editar nota">✎ Nota</button>
         <button onclick="shOpenCompare('${name}','${shSideSlotId||''}')" style="font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.4px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:4px;padding:4px 8px;cursor:pointer;white-space:nowrap" title="Comparar com outro jogador">⇌ Comparar</button>
-        ${_pTm?`<a href="${_pTm}" target="_blank" rel="noopener noreferrer" title="Abrir no Transfermarkt" style="display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:11px;font-weight:800;letter-spacing:.3px;color:#0d1f1a;background:#00e1a0;border-radius:4px;padding:4px 8px;text-decoration:none">tm</a>`:''}
+        ${_pTm
+          ? `<a href="${_pTm}" target="_blank" rel="noopener noreferrer" title="Abrir no Transfermarkt" style="display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:11px;font-weight:800;letter-spacing:.3px;color:#00e1a0;background:rgba(0,225,160,.08);border:1px solid #00e1a0;border-radius:4px;padding:3px 8px;text-decoration:none">tm</a>`
+          : `<span title="Sem link transfermarkt — adiciona no Player ID" style="display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:11px;font-weight:800;letter-spacing:.3px;color:#ff5370;background:rgba(255,83,112,.06);border:1px solid #ff5370;border-radius:4px;padding:3px 8px;cursor:default">tm</span>`}
       </div>
     </div>
     <div class="sh-side-badges" style="margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">${posTags}
@@ -16066,150 +16068,62 @@ window.shCmpPick = function(name){
 function shRenderCompare() {
   const cols = document.getElementById('sh-cmp-cols');
   const sel  = document.getElementById('sh-cmp-select');
-  if(!cols||!sel||!_shCmpPlayerA) return;
-
-  const pA = PLAYERS.find(x=>x.name===_shCmpPlayerA)||null;
-  const pB = sel.value ? (PLAYERS.find(x=>x.name===sel.value)||null) : null;
-
-  if(!pA) { cols.innerHTML=''; return; }
-
-  // Reuse the existing playerHeader + row building from renderCompare
-  // Temporarily set cmp-a and cmp-b selects, call renderCompare into our container
-  // Self-contained 2-column compare
-  const COL_A = '#378ADD';
-  const COL_B = '#00e5a0';
-
-  const SECS = [
-    {sec:'PERFIL'},
-    {lbl:'Clube',k:'team',fmt:v=>v},{lbl:'Idade',k:'age',fmt:v=>v+'y'},{lbl:'Altura',k:'size',fmt:v=>v+'cm'},{lbl:'Pé',k:'foot',fmt:v=>v},{lbl:'Contrato',k:'contract_end',fmt:v=>v},{lbl:'Valor',k:'mkt_value',fmt:v=>v>0?'€'+(v/1e6).toFixed(2)+'m':'—'},
-    {sec:'TOTAIS'},
-    {lbl:'Talent Index',k:'talent_index'},{lbl:'SofaScore',k:'sf_rating'},{lbl:'Total Off',k:'total_off'},{lbl:'Total Def',k:'total_def'},{lbl:'Total Pass',k:'total_pass'},{lbl:'Total Phy',k:'total_physical'},
-    {sec:'ATAQUE'},
-    {lbl:'xG',k:'xg'},{lbl:'xA',k:'xa'},{lbl:'Shots/90',k:'shots90'},{lbl:'%Golos',k:'goals_per_shot'},{lbl:'Dribles/90',k:'dribles90'},{lbl:'%Dribles',k:'dribles_pct'},{lbl:'Box Touch',k:'box_touches'},{lbl:'Prog Carr.',k:'prog_carries'},{lbl:'Shot Assist',k:'shot_assist'},{lbl:'Cruzan/90',k:'crosses90'},{lbl:'%Cruz.',k:'crosses_pct'},
-    {sec:'DEFESA'},
-    {lbl:'Def Duels',k:'def_duels'},{lbl:'%Def Duels',k:'def_duels_pct'},{lbl:'Interceções',k:'adj_intercept'},{lbl:'Faltas/90',k:'fouls'},
-    {sec:'PASSE'},
-    {lbl:'Passes/90',k:'passes90'},{lbl:'%Passes',k:'passes_pct'},{lbl:'Recep. Prof',k:'recpt_depth'},
-    {sec:'FÍSICO'},
-    {lbl:'HSR/90',k:'hsr90'},{lbl:'Sprint Dist',k:'sprint_dist90'},{lbl:'Max Speed',k:'max_speed'},{lbl:'Sprints/90',k:'sprints90'},{lbl:'Acel/90',k:'accels90'},
-  ];
-
-  // Pre-compute max values across both players for bar width
-  function getMax(k){ return Math.max(...[pA,pB].filter(Boolean).map(p=>parseFloat(p[k])||0), 0.001); }
-
-  function buildCol(p, col, otherP) {
-    if(!p) return `<div class="sh-cmp-col" style="display:flex;align-items:center;justify-content:center"><span style="font-family:var(--font-d);font-size:11px;color:var(--muted)">Sem dados</span></div>`;
-    const ranked = [...PLAYERS].sort((a,b)=>(b.score||0)-(a.score||0));
-    const rnk = ranked.findIndex(x=>x.name===p.name)+1;
-    const rnkTxt = rnk===1?'#1st':rnk===2?'#2nd':rnk===3?'#3rd':'#'+rnk+'th';
-    const ctYear = p.contract_end?parseInt(p.contract_end):9999;
-    const ctCol2 = ctYear<=2026?'#ff4757':ctYear<=2027?'#f59e0b':'var(--text)';
-    const mkt = p.mkt_value>0?'€'+(p.mkt_value/1e6).toFixed(2)+'m':'—';
-
-    // Header — no photo circle, just info
-    const hdr = `<div class="sh-cmp-col-hd" style="border-top:3px solid ${col};padding:12px">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div>
-          <div style="font-family:var(--font-d);font-size:18px;font-weight:800;color:#fff">${p.name}</div>
-          <div style="font-family:var(--font-d);font-size:10px;color:var(--muted);margin-top:1px">${p.team||'—'} · ${p.age||'—'}y · ${p.size?p.size+'cm':'—'} · ${p.foot||'—'}</div>
-          <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap">
-            ${(p.position||'').split(',').map(pos=>pos.trim()).filter(Boolean).map(pos=>`<span style="font-family:var(--font-d);font-size:9px;font-weight:700;border:1px solid rgba(0,200,255,.3);background:rgba(0,200,255,.08);color:var(--accent);border-radius:3px;padding:1px 5px">${pos}</span>`).join('')}
-            <span style="font-family:var(--font-d);font-size:9px;font-weight:700;color:#f59e0b">${rnkTxt}</span>
-          </div>
-        </div>
-      </div>
-      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
-        <span style="font-family:var(--font-d);font-size:9px;color:var(--muted)">Cont: <b style="color:${ctCol2}">${p.contract_end||'—'}</b></span>
-        <span style="font-family:var(--font-d);font-size:9px;color:var(--muted)">MKT: <b style="color:var(--text)">${mkt}</b></span>
-      </div>
-    </div>`;
-
-    // Bar row builder — same as compare menu
-    function metricRow(lbl, k, inverse=false) {
-      const v = p[k]; if(v===undefined||v===null) return '';
-      const ov = otherP?otherP[k]:null;
-      const vN = parseFloat(v)||0, ovN = parseFloat(ov)||0;
-      const maxV = getMax(k);
-      const pct = Math.min(100,(vN/maxV)*100).toFixed(1);
-      const wins = inverse ? (ov===null||vN<=ovN) : (ov===null||vN>=ovN);
-      const fillCol = wins ? col : 'rgba(255,255,255,.12)';
-      const valCol  = wins ? col : 'rgba(255,255,255,.45)';
-      const vFmt = typeof v==='number'?v.toFixed(v%1===0?0:2):v;
-      const winnerStyle = wins
-        ? `color:${col};font-weight:800;font-size:12px;border:1px solid ${col};border-radius:4px;padding:1px 6px;background:${col}18`
-        : `color:rgba(255,255,255,.72);font-weight:400;font-size:11px`;
-      return `<div class="sh-cmp-row">
-        <span class="sh-cmp-lbl" style="color:rgba(255,255,255,.72)">${lbl}</span>
-        <span class="sh-cmp-val" style="${winnerStyle};min-width:36px;text-align:right">${vFmt}</span>
-      </div>`;
-    }
-
-    // Section totals with value
-    function secRow(lbl, k) {
-      // No total key — plain white title
-      if(!k) return `<div class="sh-cmp-sec" style="color:rgba(255,255,255,.75)">${lbl}</div>`;
-      const v = p[k];
-      if(v===undefined||v===null) return `<div class="sh-cmp-sec" style="color:rgba(255,255,255,.75)">${lbl}</div>`;
-      const vFmt = typeof v==='number'?v.toFixed(1):v;
-      const ov = otherP?otherP[k]:null;
-      const vN=parseFloat(v)||0, ovN=parseFloat(ov)||0;
-      const wins = ov===null||vN>=ovN;
-      // Winner: column colour (blue/green), loser: white subdued
-      const titleCol = wins ? col : 'rgba(255,255,255,.75)';
-      const valCol2  = wins ? col : 'rgba(255,255,255,.4)';
-      return `<div class="sh-cmp-sec" style="display:flex;justify-content:space-between;align-items:center;color:${titleCol}">
-        <span>${lbl}</span>
-        <span style="color:${valCol2};font-weight:800;font-size:11px">${vFmt}</span>
-      </div>`;
-    }
-
-    return `<div class="sh-cmp-col">
-      ${hdr}
-      <div style="overflow-y:auto;flex:1" class="sh-cmp-scroll">
-        ${secRow('TOTAIS','')}
-        ${metricRow('Score','score')}
-        ${metricRow('SofaScore','sf_rating')}
-        ${secRow('ATAQUE','total_off')}
-        ${metricRow('xG','xg')}
-        ${metricRow('xA','xa')}
-        ${metricRow('Shots/90','shots90')}
-        ${metricRow('%Golos/Rem','goals_per_shot')}
-        ${metricRow('Dribles/90','dribles90')}
-        ${metricRow('%Dribles','dribles_pct')}
-        ${metricRow('Box Touches','box_touches')}
-        ${metricRow('Prog. Carries','prog_carries')}
-        ${metricRow('Shot Assist','shot_assist')}
-        ${metricRow('Cruzan./90','crosses90')}
-        ${metricRow('%Cruz.','crosses_pct')}
-        ${secRow('DEFESA','total_def')}
-        ${metricRow('Def Duels/90','def_duels')}
-        ${metricRow('%Def Duels','def_duels_pct')}
-        ${metricRow('Interceções','adj_intercept')}
-        ${metricRow('Faltas/90','fouls')}
-        ${secRow('PASSE','total_pass')}
-        ${metricRow('Passes/90','passes90')}
-        ${metricRow('%Passes','passes_pct')}
-        ${metricRow('Recep. Prof.','recpt_depth')}
-        ${secRow('FÍSICO','total_physical')}
-        ${metricRow('HSR/90','hsr90')}
-        ${metricRow('Sprint Dist.','sprint_dist90')}
-        ${metricRow('Max Speed','max_speed')}
-        ${metricRow('Sprints/90','sprints90')}
-        ${metricRow('Acel./90','accels90')}
-      </div>
-    </div>`;
+  if(!cols || !sel || !_shCmpPlayerA) return;
+  const pA = PLAYERS.find(x=>x.name===_shCmpPlayerA) || null;
+  const pB = sel.value ? (PLAYERS.find(x=>x.name===sel.value) || null) : null;
+  if(!pA){ cols.innerHTML=''; return; }
+  if(!pB){
+    cols.innerHTML = '<div style="padding:26px 18px;text-align:center;font-family:var(--font-d);font-size:12px;color:var(--muted);line-height:1.5">Procura e escolhe um jogador para comparar com <b style="color:#00e5a0">'+pA.name+'</b>.</div>';
+    return;
   }
-
-
-  cols.innerHTML = buildCol(pA, COL_A, pB) + buildCol(pB, COL_B, pA);
-
-  // Sync scroll between columns
-  const scrollEls = cols.querySelectorAll('.sh-cmp-scroll');
-  scrollEls.forEach(el => {
-    el.addEventListener('scroll', function() {
-      scrollEls.forEach(other => { if(other !== el) other.scrollTop = el.scrollTop; });
-    });
-  });
+  cols.innerHTML = '<div class="ai-thinking" style="padding:34px 0;justify-content:center"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
+  // Reutiliza o motor de comparacao do desktop, renderizado fora do ecra (sem flash)
+  const viewCmp = document.getElementById('view-compare');
+  const _pv = viewCmp ? {d:viewCmp.style.display,p:viewCmp.style.position,l:viewCmp.style.left,t:viewCmp.style.top,z:viewCmp.style.zIndex,v:viewCmp.style.visibility} : null;
+  if(viewCmp){ viewCmp.style.display='flex'; viewCmp.style.position='fixed'; viewCmp.style.left='-99999px'; viewCmp.style.top='0'; viewCmp.style.zIndex='-1'; viewCmp.style.visibility='visible'; }
+  const restore=()=>{ if(viewCmp&&_pv){ viewCmp.style.display=_pv.d; viewCmp.style.position=_pv.p; viewCmp.style.left=_pv.l; viewCmp.style.top=_pv.t; viewCmp.style.zIndex=_pv.z; viewCmp.style.visibility=_pv.v; } };
+  try{ if(typeof initCompare==='function') initCompare(); }catch(e){}
+  const sa=document.getElementById('cmp-a'), sb=document.getElementById('cmp-b');
+  if(sa) sa.value=pA.name;
+  if(sb) sb.value=pB.name;
+  try{ if(typeof renderCompare==='function') renderCompare(); }catch(e){ restore(); cols.innerHTML='<div style="padding:20px;color:var(--muted);font-size:12px">Erro ao gerar comparacao.</div>'; return; }
+  setTimeout(()=>{
+    try{ if(typeof generateCompareAI==='function') generateCompareAI(pA,pB); }catch(e){}
+    const srcCanvas=document.getElementById('cmp-radar-combined');
+    setTimeout(()=>{
+      const cmpBody=document.getElementById('compare-body');
+      if(!cmpBody || !cols){ restore(); return; }
+      cols.innerHTML='';
+      // 1. RADAR (canvas -> imagem) + legenda
+      const rw=document.createElement('div');
+      rw.style.cssText='display:flex;flex-direction:column;align-items:center;padding:12px 8px 8px;background:#060c12;border-bottom:1px solid rgba(255,255,255,.06)';
+      if(srcCanvas){ try{ const img=document.createElement('img'); img.src=srcCanvas.toDataURL(); img.style.cssText='width:100%;max-width:300px;height:auto;display:block'; rw.appendChild(img); }catch(e){} }
+      const leg=document.createElement('div');
+      leg.style.cssText='display:flex;gap:14px;margin-top:6px;font-family:var(--font-d);font-size:10px;font-weight:700;justify-content:center';
+      const lnA=(pA.name.split(' ').slice(-1)[0]||pA.name), lnB=(pB.name.split(' ').slice(-1)[0]||pB.name);
+      leg.innerHTML='<span style="color:#378ADD">● '+lnA+'</span><span style="color:rgba(255,255,255,.35)">╌ Liga</span><span style="color:#00e5a0">● '+lnB+'</span>';
+      rw.appendChild(leg);
+      cols.appendChild(rw);
+      // 2. Apresentacao dos jogadores (cartoes)
+      const headerRow=cmpBody.querySelector('.cmp-header-row');
+      if(headerRow){
+        const cards=Array.from(headerRow.querySelectorAll('.cmp-card'));
+        if(cards.length>=2){
+          const grid=document.createElement('div');
+          grid.style.cssText='display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.06)';
+          cards.slice(0,2).forEach((card,ci)=>{ const cl=card.cloneNode(true); cl.style.cssText='min-width:0;overflow:hidden;box-sizing:border-box;'+(ci===0?'border-right:1px solid rgba(255,255,255,.06)':''); grid.appendChild(cl); });
+          cols.appendChild(grid);
+        }
+      }
+      // 3. Metricas (cmp-table sem o header)
+      const cmpTable=cmpBody.querySelector('.cmp-table');
+      if(cmpTable){ const tc=cmpTable.cloneNode(true); const h=tc.querySelector('.cmp-header-row'); if(h) h.remove(); tc.style.cssText='width:100%;overflow-x:hidden;box-sizing:border-box'; cols.appendChild(tc); }
+      // 4. AI Scout Assistant
+      const aiSec=document.getElementById('cmp-ai-section');
+      if(aiSec) cols.appendChild(aiSec.cloneNode(true));
+      restore();
+    }, 340);
+  }, 540);
 }
 
 
