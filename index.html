@@ -16115,8 +16115,8 @@ function _reflowCompareVertical(){
           card.querySelectorAll('.cmp-hl-row').forEach(r=>{
             const _l=r.querySelector('.cmp-hl-lbl'); const _v=r.querySelector('.cmp-hl-val');
             if(_l&&_v&&_l.textContent.trim().toLowerCase().indexOf('contract')===0){
-              const _m=_v.textContent.match(/(20\d\d)/); const _y=_m?parseInt(_m[1]):0;
-              if(_y){ const _cc=_y<=2025?'var(--red)':_y<=2026?'var(--amber)':'var(--green)'; _v.style.background='transparent'; _v.style.color=_cc; _v.style.fontWeight='800'; }
+              const _m=_v.textContent.match(/(20\d\d)/); const _y=_m?_m[1]:'';
+              if(_y){ const _cc=_y==='2026'?'#ff4757':_y==='2027'?'rgba(255,179,64,.75)':'rgba(255,255,255,.45)'; _v.style.background='transparent'; _v.style.color=_cc; _v.style.fontWeight='800'; }
             }
           });
           // plain-rows: bigger font
@@ -16295,10 +16295,6 @@ function shRenderCompare() {
         const cards=Array.from(headerRow.querySelectorAll('.cmp-card'));
         if(cards.length>=2){ const grid=document.createElement('div'); grid.style.cssText='display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.06)'; cards.slice(0,2).forEach((c,ci)=>{const cl=c.cloneNode(true); cl.style.cssText='min-width:0;overflow:hidden;box-sizing:border-box;'+(ci===0?'border-right:1px solid rgba(255,255,255,.06)':''); grid.appendChild(cl);}); cols.appendChild(grid); }
       }
-      try{
-        Array.from(cols.querySelectorAll('div')).forEach(d=>{ if(!d.children.length && d.textContent.trim()==='/100') d.remove(); });
-        cols.querySelectorAll('div[style*="font-size:28px"]').forEach(big=>{ const par=big.parentNode; if(!par) return; const val=par.querySelector('div[style*="font-size:10px"]'); if(val){ const pv=big.textContent.trim(), vv=val.textContent.trim(); big.textContent=vv; val.textContent=pv; } });
-      }catch(e){}
       const _gapC=document.createElement('div'); _gapC.style.cssText='height:19px;background:#060c12;flex-shrink:0'; cols.appendChild(_gapC);
       // 3. Metricas (cmp-table sem o header-row)
       const cmpTable=cmpBody.querySelector('.cmp-table');
