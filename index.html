@@ -15147,23 +15147,30 @@ function shOpenSide(name, slotId){
     </div>`;
   }
 
+  const _pPhoto=(window.photoCache&&window.photoCache[name]&&window.photoCache[name]!=='DELETE')?window.photoCache[name]:null;
+  const _pIni=(name||'').split(' ').map(w=>(w[0]||'')).join('').slice(0,2).toUpperCase();
+  const _ff=(p.foot||'').toLowerCase();
+  const _pFoot=(_ff.includes('amb')||_ff.includes('both'))?'R/L':(_ff.includes('dir')||_ff==='r'||_ff.startsWith('right'))?'R':(_ff.includes('esq')||_ff==='l'||_ff.startsWith('left'))?'L':(p.foot||'—');
+  let _pTm='';try{_pTm=localStorage.getItem('tm_link_'+name)||p.tm_player_url||'';}catch(e){_pTm=p.tm_player_url||'';}
   panel.innerHTML=`<div style="display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border);flex-shrink:0">
     <div style="font-family:var(--font-d);font-size:13px;font-weight:700;letter-spacing:.5px;color:var(--accent);flex:1">JOGADOR</div>
     <button class="sh-side-close" onclick="shCloseSide()">×</button>
   </div>
   <div class="sh-side-inner">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
-      <div>
-        <div class="sh-side-name">${name}</div>
-        <div class="sh-side-sub">${p.team||'—'} · ${p.age||'—'}y · ${p.size?p.size+'cm':'—'} · ${p.foot||'—'}</div>
+    <div style="display:flex;align-items:flex-start;gap:10px">
+      <div onclick="shGoToPlayerID('${name}')" title="Abrir Player ID" style="flex-shrink:0;width:54px;height:54px;border-radius:8px;border:1px solid rgba(0,212,255,.3);overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;background:${_pPhoto?`#0a0f16 url('${_pPhoto}') center/cover`:'rgba(0,212,255,.06)'}">${_pPhoto?'':`<span style="font-family:var(--font-d);font-size:17px;font-weight:800;color:var(--accent);letter-spacing:.5px">${_pIni}</span>`}</div>
+      <div style="flex:1;min-width:0">
+        <div class="sh-side-name" onclick="shGoToPlayerID('${name}')" style="cursor:pointer" title="Abrir Player ID">${name}</div>
+        <div class="sh-side-sub">${p.team||'—'} · ${p.age||'—'}y · ${p.size?p.size+'cm':'—'} · ${_pFoot}</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;margin-top:2px">
         <button onclick="shOpenNoteByName('${shCurrentTab}','${shSideSlotId||''}','${name}')" style="font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.4px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:#f59e0b;border-radius:4px;padding:4px 8px;cursor:pointer;white-space:nowrap" title="Criar/editar nota">✎ Nota</button>
         <button onclick="shOpenCompare('${name}','${shSideSlotId||''}')" style="font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.4px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:4px;padding:4px 8px;cursor:pointer;white-space:nowrap" title="Comparar com outro jogador">⇌ Comparar</button>
       </div>
     </div>
-    <div class="sh-side-badges" style="margin-top:8px">${posTags}
+    <div class="sh-side-badges" style="margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">${posTags}
       <span style="font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.7px;border:1px solid ${lc.border};background:${lc.bg};color:${lc.col};border-radius:3px;padding:2px 6px">${p.league||'—'}</span>
+      ${_pTm?`<a href="${_pTm}" target="_blank" rel="noopener noreferrer" title="Abrir no Transfermarkt" style="margin-left:auto;font-family:var(--font-d);font-size:11px;font-weight:800;letter-spacing:.3px;color:#0d1f1a;background:#00e1a0;border-radius:3px;padding:2px 7px;text-decoration:none">tm</a>`:''}
     </div>
     <div style="margin-top:14px">
       <div class="sh-side-row"><span class="sh-side-lbl">Contrato</span><span class="sh-side-val" style="color:${ctCol};font-weight:800">${ctDisplay}</span></div>
@@ -15191,12 +15198,8 @@ function shOpenSide(name, slotId){
           })()}
         </div>
       </div>
-      <div class="sh-side-stat-box">
-        <div class="sh-side-stat-lbl">SofaScore</div>
-        <div class="sh-side-stat-val" style="color:#fff">${p.sf_rating?p.sf_rating.toFixed(2):'—'}</div>
-      </div>
-      ${ (function(){ const _v=p.total_off; return metricBox('off','total_off',_v?_v.toFixed(1):null,'var(--accent)',_v?Math.round(_v/35*100):null); })() }
       ${ (function(){ const _pv=p.total_physical; const _pp=_pv?Math.round(_pv/25*100):null; return metricBox('phy','total_physical',_pv?_pv.toFixed(1):null,'#9b7fff',_pp); })() }
+      ${ (function(){ const _v=p.total_off; return metricBox('off','total_off',_v?_v.toFixed(1):null,'var(--accent)',_v?Math.round(_v/35*100):null); })() }
       ${ (function(){ const _v=p.total_def; return metricBox('def','total_def',_v?_v.toFixed(1):null,'#ff5370',_v?Math.round(_v/8.5*100):null); })() }
       ${ (function(){ const _v=p.total_pass; return metricBox('pass','total_pass',_v?_v.toFixed(1):null,'#4fc3f7',_v?Math.round(_v/23.5*100):null); })() }
       <div class="sh-side-stat-box">
@@ -15206,6 +15209,10 @@ function shOpenSide(name, slotId){
       <div class="sh-side-stat-box">
         <div class="sh-side-stat-lbl">Golos</div>
         <div class="sh-side-stat-val">${p.goals_np!==undefined?p.goals_np:'—'}</div>
+      </div>
+      <div class="sh-side-stat-box">
+        <div class="sh-side-stat-lbl">Assist</div>
+        <div class="sh-side-stat-val">${(p.assists!==undefined&&p.assists!==null)?p.assists:'—'}</div>
       </div>
       <div class="sh-side-stat-box">
         <div class="sh-side-stat-lbl">xG</div>
@@ -15225,6 +15232,12 @@ function shCloseSide(){
   panel.style.width='0';
   panel.innerHTML='';
   shRender();
+}
+function shGoToPlayerID(name){
+  const p=PLAYERS.find(x=>x.name===name); if(!p) return;
+  window.selectedPlayer=p;
+  try{ shCloseSide(); }catch(e){}
+  showView('playerid', document.querySelector('.top-btn[onclick*="playerid"]'));
 }
 
 // ── Tab select ────────────────────────────────────────────────────────────────
