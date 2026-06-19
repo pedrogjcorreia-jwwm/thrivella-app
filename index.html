@@ -9736,7 +9736,7 @@ function renderPlayerID(name, league) {
   const oldWidget = document.getElementById('sim-drag-widget');
   if(oldWidget) oldWidget.remove();
   overlay.innerHTML =
-  '<div class="pid3-wrap" style="display:grid;grid-template-columns:minmax(0,4.1fr) minmax(0,1.6fr);gap:7px;height:100%;width:100%;overflow:hidden;padding:7px 7px 8px 7px;background:#080c10;box-sizing:border-box">'+
+  '<div class="pid3-wrap" style="display:grid;grid-template-columns:minmax(0,4.1fr) minmax(0,1.6fr);gap:7px;height:100%;width:100%;overflow:hidden;padding:7px 7px 8px 7px;background:#080c10;box-sizing:border-box;visibility:hidden">'+
 
   /* ══ COLUNA ESQUERDA ══ */
   '<div style="display:grid;grid-template-rows:218px 1fr 134px;gap:7px;min-width:0;overflow:hidden;height:100%;flex-shrink:0">'+
@@ -10793,6 +10793,7 @@ function renderPlayerID(name, league) {
       // Drag disabled — cards locked in position
 
     }); // end cards.forEach
+    wrap.style.visibility = 'visible'; // revela só após o layout final (elimina o flash do grid por defeito)
 
     function highlightSelected(){
       cards.forEach(c=>{
@@ -10826,7 +10827,7 @@ function renderPlayerID(name, league) {
     wrap.appendChild(hint);
     setTimeout(()=>hint.style.opacity='0', 4000);
 
-  }, 400);
+  }, 150);
 }
 
 function initSimpleViewV7() {
