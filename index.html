@@ -15131,7 +15131,7 @@ function shOpenSide(name, slotId){
     }
   };
 
-  function metricBox(groupKey, totalKey, totalVal, totalColor, pct){
+  function metricBox(groupKey, totalKey, totalVal, totalColor, pct, invert){
     const g = METRIC_GROUPS[groupKey];
     const tKey = totalKey;
     const sorted = [...PLAYERS].filter(x=>x[tKey]!=null).sort((a,b)=>(b[tKey]||0)-(a[tKey]||0));
@@ -15146,10 +15146,10 @@ function shOpenSide(name, slotId){
     return `<div class="sh-side-stat-box" style="cursor:pointer;position:relative" onclick="shSideOpenMetrics('${name}','${groupKey}')">
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div class="sh-side-stat-lbl">${g.label}</div>
-        <span style="font-family:var(--font-d);font-size:9px;color:${valCol}">${pct!=null?pct+'%':''} <span style="opacity:.5">›</span></span>
+        <span style="font-family:var(--font-d);font-size:9px;color:${valCol}">${invert?(totalVal!=null?totalVal:'—'):(pct!=null?pct+'%':'')} <span style="opacity:.5">›</span></span>
       </div>
       <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:2px">
-        <div class="sh-side-stat-val" style="color:${valCol};margin:0">${totalVal||'—'}</div>
+        <div class="sh-side-stat-val" style="color:${valCol};margin:0">${invert?(pct!=null?pct+'%':'—'):(totalVal||'—')}</div>
         <span style="font-family:var(--font-d);font-size:8px;font-weight:800;color:${rnkCol};background:${rnkBg};border-radius:3px;padding:1px 5px;flex-shrink:0">${rnkTxt}</span>
       </div>
     </div>`;
@@ -15169,16 +15169,17 @@ function shOpenSide(name, slotId){
       <div onclick="shGoToPlayerID('${name}')" title="Abrir Player ID" style="flex-shrink:0;width:54px;height:54px;border-radius:8px;border:1px solid rgba(0,212,255,.3);overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;background:${_pPhoto?`#0a0f16 url('${_pPhoto}') center/cover`:'rgba(0,212,255,.06)'}">${_pPhoto?'':`<span style="font-family:var(--font-d);font-size:17px;font-weight:800;color:var(--accent);letter-spacing:.5px">${_pIni}</span>`}</div>
       <div style="flex:1;min-width:0">
         <div class="sh-side-name" onclick="shGoToPlayerID('${name}')" style="cursor:pointer" title="Abrir Player ID">${name}</div>
-        <div class="sh-side-sub">${p.team||'—'} · ${p.age||'—'}y · ${p.size?p.size+'cm':'—'} · ${_pFoot}</div>
+        <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.team||'—'}</div>
+        <div class="sh-side-sub">${p.age||'—'}y · ${p.size?p.size+'cm':'—'} · ${_pFoot}</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;margin-top:2px">
         <button onclick="shOpenNoteByName('${shCurrentTab}','${shSideSlotId||''}','${name}')" style="font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.4px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:#f59e0b;border-radius:4px;padding:4px 8px;cursor:pointer;white-space:nowrap" title="Criar/editar nota">✎ Nota</button>
         <button onclick="shOpenCompare('${name}','${shSideSlotId||''}')" style="font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.4px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:4px;padding:4px 8px;cursor:pointer;white-space:nowrap" title="Comparar com outro jogador">⇌ Comparar</button>
+        ${_pTm?`<a href="${_pTm}" target="_blank" rel="noopener noreferrer" title="Abrir no Transfermarkt" style="display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:11px;font-weight:800;letter-spacing:.3px;color:#0d1f1a;background:#00e1a0;border-radius:4px;padding:4px 8px;text-decoration:none">tm</a>`:''}
       </div>
     </div>
     <div class="sh-side-badges" style="margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">${posTags}
       <span style="font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.7px;border:1px solid ${lc.border};background:${lc.bg};color:${lc.col};border-radius:3px;padding:2px 6px">${p.league||'—'}</span>
-      ${_pTm?`<a href="${_pTm}" target="_blank" rel="noopener noreferrer" title="Abrir no Transfermarkt" style="margin-left:auto;font-family:var(--font-d);font-size:11px;font-weight:800;letter-spacing:.3px;color:#0d1f1a;background:#00e1a0;border-radius:3px;padding:2px 7px;text-decoration:none">tm</a>`:''}
     </div>
     <div style="margin-top:14px">
       <div class="sh-side-row"><span class="sh-side-lbl">Contrato</span><span class="sh-side-val" style="color:${ctCol};font-weight:800">${ctDisplay}</span></div>
@@ -15192,10 +15193,10 @@ function shOpenSide(name, slotId){
       <div class="sh-side-stat-box" id="sh-score-box">
         <div style="display:flex;align-items:center;justify-content:space-between">
           <div class="sh-side-stat-lbl">Talent Index</div>
-          <span style="font-family:var(--font-d);font-size:9px;color:rgba(0,229,160,.55)">${p.talent_index_pct!=null?p.talent_index_pct+'%':'—'}</span>
+          <span style="font-family:var(--font-d);font-size:9px;color:rgba(0,229,160,.55)">${(p.talent_index||0).toFixed(1)}</span>
         </div>
         <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:2px">
-          <div class="sh-side-stat-val" style="color:var(--green);margin:0" id="sh-score-val">${(p.talent_index||0).toFixed(1)}</div>
+          <div class="sh-side-stat-val" style="color:var(--green);margin:0" id="sh-score-val">${p.talent_index_pct!=null?Math.round(p.talent_index_pct)+'%':'—'}</div>
           ${(function(){
             const _ss=[...PLAYERS].sort((a,b)=>activeTI(b)-activeTI(a));
             const _rn=_ss.findIndex(x=>x.name===name)+1;
@@ -15206,7 +15207,7 @@ function shOpenSide(name, slotId){
           })()}
         </div>
       </div>
-      ${ (function(){ const _pv=p.total_physical; const _pp=_pv?Math.round(_pv/25*100):null; return metricBox('phy','total_physical',_pv?_pv.toFixed(1):null,'#9b7fff',_pp); })() }
+      ${ (function(){ const _pv=p.total_physical; const _pp=_pv?Math.round(_pv/25*100):null; return metricBox('phy','total_physical',_pv?_pv.toFixed(1):null,'#9b7fff',_pp, true); })() }
       ${ (function(){ const _v=p.total_off; return metricBox('off','total_off',_v?_v.toFixed(1):null,'var(--accent)',_v?Math.round(_v/35*100):null); })() }
       ${ (function(){ const _v=p.total_def; return metricBox('def','total_def',_v?_v.toFixed(1):null,'#ff5370',_v?Math.round(_v/8.5*100):null); })() }
       ${ (function(){ const _v=p.total_pass; return metricBox('pass','total_pass',_v?_v.toFixed(1):null,'#4fc3f7',_v?Math.round(_v/23.5*100):null); })() }
@@ -15243,7 +15244,7 @@ function shCloseSide(){
 }
 function shGoToPlayerID(name){
   const p=PLAYERS.find(x=>x.name===name); if(!p) return;
-  window.selectedPlayer=p;
+  selectedPlayer=p; window.selectedPlayer=p;
   try{ shCloseSide(); }catch(e){}
   showView('playerid', document.querySelector('.top-btn[onclick*="playerid"]'));
 }
@@ -16020,7 +16021,6 @@ function shOpenCompare(playerName, slotId) {
     _cmpPosf.innerHTML = '<option value="">Pos: Todas</option>' + _grps.map(g=>'<option value="'+g+'">'+g+'</option>').join('');
     _cmpPosf.value = (_pA && _pA.position_group) ? _pA.position_group : '';
   }
-  shCmpSearch();
 
   const panel = document.getElementById('sh-cmp-panel');
   if(panel) panel.classList.add('open');
@@ -16083,7 +16083,7 @@ function shRenderCompare() {
     {sec:'PERFIL'},
     {lbl:'Clube',k:'team',fmt:v=>v},{lbl:'Idade',k:'age',fmt:v=>v+'y'},{lbl:'Altura',k:'size',fmt:v=>v+'cm'},{lbl:'Pé',k:'foot',fmt:v=>v},{lbl:'Contrato',k:'contract_end',fmt:v=>v},{lbl:'Valor',k:'mkt_value',fmt:v=>v>0?'€'+(v/1e6).toFixed(2)+'m':'—'},
     {sec:'TOTAIS'},
-    {lbl:'Score',k:'score'},{lbl:'SofaScore',k:'sf_rating'},{lbl:'Total Off',k:'total_off'},{lbl:'Total Def',k:'total_def'},{lbl:'Total Pass',k:'total_pass'},{lbl:'Total Phy',k:'total_physical'},
+    {lbl:'Talent Index',k:'talent_index'},{lbl:'SofaScore',k:'sf_rating'},{lbl:'Total Off',k:'total_off'},{lbl:'Total Def',k:'total_def'},{lbl:'Total Pass',k:'total_pass'},{lbl:'Total Phy',k:'total_physical'},
     {sec:'ATAQUE'},
     {lbl:'xG',k:'xg'},{lbl:'xA',k:'xa'},{lbl:'Shots/90',k:'shots90'},{lbl:'%Golos',k:'goals_per_shot'},{lbl:'Dribles/90',k:'dribles90'},{lbl:'%Dribles',k:'dribles_pct'},{lbl:'Box Touch',k:'box_touches'},{lbl:'Prog Carr.',k:'prog_carries'},{lbl:'Shot Assist',k:'shot_assist'},{lbl:'Cruzan/90',k:'crosses90'},{lbl:'%Cruz.',k:'crosses_pct'},
     {sec:'DEFESA'},
