@@ -16111,6 +16111,14 @@ function _reflowCompareVertical(){
           });
           });
 
+          // CONTRATO: cor do valor pelo ano de termino
+          card.querySelectorAll('.cmp-hl-row').forEach(r=>{
+            const _l=r.querySelector('.cmp-hl-lbl'); const _v=r.querySelector('.cmp-hl-val');
+            if(_l&&_v&&_l.textContent.trim().toLowerCase().indexOf('contract')===0){
+              const _m=_v.textContent.match(/(20\d\d)/); const _y=_m?parseInt(_m[1]):0;
+              if(_y){ const _cc=_y<=2025?'var(--red)':_y<=2026?'var(--amber)':'var(--green)'; _v.style.background=_cc; _v.style.color='#fff'; }
+            }
+          });
           // plain-rows: bigger font
           card.querySelectorAll('.cmp-plain-row').forEach(r=>{
             r.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:4px 8px;font-size:12px;width:100%;box-sizing:border-box;margin:1px 0';
@@ -16133,7 +16141,7 @@ function _reflowCompareVertical(){
           const sub=card.querySelector('.cmp-card-sub');
           if(sub){
             const posStr=sub.textContent.trim();
-            const isWinger=['W','WF','LW','RW','LWF','RWF'].some(x=>posStr.includes(x));
+            const isWinger=true;
             const badges=(isWinger?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;border:1px solid rgba(180,120,255,.4);color:rgba(200,150,255,.85);background:rgba(140,80,255,.07)">WINGER</span> `:'')
               +posStr.split(',').map(p=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;border:1px solid rgba(0,212,255,.35);color:#00d4ff;background:rgba(0,212,255,.07)">${p.trim()}</span>`).join(' ');
             sub.innerHTML=badges;
@@ -16287,6 +16295,7 @@ function shRenderCompare() {
         const cards=Array.from(headerRow.querySelectorAll('.cmp-card'));
         if(cards.length>=2){ const grid=document.createElement('div'); grid.style.cssText='display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.06)'; cards.slice(0,2).forEach((c,ci)=>{const cl=c.cloneNode(true); cl.style.cssText='min-width:0;overflow:hidden;box-sizing:border-box;'+(ci===0?'border-right:1px solid rgba(255,255,255,.06)':''); grid.appendChild(cl);}); cols.appendChild(grid); }
       }
+      try{ Array.from(cols.querySelectorAll('div')).forEach(d=>{ if(!d.children.length && d.textContent.trim()==='/100') d.remove(); }); }catch(e){}
       const _gapC=document.createElement('div'); _gapC.style.cssText='height:19px;background:#060c12'; cols.appendChild(_gapC);
       // 3. Metricas (cmp-table sem o header-row)
       const cmpTable=cmpBody.querySelector('.cmp-table');
