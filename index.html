@@ -15181,12 +15181,16 @@ function shOpenSide(name, slotId){
   </div>
   <div class="sh-side-inner">
     <div style="display:flex;align-items:flex-start;gap:10px">
+      <div style="flex:1;min-width:0">
+      <div style="display:flex;align-items:flex-start;gap:10px">
       <div onclick="shGoToPlayerID('${name}')" title="Abrir Player ID" style="flex-shrink:0;width:54px;height:54px;border-radius:8px;border:1px solid rgba(0,212,255,.3);overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;background:${_pPhoto?`#0a0f16 url('${_pPhoto}') center/cover`:'rgba(0,212,255,.06)'}">${_pPhoto?'':`<span style="font-family:var(--font-d);font-size:17px;font-weight:800;color:var(--accent);letter-spacing:.5px">${_pIni}</span>`}</div>
       <div style="flex:1;min-width:0">
         <div class="sh-side-name" onclick="shGoToPlayerID('${name}')" style="cursor:pointer" title="Abrir Player ID">${name}</div>
         <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.team||'—'}</div>
         <div class="sh-side-sub">${p.age||'—'}y · ${p.size?p.size+'cm':'—'} · ${_pFoot}</div>
-        <div style="margin-top:5px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">${posTags}<span style="font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.7px;border:1px solid ${lc.border};background:${lc.bg};color:${lc.col};border-radius:3px;padding:2px 6px">${p.league||'—'}</span></div>
+      </div>
+      </div>
+      <div style="margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">${posTags}<span style="font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.7px;border:1px solid ${lc.border};background:${lc.bg};color:${lc.col};border-radius:3px;padding:2px 6px">${p.league||'—'}</span></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;margin-top:2px">
         <button onclick="shOpenNoteByName('${shCurrentTab}','${shSideSlotId||''}','${name}')" style="font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.4px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:#f59e0b;border-radius:4px;padding:4px 8px;cursor:pointer;white-space:nowrap" title="Criar/editar nota">✎ Nota</button>
