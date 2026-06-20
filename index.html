@@ -7273,7 +7273,7 @@ function renderCompare(){
       + '<div class="cmp-card-name" style="color:' + col + ';margin-top:8px;cursor:pointer" onclick="openPlayerFromCompare(\''+p.name.replace(/'/g,"\\'")+'\')"> ' + p.name + '</div>'
       + '<div class="cmp-card-sub" data-pos="' + (p.position||'') + '" style="margin-top:5px;display:flex;flex-wrap:wrap;gap:3px;justify-content:center">'
       + '<span style="font-family:var(--font-d);font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;border:1px solid rgba(180,120,255,.4);color:rgba(200,150,255,.85);background:rgba(140,80,255,.07)">WINGER</span>'
-      + (p.position||'').split(',').map(function(_pp){ return '<span style="font-family:var(--font-d);font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;border:1px solid rgba(0,212,255,.35);color:#00d4ff;background:rgba(0,212,255,.07)">' + _pp.trim() + '</span>'; }).join('')
+      + (p.position||'').split(',').slice(0,2).map(function(_pp){ return '<span style="font-family:var(--font-d);font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;border:1px solid rgba(0,212,255,.35);color:#00d4ff;background:rgba(0,212,255,.07)">' + _pp.trim() + '</span>'; }).join('')
       + '</div>'
       + '</div>'
 
@@ -16108,9 +16108,11 @@ function _reflowCompareVertical(){
             const val=r.querySelector('.cmp-hl-val');
             if(lbl) lbl.style.cssText='color:var(--muted);font-family:var(--font-b);font-size:11px';
           card.querySelectorAll('.cmp-hl-val').forEach(el=>{
-            el.style.cssText='font-family:var(--font-d);font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;max-width:60%;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;color:#fff!important';
-            // Force white — override inline color:#000
-            el.setAttribute('style', el.style.cssText+';color:#fff');
+            const _bg=el.style.background||el.style.backgroundColor||'';
+            const _fg=el.style.color||'';
+            el.style.cssText='font-family:var(--font-d);font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;max-width:60%;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block';
+            if(_bg) el.style.background=_bg;
+            el.style.color=_fg||'#000';
           });
           });
 
@@ -16146,7 +16148,7 @@ function _reflowCompareVertical(){
             const posStr=(sub.getAttribute('data-pos')||sub.textContent).trim();
             const isWinger=true;
             const badges=(isWinger?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;border:1px solid rgba(180,120,255,.4);color:rgba(200,150,255,.85);background:rgba(140,80,255,.07)">WINGER</span> `:'')
-              +posStr.split(',').map(p=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;border:1px solid rgba(0,212,255,.35);color:#00d4ff;background:rgba(0,212,255,.07)">${p.trim()}</span>`).join(' ');
+              +posStr.split(',').slice(0,2).map(p=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;border:1px solid rgba(0,212,255,.35);color:#00d4ff;background:rgba(0,212,255,.07)">${p.trim()}</span>`).join(' ');
             sub.innerHTML=badges;
             sub.style.cssText='margin-top:4px;display:flex;flex-wrap:wrap;gap:2px;justify-content:center';
           }
@@ -18615,7 +18617,7 @@ function renderMobileElite(){
             const posStr=(sub.getAttribute('data-pos')||sub.textContent).trim();
             const isWinger=['W','WF','LW','RW','LWF','RWF'].some(x=>posStr.includes(x));
             const badges=(isWinger?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;border:1px solid rgba(180,120,255,.4);color:rgba(200,150,255,.85);background:rgba(140,80,255,.07)">WINGER</span> `:'')
-              +posStr.split(',').map(p=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;border:1px solid rgba(0,212,255,.35);color:#00d4ff;background:rgba(0,212,255,.07)">${p.trim()}</span>`).join(' ');
+              +posStr.split(',').slice(0,2).map(p=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;border:1px solid rgba(0,212,255,.35);color:#00d4ff;background:rgba(0,212,255,.07)">${p.trim()}</span>`).join(' ');
             sub.innerHTML=badges;
             sub.style.cssText='margin-top:4px;display:flex;flex-wrap:wrap;gap:2px;justify-content:center';
           }
