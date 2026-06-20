@@ -7279,15 +7279,16 @@ function renderCompare(){
           const r = 44, stroke = 6, norm = 2 * Math.PI * r;
           const pct = Math.max(0, Math.min(100, (p.talent_index_pct||0)));
           const fill = (pct / 100) * norm;
+          const ringCol = (pOther && (p.talent_index||0) < (pOther.talent_index||0)) ? 'rgba(150,165,185,.45)' : col;
           return '<div style="display:flex;justify-content:center;align-items:center;padding:16px 0 8px">'
             + '<div style="position:relative;width:' + (r*2+stroke*2) + 'px;height:' + (r*2+stroke*2) + 'px">'
             + '<svg width="' + (r*2+stroke*2) + '" height="' + (r*2+stroke*2) + '" style="transform:rotate(-90deg)">'
             + '<circle cx="' + (r+stroke) + '" cy="' + (r+stroke) + '" r="' + r + '" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="' + stroke + '"/>'
-            + '<circle cx="' + (r+stroke) + '" cy="' + (r+stroke) + '" r="' + r + '" fill="none" stroke="' + col + '" stroke-width="' + stroke + '" stroke-linecap="round" stroke-dasharray="' + fill.toFixed(1) + ' ' + norm.toFixed(1) + '" style="filter:drop-shadow(0 0 6px ' + col + '88)"/>'
+            + '<circle cx="' + (r+stroke) + '" cy="' + (r+stroke) + '" r="' + r + '" fill="none" stroke="' + ringCol + '" stroke-width="' + stroke + '" stroke-linecap="round" stroke-dasharray="' + fill.toFixed(1) + ' ' + norm.toFixed(1) + '" style="filter:drop-shadow(0 0 6px ' + ringCol + '88)"/>'
             + '</svg>'
             + '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;line-height:1">'
-            + '<div style="font-family:var(--font-d);font-size:28px;font-weight:700;color:' + col + ';line-height:1">' + (p.talent_index||0).toFixed(1) + '</div>'
-            + '<div style="font-family:var(--font-d);font-size:10px;font-weight:600;color:' + col + ';margin-top:2px">' + Math.round(p.talent_index_pct||0) + '</div>'
+            + '<div style="font-family:var(--font-d);font-size:28px;font-weight:700;color:' + ringCol + ';line-height:1">' + Math.round(p.talent_index_pct||0) + '</div>'
+            + '<div style="font-family:var(--font-d);font-size:10px;font-weight:600;color:' + ringCol + ';margin-top:2px">' + (p.talent_index||0).toFixed(1) + '</div>'
             + '<div style="font-family:var(--font-d);font-size:7px;font-weight:600;letter-spacing:1.5px;color:var(--muted2);margin-top:1px">TALENT INDEX</div>'
             + '</div>'
             + '</div>'
@@ -16294,6 +16295,7 @@ function shRenderCompare() {
         const cards=Array.from(headerRow.querySelectorAll('.cmp-card'));
         if(cards.length>=2){ const grid=document.createElement('div'); grid.style.cssText='display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.06)'; cards.slice(0,2).forEach((c,ci)=>{const cl=c.cloneNode(true); cl.style.cssText='min-width:0;overflow:hidden;box-sizing:border-box;'+(ci===0?'border-right:1px solid rgba(255,255,255,.06)':''); grid.appendChild(cl);}); cols.appendChild(grid); }
       }
+      try{ cols.querySelectorAll('div[style*="font-size:28px"]').forEach(big=>{ const par=big.parentNode; if(!par) return; const sm=par.querySelector('div[style*="font-size:10px"]'); if(sm){ const bt=big.textContent, st=sm.textContent; big.textContent=st; sm.textContent=bt; } }); }catch(e){}
       const _gapC=document.createElement('div'); _gapC.style.cssText='height:19px;background:#060c12;flex-shrink:0'; cols.appendChild(_gapC);
       // 3. Metricas (cmp-table sem o header-row)
       const cmpTable=cmpBody.querySelector('.cmp-table');
