@@ -13762,11 +13762,7 @@ function renderSimilarPlayers(p, targetEl) {
       +'onmouseout="this.style.background=\'rgba(0,212,255,.1)\'">\u21c4 Comp.</button>';
 
     // metrics panel — always visible, no expand button
-    const metricsContent = window._sv7NoCatBars ? '' :
-      '<div class="sim-card-body" style="padding:10px 14px 6px;border-top:1px solid var(--border)">'
-        +'<div class="sim-bars">'+catBars+'</div>'
-        +(insightHtml ? '<div style="margin-top:8px;display:flex;align-items:center;gap:4px;flex-wrap:wrap">'+insightHtml+'</div>' : '')
-      +'</div>';
+    const metricsContent = '';
 
     return '<div class="sim-card" data-pname="'+encodeURIComponent(q.name)+'" onclick="simCardClick(this)">'
       // ── TOP: name + match %
@@ -13797,6 +13793,7 @@ function renderSimilarPlayers(p, targetEl) {
             +rankBadge(getRank(q,'total_physical'))
           +'</div>'
         +'</div>'
+        +'<div style="display:flex;gap:6px;justify-content:center;margin-top:1px;font-family:var(--font-d);font-size:10px;color:var(--muted)"><span>'+(q.size?q.size+' cm':'—')+'</span><span style="opacity:.4">·</span><span>'+(q.foot||'—')+'</span></div>'
       +'</div>'
       // ── METRICS — always open
       +metricsContent
