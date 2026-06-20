@@ -7469,12 +7469,11 @@ function renderCompare(){
 
   // ── Compare Radar (canvas, same style as player detail radars) ──────────────
   const RADAR_KEYS = [
-    {l:'Ofensivo',  f: p => norm('total_off', p.total_off,  false)},
-    {l:'xG+xA',    f: p => { const v=(p.xg||0)+(p.xa||0); const all=PLAYERS.map(x=>(x.xg||0)+(x.xa||0)); return (all.filter(x=>x<v).length/(all.length-1))*100; }},
-    {l:'Dribles',  f: p => norm('dribles90',  p.dribles90,  false)},
-    {l:'Passe',    f: p => norm('total_pass', p.total_pass, false)},
-    {l:'Físico',   f: p => norm('total_physical', p.total_physical, false)},
-    {l:'Defensivo',f: p => norm('total_def',  p.total_def,  false)},
+    {l:'Talent',    f: p => Math.round((p.talent_index||0)/67*100)},
+    {l:'Physical',  f: p => Math.round((p.total_physical||0)/25*100)},
+    {l:'Ofensivo',  f: p => Math.round((p.total_off||0)/35*100)},
+    {l:'Defensivo', f: p => Math.round((p.total_def||0)/8.5*100)},
+    {l:'Passe',     f: p => Math.round((p.total_pass||0)/23.5*100)},
   ];
 
   window._cmpLayers = {a:true, b:true, c:true, d:true, avg:true};
@@ -16165,7 +16164,9 @@ function _reflowCompareVertical(){
             if(inner){
               const ch=Array.from(inner.children);
               if(ch[0]&&ch[1]){
-                ch[0].style.cssText='font-family:var(--font-d);font-size:28px;font-weight:900;color:#fff;line-height:1';
+                const _c0=ch[0].style.color||'';
+                ch[0].style.cssText='font-family:var(--font-d);font-size:28px;font-weight:900;line-height:1';
+                ch[0].style.color=_c0||'#fff';
                 ch[1].style.cssText='font-family:var(--font-d);font-size:10px;color:var(--muted2);margin-top:1px';
               }
               if(ch[2]) ch[2].style.cssText='font-family:var(--font-d);font-size:7px;font-weight:700;letter-spacing:1px;color:var(--muted2);margin-top:2px;text-transform:uppercase';
