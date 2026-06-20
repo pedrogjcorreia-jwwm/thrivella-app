@@ -16103,7 +16103,9 @@ function _reflowCompareVertical(){
 
           // hl-rows (Season, Team, League, Contract): button-style, full visible
           card.querySelectorAll('.cmp-hl-row').forEach(r=>{
+            const _rbg=r.style.background||r.style.backgroundColor||'';
             r.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:4px 8px;font-size:11px;width:100%;box-sizing:border-box;margin:1px 0';
+            if(_rbg) r.style.background=_rbg;
             const lbl=r.querySelector('.cmp-hl-lbl');
             const val=r.querySelector('.cmp-hl-val');
             if(lbl) lbl.style.cssText='color:var(--muted);font-family:var(--font-b);font-size:11px';
@@ -16163,11 +16165,7 @@ function _reflowCompareVertical(){
             if(inner){
               const ch=Array.from(inner.children);
               if(ch[0]&&ch[1]){
-                const rawVal=ch[0].textContent.trim();
-                const pctVal=ch[1].textContent.replace('%','').trim();
-                ch[0].textContent=Math.round(parseFloat(pctVal))||pctVal;
-                ch[0].style.cssText='font-family:var(--font-d);font-size:28px;font-weight:900;color:inherit;line-height:1';
-                ch[1].textContent=rawVal;
+                ch[0].style.cssText='font-family:var(--font-d);font-size:28px;font-weight:900;color:#fff;line-height:1';
                 ch[1].style.cssText='font-family:var(--font-d);font-size:10px;color:var(--muted2);margin-top:1px';
               }
               if(ch[2]) ch[2].style.cssText='font-family:var(--font-d);font-size:7px;font-weight:700;letter-spacing:1px;color:var(--muted2);margin-top:2px;text-transform:uppercase';
@@ -16300,7 +16298,7 @@ function shRenderCompare() {
         const cards=Array.from(headerRow.querySelectorAll('.cmp-card'));
         if(cards.length>=2){ const grid=document.createElement('div'); grid.style.cssText='display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.06)'; cards.slice(0,2).forEach((c,ci)=>{const cl=c.cloneNode(true); cl.style.cssText='min-width:0;overflow:hidden;box-sizing:border-box;'+(ci===0?'border-right:1px solid rgba(255,255,255,.06)':''); grid.appendChild(cl);}); cols.appendChild(grid); }
       }
-      const _gapC=document.createElement('div'); _gapC.style.cssText='height:19px;background:#060c12;flex-shrink:0'; cols.appendChild(_gapC);
+      const _gapC=document.createElement('div'); _gapC.style.cssText='height:12px;background:transparent;flex-shrink:0'; cols.appendChild(_gapC);
       // 3. Metricas (cmp-table sem o header-row)
       const cmpTable=cmpBody.querySelector('.cmp-table');
       if(cmpTable){ const tc=cmpTable.cloneNode(true); const h=tc.querySelector('.cmp-header-row'); if(h) h.remove(); const _bg=tc.firstElementChild; if(_bg && (_bg.getAttribute('style')||'').indexOf('height:40px')>=0) _bg.remove(); tc.style.cssText='width:100%;box-sizing:border-box'; cols.appendChild(tc); }
