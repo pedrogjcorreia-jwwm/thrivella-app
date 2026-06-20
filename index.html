@@ -7607,17 +7607,18 @@ function renderCompare(){
       ctx.font = `600 ${fLabel}px "Barlow Condensed", sans-serif`;
       ctx.fillStyle = '#7a8d9e';
       ctx.fillText(RADAR_KEYS[i].l.toUpperCase(), lx, ly);
-      const _magc = v => v>=75?'#00e5a0':v>=50?'#00d4ff':'rgba(160,175,195,.65)';
+      const _cA=CMP_COLS[0], _cB=CMP_COLS[1], _grey='rgba(160,175,195,.55)';
       const _vA = (window._cmpLayers.a && pA) ? Math.round(Math.min(100,Math.max(0,RADAR_KEYS[i].f(pA)))) : null;
       const _vB = (window._cmpLayers.b && pB) ? Math.round(Math.min(100,Math.max(0,RADAR_KEYS[i].f(pB)))) : null;
       ctx.font = `800 ${Math.round(SIZE*0.040)}px "Barlow Condensed", sans-serif`;
-      const _vy = ly + fLabel*0.95;
+      let _colA=_grey,_colB=_grey; if(_vA!=null&&_vB!=null){if(_vA>=_vB)_colA=_cA;if(_vB>=_vA)_colB=_cB;}else{if(_vA!=null)_colA=_cA;if(_vB!=null)_colB=_cB;}
+      const _vy = ly + fLabel*1.45;
       if(_vA!=null && _vB!=null){
-        ctx.textAlign='right'; ctx.fillStyle=_magc(_vA); ctx.fillText(String(_vA), lx-5, _vy);
-        ctx.textAlign='left';  ctx.fillStyle=_magc(_vB); ctx.fillText(String(_vB), lx+5, _vy);
+        ctx.textAlign='right'; ctx.fillStyle=_colA; ctx.fillText(String(_vA), lx-5, _vy);
+        ctx.textAlign='left';  ctx.fillStyle=_colB; ctx.fillText(String(_vB), lx+5, _vy);
         ctx.textAlign='center'; ctx.fillStyle='rgba(255,255,255,.22)'; ctx.font=`600 ${Math.round(SIZE*0.034)}px sans-serif`; ctx.fillText('\u00b7', lx, _vy-1);
-      } else if(_vA!=null){ ctx.textAlign='center'; ctx.fillStyle=_magc(_vA); ctx.fillText(String(_vA), lx, _vy);
-      } else if(_vB!=null){ ctx.textAlign='center'; ctx.fillStyle=_magc(_vB); ctx.fillText(String(_vB), lx, _vy); }
+      } else if(_vA!=null){ ctx.textAlign='center'; ctx.fillStyle=_colA; ctx.fillText(String(_vA), lx, _vy);
+      } else if(_vB!=null){ ctx.textAlign='center'; ctx.fillStyle=_colB; ctx.fillText(String(_vB), lx, _vy); }
     }
 
     // 8. Legend
@@ -15185,7 +15186,6 @@ function shOpenSide(name, slotId){
         <div class="sh-side-name" onclick="shGoToPlayerID('${name}')" style="cursor:pointer" title="Abrir Player ID">${name}</div>
         <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.team||'—'}</div>
         <div class="sh-side-sub">${p.age||'—'}y · ${p.size?p.size+'cm':'—'} · ${_pFoot}</div>
-        <div style="margin-top:6px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">${posTags}<span style="font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.7px;border:1px solid ${lc.border};background:${lc.bg};color:${lc.col};border-radius:3px;padding:2px 6px">${p.league||'—'}</span></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;margin-top:2px">
         <button onclick="shOpenNoteByName('${shCurrentTab}','${shSideSlotId||''}','${name}')" style="font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.4px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:#f59e0b;border-radius:4px;padding:4px 8px;cursor:pointer;white-space:nowrap" title="Criar/editar nota">✎ Nota</button>
@@ -15193,6 +15193,7 @@ function shOpenSide(name, slotId){
         ${_pTm?`<a href="${_pTm}" target="_blank" rel="noopener noreferrer" title="Abrir no Transfermarkt" style="align-self:flex-end;display:inline-flex;align-items:center;justify-content:center;width:34px;height:22px;background:#000;border:1px solid #00e1a0;border-radius:3px;box-sizing:border-box"><img src="${_tmIco}" style="height:14px;width:auto;display:block"></a>`:`<span title="Sem link transfermarkt — adiciona no Player ID" style="align-self:flex-end;display:inline-flex;align-items:center;justify-content:center;width:34px;height:22px;background:#000;border:1px solid #ff5370;border-radius:3px;box-sizing:border-box"><img src="${_tmIco}" style="height:14px;width:auto;display:block;opacity:.9"></span>`}
       </div>
     </div>
+    <div style="margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">${posTags}<span style="font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.7px;border:1px solid ${lc.border};background:${lc.bg};color:${lc.col};border-radius:3px;padding:2px 6px">${p.league||'—'}</span></div>
     <div style="margin-top:14px">
       <div class="sh-side-row"><span class="sh-side-lbl">Contrato</span><span class="sh-side-val" style="color:${ctCol};font-weight:800">${ctDisplay}</span></div>
       <div class="sh-side-row"><span class="sh-side-lbl">Valor Mercado</span><span class="sh-side-val">${mkt}</span></div>
@@ -16308,7 +16309,7 @@ function shRenderCompare() {
         const cards=Array.from(headerRow.querySelectorAll('.cmp-card'));
         if(cards.length>=2){ const grid=document.createElement('div'); grid.style.cssText='display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.06)'; cards.slice(0,2).forEach((c,ci)=>{const cl=c.cloneNode(true); cl.style.cssText='min-width:0;overflow:hidden;box-sizing:border-box;'+(ci===0?'border-right:1px solid rgba(255,255,255,.06)':''); grid.appendChild(cl);}); cols.appendChild(grid); }
       }
-      const _gapC=document.createElement('div'); _gapC.style.cssText='height:6px;background:transparent;flex-shrink:0'; cols.appendChild(_gapC);
+      const _gapC=document.createElement('div'); _gapC.style.cssText='height:18px;background:#060c12;flex-shrink:0'; cols.appendChild(_gapC);
       // 3. Metricas (cmp-table sem o header-row)
       const cmpTable=cmpBody.querySelector('.cmp-table');
       if(cmpTable){ const tc=cmpTable.cloneNode(true); const h=tc.querySelector('.cmp-header-row'); if(h) h.remove(); while(tc.firstElementChild && !tc.firstElementChild.textContent.trim() && tc.firstElementChild.children.length===0){ tc.firstElementChild.remove(); } tc.style.cssText='width:100%;box-sizing:border-box'; cols.appendChild(tc); }
