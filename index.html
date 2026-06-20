@@ -3754,7 +3754,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
 
 /* Side panel */
 .sh-side-inner{padding:7px 16px 16px;overflow-y:auto;flex:1;min-height:0}
-.sh-side-name{font-family:var(--font-d);font-size:22px;font-weight:700;color:#fff;letter-spacing:.3px;line-height:1.1}
+.sh-side-name{font-family:var(--font-d);font-size:18px;font-weight:700;color:#fff;letter-spacing:.3px;line-height:1.1}
 .sh-side-sub{font-family:var(--font-d);font-size:11px;color:var(--muted);margin-top:1px}
 .sh-side-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
 .sh-side-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-family:var(--font-d);font-size:11px}
@@ -15186,6 +15186,7 @@ function shOpenSide(name, slotId){
         <div class="sh-side-name" onclick="shGoToPlayerID('${name}')" style="cursor:pointer" title="Abrir Player ID">${name}</div>
         <div style="font-family:var(--font-d);font-size:13.5px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.team||'—'}</div>
         <div class="sh-side-sub">${p.age||'—'}y · ${p.size?p.size+'cm':'—'} · ${_pFoot}</div>
+        <div style="margin-top:5px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">${posTags}<span style="font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.7px;border:1px solid ${lc.border};background:${lc.bg};color:${lc.col};border-radius:3px;padding:2px 6px">${p.league||'—'}</span></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;margin-top:2px">
         <button onclick="shOpenNoteByName('${shCurrentTab}','${shSideSlotId||''}','${name}')" style="font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.4px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:#f59e0b;border-radius:4px;padding:4px 8px;cursor:pointer;white-space:nowrap" title="Criar/editar nota">✎ Nota</button>
@@ -15193,7 +15194,6 @@ function shOpenSide(name, slotId){
         ${_pTm?`<a href="${_pTm}" target="_blank" rel="noopener noreferrer" title="Abrir no Transfermarkt" style="align-self:flex-end;display:inline-flex;align-items:center;justify-content:center;width:34px;height:22px;background:#000;border:1px solid #00e1a0;border-radius:3px;box-sizing:border-box"><img src="${_tmIco}" style="height:14px;width:auto;display:block"></a>`:`<span title="Sem link transfermarkt — adiciona no Player ID" style="align-self:flex-end;display:inline-flex;align-items:center;justify-content:center;width:34px;height:22px;background:#000;border:1px solid #ff5370;border-radius:3px;box-sizing:border-box"><img src="${_tmIco}" style="height:14px;width:auto;display:block;opacity:.9"></span>`}
       </div>
     </div>
-    <div style="margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">${posTags}<span style="font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.7px;border:1px solid ${lc.border};background:${lc.bg};color:${lc.col};border-radius:3px;padding:2px 6px">${p.league||'—'}</span></div>
     <div style="margin-top:14px">
       <div class="sh-side-row"><span class="sh-side-lbl">Contrato</span><span class="sh-side-val" style="color:${ctCol};font-weight:800">${ctDisplay}</span></div>
       <div class="sh-side-row"><span class="sh-side-lbl">Valor Mercado</span><span class="sh-side-val">${mkt}</span></div>
@@ -16056,6 +16056,7 @@ window.shCmpSearch = function(){
   const q = ((inp&&inp.value)||'').trim().toLowerCase();
   const pos = posf ? posf.value : '';
   let pool = PLAYERS.filter(p => p.name !== _shCmpPlayerA);
+  if(!q){ const _shNames = new Set(Object.values(shData[shCurrentTab]||{}).flatMap(s => s.players||[])); pool = pool.filter(p => _shNames.has(p.name)); }
   if(pos) pool = pool.filter(p => p.position_group===pos || (p.position||'').split(',').map(z=>z.trim()).includes(pos));
   if(q) pool = pool.filter(p => (p.name||'').toLowerCase().includes(q) || (p.team||'').toLowerCase().includes(q));
   pool = pool.sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,40);
