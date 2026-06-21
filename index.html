@@ -10286,14 +10286,14 @@ function renderPlayerID(name, league) {
       '<div class="pid3-card" style="display:flex;flex-direction:column;overflow:hidden;min-height:0;background:#060c18;border-color:rgba(0,180,200,.12)">'+
         '<div style="display:flex;align-items:center;gap:5px;padding:10px 14px 6px;flex-shrink:0">'+
           '<span style="font-family:var(--font-d);font-size:11px;font-weight:700;color:#e8edf2;letter-spacing:.3px">'+(window.t&&window.t('lbl_physical')||'FÍSICO')+'</span>'+
-          window._pidSubHead()+
+          window._pidSubHead(11,4)+
         '</div>'+
         '<div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;padding:0 14px 10px">'+
-          mrow(t('m_max_speed'), p.max_speed?parseFloat(p.max_speed.toFixed(1)):null, 'max_speed')+
-          mrow(t('m_sprint_dist'), p.sprint_dist90?Math.round(p.sprint_dist90):null, 'sprint_dist90')+
-          mrow(t('m_sprints90'), p.sprints90?parseFloat(p.sprints90.toFixed(1)):null, 'sprints90')+
-          mrow(t('m_hsr90'), p.hsr90?Math.round(p.hsr90):null, 'hsr90')+
-          mrow(t('m_accels90'), p.accels90?parseFloat(p.accels90.toFixed(1)):null, 'accels90')+
+          mrow(t('m_max_speed'), p.max_speed?parseFloat(p.max_speed.toFixed(1)):null, 'max_speed',false,11,4)+
+          mrow(t('m_sprint_dist'), p.sprint_dist90?Math.round(p.sprint_dist90):null, 'sprint_dist90',false,11,4)+
+          mrow(t('m_sprints90'), p.sprints90?parseFloat(p.sprints90.toFixed(1)):null, 'sprints90',false,11,4)+
+          mrow(t('m_hsr90'), p.hsr90?Math.round(p.hsr90):null, 'hsr90',false,11,4)+
+          mrow(t('m_accels90'), p.accels90?parseFloat(p.accels90.toFixed(1)):null, 'accels90',false,11,4)+
         '</div>'+
       '</div>'+
 
@@ -10305,7 +10305,7 @@ function renderPlayerID(name, league) {
           (window._metricCols?'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></svg>':'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="15" y2="20"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/></svg>')+
           '<span>'+((window._metricCols)?'BARRAS':'NUMÉRICO')+'</span>'+
         '</button>'+
-        window._pidSubHead()+
+        window._pidSubHead(11,4)+
       '</div>'+
       '<div id="pid-dotmatrix-bars" style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;padding:0 14px 10px;min-height:0"></div>'+
     '</div>'+
@@ -10316,25 +10316,25 @@ function renderPlayerID(name, league) {
         window._pidSubHead(11,4)+
       '</div>'+
       '<div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;min-height:0;padding:0 14px 10px">'+
-      mrow(t('m_xg'),p.xg,'xg',false,11,4,true)+
-      mrow(t('m_shots90'),p.shots90,'shots90',false,11,4,true)+
-      mrow(t('m_box_touches'),p.box_touches,'box_touches',false,11,4,true)+
-      mrow(t('m_crosses90'),p.crosses90,'crosses90',false,11,4,true)+
-      mrow(t('m_crosses_pct'),p.crosses_pct,'crosses_pct',false,11,4,true)+
+      mrow(t('m_xg'),p.xg,'xg',false,11,4)+
+      mrow(t('m_shots90'),p.shots90,'shots90',false,11,4)+
+      mrow(t('m_box_touches'),p.box_touches,'box_touches',false,11,4)+
+      mrow(t('m_crosses90'),p.crosses90,'crosses90',false,11,4)+
+      mrow(t('m_crosses_pct'),p.crosses_pct,'crosses_pct',false,11,4)+
       '</div>'+
     '</div>'+
 
     '<div class="pid3-card" style="display:flex;flex-direction:column;overflow:hidden;min-height:0;background:#060c18;border-color:rgba(0,180,200,.12)">'+
       '<div style="display:flex;align-items:center;gap:5px;padding:10px 14px 6px">'+
         '<span style="font-family:var(--font-d);font-size:11px;font-weight:700;color:#e8edf2;letter-spacing:.3px">'+(window.t&&window.t('lbl_pass_def')||'PASSE & DEFESA')+'</span>'+
-        window._pidSubHead()+
+        window._pidSubHead(11,4)+
       '</div>'+
       '<div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;min-height:0;padding:0 14px 10px">'+
-      mrow(t('m_passes_pct'),p.passes_pct,'passes_pct')+
-      mrow(t('m_box_passes'),p.box_passes,'box_passes')+
-      mrow(t('m_def_duels'),p.def_duels,'def_duels')+
-      mrow(t('m_def_duels_pct'),p.def_duels_pct,'def_duels_pct')+
-      mrow(t('m_adj_intercept'),p.adj_intercept,'adj_intercept')+
+      mrow(t('m_passes_pct'),p.passes_pct,'passes_pct',false,11,4)+
+      mrow(t('m_box_passes'),p.box_passes,'box_passes',false,11,4)+
+      mrow(t('m_def_duels'),p.def_duels,'def_duels',false,11,4)+
+      mrow(t('m_def_duels_pct'),p.def_duels_pct,'def_duels_pct',false,11,4)+
+      mrow(t('m_adj_intercept'),p.adj_intercept,'adj_intercept',false,11,4)+
       '</div>'+
     '</div>'+
 
@@ -10659,9 +10659,9 @@ function renderPlayerID(name, league) {
         if(window._metricCols){
           return '<div style="display:grid;grid-template-columns:1fr 46px 40px 42px;align-items:center;gap:6px;padding:4px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+ek+'\',\''+el2+'\',\''+en+'\','+m.inv+',this)">'
             +'<span style="font-size:10px;font-weight:600;color:'+labelCol+';letter-spacing:.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+m.l+'</span>'
-            +'<span style="font-family:var(--font-d);font-size:14px;font-weight:800;color:'+valCol+';text-align:right;position:relative;left:14px">'+m.raw+'</span>'
-            +'<span style="font-family:var(--font-d);font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center;position:relative;left:14px">'+_avgD+'</span>'
-            +'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid '+rnkBorder+';color:'+rnkCol+';text-align:center;justify-self:center;white-space:nowrap;position:relative;left:8px">#'+r+'</span>'
+            +'<span style="font-family:var(--font-d);font-size:14px;font-weight:800;color:'+valCol+';text-align:right;position:relative;left:25px">'+m.raw+'</span>'
+            +'<span style="font-family:var(--font-d);font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center;position:relative;left:25px">'+_avgD+'</span>'
+            +'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid '+rnkBorder+';color:'+rnkCol+';text-align:center;justify-self:center;white-space:nowrap;position:relative;left:12px">#'+r+'</span>'
           +'</div>';
         }
       return '<div style="padding:3px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+ek+'\',\''+el2+'\',\''+en+'\','+m.inv+',this)">'
