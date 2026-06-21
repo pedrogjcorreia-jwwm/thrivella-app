@@ -10010,7 +10010,7 @@ function renderPlayerID(name, league) {
                 '<span class="sim-dd-label" style="overflow:hidden;text-overflow:ellipsis">'+(t('lbl_liga_all')||'Liga: Todas')+'</span>'+
                 '<span style="font-size:8px;opacity:.5;flex-shrink:0">▾</span>'+
               '</div>'+
-              '<div class="sim-dd-list" style="display:none;position:absolute;top:calc(100% + 2px);left:0;min-width:100%;overflow:hidden;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.8)">'+
+              '<div class="sim-dd-list" style="display:none;position:fixed;min-width:160px;overflow:hidden;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.8)">'+
                 '<div style="display:flex;gap:6px;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.08)">'+
                   '<div class="sim-dd-opt sim-liga-opt" data-val="__all__" style="flex:1;text-align:center;font-family:var(--font-d);font-size:9px;font-weight:700;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--accent);border-radius:3px;padding:3px 0;cursor:pointer">Todas</div>'+
                   '<div class="sim-dd-opt sim-liga-opt" data-val="__none__" style="flex:1;text-align:center;font-family:var(--font-d);font-size:9px;font-weight:700;background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--muted);border-radius:3px;padding:3px 0;cursor:pointer">Nenhuma</div>'+
@@ -10652,7 +10652,13 @@ function renderPlayerID(name, league) {
         if(btn){
           // Toggle this dropdown
           const list = btn.nextElementSibling;
-          list.style.display = list.style.display==='block' ? 'none' : 'block';
+          const _open = list.style.display!=='block';
+          if(_open && btn.closest('.sim-dd') && btn.closest('.sim-dd').dataset.id==='sim-f-liga'){
+            const r = btn.getBoundingClientRect();
+            list.style.left = Math.min(r.left, window.innerWidth-170)+'px';
+            list.style.top = (r.bottom+2)+'px';
+          }
+          list.style.display = _open ? 'block' : 'none';
         } else if(opt){
           const _ddL = opt.closest('.sim-dd');
           if(_ddL && _ddL.dataset.id==='sim-f-liga'){
