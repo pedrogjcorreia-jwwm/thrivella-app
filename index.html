@@ -6063,7 +6063,7 @@ function dkLeagueDD(){
     return (ca?.display||a).localeCompare(cb?.display||b);
   });
   const sel = window._tblFilters.leagues;
-  const selLabel = sel.has('__NONE__') ? 'Nenhuma' : (sel.size===0 ? 'Liga' : (sel.size===1 ? (LEAGUE_CONFIG[[...sel][0]]?.display||[...sel][0]) : sel.size+' ligas'));
+  const selLabel = sel.has('__NONE__') ? 'Nenhuma' : (sel.size===0 ? 'Liga' : (sel.size>=allLeagues.length ? 'Todas' : (sel.size===1 ? (LEAGUE_CONFIG[[...sel][0]]?.display||[...sel][0]) : sel.size+' ligas')));
   const isActive = sel.size>0;
   const items = allLeagues.map(lg=>{
     const cfg=LEAGUE_CONFIG[lg]; const name=cfg?.display||lg;
@@ -6099,7 +6099,7 @@ window.dkLeagueToggle = function(lg){
   },0);
 };
 
-window.dkLeagueAll = function(){ window._tblFilters.leagues.clear(); renderTable(); _dkReopenLeague(); };
+window.dkLeagueAll = function(){ const s=window._tblFilters.leagues; s.clear(); [...new Set(PLAYERS.map(p=>p.league))].forEach(l=>s.add(l)); renderTable(); _dkReopenLeague(); };
 window.dkLeagueNone = function(){ const s=window._tblFilters.leagues; s.clear(); s.add('__NONE__'); renderTable(); _dkReopenLeague(); };
 function _dkReopenLeague(){ setTimeout(()=>{ const list=document.getElementById('dkdd-league'); if(list) list.style.display='block'; const trigger=document.querySelector('.dk-dd[data-id="league"] > div'); if(trigger && list){ const r=trigger.getBoundingClientRect(); list.style.left=r.left+'px'; list.style.top=(r.bottom+4)+'px'; } },0); }
 window.dkDDSelect = function(id, val){
@@ -10010,12 +10010,12 @@ function renderPlayerID(name, league) {
                 '<span class="sim-dd-label" style="overflow:hidden;text-overflow:ellipsis">'+(t('lbl_liga_all')||'Liga: Todas')+'</span>'+
                 '<span style="font-size:8px;opacity:.5;flex-shrink:0">▾</span>'+
               '</div>'+
-              '<div class="sim-dd-list" style="display:none;position:fixed;min-width:160px;overflow:hidden;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.8)">'+
+              '<div class="sim-dd-list" style="display:none;position:absolute;top:calc(100% + 2px);left:0;min-width:100%;overflow:hidden;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.8)">'+
                 '<div style="display:flex;gap:6px;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.08)">'+
                   '<div class="sim-dd-opt sim-liga-opt" data-val="__all__" style="flex:1;text-align:center;font-family:var(--font-d);font-size:9px;font-weight:700;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--accent);border-radius:3px;padding:3px 0;cursor:pointer">Todas</div>'+
                   '<div class="sim-dd-opt sim-liga-opt" data-val="__none__" style="flex:1;text-align:center;font-family:var(--font-d);font-size:9px;font-weight:700;background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--muted);border-radius:3px;padding:3px 0;cursor:pointer">Nenhuma</div>'+
                 '</div>'+
-                '<div style="max-height:114px;overflow-y:auto;overflow-x:hidden">'+_ligas.map(_lrow).join('')+'</div>'+
+                '<div style="max-height:92px;overflow-y:auto;overflow-x:hidden">'+_ligas.map(_lrow).join('')+'</div>'+
               '</div>'+
             '</div>';
           })()+
@@ -10652,13 +10652,7 @@ function renderPlayerID(name, league) {
         if(btn){
           // Toggle this dropdown
           const list = btn.nextElementSibling;
-          const _open = list.style.display!=='block';
-          if(_open && btn.closest('.sim-dd') && btn.closest('.sim-dd').dataset.id==='sim-f-liga'){
-            const r = btn.getBoundingClientRect();
-            list.style.left = Math.min(r.left, window.innerWidth-170)+'px';
-            list.style.top = (r.bottom+2)+'px';
-          }
-          list.style.display = _open ? 'block' : 'none';
+          list.style.display = list.style.display==='block' ? 'none' : 'block';
         } else if(opt){
           const _ddL = opt.closest('.sim-dd');
           if(_ddL && _ddL.dataset.id==='sim-f-liga'){
@@ -14868,8 +14862,7 @@ function shRenderPitch(formation, tabData){
 
     // Cards inside the field, stacked vertically centred on the dot
     // Rank within current league filter (local) or global
-    const league=shGetLeague();
-    const rankPool = league==='all' ? PLAYERS : PLAYERS.filter(p=>p.league===league);
+    const rankPool = (shSelectedLeagues && shSelectedLeagues.size===1) ? PLAYERS.filter(p=>p.league===[...shSelectedLeagues][0]) : PLAYERS;
     const rnkSorted=[...rankPool].sort((a,b)=>activeTI(b)-activeTI(a));
     const cardW=118, gap=6.78;
     // Measure real card height once (depends on current font-size/padding CSS) instead of guessing a constant
