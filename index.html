@@ -9549,6 +9549,357 @@ function sv3Toggle(id, btn) {
 }
 
 // ── PLAYER ID — Thrivella redesign ──────────────────────────────────────────
+/* pid3 PDF helpers (movidas para top-level: precisas no mobile) */
+  window.pid3PdfModal = function(pl) { var p = pl || window._pid3Player; if(!p) return;
+    // Remove existing modal
+    const old = document.getElementById('pid3-pdf-modal');
+    if(old) old.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'pid3-pdf-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
+    modal.innerHTML = `
+      <div style="background:#0d1520;border:1px solid rgba(0,180,200,.25);border-radius:12px;padding:24px 28px;min-width:260px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.8)">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#e8edf2;letter-spacing:.3px;margin-bottom:6px">Exportar PDF</div>
+        <div style="font-size:11px;color:rgba(180,200,220,.4);margin-bottom:18px">Escolhe o formato</div>
+        <div style="display:flex;gap:10px;justify-content:center">
+          <button onclick="pid3PdfDesktop()" style="flex:1;padding:10px 0;border-radius:6px;background:rgba(0,180,200,.08);border:1px solid rgba(0,180,200,.25);color:rgba(0,200,220,.8);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.3px">
+            <div style="font-size:18px;margin-bottom:4px">🖥</div>DESKTOP
+          </button>
+          <button onclick="pid3PdfMobile()" style="flex:1;padding:10px 0;border-radius:6px;background:rgba(120,60,255,.1);border:1px solid rgba(140,80,255,.3);color:#a78bfa;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.3px">
+            <div style="font-size:18px;margin-bottom:4px">📱</div>MOBILE
+          </button>
+        </div>
+        <button onclick="document.getElementById('pid3-pdf-modal').remove()" style="margin-top:14px;background:none;border:none;color:rgba(160,180,200,.35);font-size:10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px">CANCELAR</button>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e=>{ if(e.target===modal) modal.remove(); });
+  };
+
+  window.pid3PdfDesktop = function() {
+    document.getElementById('pid3-pdf-modal')?.remove();
+    window.print();
+  };
+
+  window.pid3PdfMobile = function() {
+    document.getElementById('pid3-pdf-modal')?.remove();
+    const p = window._pid3Player;
+    if(!p) return;
+
+    const lgP = PLAYERS.filter(x=>x.league===p.league);
+    const lgN = lgP.length||1;
+    function rnkL_(k){ const s=[...lgP].filter(x=>x[k]!=null).sort((a,b)=>(b[k]||0)-(a[k]||0)); const i=s.findIndex(x=>x.name===p.name); return i>=0?i+1:99; }
+    function rnkG_(k){ const s=[...PLAYERS].filter(x=>x[k]!=null).sort((a,b)=>(b[k]||0)-(a[k]||0)); const i=s.findIndex(x=>x.name===p.name); return i>=0?i+1:99; }
+    function pctG_(k){ return (PLAYERS.length-rnkG_(k))/PLAYERS.length; }
+    function sc_(k){ const r=rnkL_(k); return r<=3?'#00e5a0':r<=Math.ceil(lgN*.5)?'#00d4ff':'rgba(160,178,200,.5)'; }
+    const mv = p.mkt_value>=1e6?'€'+(p.mkt_value/1e6).toFixed(1)+'M':p.mkt_value>=1e3?'€'+Math.round(p.mkt_value/1e3)+'K':'—';
+    const ctc = p.contract_end&&new Date(p.contract_end)<new Date(Date.now()+365*24*36e5)?'#ff6b6b':'#e8edf2';
+    const tiPct = Math.round((p.talent_index||0)/67*100);
+    const phPct = Math.round((p.total_physical||0)/25*100);
+    const tsPct = Math.round(p.score||0);
+    const tiKey_ = ligaAdjustActive?'talent_index_adj':'talent_index';
+    const tiLR = rnkL_(tiKey_);
+    const tiGR = rnkG_(tiKey_);
+    const topPct = Math.ceil(tiGR/PLAYERS.length*100);
+    const topLbl = tiGR<=Math.ceil(PLAYERS.length*.01)?'TOP 1%':'TOP '+topPct+'%';
+    const tsCol = tsPct>=75?'#00e5a0':tsPct>=50?'#00d4ff':'rgba(160,178,200,.6)';
+    const impS = tsPct>=75?2:tsPct>=45?1:0;
+    const potS = (p.age||30)<=23?2:(p.age||30)<=27?1:0;
+    const impL = impS===2?'Alto':impS===1?'Médio':'Baixo';
+    const potL = potS===2?'Alto':potS===1?'Médio':'Baixo';
+    const impC = impS===2?'#00e5a0':impS===1?'rgba(180,195,215,.7)':'#ff6b6b';
+    const potC = potS===2?'#00e5a0':potS===1?'rgba(180,195,215,.7)':'#ff6b6b';
+    const foot = p.foot==='Right'?'Direito':p.foot==='Left'?'Esquerdo':p.foot==='Both'?'Ambos':(p.foot||'—');
+    const ini = p.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const hasPh = !!(window.photoCache&&photoCache[p.name]);
+    // Pre-load all photos from localStorage (scoutpro_photos + individual photo_ keys)
+    try {
+      const saved = JSON.parse(localStorage.getItem('scoutpro_photos')||'{}');
+      Object.assign(photoCache, saved);
+    } catch(e) {}
+    // Also load individual keys for similar players
+    PLAYERS.filter(x=>x.name!==p.name&&x.position===p.position).slice(0,3).forEach(s=>{
+      if(!photoCache[s.name]){
+        try { const ls=localStorage.getItem('photo_'+s.name); if(ls) photoCache[s.name]=ls; } catch(e){}
+      }
+    });
+    const aiTxtRaw = typeof generateAITextInline==='function'?generateAITextInline(p):'';
+    const aiCharCount = aiTxtRaw.replace(/<[^>]*>/g,'').length;
+    const aiFontSize = aiCharCount > 1100 ? 10.1 : aiCharCount > 900 ? 11.1 : aiCharCount > 700 ? 11.6 : 12.1;
+    const aiLineH   = aiFontSize < 12 ? 1.5 : 1.65;
+    const aiTxt = typeof generateAITextInline==='function'?generateAITextInline(p, aiFontSize):'';
+    const date = new Date().toLocaleDateString('pt-PT');
+
+    // metric row — exact style from Essimi: VALOR | MÉDIA | RANK in 3 boxes
+    function mrow(lbl,val,key){
+      if(val===null||val===undefined||val==='') return '';
+      const c=sc_(key), r=rnkL_(key);
+      const all=lgP.filter(x=>x[key]!=null);
+      const avgV=(all.reduce((s,x)=>s+(x[key]||0),0)/Math.max(1,all.length)).toFixed(1);
+      const v=typeof val==='number'?parseFloat(val.toFixed(1)):val;
+      return '<div style="display:grid;grid-template-columns:1fr 40px 32px 38.4px;align-items:center;gap:6.4px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
+        +'<span style="font-size:10.4px;font-weight:700;color:rgba(200,215,235,.6);text-transform:uppercase;letter-spacing:.5px">'+lbl+'</span>'
+        +'<span style="font-size:17.6px;font-weight:900;color:'+c+';text-align:right">'+v+'</span>'
+        +'<span style="font-size:11.2px;color:rgba(255,255,255,.25);text-align:center">'+avgV+'</span>'
+        +'<span style="font-size:10.4px;font-weight:700;color:'+c+';border:1.5px solid '+c+'55;padding:2.4px 8px;border-radius:4px;text-align:center">#'+r+'</span>'
+      +'</div>';
+    }
+
+    // section header
+    function SH(col,lbl,sub){
+      return '<div style="display:grid;grid-template-columns:1fr 40px 32px 38.4px;gap:6.4px;align-items:center;margin-bottom:6.4px">'
+        +'<div style="display:flex;align-items:center;gap:6.4px">'
+          +'<span style="width:3px;height:14px;background:'+col+';border-radius:1.6px;flex-shrink:0;display:inline-block"></span>'
+          +'<span style="font-size:11.2px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:1.6px;text-transform:uppercase">'+lbl+'</span>'
+        +'</div>'
+        +(sub
+          ?'<span style="font-size:7px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-align:right">VALOR</span>'
+           +'<span style="font-size:7px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-align:center">MÉDIA</span>'
+           +'<span style="font-size:7px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-align:center">RANK</span>'
+          :'<span></span><span></span><span></span>')
+      +'</div>';
+    }
+
+    function C(bc,ct){ return '<div style="background:#0c1623;border:1px solid '+(bc||'rgba(255,255,255,.08)')+';border-radius:9.6px;padding:12.8px;margin-bottom:8px">'+ct+'</div>'; }
+
+    const photo = hasPh
+      ?'<img src="'+photoCache[p.name]+'" style="width:88px;height:112px;border-radius:8px;object-fit:cover;object-position:top center;flex-shrink:0">'
+      :'<div style="width:88px;height:112px;border-radius:8px;background:rgba(0,140,255,.08);border:1.5px solid rgba(0,140,255,.15);display:flex;align-items:center;justify-content:center;font-size:22.4px;font-weight:900;color:rgba(0,140,255,.2);flex-shrink:0">'+ini+'</div>';
+
+    // Radar — canvas drawn as SVG inline
+    function radarSVG(){
+      const W=362,H=208,cx=181,cy=H/2,R=74;
+      const vals=[Math.min(1,(p.talent_index||0)/67),Math.min(1,(p.total_physical||0)/25),pctG_('total_off'),pctG_('total_def'),pctG_('total_pass')];
+      const lbls=['TALENT','PHYSICAL','OFENSIVO','DEFENSIVO','PASSING'];
+      // Máximos teóricos fixos (do Excel)
+      const pcts=[
+        Math.min(100,tiPct),
+        Math.min(100,phPct),
+        Math.round((p.total_off ||0)/35   *100),
+        Math.round((p.total_def ||0)/8.5  *100),
+        Math.round((p.total_pass||0)/23.5 *100)
+      ];
+      // Média da liga para o polígono tracejado
+      const pl=PLAYERS.filter(x=>x.talent_index!=null);
+      const avg=v=>pl.reduce((s,x)=>s+(x[v]||0),0)/Math.max(1,pl.length);
+      const avgVals=[
+        Math.min(1,avg('talent_index')/67),
+        Math.min(1,avg('total_physical')/25),
+        Math.min(1,avg('total_off')/35),
+        Math.min(1,avg('total_def')/8.5),
+        Math.min(1,avg('total_pass')/23.5)
+      ];
+      function radarCol(v){return v>=75?'#00e5a0':v>=50?'#00d4ff':'rgba(160,175,195,.5)';}
+      function pt(i,r){const a=Math.PI*2*i/5-Math.PI/2;return[cx+r*Math.cos(a),cy+r*Math.sin(a)];}
+      let s='<svg width="'+W+'" height="'+H+'" xmlns="http://www.w3.org/2000/svg">';
+      [.25,.5,.75,1].forEach(f=>{const pp=[0,1,2,3,4].map(i=>pt(i,R*f));s+='<polygon points="'+pp.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')+'" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>';});
+      [0,1,2,3,4].forEach(i=>{const[x,y]=pt(i,R);s+='<line x1="'+cx.toFixed(1)+'" y1="'+cy.toFixed(1)+'" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="rgba(255,255,255,.06)" stroke-width="1"/>';});
+      // Polígono média da liga (tracejado)
+      const ap=[0,1,2,3,4].map(i=>pt(i,R*(avgVals[i]||0)));
+      s+='<polygon points="'+ap.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')+'" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.35)" stroke-width="1.5" stroke-dasharray="4,3" stroke-linejoin="round"/>';
+      // Polígono do jogador
+      const fp=[0,1,2,3,4].map(i=>pt(i,R*(vals[i]||0)));
+      s+='<polygon points="'+fp.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')+'" fill="rgba(0,212,255,.15)" stroke="#00d4ff" stroke-width="2" stroke-linejoin="round"/>';
+      fp.forEach(([x,y])=>{s+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="4" fill="#00d4ff"/>';});
+      [0,1,2,3,4].forEach(i=>{
+        const[lx,ly]=pt(i,R*1.32);
+        const col=radarCol(pcts[i]);
+        s+='<text x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Barlow Condensed,sans-serif" font-weight="700" letter-spacing="0.5">'+lbls[i]+'</text>';
+        s+='<text x="'+lx.toFixed(1)+'" y="'+(ly+12).toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" fill="'+col+'" font-size="11" font-family="Barlow Condensed,sans-serif" font-weight="800">'+pcts[i]+'</text>';
+      });
+      // Legenda — canto inferior direito, empilhada
+      s+='<line x1="'+(W-4)+'" y1="195" x2="'+(W-16)+'" y2="195" stroke="#00d4ff" stroke-width="2"/>';
+      s+='<text x="'+(W-20)+'" y="195" text-anchor="end" dominant-baseline="middle" fill="rgba(0,212,255,.8)" font-size="8" font-family="Barlow Condensed,sans-serif" font-weight="700">'+p.name.split(' ').slice(-1)[0].toUpperCase()+'</text>';
+      s+='<line x1="'+(W-4)+'" y1="206" x2="'+(W-16)+'" y2="206" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-dasharray="4,3"/>';
+      s+='<text x="'+(W-20)+'" y="206" text-anchor="end" dominant-baseline="middle" fill="rgba(255,255,255,.4)" font-size="8" font-family="Barlow Condensed,sans-serif" font-weight="700">LIGA</text>';
+      return s+'</svg>';
+    }
+
+    const simsArr=PLAYERS.filter(x=>x.name!==p.name&&x.position===p.position).slice(0,3).map(s=>{
+      const sMv=s.mkt_value>=1e6?'€'+(s.mkt_value/1e6).toFixed(1)+'M':s.mkt_value>=1e3?'€'+Math.round(s.mkt_value/1e3)+'K':'—';
+      const sMatchPct=Math.round((s.score||0)/Math.max(1,p.score||1)*100);
+      const sMatchCol=sMatchPct>=75?'#00e5a0':sMatchPct>=50?'#00d4ff':'rgba(160,175,195,.6)';
+      const sTIPct=Math.min(100,Math.round((s.talent_index||0)/67*100));
+      const sPhPct=Math.min(100,Math.round((s.total_physical||0)/25*100));
+      const sCtcCol=s.contract_end&&new Date(s.contract_end)<new Date(Date.now()+365*24*36e5)?'#ff6b6b':'rgba(200,220,240,.5)';
+      const sIni=s.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      const sPhoto=window.photoCache&&photoCache[s.name]
+        ?'<img src="'+photoCache[s.name]+'" style="width:64px;height:64px;border-radius:6px;object-fit:cover;object-position:top center;flex-shrink:0">'
+        :'<div style="width:64px;height:64px;border-radius:6px;background:rgba(0,140,255,.08);border:1.5px solid rgba(0,140,255,.15);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:rgba(0,140,255,.2);flex-shrink:0">'+sIni+'</div>';
+      const sPos=(s.position||'').split(',').map(x=>'<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:2px;border:1px solid rgba(0,212,255,.35);color:#00d4ff;background:rgba(0,212,255,.07)">'+x.trim()+'</span>').join('');
+      // AI why sentence
+      const sAgeDiff=p.age&&s.age?s.age-p.age:null;
+      const sCtcExpiring=s.contract_end&&new Date(s.contract_end)<new Date(Date.now()+365*24*36e5);
+      let sWhy='';
+      if(sCtcExpiring) sWhy='<em style="color:rgba(0,229,160,.85);font-style:normal;font-weight:700">Contrato a expirar</em> — janela de mercado imediata.';
+      else if(sAgeDiff!==null&&sAgeDiff<=-3) sWhy='<em style="color:rgba(0,229,160,.85);font-style:normal;font-weight:700">'+Math.abs(sAgeDiff)+' anos mais novo.</em> Maior potencial de valorização.';
+      else if(sAgeDiff!==null&&sAgeDiff>=3) sWhy='<em style="color:rgba(0,229,160,.85);font-style:normal;font-weight:700">'+sAgeDiff+' anos mais velho.</em> Experiência e maturidade imediatas.';
+      else sWhy='Perfil técnico semelhante ao jogador em análise.';
+
+      return '<div style="background:#0c1623;border:1px solid rgba(255,255,255,.08);border-radius:9.6px;overflow:hidden;margin-bottom:8px">'
+        // ROW 1
+        +'<div style="padding:12px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.06)">'
+          +sPhoto
+          +'<div style="flex:1;min-width:0">'
+            +'<div style="font-size:26px;font-weight:900;color:#e8edf2;line-height:1;margin-bottom:3px;margin-top:-2.8px">'+(s.name||'')+'</div>'
+            +'<div style="font-size:12px;color:rgba(255,255,255,.38);margin-bottom:1px">'+(s.age||'—')+'a · '+(s.size?s.size+' cm':'—')+'</div>'
+            +'<div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.55);margin-top:2.8px">'+(s.team||'')+(s.league?' · <span style="color:rgba(0,212,255,.65);font-weight:400">'+s.league+'</span>':'')+'</div>'
+          +'</div>'
+          +'<div style="display:flex;gap:3px;flex-shrink:0;align-self:flex-start;padding-top:2px">'+sPos+'</div>'
+        +'</div>'
+        // ROW 2
+        +'<div style="padding:8px 14px;font-size:12px;color:rgba(255,255,255,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-bottom:1px solid rgba(255,255,255,.06)">'+sWhy+'</div>'
+        // ROW 3
+        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr">'
+          +'<div style="padding:9px 0;text-align:center;border-right:1px solid rgba(255,255,255,.06)"><div style="font-size:8px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:3px">Match</div><div style="font-size:22px;font-weight:900;color:'+sMatchCol+'">'+sMatchPct+'%</div></div>'
+          +'<div style="padding:9px 0;text-align:center;border-right:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06)"><div style="font-size:8px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:3px">Talent</div><div style="font-size:22px;font-weight:900;color:#e8edf2">'+sTIPct+'</div></div>'
+          +'<div style="padding:9px 0;text-align:center;border-bottom:1px solid rgba(255,255,255,.06)"><div style="font-size:8px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:3px">Physical</div><div style="font-size:22px;font-weight:900;color:#e8edf2">'+sPhPct+'</div></div>'
+        +'</div>'
+        // ROW 4
+        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr">'
+          +'<div style="padding:9px 14px;border-right:1px solid rgba(255,255,255,.06);display:flex;align-items:center"><div style="height:4px;width:100%;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden"><div style="height:100%;border-radius:2px;width:'+sMatchPct+'%;background:'+sMatchCol+'"></div></div></div>'
+          +'<div style="padding:9px 0;text-align:center;border-right:1px solid rgba(255,255,255,.06)"><div style="font-size:8px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:2px">Market Value</div><div style="font-size:14px;font-weight:700;color:rgba(0,200,160,.8)">'+sMv+'</div></div>'
+          +'<div style="padding:9px 0;text-align:center"><div style="font-size:8px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:2px">Contract End</div><div style="font-size:14px;font-weight:700;color:'+sCtcCol+'">'+(s.contract_end||'—')+'</div></div>'
+        +'</div>'
+      +'</div>';
+    });
+    const sims=simsArr.join('');
+
+    const out='<!DOCTYPE html><html><head>'
+      +'<meta charset="utf-8">'
+      +'<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">'
+      +'<style>'
+      +'html,body{background:#080c10;color:#e8edf2;font-family:Barlow Condensed,sans-serif;width:390px;padding:14px;padding-top:0;margin:0;zoom:1.6}'
+      +'@page{size:624px auto;margin:0}'
+      +'@media print{html,body{background:#080c10!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;width:390px;padding:14px;padding-top:0;zoom:1.6}}'
+      +'</style></head><body>'
+
+      // HEADER
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1px;padding:10px 0 6.4px">'
+        +'<span style="font-family:Georgia,serif;font-size:15px;font-weight:400;letter-spacing:2px;background:linear-gradient(90deg,#00c4ff 0%,#00e5a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-transform:lowercase">thrivella</span>'
+        +'<span style="font-size:7.2px;color:rgba(255,255,255,.2)">SCOUT REPORT · '+date+'</span>'
+      +'</div>'
+
+      // 1. CARD DO JOGADOR
+      +C('rgba(0,180,200,.15)',
+        // Foto + nome + posições
+        '<div style="display:flex;gap:9.6px;margin-bottom:9.6px">'
+          +photo
+          +'<div style="flex:1;min-width:0">'
+            +'<div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:2px;letter-spacing:.3px">'+(p.name.split(' ')[0]||'')+'</div>'
+            +'<div style="font-size:42px;font-weight:900;color:#e8edf2;line-height:1;margin-bottom:7px;letter-spacing:-2px">'+(p.name.split(' ').slice(1).join(' ')||p.name)+'</div>'
+            +'<div style="display:flex;flex-wrap:wrap;gap:3.2px;margin-bottom:7px">'
+              +(p.position||'').split(',').map(x=>'<span style="font-size:11px;font-weight:700;padding:2px 9px;border-radius:2.4px;border:1.5px solid rgba(0,212,255,.4);color:#00d4ff;background:rgba(0,212,255,.07)">'+x.trim()+'</span>').join('')
+            +'</div>'
+            +'<div style="font-size:14px;font-weight:600;color:rgba(255,255,255,.45)">'+(p.team||'')+' <span style="color:rgba(0,212,255,.6)">'+(p.league||'')+'</span></div>'
+          +'</div>'
+        +'</div>'
+        // 3 SCORES — exactamente como Essimi: número enorme
+        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);padding:8px 0;margin-bottom:8px">'
+          +[
+            {lbl:'TALENT INDEX',val:tiPct,col:tiPct>=70?'#00e5a0':tiPct>=50?'#00d4ff':'rgba(160,175,195,.5)',sub:'#'+tiLR+' liga · '+topLbl},
+            {lbl:'PHYSICAL INDEX',val:phPct,col:phPct>=70?'#00e5a0':phPct>=40?'#9b7fff':'rgba(160,175,195,.5)',sub:'#'+rnkL_('total_physical')+' liga · '+(p.total_physical||0).toFixed(1)+' pts'},
+            {lbl:'TRANSFER SCORE',val:tsPct,col:tsCol,sub:'Impacto: '+impL+' · Potencial: '+potL},
+          ].map(({lbl,val,col,sub},i)=>
+            '<div style="text-align:center;padding:0 4px;'+(i>0?'border-left:1px solid rgba(255,255,255,.06)':'')+'">'
+              +'<div style="font-size:9px;letter-spacing:.8px;color:#ffffff;text-transform:uppercase;margin-bottom:1.6px;font-weight:700">'+lbl+'</div>'
+              +'<div style="font-size:32px;font-weight:900;color:'+col+';letter-spacing:-1px;line-height:1">'+val+'</div>'
+              +'<div style="font-size:7.2px;color:rgba(255,255,255,.3);margin-top:3.2px">'+sub+'</div>'
+            +'</div>'
+          ).join('')
+        +'</div>'
+        // STATS: Idade / Altura / Pé / Jogos
+        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:3.2px;margin-bottom:6.4px">'
+          +[['Idade',p.age||'—'],['Altura',p.size?p.size+' cm':'—'],['Pé',foot],['Jogos',p.matches||'—']].map(([lbl,val])=>
+            '<div><div style="font-size:7.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:1.6px">'+lbl+'</div>'
+            +'<div style="font-size:15.5px;font-weight:800;color:rgba(255,255,255,.92)">'+val+'</div></div>'
+          ).join('')
+        +'</div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:3.2px">'
+          +'<div><div style="font-size:7.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:1.6px">Market Value</div><div style="font-size:17px;font-weight:800;color:#e8edf2">'+mv+'</div></div>'
+          +'<div><div style="font-size:7.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:1.6px">Contract End</div><div style="font-size:17px;font-weight:800;color:'+ctc+'">'+(p.contract_end||'—')+'</div></div>'
+        +'</div>'
+      )
+
+      // 2. RADAR
+      +C('',SH('rgba(0,212,255,.6)','PERFIL DE JOGO')
+        +'<div style="display:flex">'+radarSVG()+'</div>'
+      )
+
+      // PÁG 2 — AI SCOUT + DESEMPENHO CHAVE
+      +'<div style="page-break-before:always;padding-top:14px"></div>'
+      +'<div style="background:rgba(0,229,160,.04);border:1px solid rgba(0,229,160,.1);border-radius:9.6px;padding:12.8px;margin-bottom:8px;min-height:260px;max-height:260px;overflow:hidden">'
+        +'<div style="display:flex;align-items:center;gap:6.4px;margin-bottom:9.6px">'
+          +'<div style="width:24px;height:24px;background:rgba(0,229,160,.15);border:1px solid rgba(0,229,160,.3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:7.2px;font-weight:900;color:#00e5a0;flex-shrink:0">AI</div>'
+          +'<span style="font-size:11.2px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:1.6px;text-transform:uppercase">AI SCOUT INSIGHT</span>'
+          +'<div style="margin-left:auto;display:flex;gap:6.4px">'
+            +'<div style="text-align:center"><div style="font-size:6.4px;font-weight:700;color:#ffffff;text-transform:uppercase;margin-bottom:1.6px">IMPACTO</div><span style="font-size:8px;font-weight:700;padding:1.6px 7px;border-radius:6.4px;background:'+impC+'18;border:1px solid '+impC+'55;color:'+impC+'">'+impL+'</span></div>'
+            +'<div style="text-align:center"><div style="font-size:6.4px;font-weight:700;color:#ffffff;text-transform:uppercase;margin-bottom:1.6px">POTENCIAL</div><span style="font-size:8px;font-weight:700;padding:1.6px 7px;border-radius:6.4px;background:'+potC+'18;border:1px solid '+potC+'55;color:'+potC+'">'+potL+'</span></div>'
+          +'</div>'
+        +'</div>'
+        +'<div style="line-height:1.7;color:rgba(255,255,255,.6)">'+aiTxt+'</div>'
+      +'</div>'
+      +C('',SH('rgba(0,220,190,.7)','DESEMPENHO CHAVE','VALOR   MÉDIA   RANK')
+        +mrow('Cond. Progressivas',p.prog_carries,'prog_carries')
+        +mrow('Drib Quality',p.dribles_pct,'dribles_pct')
+        +mrow('Acelerações',p.accels90,'accels90')
+        +mrow('Recep. Profundidade',p.recpt_depth,'recpt_depth')
+        +mrow('Shot Assist',p.shot_assist,'shot_assist')
+        +mrow('xA / 90',p.xa,'xa')
+      )
+
+      // PÁG 3 — OFENSIVO + PASSE & DEFESA
+      +'<div style="page-break-before:always;padding-top:48px"></div>'
+      +C('',SH('rgba(0,220,190,.6)','OFENSIVO','VALOR   MÉDIA   RANK')
+        +mrow('xG',p.xg,'xg')
+        +mrow('Remates / 90',p.shots90,'shots90')
+        +mrow('Box Touches / 90',p.box_touches,'box_touches')
+        +mrow('Cruzamentos / 90',p.crosses90,'crosses90')
+        +mrow('% Cruzamentos',p.crosses_pct,'crosses_pct')
+      )
+      +'<div style="height:14px"></div>'
+      +C('',SH('rgba(0,220,190,.6)','PASSE & DEFESA','VALOR   MÉDIA   RANK')
+        +mrow('% Passes Certos',p.passes_pct,'passes_pct')
+        +mrow('Box Passes / 90',p.box_passes,'box_passes')
+        +mrow('Duelos Def. / 90',p.def_duels,'def_duels')
+        +mrow('% Duelos Ganhos',p.def_duels_pct,'def_duels_pct')
+        +mrow('Interceções Adj.',p.adj_intercept,'adj_intercept')
+      )
+
+      // PÁG 4 — FÍSICO + 1.º SIMILAR PLAYER
+      +'<div style="page-break-before:always;padding-top:24px"></div>'
+      +C('',SH('rgba(0,180,255,.5)','FÍSICO','VALOR   MÉDIA   RANK')
+        +mrow('Velocidade Máxima',p.max_speed?p.max_speed.toFixed(1):null,'max_speed')
+        +mrow('Sprint Dist / 90',p.sprint_dist90?Math.round(p.sprint_dist90):null,'sprint_dist90')
+        +mrow('Sprints / 90',p.sprints90?p.sprints90.toFixed(1):null,'sprints90')
+        +mrow('HSR / 90',p.hsr90?Math.round(p.hsr90):null,'hsr90')
+        +mrow('Acelerações / 90',p.accels90?p.accels90.toFixed(1):null,'accels90')
+      )
+      +(simsArr.length>0
+        ?'<div style="height:14px"></div>'
+          +'<div style="display:grid;grid-template-columns:1fr 40px 32px 38.4px;gap:6.4px;align-items:center;margin-bottom:10px"><div style="display:flex;align-items:center;gap:6.4px"><span style="width:3px;height:14px;background:rgba(0,180,200,.6);border-radius:1.6px;flex-shrink:0;display:inline-block"></span><span style="font-size:11.2px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:1.6px;text-transform:uppercase">SIMILAR PLAYERS</span></div><span></span><span></span><span></span></div>'
+          +simsArr[0]
+        :'')
+
+      // PÁG 5 — 2.º E 3.º SIMILAR PLAYERS
+      +(simsArr.length>1
+        ?'<div style="page-break-before:always;padding-top:28px"></div>'
+          +'<div style="display:grid;grid-template-columns:1fr 40px 32px 38.4px;gap:6.4px;align-items:center;margin-bottom:10px"><div style="display:flex;align-items:center;gap:6.4px"><span style="width:3px;height:14px;background:rgba(0,180,200,.6);border-radius:1.6px;flex-shrink:0;display:inline-block"></span><span style="font-size:11.2px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:1.6px;text-transform:uppercase">SIMILAR PLAYERS</span></div><span></span><span></span><span></span></div>'
+          +simsArr.slice(1,2).join('')
+          +'<div style="height:28px"></div>'
+          +simsArr.slice(2).join('')
+        :'')
+
+      +'<div style="text-align:center;padding:11.2px 0 6px;font-size:6.4px;color:rgba(255,255,255,.15);letter-spacing:1.2px;text-transform:uppercase">THRIVELLA SCOUT REPORT · '+p.name.toUpperCase()+' · '+date+'</div>'
+      +'<'+'script>setTimeout(function(){window.print();},2000);<'+'/script>'
+      +'</body></html>';
+
+    const w=window.open('','_blank','width=650,height=900,scrollbars=yes');
+    if(!w){alert('Activa popups para este site.');return;}
+    w.document.write(out);
+    w.document.close();
+  };
+
 function renderPlayerID(name, league) {
   const overlay = document.getElementById('sp-overlay');
   if (!overlay) return;
@@ -10071,355 +10422,6 @@ function renderPlayerID(name, league) {
   '</div>'; /* end wrap */
 
   /* Handlers */
-  window.pid3PdfModal = function(pl) { var p = pl || window._pid3Player; if(!p) return;
-    // Remove existing modal
-    const old = document.getElementById('pid3-pdf-modal');
-    if(old) old.remove();
-
-    const modal = document.createElement('div');
-    modal.id = 'pid3-pdf-modal';
-    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
-    modal.innerHTML = `
-      <div style="background:#0d1520;border:1px solid rgba(0,180,200,.25);border-radius:12px;padding:24px 28px;min-width:260px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.8)">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#e8edf2;letter-spacing:.3px;margin-bottom:6px">Exportar PDF</div>
-        <div style="font-size:11px;color:rgba(180,200,220,.4);margin-bottom:18px">Escolhe o formato</div>
-        <div style="display:flex;gap:10px;justify-content:center">
-          <button onclick="pid3PdfDesktop()" style="flex:1;padding:10px 0;border-radius:6px;background:rgba(0,180,200,.08);border:1px solid rgba(0,180,200,.25);color:rgba(0,200,220,.8);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.3px">
-            <div style="font-size:18px;margin-bottom:4px">🖥</div>DESKTOP
-          </button>
-          <button onclick="pid3PdfMobile()" style="flex:1;padding:10px 0;border-radius:6px;background:rgba(120,60,255,.1);border:1px solid rgba(140,80,255,.3);color:#a78bfa;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.3px">
-            <div style="font-size:18px;margin-bottom:4px">📱</div>MOBILE
-          </button>
-        </div>
-        <button onclick="document.getElementById('pid3-pdf-modal').remove()" style="margin-top:14px;background:none;border:none;color:rgba(160,180,200,.35);font-size:10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px">CANCELAR</button>
-      </div>`;
-    document.body.appendChild(modal);
-    modal.addEventListener('click', e=>{ if(e.target===modal) modal.remove(); });
-  };
-
-  window.pid3PdfDesktop = function() {
-    document.getElementById('pid3-pdf-modal')?.remove();
-    window.print();
-  };
-
-  window.pid3PdfMobile = function() {
-    document.getElementById('pid3-pdf-modal')?.remove();
-    const p = window._pid3Player;
-    if(!p) return;
-
-    const lgP = PLAYERS.filter(x=>x.league===p.league);
-    const lgN = lgP.length||1;
-    function rnkL_(k){ const s=[...lgP].filter(x=>x[k]!=null).sort((a,b)=>(b[k]||0)-(a[k]||0)); const i=s.findIndex(x=>x.name===p.name); return i>=0?i+1:99; }
-    function rnkG_(k){ const s=[...PLAYERS].filter(x=>x[k]!=null).sort((a,b)=>(b[k]||0)-(a[k]||0)); const i=s.findIndex(x=>x.name===p.name); return i>=0?i+1:99; }
-    function pctG_(k){ return (PLAYERS.length-rnkG_(k))/PLAYERS.length; }
-    function sc_(k){ const r=rnkL_(k); return r<=3?'#00e5a0':r<=Math.ceil(lgN*.5)?'#00d4ff':'rgba(160,178,200,.5)'; }
-    const mv = p.mkt_value>=1e6?'€'+(p.mkt_value/1e6).toFixed(1)+'M':p.mkt_value>=1e3?'€'+Math.round(p.mkt_value/1e3)+'K':'—';
-    const ctc = p.contract_end&&new Date(p.contract_end)<new Date(Date.now()+365*24*36e5)?'#ff6b6b':'#e8edf2';
-    const tiPct = Math.round((p.talent_index||0)/67*100);
-    const phPct = Math.round((p.total_physical||0)/25*100);
-    const tsPct = Math.round(p.score||0);
-    const tiKey_ = ligaAdjustActive?'talent_index_adj':'talent_index';
-    const tiLR = rnkL_(tiKey_);
-    const tiGR = rnkG_(tiKey_);
-    const topPct = Math.ceil(tiGR/PLAYERS.length*100);
-    const topLbl = tiGR<=Math.ceil(PLAYERS.length*.01)?'TOP 1%':'TOP '+topPct+'%';
-    const tsCol = tsPct>=75?'#00e5a0':tsPct>=50?'#00d4ff':'rgba(160,178,200,.6)';
-    const impS = tsPct>=75?2:tsPct>=45?1:0;
-    const potS = (p.age||30)<=23?2:(p.age||30)<=27?1:0;
-    const impL = impS===2?'Alto':impS===1?'Médio':'Baixo';
-    const potL = potS===2?'Alto':potS===1?'Médio':'Baixo';
-    const impC = impS===2?'#00e5a0':impS===1?'rgba(180,195,215,.7)':'#ff6b6b';
-    const potC = potS===2?'#00e5a0':potS===1?'rgba(180,195,215,.7)':'#ff6b6b';
-    const foot = p.foot==='Right'?'Direito':p.foot==='Left'?'Esquerdo':p.foot==='Both'?'Ambos':(p.foot||'—');
-    const ini = p.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    const hasPh = !!(window.photoCache&&photoCache[p.name]);
-    // Pre-load all photos from localStorage (scoutpro_photos + individual photo_ keys)
-    try {
-      const saved = JSON.parse(localStorage.getItem('scoutpro_photos')||'{}');
-      Object.assign(photoCache, saved);
-    } catch(e) {}
-    // Also load individual keys for similar players
-    PLAYERS.filter(x=>x.name!==p.name&&x.position===p.position).slice(0,3).forEach(s=>{
-      if(!photoCache[s.name]){
-        try { const ls=localStorage.getItem('photo_'+s.name); if(ls) photoCache[s.name]=ls; } catch(e){}
-      }
-    });
-    const aiTxtRaw = typeof generateAITextInline==='function'?generateAITextInline(p):'';
-    const aiCharCount = aiTxtRaw.replace(/<[^>]*>/g,'').length;
-    const aiFontSize = aiCharCount > 1100 ? 10.1 : aiCharCount > 900 ? 11.1 : aiCharCount > 700 ? 11.6 : 12.1;
-    const aiLineH   = aiFontSize < 12 ? 1.5 : 1.65;
-    const aiTxt = typeof generateAITextInline==='function'?generateAITextInline(p, aiFontSize):'';
-    const date = new Date().toLocaleDateString('pt-PT');
-
-    // metric row — exact style from Essimi: VALOR | MÉDIA | RANK in 3 boxes
-    function mrow(lbl,val,key){
-      if(val===null||val===undefined||val==='') return '';
-      const c=sc_(key), r=rnkL_(key);
-      const all=lgP.filter(x=>x[key]!=null);
-      const avgV=(all.reduce((s,x)=>s+(x[key]||0),0)/Math.max(1,all.length)).toFixed(1);
-      const v=typeof val==='number'?parseFloat(val.toFixed(1)):val;
-      return '<div style="display:grid;grid-template-columns:1fr 40px 32px 38.4px;align-items:center;gap:6.4px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
-        +'<span style="font-size:10.4px;font-weight:700;color:rgba(200,215,235,.6);text-transform:uppercase;letter-spacing:.5px">'+lbl+'</span>'
-        +'<span style="font-size:17.6px;font-weight:900;color:'+c+';text-align:right">'+v+'</span>'
-        +'<span style="font-size:11.2px;color:rgba(255,255,255,.25);text-align:center">'+avgV+'</span>'
-        +'<span style="font-size:10.4px;font-weight:700;color:'+c+';border:1.5px solid '+c+'55;padding:2.4px 8px;border-radius:4px;text-align:center">#'+r+'</span>'
-      +'</div>';
-    }
-
-    // section header
-    function SH(col,lbl,sub){
-      return '<div style="display:grid;grid-template-columns:1fr 40px 32px 38.4px;gap:6.4px;align-items:center;margin-bottom:6.4px">'
-        +'<div style="display:flex;align-items:center;gap:6.4px">'
-          +'<span style="width:3px;height:14px;background:'+col+';border-radius:1.6px;flex-shrink:0;display:inline-block"></span>'
-          +'<span style="font-size:11.2px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:1.6px;text-transform:uppercase">'+lbl+'</span>'
-        +'</div>'
-        +(sub
-          ?'<span style="font-size:7px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-align:right">VALOR</span>'
-           +'<span style="font-size:7px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-align:center">MÉDIA</span>'
-           +'<span style="font-size:7px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-align:center">RANK</span>'
-          :'<span></span><span></span><span></span>')
-      +'</div>';
-    }
-
-    function C(bc,ct){ return '<div style="background:#0c1623;border:1px solid '+(bc||'rgba(255,255,255,.08)')+';border-radius:9.6px;padding:12.8px;margin-bottom:8px">'+ct+'</div>'; }
-
-    const photo = hasPh
-      ?'<img src="'+photoCache[p.name]+'" style="width:88px;height:112px;border-radius:8px;object-fit:cover;object-position:top center;flex-shrink:0">'
-      :'<div style="width:88px;height:112px;border-radius:8px;background:rgba(0,140,255,.08);border:1.5px solid rgba(0,140,255,.15);display:flex;align-items:center;justify-content:center;font-size:22.4px;font-weight:900;color:rgba(0,140,255,.2);flex-shrink:0">'+ini+'</div>';
-
-    // Radar — canvas drawn as SVG inline
-    function radarSVG(){
-      const W=362,H=208,cx=181,cy=H/2,R=74;
-      const vals=[Math.min(1,(p.talent_index||0)/67),Math.min(1,(p.total_physical||0)/25),pctG_('total_off'),pctG_('total_def'),pctG_('total_pass')];
-      const lbls=['TALENT','PHYSICAL','OFENSIVO','DEFENSIVO','PASSING'];
-      // Máximos teóricos fixos (do Excel)
-      const pcts=[
-        Math.min(100,tiPct),
-        Math.min(100,phPct),
-        Math.round((p.total_off ||0)/35   *100),
-        Math.round((p.total_def ||0)/8.5  *100),
-        Math.round((p.total_pass||0)/23.5 *100)
-      ];
-      // Média da liga para o polígono tracejado
-      const pl=PLAYERS.filter(x=>x.talent_index!=null);
-      const avg=v=>pl.reduce((s,x)=>s+(x[v]||0),0)/Math.max(1,pl.length);
-      const avgVals=[
-        Math.min(1,avg('talent_index')/67),
-        Math.min(1,avg('total_physical')/25),
-        Math.min(1,avg('total_off')/35),
-        Math.min(1,avg('total_def')/8.5),
-        Math.min(1,avg('total_pass')/23.5)
-      ];
-      function radarCol(v){return v>=75?'#00e5a0':v>=50?'#00d4ff':'rgba(160,175,195,.5)';}
-      function pt(i,r){const a=Math.PI*2*i/5-Math.PI/2;return[cx+r*Math.cos(a),cy+r*Math.sin(a)];}
-      let s='<svg width="'+W+'" height="'+H+'" xmlns="http://www.w3.org/2000/svg">';
-      [.25,.5,.75,1].forEach(f=>{const pp=[0,1,2,3,4].map(i=>pt(i,R*f));s+='<polygon points="'+pp.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')+'" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>';});
-      [0,1,2,3,4].forEach(i=>{const[x,y]=pt(i,R);s+='<line x1="'+cx.toFixed(1)+'" y1="'+cy.toFixed(1)+'" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="rgba(255,255,255,.06)" stroke-width="1"/>';});
-      // Polígono média da liga (tracejado)
-      const ap=[0,1,2,3,4].map(i=>pt(i,R*(avgVals[i]||0)));
-      s+='<polygon points="'+ap.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')+'" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.35)" stroke-width="1.5" stroke-dasharray="4,3" stroke-linejoin="round"/>';
-      // Polígono do jogador
-      const fp=[0,1,2,3,4].map(i=>pt(i,R*(vals[i]||0)));
-      s+='<polygon points="'+fp.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')+'" fill="rgba(0,212,255,.15)" stroke="#00d4ff" stroke-width="2" stroke-linejoin="round"/>';
-      fp.forEach(([x,y])=>{s+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="4" fill="#00d4ff"/>';});
-      [0,1,2,3,4].forEach(i=>{
-        const[lx,ly]=pt(i,R*1.32);
-        const col=radarCol(pcts[i]);
-        s+='<text x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Barlow Condensed,sans-serif" font-weight="700" letter-spacing="0.5">'+lbls[i]+'</text>';
-        s+='<text x="'+lx.toFixed(1)+'" y="'+(ly+12).toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" fill="'+col+'" font-size="11" font-family="Barlow Condensed,sans-serif" font-weight="800">'+pcts[i]+'</text>';
-      });
-      // Legenda — canto inferior direito, empilhada
-      s+='<line x1="'+(W-4)+'" y1="195" x2="'+(W-16)+'" y2="195" stroke="#00d4ff" stroke-width="2"/>';
-      s+='<text x="'+(W-20)+'" y="195" text-anchor="end" dominant-baseline="middle" fill="rgba(0,212,255,.8)" font-size="8" font-family="Barlow Condensed,sans-serif" font-weight="700">'+p.name.split(' ').slice(-1)[0].toUpperCase()+'</text>';
-      s+='<line x1="'+(W-4)+'" y1="206" x2="'+(W-16)+'" y2="206" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-dasharray="4,3"/>';
-      s+='<text x="'+(W-20)+'" y="206" text-anchor="end" dominant-baseline="middle" fill="rgba(255,255,255,.4)" font-size="8" font-family="Barlow Condensed,sans-serif" font-weight="700">LIGA</text>';
-      return s+'</svg>';
-    }
-
-    const simsArr=PLAYERS.filter(x=>x.name!==p.name&&x.position===p.position).slice(0,3).map(s=>{
-      const sMv=s.mkt_value>=1e6?'€'+(s.mkt_value/1e6).toFixed(1)+'M':s.mkt_value>=1e3?'€'+Math.round(s.mkt_value/1e3)+'K':'—';
-      const sMatchPct=Math.round((s.score||0)/Math.max(1,p.score||1)*100);
-      const sMatchCol=sMatchPct>=75?'#00e5a0':sMatchPct>=50?'#00d4ff':'rgba(160,175,195,.6)';
-      const sTIPct=Math.min(100,Math.round((s.talent_index||0)/67*100));
-      const sPhPct=Math.min(100,Math.round((s.total_physical||0)/25*100));
-      const sCtcCol=s.contract_end&&new Date(s.contract_end)<new Date(Date.now()+365*24*36e5)?'#ff6b6b':'rgba(200,220,240,.5)';
-      const sIni=s.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-      const sPhoto=window.photoCache&&photoCache[s.name]
-        ?'<img src="'+photoCache[s.name]+'" style="width:64px;height:64px;border-radius:6px;object-fit:cover;object-position:top center;flex-shrink:0">'
-        :'<div style="width:64px;height:64px;border-radius:6px;background:rgba(0,140,255,.08);border:1.5px solid rgba(0,140,255,.15);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:rgba(0,140,255,.2);flex-shrink:0">'+sIni+'</div>';
-      const sPos=(s.position||'').split(',').map(x=>'<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:2px;border:1px solid rgba(0,212,255,.35);color:#00d4ff;background:rgba(0,212,255,.07)">'+x.trim()+'</span>').join('');
-      // AI why sentence
-      const sAgeDiff=p.age&&s.age?s.age-p.age:null;
-      const sCtcExpiring=s.contract_end&&new Date(s.contract_end)<new Date(Date.now()+365*24*36e5);
-      let sWhy='';
-      if(sCtcExpiring) sWhy='<em style="color:rgba(0,229,160,.85);font-style:normal;font-weight:700">Contrato a expirar</em> — janela de mercado imediata.';
-      else if(sAgeDiff!==null&&sAgeDiff<=-3) sWhy='<em style="color:rgba(0,229,160,.85);font-style:normal;font-weight:700">'+Math.abs(sAgeDiff)+' anos mais novo.</em> Maior potencial de valorização.';
-      else if(sAgeDiff!==null&&sAgeDiff>=3) sWhy='<em style="color:rgba(0,229,160,.85);font-style:normal;font-weight:700">'+sAgeDiff+' anos mais velho.</em> Experiência e maturidade imediatas.';
-      else sWhy='Perfil técnico semelhante ao jogador em análise.';
-
-      return '<div style="background:#0c1623;border:1px solid rgba(255,255,255,.08);border-radius:9.6px;overflow:hidden;margin-bottom:8px">'
-        // ROW 1
-        +'<div style="padding:12px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.06)">'
-          +sPhoto
-          +'<div style="flex:1;min-width:0">'
-            +'<div style="font-size:26px;font-weight:900;color:#e8edf2;line-height:1;margin-bottom:3px;margin-top:-2.8px">'+(s.name||'')+'</div>'
-            +'<div style="font-size:12px;color:rgba(255,255,255,.38);margin-bottom:1px">'+(s.age||'—')+'a · '+(s.size?s.size+' cm':'—')+'</div>'
-            +'<div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.55);margin-top:2.8px">'+(s.team||'')+(s.league?' · <span style="color:rgba(0,212,255,.65);font-weight:400">'+s.league+'</span>':'')+'</div>'
-          +'</div>'
-          +'<div style="display:flex;gap:3px;flex-shrink:0;align-self:flex-start;padding-top:2px">'+sPos+'</div>'
-        +'</div>'
-        // ROW 2
-        +'<div style="padding:8px 14px;font-size:12px;color:rgba(255,255,255,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-bottom:1px solid rgba(255,255,255,.06)">'+sWhy+'</div>'
-        // ROW 3
-        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr">'
-          +'<div style="padding:9px 0;text-align:center;border-right:1px solid rgba(255,255,255,.06)"><div style="font-size:8px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:3px">Match</div><div style="font-size:22px;font-weight:900;color:'+sMatchCol+'">'+sMatchPct+'%</div></div>'
-          +'<div style="padding:9px 0;text-align:center;border-right:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06)"><div style="font-size:8px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:3px">Talent</div><div style="font-size:22px;font-weight:900;color:#e8edf2">'+sTIPct+'</div></div>'
-          +'<div style="padding:9px 0;text-align:center;border-bottom:1px solid rgba(255,255,255,.06)"><div style="font-size:8px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:3px">Physical</div><div style="font-size:22px;font-weight:900;color:#e8edf2">'+sPhPct+'</div></div>'
-        +'</div>'
-        // ROW 4
-        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr">'
-          +'<div style="padding:9px 14px;border-right:1px solid rgba(255,255,255,.06);display:flex;align-items:center"><div style="height:4px;width:100%;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden"><div style="height:100%;border-radius:2px;width:'+sMatchPct+'%;background:'+sMatchCol+'"></div></div></div>'
-          +'<div style="padding:9px 0;text-align:center;border-right:1px solid rgba(255,255,255,.06)"><div style="font-size:8px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:2px">Market Value</div><div style="font-size:14px;font-weight:700;color:rgba(0,200,160,.8)">'+sMv+'</div></div>'
-          +'<div style="padding:9px 0;text-align:center"><div style="font-size:8px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:2px">Contract End</div><div style="font-size:14px;font-weight:700;color:'+sCtcCol+'">'+(s.contract_end||'—')+'</div></div>'
-        +'</div>'
-      +'</div>';
-    });
-    const sims=simsArr.join('');
-
-    const out='<!DOCTYPE html><html><head>'
-      +'<meta charset="utf-8">'
-      +'<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">'
-      +'<style>'
-      +'html,body{background:#080c10;color:#e8edf2;font-family:Barlow Condensed,sans-serif;width:390px;padding:14px;padding-top:0;margin:0;zoom:1.6}'
-      +'@page{size:624px auto;margin:0}'
-      +'@media print{html,body{background:#080c10!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;width:390px;padding:14px;padding-top:0;zoom:1.6}}'
-      +'</style></head><body>'
-
-      // HEADER
-      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1px;padding:10px 0 6.4px">'
-        +'<span style="font-family:Georgia,serif;font-size:15px;font-weight:400;letter-spacing:2px;background:linear-gradient(90deg,#00c4ff 0%,#00e5a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-transform:lowercase">thrivella</span>'
-        +'<span style="font-size:7.2px;color:rgba(255,255,255,.2)">SCOUT REPORT · '+date+'</span>'
-      +'</div>'
-
-      // 1. CARD DO JOGADOR
-      +C('rgba(0,180,200,.15)',
-        // Foto + nome + posições
-        '<div style="display:flex;gap:9.6px;margin-bottom:9.6px">'
-          +photo
-          +'<div style="flex:1;min-width:0">'
-            +'<div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:2px;letter-spacing:.3px">'+(p.name.split(' ')[0]||'')+'</div>'
-            +'<div style="font-size:42px;font-weight:900;color:#e8edf2;line-height:1;margin-bottom:7px;letter-spacing:-2px">'+(p.name.split(' ').slice(1).join(' ')||p.name)+'</div>'
-            +'<div style="display:flex;flex-wrap:wrap;gap:3.2px;margin-bottom:7px">'
-              +(p.position||'').split(',').map(x=>'<span style="font-size:11px;font-weight:700;padding:2px 9px;border-radius:2.4px;border:1.5px solid rgba(0,212,255,.4);color:#00d4ff;background:rgba(0,212,255,.07)">'+x.trim()+'</span>').join('')
-            +'</div>'
-            +'<div style="font-size:14px;font-weight:600;color:rgba(255,255,255,.45)">'+(p.team||'')+' <span style="color:rgba(0,212,255,.6)">'+(p.league||'')+'</span></div>'
-          +'</div>'
-        +'</div>'
-        // 3 SCORES — exactamente como Essimi: número enorme
-        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);padding:8px 0;margin-bottom:8px">'
-          +[
-            {lbl:'TALENT INDEX',val:tiPct,col:tiPct>=70?'#00e5a0':tiPct>=50?'#00d4ff':'rgba(160,175,195,.5)',sub:'#'+tiLR+' liga · '+topLbl},
-            {lbl:'PHYSICAL INDEX',val:phPct,col:phPct>=70?'#00e5a0':phPct>=40?'#9b7fff':'rgba(160,175,195,.5)',sub:'#'+rnkL_('total_physical')+' liga · '+(p.total_physical||0).toFixed(1)+' pts'},
-            {lbl:'TRANSFER SCORE',val:tsPct,col:tsCol,sub:'Impacto: '+impL+' · Potencial: '+potL},
-          ].map(({lbl,val,col,sub},i)=>
-            '<div style="text-align:center;padding:0 4px;'+(i>0?'border-left:1px solid rgba(255,255,255,.06)':'')+'">'
-              +'<div style="font-size:9px;letter-spacing:.8px;color:#ffffff;text-transform:uppercase;margin-bottom:1.6px;font-weight:700">'+lbl+'</div>'
-              +'<div style="font-size:32px;font-weight:900;color:'+col+';letter-spacing:-1px;line-height:1">'+val+'</div>'
-              +'<div style="font-size:7.2px;color:rgba(255,255,255,.3);margin-top:3.2px">'+sub+'</div>'
-            +'</div>'
-          ).join('')
-        +'</div>'
-        // STATS: Idade / Altura / Pé / Jogos
-        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:3.2px;margin-bottom:6.4px">'
-          +[['Idade',p.age||'—'],['Altura',p.size?p.size+' cm':'—'],['Pé',foot],['Jogos',p.matches||'—']].map(([lbl,val])=>
-            '<div><div style="font-size:7.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:1.6px">'+lbl+'</div>'
-            +'<div style="font-size:15.5px;font-weight:800;color:rgba(255,255,255,.92)">'+val+'</div></div>'
-          ).join('')
-        +'</div>'
-        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:3.2px">'
-          +'<div><div style="font-size:7.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:1.6px">Market Value</div><div style="font-size:17px;font-weight:800;color:#e8edf2">'+mv+'</div></div>'
-          +'<div><div style="font-size:7.5px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-bottom:1.6px">Contract End</div><div style="font-size:17px;font-weight:800;color:'+ctc+'">'+(p.contract_end||'—')+'</div></div>'
-        +'</div>'
-      )
-
-      // 2. RADAR
-      +C('',SH('rgba(0,212,255,.6)','PERFIL DE JOGO')
-        +'<div style="display:flex">'+radarSVG()+'</div>'
-      )
-
-      // PÁG 2 — AI SCOUT + DESEMPENHO CHAVE
-      +'<div style="page-break-before:always;padding-top:14px"></div>'
-      +'<div style="background:rgba(0,229,160,.04);border:1px solid rgba(0,229,160,.1);border-radius:9.6px;padding:12.8px;margin-bottom:8px;min-height:260px;max-height:260px;overflow:hidden">'
-        +'<div style="display:flex;align-items:center;gap:6.4px;margin-bottom:9.6px">'
-          +'<div style="width:24px;height:24px;background:rgba(0,229,160,.15);border:1px solid rgba(0,229,160,.3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:7.2px;font-weight:900;color:#00e5a0;flex-shrink:0">AI</div>'
-          +'<span style="font-size:11.2px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:1.6px;text-transform:uppercase">AI SCOUT INSIGHT</span>'
-          +'<div style="margin-left:auto;display:flex;gap:6.4px">'
-            +'<div style="text-align:center"><div style="font-size:6.4px;font-weight:700;color:#ffffff;text-transform:uppercase;margin-bottom:1.6px">IMPACTO</div><span style="font-size:8px;font-weight:700;padding:1.6px 7px;border-radius:6.4px;background:'+impC+'18;border:1px solid '+impC+'55;color:'+impC+'">'+impL+'</span></div>'
-            +'<div style="text-align:center"><div style="font-size:6.4px;font-weight:700;color:#ffffff;text-transform:uppercase;margin-bottom:1.6px">POTENCIAL</div><span style="font-size:8px;font-weight:700;padding:1.6px 7px;border-radius:6.4px;background:'+potC+'18;border:1px solid '+potC+'55;color:'+potC+'">'+potL+'</span></div>'
-          +'</div>'
-        +'</div>'
-        +'<div style="line-height:1.7;color:rgba(255,255,255,.6)">'+aiTxt+'</div>'
-      +'</div>'
-      +C('',SH('rgba(0,220,190,.7)','DESEMPENHO CHAVE','VALOR   MÉDIA   RANK')
-        +mrow('Cond. Progressivas',p.prog_carries,'prog_carries')
-        +mrow('Drib Quality',p.dribles_pct,'dribles_pct')
-        +mrow('Acelerações',p.accels90,'accels90')
-        +mrow('Recep. Profundidade',p.recpt_depth,'recpt_depth')
-        +mrow('Shot Assist',p.shot_assist,'shot_assist')
-        +mrow('xA / 90',p.xa,'xa')
-      )
-
-      // PÁG 3 — OFENSIVO + PASSE & DEFESA
-      +'<div style="page-break-before:always;padding-top:48px"></div>'
-      +C('',SH('rgba(0,220,190,.6)','OFENSIVO','VALOR   MÉDIA   RANK')
-        +mrow('xG',p.xg,'xg')
-        +mrow('Remates / 90',p.shots90,'shots90')
-        +mrow('Box Touches / 90',p.box_touches,'box_touches')
-        +mrow('Cruzamentos / 90',p.crosses90,'crosses90')
-        +mrow('% Cruzamentos',p.crosses_pct,'crosses_pct')
-      )
-      +'<div style="height:14px"></div>'
-      +C('',SH('rgba(0,220,190,.6)','PASSE & DEFESA','VALOR   MÉDIA   RANK')
-        +mrow('% Passes Certos',p.passes_pct,'passes_pct')
-        +mrow('Box Passes / 90',p.box_passes,'box_passes')
-        +mrow('Duelos Def. / 90',p.def_duels,'def_duels')
-        +mrow('% Duelos Ganhos',p.def_duels_pct,'def_duels_pct')
-        +mrow('Interceções Adj.',p.adj_intercept,'adj_intercept')
-      )
-
-      // PÁG 4 — FÍSICO + 1.º SIMILAR PLAYER
-      +'<div style="page-break-before:always;padding-top:24px"></div>'
-      +C('',SH('rgba(0,180,255,.5)','FÍSICO','VALOR   MÉDIA   RANK')
-        +mrow('Velocidade Máxima',p.max_speed?p.max_speed.toFixed(1):null,'max_speed')
-        +mrow('Sprint Dist / 90',p.sprint_dist90?Math.round(p.sprint_dist90):null,'sprint_dist90')
-        +mrow('Sprints / 90',p.sprints90?p.sprints90.toFixed(1):null,'sprints90')
-        +mrow('HSR / 90',p.hsr90?Math.round(p.hsr90):null,'hsr90')
-        +mrow('Acelerações / 90',p.accels90?p.accels90.toFixed(1):null,'accels90')
-      )
-      +(simsArr.length>0
-        ?'<div style="height:14px"></div>'
-          +'<div style="display:grid;grid-template-columns:1fr 40px 32px 38.4px;gap:6.4px;align-items:center;margin-bottom:10px"><div style="display:flex;align-items:center;gap:6.4px"><span style="width:3px;height:14px;background:rgba(0,180,200,.6);border-radius:1.6px;flex-shrink:0;display:inline-block"></span><span style="font-size:11.2px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:1.6px;text-transform:uppercase">SIMILAR PLAYERS</span></div><span></span><span></span><span></span></div>'
-          +simsArr[0]
-        :'')
-
-      // PÁG 5 — 2.º E 3.º SIMILAR PLAYERS
-      +(simsArr.length>1
-        ?'<div style="page-break-before:always;padding-top:28px"></div>'
-          +'<div style="display:grid;grid-template-columns:1fr 40px 32px 38.4px;gap:6.4px;align-items:center;margin-bottom:10px"><div style="display:flex;align-items:center;gap:6.4px"><span style="width:3px;height:14px;background:rgba(0,180,200,.6);border-radius:1.6px;flex-shrink:0;display:inline-block"></span><span style="font-size:11.2px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:1.6px;text-transform:uppercase">SIMILAR PLAYERS</span></div><span></span><span></span><span></span></div>'
-          +simsArr.slice(1,2).join('')
-          +'<div style="height:28px"></div>'
-          +simsArr.slice(2).join('')
-        :'')
-
-      +'<div style="text-align:center;padding:11.2px 0 6px;font-size:6.4px;color:rgba(255,255,255,.15);letter-spacing:1.2px;text-transform:uppercase">THRIVELLA SCOUT REPORT · '+p.name.toUpperCase()+' · '+date+'</div>'
-      +'<'+'script>setTimeout(function(){window.print();},2000);<'+'/script>'
-      +'</body></html>';
-
-    const w=window.open('','_blank','width=650,height=900,scrollbars=yes');
-    if(!w){alert('Activa popups para este site.');return;}
-    w.document.write(out);
-    w.document.close();
-  };
 
 
   window.pid3Upload=function(input,key){
@@ -17492,9 +17494,9 @@ function renderMobileTable(){
         +fSep+fLbl('Idade')+mkDD('mob-f-age','Idade',ageOpts,prev.age)
         +fSep+fLbl('Ctc')+mkDD('mob-f-ct','Ctc',ctOpts,prev.ct)
         +fSep+fLbl('Métrica')+mkDD('mob-f-metric','Métrica',metOpts,prev.metric)
+      +fSep+fLbl('Ajuste')+'<button onclick="toggleLigaAdjust();renderMobileTable();" title="Liga Adjust" style="flex-shrink:0;width:24px;height:24px;border-radius:5px;background:'+((typeof ligaAdjustActive!=='undefined'&&ligaAdjustActive)?'rgba(120,255,170,.32)':'rgba(120,255,170,.18)')+';border:1px solid '+((typeof ligaAdjustActive!=='undefined'&&ligaAdjustActive)?'rgba(120,255,170,.9)':'rgba(120,255,170,.5)')+';cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0"><span style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:800;letter-spacing:.3px;color:#d4ffe0">AI</span></button>'
       +'</div>'
-      +'<button style="'+btnStyle+'" onclick="document.getElementById(\'mob-rk-scroll\').scrollLeft+=80">›</button>'
-      +'<button onclick="toggleLigaAdjust();renderMobileTable();" title="Liga Adjust" style="flex-shrink:0;width:24px;height:24px;border-radius:5px;background:'+((typeof ligaAdjustActive!=='undefined'&&ligaAdjustActive)?'rgba(120,255,170,.32)':'rgba(120,255,170,.18)')+';border:1px solid '+((typeof ligaAdjustActive!=='undefined'&&ligaAdjustActive)?'rgba(120,255,170,.9)':'rgba(120,255,170,.5)')+';cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0"><span style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:800;letter-spacing:.3px;color:#d4ffe0">AI</span></button>';
+      +'<button style="'+btnStyle+'" onclick="document.getElementById(\'mob-rk-scroll\').scrollLeft+=80">›</button>';
   }
 
   const leagueSel = window._mobLeagueSel || new Set();
@@ -17599,6 +17601,7 @@ function renderMobilePlayerID(){
 
   const p = window.selectedPlayer || (PLAYERS&&PLAYERS[0]);
   if(p && !window.selectedPlayer) window.selectedPlayer = p;
+  window._pid3Player = p;
 
   if(!p || !PLAYERS || !PLAYERS.length){
     content.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:60vh;font-family:\'Barlow Condensed\',sans-serif;font-size:13px;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase">A carregar...</div>';
@@ -18876,7 +18879,7 @@ function renderMobileElite(){
       <div style="position:absolute;top:0;right:8px;bottom:0;display:flex;flex-direction:column;gap:3px;padding:6px 0;justify-content:center;z-index:10">
         <button onclick="event.stopPropagation()" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:5px;background:rgba(220,40,40,.15);border:1px solid rgba(220,40,40,.4);color:rgba(255,100,100,.85);cursor:pointer"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>
         <button onclick="event.stopPropagation()" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:5px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);color:rgba(200,215,235,.55);cursor:pointer"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
-        <button onclick="event.stopPropagation();pid3PdfModal(window.selectedPlayer)" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:5px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);color:rgba(200,215,235,.55);cursor:pointer"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></button>
+        <button onclick="event.stopPropagation();window._pid3Player=window.selectedPlayer;pid3PdfModal(window.selectedPlayer)" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:5px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);color:rgba(200,215,235,.55);cursor:pointer"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></button>
         <button onclick="event.stopPropagation();window.tmLinkModal&&window.tmLinkModal()" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:5px;background:#000;border:1px solid rgba(255,255,255,.15);cursor:pointer;overflow:hidden;padding:0" title="Transfermarkt"><img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAETAXwDASIAAhEBAxEB/8QAHQABAAICAwEBAAAAAAAAAAAAAAgJAQcEBQYDAv/EAEMQAAEDAwIDBgIGCAUCBwAAAAABAgMEBQYHEQgSIRMxQWFxgSJRCRQygpGhFiNCUnKSorEVQ7LB0jNiGCY0VqSzwv/EABUBAQEAAAAAAAAAAAAAAAAAAAAB/8QAGhEBAQEAAwEAAAAAAAAAAAAAAAERITFBYf/aAAwDAQACEQMRAD8AhkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANk6QaKZ3qdJ2tht3Y25ruWSvqV5IUXxRF/aXyTckviPBRj8LGSZTllfVyKm7oqCJsTUX+JyOVU9kAg+Cx+3cKGjdNGjZrPcKxfF09a5FX+TlPrW8KmjNRC6OKwVdK5e58VdIrk/mVU/ICtsEwtY+DuG22OqvOAXerqpKeNZFt1YiOfIiJuvI9qJ1+TVT3IfPa5j1Y5FRzV2VF8FAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGy+HDTSbVHUqksj+0ZbYE+sXCVqfZiavVEXwVy7Inqa1aiucjWoqqq7IieJZDwaaZLgGl8Vfcqfsr3e9qmpRybPjj/wAuP2TqqfNyp4AbnsNotthtFNaLTRxUlDSxpHDDG3ZrWoc8AAAAPxJ1jcngqFSerkEVNqnlNPA1rYo7vUtYje5ESV3cWyXKojpLdUVczkbHDE6R6r3IiJupUHk9wlu2SXK6Tf8AVq6qSd/q5yqv9yQdcACgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH2o6aorKuKkpIJJ6iZ6MjjjarnPcvRERE71A+JyLdRVlxrI6OgpZqqolcjY4omK5zlXuREQk3pDwg5LfPq9xzqrWx0LtnLSRbOqXJ8lXuYu3r5ohLnTfSjBNPqVsWNWCmgmRPjqpG887/V7t19k2QCOfC5wv1NDW0uY6jUrWSxKktHanpvyqnc+VPn4o38fkTHaiImydxnoY7icjIAKAAA6bMrU++YldrLHMsDq+impklT9hXtVu/tuVTaiYPkuC5FU2fIrbPSzRPVGyK1ezlbv0cx3cqKW4+B1eQ4/ZMhon0V8tVFcad6bLHUwNkT80JBT4CbevHCPaJrZVXzTZ0tJWRNWR1slero5dvCNy9Wu8lVUXyITyxvilfFI1WPY5WuaqdUVPAo/AAAA9JhWCZhmlV9XxjHq+5rzI1z4ol7Nir3cz1+FvuqHv63hk1npLa+ukxNXtjbzOjjq4nSbeTUduq+SdQNOA+1bS1NFVS0lZBJT1ETlZJFI1WuY5F2VFRe5T5Na5zka1FVV8EQDAPcYdpJqPlqRvseI3OeGROZk8kXZROTye/ZF9lNu4zwb6j3BIpLvcbPaWO+2xZHSyN9mpy/1ARqBN6w8EtgiVFveaXCqRf2aWmZDt7uVx6y28HmlFL/AOolvtavylq0T/S1AK9QWRx8KWjTE62Gqf610v8AyD+FLRpybJYKpvpXS/8AILitwFhFz4OtK6pVWmqL7RLv0SKqaqJ/O1VPG5HwS2yRr34/mlXAqIvLHWUzZEVfDdzVbsnsoRCkG5tRuGnVLDYpKpbQ29UTPtT21yyqnqzZH++2xpuRj43qyRjmOTvRybKgH5AAAA59lst4vVWyjtFrrK+of9mKnhdI5fREQDgA3RiPDFq9kHZvdj7bVBIm6SV8qR7erU3ci+qG1sc4JbnI1r8gzWlp13+KOjpXSb/ecrf7ARBBYPZeDrS6iVrq6pvlxcn2kkqWsYv8jUX8z0bOFjRZrdlxiZy/Na6bf/UBWqCxm88JOkFdFyU1vuVtd389NWuVf6+ZPyNY5pwTpyyzYhl+y/5dPcYd095Gf8QIaA97qhpFnmnMy/pJZJY6RXcrKyH9ZA/5fEncq9+y7L5HggAAAAAAAABKf6PDFrPdszvmQ3CFk9XaYom0bXoiox0nPu9E+aIzZF818iLB7rRTUy+aW5iy/wBn5Zo3t7KrpXr8M8W6KrfJem6L4fkBa77Ge81hozrZhWp9E3/CK5tNdGt3mt1Q7lmZ5onc5PNN/DfbuNnoToAAUAAAAABTB0uU5VjmL0K1mQ3ugtsKftVE7Wb+SIvepHLUrjHxO0umo8Ntc99qERUbUzbwwIvzRF+J3psm/wAwYkVm2R2jFMarr7fKuOloaWJz5HuXv+SIniq9yJ4lTOW3Nt6ym63hkKQtrayWoSNO5iPertvzPVas6u5vqbWNkyW6K6ljdzQ0UCckEa/NG+K+a7qeBGYB77QLT2fUzUu3421Xx0iqs1bK1P8Apwt+0vqvRE81Q8CTp+jywdbbh1yzerhVs12k+r0rlT/JjX4lRfkrun3QJNYtj9oxix0tlsdBDRUNMzkjjjbsnqvzVe/c7UADXudaNabZvcP8QyLF6Spq903nj5onv/icxU5vc5GK6Sab4w5klmw6008zOrJnQI+Rv33buPc+49wawxjGJsxrWp8kTY/QAAAAAAAAAGFRFTZU3Q17qLo1pznavmv+MUklW7r9ahb2Uyr5ubtv7mw/Uxt8iCLt04LsBnkc+gv99pUVfsq9j0TyTdpxaLgnw1kyOq8rvc0fi1jY2L+OykrPwAhrSmI8MOkWPOZItgkuszO6SvmWTf1amzV/A2zY7DZbHSNpbLaaK3QNTZI6aBsbfwRDs09TGxRkAAAAAAAHDudvobpQS0NxpIaulmYrJIZmI9j2r3oqKV38Y+jtJprldNdbBC6OwXZXLHH1VKeVOqsRV/ZVF3TfzTwLG17yN/0g9PHNofDM9E54LrC5i+PVr0/3IK+AAUAAAAAAAAdhjd0r7LfaK6WuqlpaymmbJFLG7ZzVRS3fHKiWrsFvq6hOWaWmjfInyVWoqlSun1mmyLObHY4E3krq+GBOm+3M9EVfRC3amjSGnjhaiNRjEaiJ4bIB9QAAAAHxqqiGlppKiokbFFG1XPe5dkaiENdfeLeeOrqbBpm2NGsVY5LtKxHbqnT9U1enu78O5T23HrqNLjOBU+J2yqWK4XxXNm5V+JtMn2vHdOZVRvmnMngQBA7HIL7ecguElwvdzq7hVSLu6WolV7l/E64AAAAOzxWzVeRZJbrFQM56mvqWU8aebnIn+5bRg+PUGKYnbMdtsfZ01BTshYmybrypsqrt3qvivzINcAGCrftS6jLaqJVo7FF+rVU6OnkRUb67N5l/AsBXYDIAAAADBxLnX0VsopK24VUNLTRN5pJZXo1rU+aqp5zVLPLDp3idVkd/qUihjTaKNOr5pNujGJ4qv4Jsqr0K49bNacv1Qu0rrhWSUloa9Vp7dC9UjYnhzfvO8189kTuJgmxmfFJpLjkr6eO7z3meN2zmW6HtE38nrs1fVFPCVHGvh7Z+WDFby+Lf7bnRov4b/wC5BUFwWa6RcQ+n2o1e210FTPbro9PgpK1qMdJt38qouy+iLv5G499ym6gq6mgrYK2inkp6mCRJIpY3K1zHIu6Kip1RUUtL4csxqc70dsOQ1vWskhWKoX96SNVYrvfbf3A2MAAAAAwNwvzItcXvENU4VM7C8MqIkvT496yrTZ31Rrk6NRP31Tr17k816TBu3UPVTA8Ai/8AM+RUtJMqIraZru0mVP4G7r7qmxqGq4y9MoqrsorXkE8aLssjYI0RU+aIr0IEXW4191r5rhcqyesq53K+WaZ6ve9y96qq9VOKMFnGnnEVpdmtZFQ0V9+oV0vRlPXt7JVXfZERyryqvkim30cioipsqL4oU0oqtVFRVRU7lQnTwF6qXrKaC44Vf6p9bLa6ds1HPIvNJ2PNyqxy967KrdvHZdvAolcAAAAAwpGP6RGvig0fttF2iJLU3ePlZ4q1sb1Vfx2/Ek4QU+kZyRtbnFhxiJ6PS3Uj6iXZe58qoiNX7rEX7xIRFMAFAAAAAAAAEj+AHEXXvV6XIpoldS2Olc9HKnTtZEVjU/BXL7IWEGjeC7A/0L0aoqupgVlxva/Xp906oxU/Vt/l2X7ym8kJRkAFGPAOciNVy9ETqo8NjXHEfmrcC0hvl8bKjKtYFp6P4kRyzSfC1U379lXmVPk1QeoB8VGcLnes14uEUvaUNE/6jR7LunZxqqbovyV3M73NVn6e5z3ue5d3OXdV8z8gAAAAPfcP2Evz/Vmx48rFdSvnSasXwSFnxP6+G6JsnmqAT14QMN/Q3RC0RzQ9nW3NPr9T06qsmytT2YjUNybH4hijhgZDG1GsY1GtRPBEP31H1GQAFY8D8ySNjjc968rWpuq/I/Ro3jPz52EaQ1VPRzclyvSrRQbL8TWqnxu+fRu6bp4q0gh/xZaqS6k6jTxUNQ5bDa3ugomIvwyKi7Ol2/7lTp5InmaaCqqruvVQUAAALLOCiilouHbH1mRzVnWeVEX91ZX7KVuWqiqLlc6W30kbpaiplbFGxqdXOcuyIn4lt2nNhZi+CWTH2LulvoooFXbbdWt6qKPQgAAAAPF6zZnTYDpveMon2V9LAqQMX9uV3RjfdVTqVT3u51t5vFXdrjO+esrJnTTSOXq57l3VfzJh/SM5nyU1hwWmk2dIq3Cqan7qbsjT3Xn6eSEMAAAAEqfo4LfLJqNkVzRP1UFrSFfV8jVT/QpFYn19Hliq2rS+45LPCrJbxWbRO/eii+FP6leBJ4AAAAB+JHIxjnr3Im6lUmvmULmOr2RX1JO0ilrHRwOReixs+Bn5IhYhxN5kmD6M327slSOslhWlpOuyrLJ8KKnmibu+6VbOcrnK5y7qq7qogwAAAAAAAAbA4fMFm1C1Ws+PtjV1L2qT1jk7mwsXd2/y37vVUNfk8fo+8CZZsGrM3rIUStvL+xpnOTq2Bi+Hq5F3/hQCUVPDHTwMghYjI42o1jU7kRPA+oAAAAYQhL9I1l7prxYMKgkXs4Ilr6hEXornKrGe6I1/4k2JHtZG57ujWpuq+RVHrzlUmZ6uZFf3S9pFLWPjp18OxZ8DP6WoQeGABQAAAmp9HRhboaC953VQ/FOqUNG5U68qbOkVPJV5U9lIZUFLPXV0FFSxuknnkbHGxqbq5zl2RELYtIMSpsG03seL03Kv1Kla2Vze58i/E93orlcoHrwAAAAGCunjqzj9KNX3WWln7SgsMf1dqNXdqzO6yL6/Zavm0nxqBkNHimFXfIq1doKCkkncm+yu2bujU81XohUlfLjU3i81t1rZHS1NZO+eV7u9znKqqv5gcMAAAABv7gYwf9KtY4bxVQJJb7DH9afzJu1ZV3SNPXfd33SxnwNE8FGCfodo3R11TFy3G+qldNunVsap+rbv/Dsu3grlN7IqbBGQAFE7jCqiJuvchk8zqjkUeKae33IpHMb9QoZZmc67I56NXlb7u2T3Ara4osodluuOSXFJFfBDUrSQdd05Ivg3TyVUVfc1kfSpmfUVEk8jlc+R6ucqr1VVXc+YAAAdjjVorL/kNvslvjWSqrqhlPE1PFznIif3LaMBx2jxLDbTjVC1Egt9MyBF7uZUb1cvmq9fchP9H9p26+ZzVZzXwKtDZW9nSqqdH1Lk8P4W7r6uaT2FGQAAAOJdK2C3W6pr6qVsUFNE6WV7u5rWpuq/gBCn6RbMlqsgsmEU028dHGtZVNTuV7ujEXzREVfvESD1Gq2VVWbah3rJqpzldW1TnRo5d+SNOjG+zURPY8uAAAAAAAAB2WL2iqv+SW6yUTFfU11THTxNTxc5yIn9y23C7HS41ilrsFE1rYKCljgZt48rdlX37yvrgUx6K968UdXOxr47VTS1fK5N05tuRq+qK5FT0LHu4AAAAAA67IqWausNfRU7+znnppI43/uuc1URSonJrVcLHkFdabrTSU1bSzvjmjemytci9S4Y1RrVoRg+qCLVXOnfQXdG8rLhSojXr8udO56evXzJBV+Ddmt3Dhm2m1PLdo+S+WKNfirKVi80TfBZGd7U803TzNJlAAAbz4JsJXLdaqKtqIO0oLI367Mrk3bzp0jT15tl+6pZJ4EeeBLCWY1o8y+VEHJX36ZahzlT4khbu2NPT7S/eJDdNhRkAAAvcD4VlTDR0stVUSMjhiYr3vcuyNRAIpfSIZstvxW1YPR1CtmuUn1mrY13XsWL8KOT5K7r9wg2bB4hc8l1E1Vu2QI9y0SSLT0LV3+GBiqjV2Xu36uVPm5TXwAAAD2miOIS51qjYsbZGr4qmqa6o28IW/E9f5UU8WTE+jmwznqr9ndTF0jRLfRuXu5l2dIvqicifeUCZ1LBFTU8dPCxGRRsRjGp3IiH2AAAADGxGP6QnKnWnS2hxuCfklvNWnat/ehj+Jf6uQk4V38e+VtvusjLNTzK+Cy0jYXIi7t7V/xuVPZWIvmhBHgAFA+tJBNVVUVNTxukllejGNam6ucq7Ih8jfnA1g8OWaxx3Oug7WisUX1xUVu7Vl3RI0X0Xd33QJuaBYPFp7pXZsdbE1tU2FJqxyJ9ud/V+/p9n2Q2B3mF7kARkABWPA0LxvZomKaL1VvgmRlde5Eook369mvWRdvFOVNt/DmQ30pXLxyZ2uWavy2elnWS3WFi0saIvwrMvWV3rvs37hBoIAFAAAAAAAAEpvo4nQJqVkDXqiSrak5Pnt2jdyeJVpw0ahRabar2++Viu/w6VFpq3l70jf8Atey7Lt47Fn9ouFFdbbBcbfUxVNLUMbJFLE7ma9q9UVFTwFHNAAAAABsABxbhS09bQzUtTCyWCWNzHse3dHIveioVJalW+ktOoWQWy3t5aSluM8ULd99mNeqIm/oWa686i23TbT2vvlXNElY6N0VDAq/FNMqfCiJ8k71+SJ6FWFfVTVtbPWVD1fNPI6R7l71VV3UD4HpNMcWrM1z2z4xQtVZa+pbG5UTfkZvu5y+SNRV9jzZIz6PuO3v1smfWK36wy2yrS7/v7tRdvPlVQJ/2S3Utos9HaqGNIqajgZBEz91rWoiJ+CHNAAAADBGvjp1QjxbAf0PtlQiXa9tVkiNXrFTdz18ub7KervFDeef5ZaMJxStyO+VLaejpI1eqr3vXwa1PFy9yIVZ6r5rctQM6uOT3JzkdUyr2MSu3SGNPssT0T891A8qAAAAAFoPChjbcY0IxukWLs5qqn+uSrtsqul+JN/ZUT2Kx7XE2a50sL12a+ZjVXyVULgbHTQ0lmoqWna1sUMDGMRO5ERqIgHOAAAAAdJm9+pMXxK65BWu5aegpXzu69V5WquyeZUnk13qr/kVxvda9H1NfUyVEqom27nuVy/3JmcfmqdHTWCPTe0VbZK6qe2a5dm7fsok6tYvm5dl8kTzIRAAAAJzfRwWuKLB8jvCIna1FwbAq+O0bEX/9kGSZn0cmVUzafIcOmmayoWRtdTsVer02Rr9vTZv4gTMAAAAAeM1jzGkwLTm85PVK3elp3dixy7dpKvRjfdyp6IVR3Otqblcam4VkrpampldLK9y7q5zl3VV91JRcfup9Pe8gpNP7NVpNS2t6zXBzHbtWo7kZ91N9/N23ehFQAAAAAAAAAAABtjRrXzO9MomUFuqo7hZ0dzfUKvdzG79/Ive3+3kanAE7sX408MqoWNyDG7xbp16OWnVk7E891Vq/ke7pOKfRaaJr5Mokhcve19BPun9BWsALMf8AxQaJf+8f/gVH/A/D+KPRRqdMuV3pQVH/AAK0QBYjeuLzSag6Us11ufyWmpFT/wCzlNaZpxrSvikgxHE0jeu6MqK+Xfp4LyN/5EOQB6fUXPMoz++Ou+UXSWtn7o2L0jiT5NanREPMAADssZvt1xq+Ut7slbLRV9K/nimjXZUX/dF7lTxOtAEy9OONGOOjipc6x6Z8zE2Wrt6ovP6scqbeyr6G27ZxTaNVdOyWbJZaR7k3WKWjm5m+S7N2/ArZAFl9XxQ6LQRq9mW9sqfsso591/oNc5lxpYrSU748Wx243Co2VGyVSpDGi+C7IqqqeyEFgBsHWHV/MtUa9kuQ1qMo4XKsFFAnLDGvz28V81NfAAAAAAAGWqrXI5q7Ki7opLjRPi9/wWyUtiz211NYlOxI47hSqjnuanROdiqm6+aL7ERgBZlQcTWjFZG1yZgyF6om7ZaaZip7q1EPrVcSmjFO1XPzSnd8kjglfv8AytKyABYLk/GHpnbO0jtMF1vMqJux0UHZxuXzV+yp/KppDUfjAzi/U81FjNBTY9TyIre1a7tZ0TycqbJ7JuRpAHIuFbV3Gumrq+pmqqqd6ySzSvVz3uVd1VVXqqnHAAAAAdviGR3jE8ipL/YaySjr6R/PHI380VPFFToqL0VFOoAE7NMOMfFq+jgpM5oKm01ybNkqoGLLTu/7tk+Jvps71Nt2zX3SG4QdrT5zamoid00ixL+D0RSrgDBZfkvE3o9ZYpdsm/xGaNN+xooXyK/yR23L/UhHjWLi/vl9pam04Jb32WllRWfXpnItSrfm1E6MX3VfkpFcAfueWWed888jpJZHK573LurlXvVVPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB/9k=" style="width:22px;height:22px;object-fit:contain"></button>
         <button onclick="event.stopPropagation();window.sfLinkModal&&window.sfLinkModal()" style="display:flex;align-items:center;justify-content:center;background:#000;border:1px solid rgba(255,255,255,.15);border-radius:4px;color:#fff;padding:0;cursor:pointer;width:28px;height:26px;overflow:hidden"><img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAEiASUDASIAAhEBAxEB/8QAHAABAQEAAwEBAQAAAAAAAAAAAAcIAQUGBAID/8QANhABAAACBAsGBwEBAQEAAAAAAAECAwQFEQYHExUWUVNVkpPRNVRxdJHCITE2c5SxshIUIjL/xAAcAQEAAwEAAwEAAAAAAAAAAAAABQYHBAEDCAL/xAA0EQEAAQECCggHAQEBAAAAAAAAAQIDBAYRFRYzNVFSU3EFEhSSocHR4RMhMTJykbGBImH/2gAMAwEAAhEDEQA/AJ/Q0VHQ0UtFRSSySSQ/zLLLC6EIan7B9GRERGKFXAHkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASfHHJJLb9VmlklhNNVoRmjCHxj/6j8x+scvb1T8t7ojDsJYxdKW3PyhYLroaVWAbir4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACU45e3qn5b3RDHL29U/Le6Iw7CXWttz8oWC66GlVgG4q+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlOOXt6p+W90Qxy9vVPy3uiMOwl1rbc/KFguuhpVYBuKvgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJTjl7eqflvdEMcvb1T8t7ojDsJda23PyhYLroaVWAbir4AAAAAAXwcR+SE4Q2naM9u1+Ma9WfhWJ4QhCljCEIQmjCEIQvQXTvTlPRFFFVVHW604vri+jpu93m2mYx4sS73+PoX+PozznG0O/VrnTdTONod+rXOm6q1n9Z8Ce97OrJs7zQ1/j6F/j6M85xtDv1a503UzjaHfq1zpupn9Z8Ce97GTZ3mhr/H0L/H0Z5zjaHfq1zpupnG0O/VrnTdTP6z4E972MmzvNDX+PoX+PozznG0O/VrnTdTONod+rXOm6mf1nwJ73sZNneaGv8fQv8fRnnONod+rXOm6mcbQ79WudN1M/rPgT3vYybO80Nf4+hf4+jPOcbQ79WudN1M42h36tc6bqZ/WfAnvexk2d5oa/wAfQv8AH0Z5zjaHfq1zpupnG0O/VrnTdTP6z4E972MmzvNDX+PoX+PozznG0O/VrnTdTONod+rXOm6mf1nwJ73sZNneaGv8fQv8fRnnONod+rXOm6mcbQ79WudN1M/rPgT3vYybO80Nf4+hf4+jPOcbQ79WudN1M42h36tc6bqZ/WfAnvexk2d5oa/x9C/x9Gec42h36tc6bqZxtDv1a503Uz+s+BPe9jJs7zQ1/j6F/j6M85xtDv1a503UzjaHfq1zpupn9Z8Ce97GTZ3mhr/H0cX+Poz1nG0O/VrnTdTONod+rXOm6mf1nwJ73sZNneevxyTSxt+qQhGEYwq0L4av/Uw8TS0lJS0kaSlpJqSePzmmjfGIofSd97de67xixdafokbKz+HRFOxo0BvytgAAAAAOJvkz7b3blf8AM0n9RaCm+TPtvduV/wAzSf1Fn+H2hsec/wAhJdG/dU+IBmSWAAAAAAAAAAAAAAAAAAAAAAAAAAaQAfRqrgAAAAAOJvkz7b3blf8AM0n9RaCm+TPtvduV/wAzSf1Fn+H2hsec/wAhJdG/dU+IBmSWAAAAAAAAAAAAAAAAAAAAAAAAAAaQAfRqrgAAAAAOJvkz7b3blf8AM0n9RaCm+TPtvduV/wAzSf1Fn+H2hsec/wAhJdG/dU+IBmSWAAAAAAAAAAAAAAAAAAAAAAAAAAaQHEJoRhfD5Ob4Po1VwL4F8AAvgXwAC+BfAHE3yZ9t7tyv+ZpP6i0FGPwZ9t3425X4w+X/AE0n9RZ/h9obHnP8hJdG/dU+IBmSWAAAAAAAAAAAAAAAAAAAAAAAAAAffR2za9HRy0dHatekklhdLLLTzQhCGqHxfrPltb3r/wCRP1dcOiL1bx8orn9y/PUp2Oxz5bW96/8AkT9TPltb3r/5E/V1wdrt9+f3J1Kdjsc+W1vev/kT9TPltb3r/wCRP1dcHa7ffn9ydSnY7HPltb3r/wCRP1M+W1vev/kT9XXB2u335/cnUp2OwjbdsxhGEbWr8YR+cP8Aon6uvj8Y3xB67S1tLT76pnnLzERH0AHreQAAAAAAAAAAAAABU8WFjWVWsG4VitWfVqxSz008Iz0tHCeN0LroQv8AklixYp/pKj+9SfuC2YGWVFp0jMVxE/8AM/XnDjv0zFl8trvNH7C3NZ/40nQ0fsLc1n/jSdHZDWOx3fhx+oQ3xKtrrdH7C3NZ/wCNJ0NH7C3NZ/40nR2Qdju/Dj9QfEq2ut0fsLc1n/jSdDR+wtzWf+NJ0dkHY7vw4/UHxKtrrdH7C3NZ/wCNJ0NH7C3NZ/40nR2Qdju/Dj9QfEq2pBjXs+pVC2qtCpVaiq8tJQf6mlo5f8yxjCaML7oD6sc3bVS8t7ojFsI6KbPpO2ppjFGPyhPXWZmypxvCAIR7wAAAAAAAAAAAAAAAAAAAAAAABYsU/wBJUf3qT9wR1YsU/wBJUf3qT9wXDAjWU/jP9hxX/Rf69cA11CAAAAAAJVjm7aqXlvdEMc3bVS8t7ojD8Jta23PyhYLroaXhAEE6AAAAAAAAAAAAAAAAAAAAAAAABYsU/wBJUf3qT9wR1YsU/wBJUf3qT9wXDAjWU/jP9hxX/Rf69cA11CAAAAAAJVjm7aqXlvdEMc3bVS8t7ojD8Jta23PyhYLroaXhAEE6AAAAAAAAAAAAAAAAAAAAAAAABYsU/wBJUf3qT9wR1YsU/wBJUf3qT9wXDAjWU/jP9hxX/Rf69cA11CAAAAAAJVjm7aqXlvdEMc3bVS8t7ojD8Jta23PyhYLroaXhBdKLBLB2jo5ZIWTVpv8AMLr5pb4x8Yv1org9uiqctORgHfMXztKfH0c+UaNkoSLtorg9uiqcs0Vwe3RVOW85h3viU+PoZRo2ShIu2iuD26KpyzRXB7dFU5ZmHe+JT4+hlGjZKEi7aK4PboqnLNFcHt0VTlmYd74lPj6GUaNkoSLtorg9uiqcs0Vwe3RVOWZh3viU+PoZRo2ShIu2iuD26KpyzRXB7dFU5ZmHe+JT4+hlGjZKEi7aK4PboqnLNFcHt0VTlmYd74lPj6GUaNkoSLtorg9uiqcs0Vwe3RVOWZh3viU+PoZRo2ShIu2iuD26KpyzRXB7dFU5ZmHe+JT4+hlGjZKEi7aK4PboqnLNFcHt0VTlmYd74lPj6GUaNkoSLtorg9uiqcs0Vwe3RVOWZh3viU+PoZRo2ShIu2iuD26KpyzRXB7dFU5ZmHe+JT4+hlGjZKEi7aK4PboqnLNFcHt0VTlmYd74lPj6GUaNkoSsWKf6So/vUn7g7TRXB7dFU4HaVKq1ep1eSr1WhkoaGT/5kkluhBO4PYL2/Rd6m3tK4mMUx8sf/jmvN7ptaOrEP7ALs4AAAAAAEqxzdtVLy3uiGObtqpeW90Rh+E2tbbn5QsF10NKqgNwV8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABKsc3bVS8t7ohjm7aqXlvdEYfhNrW25+ULBddDSqoDcFfAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASrHN21UvLe6IY5u2ql5b3RGH4Ta1tuflCwXXQ0qqA3BXwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEqxzdtVLy3uiGObtqpeW90Rh+E2tbbn5QsF10NKqhfDWXw1twV8C+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrAC+GsvhrBKsc3bVS8t7ohjm7aqXlo/1EYfhNrW25+ULBddDS9jYFYp57EqU89PSTTRoZYxjGaMYx+D7srS7SfiiDX7DR08oQtX1kytLtJ+KJlaXaT8UQe14MrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7SfiiZWl2k/FEAMrS7Sfii4ytLtJ+KIAlWMelpKTCilhSUk8/8AmjlhL/qN90Lr7oAMU6d1jbflKdu+ipf/2Q==" style="width:14px;height:14px;object-fit:contain;flex-shrink:0"></button>
       </div>
