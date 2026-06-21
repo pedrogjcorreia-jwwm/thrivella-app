@@ -10006,14 +10006,19 @@ function renderPlayerID(name, league) {
 
           /* Liga filter */
           (function(){
-            const opts = [['',(t('lbl_liga_all')||'Liga: Todas')]].concat([...new Set(PLAYERS.map(x=>x.league||'').filter(Boolean))].sort().map(l=>[l,l]));
+            const _ligas = [...new Set(PLAYERS.map(x=>x.league||'').filter(Boolean))].sort();
+            window._pid3SimLigas = null;
+            const _chk = on => '<span style="display:inline-block;width:11px;height:11px;border-radius:3px;border:1px solid rgba(0,180,255,.4);margin-right:7px;flex-shrink:0;text-align:center;line-height:10px;font-size:8px;color:#04111f;background:'+(on?'rgba(0,180,255,.85)':'transparent')+'">'+(on?'✓':'')+'</span>';
+            const _ctrl = (v,txt) => '<div class="sim-dd-opt sim-liga-opt" data-val="'+v+'" style="padding:5px 10px;font-family:var(--font-d);font-size:10px;font-weight:700;color:rgba(0,200,255,.9);cursor:pointer;white-space:nowrap;border-bottom:1px solid rgba(255,255,255,.06)">'+txt+'</div>';
+            const _lrow = l => '<div class="sim-dd-opt sim-liga-opt" data-val="'+l.replace(/"/g,'&quot;')+'" style="display:flex;align-items:center;padding:5px 10px;font-family:var(--font-d);font-size:10px;color:rgba(200,225,255,.8);cursor:pointer;white-space:nowrap">'+_chk(true)+'<span style="overflow:hidden;text-overflow:ellipsis">'+l+'</span></div>';
             return '<div class="sim-dd" data-id="sim-f-liga" style="flex:1;min-width:0;position:relative">'+
               '<div class="sim-dd-btn" style="display:flex;align-items:center;justify-content:space-between;gap:4px;height:22px;padding:0 8px;background:#0d1e35;border:1px solid rgba(0,180,255,.2);border-radius:5px;cursor:pointer;font-family:var(--font-d);font-size:10px;color:rgba(200,225,255,.8);white-space:nowrap;overflow:hidden">'+
-                '<span class="sim-dd-label" style="overflow:hidden;text-overflow:ellipsis">'+t('lbl_liga_all')+'</span>'+
+                '<span class="sim-dd-label" style="overflow:hidden;text-overflow:ellipsis">'+(t('lbl_liga_all')||'Liga: Todas')+'</span>'+
                 '<span style="font-size:8px;opacity:.5;flex-shrink:0">▾</span>'+
               '</div>'+
-              '<div class="sim-dd-list" style="display:none;position:absolute;top:calc(100% + 2px);left:0;min-width:100%;max-height:120px;overflow-y:auto;overflow-x:hidden;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.8)">'+
-                opts.map(([v,l])=>'<div class="sim-dd-opt" data-val="'+v+'" style="padding:5px 10px;font-family:var(--font-d);font-size:10px;color:rgba(200,225,255,.8);cursor:pointer;white-space:nowrap" onmouseover="this.style.background=\'rgba(0,180,255,.1)\'" onmouseout="this.style.background=\'\'">'+l+'</div>').join('')+
+              '<div class="sim-dd-list" style="display:none;position:absolute;top:calc(100% + 2px);left:0;min-width:100%;max-height:140px;overflow-y:auto;overflow-x:hidden;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.8)">'+
+                _ctrl('__all__','Todas')+_ctrl('__none__','Nenhuma')+
+                _ligas.map(_lrow).join('')+
               '</div>'+
             '</div>';
           })()+
@@ -10652,6 +10657,21 @@ function renderPlayerID(name, league) {
           const list = btn.nextElementSibling;
           list.style.display = list.style.display==='block' ? 'none' : 'block';
         } else if(opt){
+          const _ddL = opt.closest('.sim-dd');
+          if(_ddL && _ddL.dataset.id==='sim-f-liga'){
+            const _val = opt.dataset.val;
+            const _all = [...new Set(PLAYERS.map(x=>x.league||'').filter(Boolean))];
+            if(window._pid3SimLigas==null) window._pid3SimLigas=new Set(_all);
+            if(_val==='__all__'){ window._pid3SimLigas=null; }
+            else if(_val==='__none__'){ window._pid3SimLigas=new Set(); }
+            else { if(window._pid3SimLigas.has(_val)) window._pid3SimLigas.delete(_val); else window._pid3SimLigas.add(_val); if(window._pid3SimLigas.size===_all.length) window._pid3SimLigas=null; }
+            const _sel = l => window._pid3SimLigas==null || window._pid3SimLigas.has(l);
+            _ddL.querySelectorAll('.sim-liga-opt').forEach(o=>{ const v=o.dataset.val; if(v==='__all__'||v==='__none__') return; const cb=o.firstElementChild; if(cb){ const on=_sel(v); cb.style.background=on?'rgba(0,180,255,.85)':'transparent'; cb.textContent=on?'✓':''; } });
+            const _allSel=window._pid3SimLigas==null, _noneSel=window._pid3SimLigas!=null&&window._pid3SimLigas.size===0;
+            _ddL.querySelector('.sim-dd-label').textContent=_allSel?(t('lbl_liga_all')||'Liga: Todas'):_noneSel?'Liga: Nenhuma':(window._pid3SimLigas.size===1?[...window._pid3SimLigas][0]:window._pid3SimLigas.size+' ligas');
+            window.pid3FilterSim();
+            return;
+          }
           // Select option
           const val = opt.dataset.val;
           const label = opt.textContent;
@@ -13440,7 +13460,7 @@ function pid3BuildSimCards(pool, p, PLAYERS_REF) {
           '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px;margin-top:-1mm">'+
             '<div style="min-width:0">'+
               '<div style="font-family:var(--font-d);font-size:13.5px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2">'+s.name+'</div>'+
-              '<div style="font-size:9px;color:rgba(255,255,255,.32);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.age?s.age+'a':'—')+' / '+(s.size?s.size+'cm':'—')+' / '+(s.foot?s.foot.charAt(0).toUpperCase():'—')+' / '+s.team+'</div>'+
+              '<div style="font-size:9px;color:rgba(255,255,255,.32);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.age?s.age+'a':'—')+' · '+(s.size?s.size+'cm':'—')+' · '+(s.foot?s.foot.charAt(0).toUpperCase():'—')+' · '+s.team+'</div>'+
             '</div>'+
             '<div style="flex-shrink:0;display:flex;gap:2px;align-items:flex-start">'+
               sPos.map(x=>'<span style="font-family:var(--font-d);font-size:7.5px;font-weight:700;padding:2px 5px;border-radius:4px;background:rgba(0,180,255,.1);border:1px solid rgba(0,180,255,.25);color:rgba(80,190,255,.9);white-space:nowrap">'+x+'</span>').join('')+
@@ -13449,17 +13469,17 @@ function pid3BuildSimCards(pool, p, PLAYERS_REF) {
 
           /* ROW 2: Talent + Match scores */
           '<div style="display:flex;gap:0;border:1px solid rgba(255,255,255,.07);border-radius:5px;overflow:hidden;margin-top:6px">'+
-            '<div style="flex:1;padding:4px 6px;border-right:1px solid rgba(255,255,255,.07);text-align:center">'+
-              '<div style="font-family:var(--font-d);font-size:16px;font-weight:900;color:'+matchCol+';line-height:1;letter-spacing:-.5px">'+match+'%'+'</div>'+
-              '<div style="font-size:7px;color:rgba(255,255,255,.45);letter-spacing:.3px;margin-top:1px;text-transform:uppercase">'+t('lbl_match')+'</div>'+
+            '<div style="flex:1;padding:4px 3px;border-right:1px solid rgba(255,255,255,.07);text-align:center">'+
+              '<div style="font-family:var(--font-d);font-size:14px;font-weight:900;color:'+matchCol+';line-height:1;letter-spacing:-.5px">'+match+'%'+'</div>'+
+              '<div style="font-size:6.5px;color:rgba(255,255,255,.45);letter-spacing:.1px;margin-top:1px;text-transform:uppercase">'+t('lbl_match')+'</div>'+
             '</div>'+
-            '<div style="flex:1;padding:4px 6px;border-right:1px solid rgba(255,255,255,.07);text-align:center;background:rgba(0,0,0,.15)">'+
-              '<div style="font-family:var(--font-d);font-size:16px;font-weight:900;color:'+tiCol+';line-height:1;letter-spacing:-.5px">'+tiPctVal+'</div>'+
-              '<div style="font-size:7px;color:rgba(255,255,255,.45);letter-spacing:.3px;margin-top:1px;text-transform:uppercase">'+t('lbl_talent')+'</div>'+
+            '<div style="flex:1;padding:4px 3px;border-right:1px solid rgba(255,255,255,.07);text-align:center;background:rgba(0,0,0,.15)">'+
+              '<div style="font-family:var(--font-d);font-size:14px;font-weight:900;color:'+tiCol+';line-height:1;letter-spacing:-.5px">'+tiPctVal+'</div>'+
+              '<div style="font-size:6.5px;color:rgba(255,255,255,.45);letter-spacing:.1px;margin-top:1px;text-transform:uppercase">'+t('lbl_talent')+'</div>'+
             '</div>'+
-            '<div style="flex:1;padding:4px 6px;text-align:center">'+
-              '<div style="font-family:var(--font-d);font-size:16px;font-weight:900;color:'+phyCol+';line-height:1;letter-spacing:-.5px">'+phyPctVal+'</div>'+
-              '<div style="font-size:7px;color:rgba(255,255,255,.45);letter-spacing:.3px;margin-top:1px;text-transform:uppercase">'+'PHY'+'</div>'+
+            '<div style="flex:1;padding:4px 3px;text-align:center">'+
+              '<div style="font-family:var(--font-d);font-size:14px;font-weight:900;color:'+phyCol+';line-height:1;letter-spacing:-.5px">'+phyPctVal+'</div>'+
+              '<div style="font-size:6.5px;color:rgba(255,255,255,.45);letter-spacing:.1px;margin-top:1px;text-transform:uppercase">'+'PHYSIC'+'</div>'+
             '</div>'+
           '</div>'+
 
@@ -13506,7 +13526,7 @@ window.pid3SimNav = function(dir) {
 window.pid3FilterSim = function() {
   const p = window._pid3Player; if(!p) return;
   const ddVal = id => (document.querySelector('.sim-dd[data-id="'+id+'"]')||{}).dataset?.val || '';
-  const liga = ddVal('sim-f-liga');
+  /* liga: multi-select via window._pid3SimLigas */
   const mv   = parseInt(ddVal('sim-f-mv') || '0') * 1000;
   const ctc  = parseInt(ddVal('sim-f-ctc') || '0');
   const age  = parseInt(ddVal('sim-f-age') || '0');
@@ -13519,7 +13539,7 @@ window.pid3FilterSim = function() {
     const pPos = p.position.split(',').map(s=>s.trim());
     return xPos.some(xp=>pPos.includes(xp));
   }).sort((a,b)=>(b.talent_index||0)-(a.talent_index||0));
-  if(liga) pool = pool.filter(x=>x.league===liga);
+  if(window._pid3SimLigas!=null) pool = pool.filter(x=>window._pid3SimLigas.has(x.league));
   if(mv)   pool = pool.filter(x=>(x.mkt_value||0)<=mv);
   if(ctc)  pool = pool.filter(x=>{if(!x.contract_end)return false;const m=(new Date(x.contract_end)-now)/(1000*60*60*24*30);return m<=ctc;});
   if(age)  pool = pool.filter(x=>(x.age||99)<=age);
