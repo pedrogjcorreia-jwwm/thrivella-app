@@ -10078,9 +10078,9 @@ function renderPlayerID(name, league) {
       if(window._metricCols){
         return '<div style="display:grid;grid-template-columns:1fr 46px 40px 42px;align-items:center;gap:6px;padding:4px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+encodedKey+'\',\''+encodedLbl+'\',\''+encodedName+'\','+inv+',this)">'
           +'<span style="font-size:10px;font-weight:600;color:'+labelCol+';letter-spacing:.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+lbl+'</span>'
-          +'<span style="font-family:var(--font-d);font-size:14px;font-weight:800;color:'+valCol+';text-align:right">'+v+'</span>'
-          +'<span style="font-family:var(--font-d);font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center">'+_avgL+'</span>'
-          +'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid '+rnkBorder+';color:'+rnkCol+';text-align:center;justify-self:center;white-space:nowrap">#'+r+'</span>'
+          +'<span style="font-family:var(--font-d);font-size:14px;font-weight:800;color:'+valCol+';text-align:right;position:relative;left:14px">'+v+'</span>'
+          +'<span style="font-family:var(--font-d);font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center;position:relative;left:14px">'+_avgL+'</span>'
+          +'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid '+rnkBorder+';color:'+rnkCol+';text-align:center;justify-self:center;white-space:nowrap;position:relative;left:8px">#'+r+'</span>'
         +'</div>';
       }
     return '<div style="padding:3px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+encodedKey+'\',\''+encodedLbl+'\',\''+encodedName+'\','+inv+',this)">'
@@ -10659,9 +10659,9 @@ function renderPlayerID(name, league) {
         if(window._metricCols){
           return '<div style="display:grid;grid-template-columns:1fr 46px 40px 42px;align-items:center;gap:6px;padding:4px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+ek+'\',\''+el2+'\',\''+en+'\','+m.inv+',this)">'
             +'<span style="font-size:10px;font-weight:600;color:'+labelCol+';letter-spacing:.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+m.l+'</span>'
-            +'<span style="font-family:var(--font-d);font-size:14px;font-weight:800;color:'+valCol+';text-align:right">'+m.raw+'</span>'
-            +'<span style="font-family:var(--font-d);font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center">'+_avgD+'</span>'
-            +'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid '+rnkBorder+';color:'+rnkCol+';text-align:center;justify-self:center;white-space:nowrap">#'+r+'</span>'
+            +'<span style="font-family:var(--font-d);font-size:14px;font-weight:800;color:'+valCol+';text-align:right;position:relative;left:14px">'+m.raw+'</span>'
+            +'<span style="font-family:var(--font-d);font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center;position:relative;left:14px">'+_avgD+'</span>'
+            +'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid '+rnkBorder+';color:'+rnkCol+';text-align:center;justify-self:center;white-space:nowrap;position:relative;left:8px">#'+r+'</span>'
           +'</div>';
         }
       return '<div style="padding:3px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+ek+'\',\''+el2+'\',\''+en+'\','+m.inv+',this)">'
@@ -19168,7 +19168,7 @@ function renderMobileElite(){
   window._pidSubHead = function(){
     var L=window._lang==='en'; var s='font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase';
     if(window._metricCols){
-      return '<div style="margin-left:auto;display:flex;align-items:center;gap:6px">'+'<span style="'+s+';width:46px;text-align:right">VAL</span>'+'<span style="'+s+';width:40px;text-align:center">'+(L?'AVG':'MÉD')+'</span>'+'<span style="'+s+';width:42px;text-align:center">RANK</span>'+'</div>';
+      return '<div style="margin-left:auto;display:flex;align-items:center;gap:6px">'+'<span style="'+s+';width:46px;text-align:right;position:relative;left:14px">VAL</span>'+'<span style="'+s+';width:40px;text-align:center;position:relative;left:14px">'+(L?'AVG':'MÉD')+'</span>'+'<span style="'+s+';width:42px;text-align:center;position:relative;left:8px">RANK</span>'+'</div>';
     }
     return '<div style="margin-left:auto;display:flex;align-items:center;gap:5px">'+'<span style="'+s+';width:36px;text-align:right">'+(L?'VAL':'Val')+'</span>'+'<span style="'+s+';padding:1px 5px;border:1px solid transparent;border-radius:3px;width:28px;text-align:center;display:inline-block">'+(L?'RANK':'Rank')+'</span>'+'</div>';
   };
