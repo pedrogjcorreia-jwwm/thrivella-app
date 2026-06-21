@@ -5840,6 +5840,7 @@ function matchPos(p){
   return (p.position||'').split(',').map(x=>x.trim()).includes(selPos);
 }
 function matchLeague(p){
+  if(window._rkLeaguesNone && !selLeagues.length)return false;
   if(!selLeagues.length)return true;
   return selLeagues.includes(p.league);
 }
@@ -5938,6 +5939,7 @@ function applyLeagueFilter(){
 }
 
 function selectAllLeagues(){
+  window._rkLeaguesNone=false;
   selLeagues = [];
   renderLeagueChips();
   renderLeagueList(document.getElementById('league-search')?.value || '');
@@ -5946,6 +5948,7 @@ function selectAllLeagues(){
 }
 
 function clearAllLeagues(){
+  window._rkLeaguesNone=true;
   selLeagues = [];
   renderLeagueChips();
   renderLeagueList(document.getElementById('league-search')?.value || '');
@@ -10017,7 +10020,10 @@ function renderPlayerID(name, league) {
                 '<span style="font-size:8px;opacity:.5;flex-shrink:0">▾</span>'+
               '</div>'+
               '<div class="sim-dd-list" style="display:none;position:absolute;top:calc(100% + 2px);left:0;min-width:100%;max-height:140px;overflow-y:auto;overflow-x:hidden;background:#0d1e35;border:1px solid rgba(0,180,255,.25);border-radius:5px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.8)">'+
-                _ctrl('__all__','Todas')+_ctrl('__none__','Nenhuma')+
+                '<div style="display:flex;gap:6px;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.08)">'+
+                  '<div class="sim-dd-opt sim-liga-opt" data-val="__all__" style="flex:1;text-align:center;font-family:var(--font-d);font-size:9px;font-weight:700;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--accent);border-radius:3px;padding:3px 0;cursor:pointer">Todas</div>'+
+                  '<div class="sim-dd-opt sim-liga-opt" data-val="__none__" style="flex:1;text-align:center;font-family:var(--font-d);font-size:9px;font-weight:700;background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--muted);border-radius:3px;padding:3px 0;cursor:pointer">Nenhuma</div>'+
+                '</div>'+
                 _ligas.map(_lrow).join('')+
               '</div>'+
             '</div>';
@@ -13460,7 +13466,7 @@ function pid3BuildSimCards(pool, p, PLAYERS_REF) {
           '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px;margin-top:-1mm">'+
             '<div style="min-width:0">'+
               '<div style="font-family:var(--font-d);font-size:13.5px;font-weight:800;color:#e8edf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2">'+s.name+'</div>'+
-              '<div style="font-size:9px;color:rgba(255,255,255,.32);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.age?s.age+'a':'—')+' · '+(s.size?s.size+'cm':'—')+' · '+(s.foot?s.foot.charAt(0).toUpperCase():'—')+' · '+s.team+'</div>'+
+              '<div style="font-size:9px;color:rgba(255,255,255,.32);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(s.age?s.age+'a':'—')+' · '+(s.size?s.size+'cm':'—')+' · '+(/^[dr]/i.test(s.foot||'')?'R':/^[el]/i.test(s.foot||'')?'L':/^[ab]/i.test(s.foot||'')?'B':'—')+' · '+s.team+'</div>'+
             '</div>'+
             '<div style="flex-shrink:0;display:flex;gap:2px;align-items:flex-start">'+
               sPos.map(x=>'<span style="font-family:var(--font-d);font-size:7.5px;font-weight:700;padding:2px 5px;border-radius:4px;background:rgba(0,180,255,.1);border:1px solid rgba(0,180,255,.25);color:rgba(80,190,255,.9);white-space:nowrap">'+x+'</span>').join('')+
