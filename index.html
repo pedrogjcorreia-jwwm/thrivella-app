@@ -17493,7 +17493,8 @@ function renderMobileTable(){
         +fSep+fLbl('Ctc')+mkDD('mob-f-ct','Ctc',ctOpts,prev.ct)
         +fSep+fLbl('Métrica')+mkDD('mob-f-metric','Métrica',metOpts,prev.metric)
       +'</div>'
-      +'<button style="'+btnStyle+'" onclick="document.getElementById(\'mob-rk-scroll\').scrollLeft+=80">›</button>';
+      +'<button style="'+btnStyle+'" onclick="document.getElementById(\'mob-rk-scroll\').scrollLeft+=80">›</button>'
+      +'<button onclick="toggleLigaAdjust();renderMobileTable();" title="Liga Adjust" style="flex-shrink:0;width:24px;height:24px;border-radius:5px;background:'+((typeof ligaAdjustActive!=='undefined'&&ligaAdjustActive)?'rgba(120,255,170,.32)':'rgba(120,255,170,.18)')+';border:1px solid '+((typeof ligaAdjustActive!=='undefined'&&ligaAdjustActive)?'rgba(120,255,170,.9)':'rgba(120,255,170,.5)')+';cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0"><span style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:800;letter-spacing:.3px;color:#d4ffe0">AI</span></button>';
   }
 
   const leagueSel = window._mobLeagueSel || new Set();
@@ -17518,7 +17519,8 @@ function renderMobileTable(){
   else if(ageFil==='30p') players=players.filter(p=>(p.age||0)>=30);
   if(ctFil==='exp') players=players.filter(p=>p.contract_end&&new Date(p.contract_end)<new Date(Date.now()+365*24*36e5));
   else if(ctFil) players=players.filter(p=>p.contract_end&&p.contract_end.startsWith(ctFil));
-  players.sort((a,b)=>(b[activeSortKey]||0)-(a[activeSortKey]||0));
+  const _sortVal=(p)=> (activeSortKey==='talent_index_pct' && typeof activeTIPct==='function') ? activeTIPct(p) : (p[activeSortKey]||0);
+  players.sort((a,b)=>_sortVal(b)-_sortVal(a));
 
   function fmtCt(ct){if(!ct)return'—';const p=ct.split('-');if(p.length<2)return'—';return p[1]+'/'+p[0].slice(2);}
   function tiC(v){return v>=80?'#00e5a0':v>=55?'#00d4ff':'rgba(160,178,200,.45)';}
@@ -17534,7 +17536,7 @@ function renderMobileTable(){
 
   content.innerHTML = '<div style="padding:0 0 80px">'
     +players.map((p,i)=>{
-      const ti  = Math.round(p.talent_index_pct||0);
+      const ti  = Math.round((typeof activeTIPct==='function'?activeTIPct(p):p.talent_index_pct)||0);
       const ph  = Math.round((p.total_physical||0)/25*100);
       const tr  = Math.round(p.transfer_score||0);
       const metV= metricKey&&p[metricKey]!=null?(+(p[metricKey])).toFixed(1):'—';
@@ -18808,7 +18810,7 @@ function renderMobileElite(){
             <!-- Coluna esquerda: nome + 3 rows -->
             <div style="flex:1;min-width:0;display:flex;flex-direction:column">
               <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:#e8edf2;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.name}</div>
-              <div style="margin-top:6px;font-family:'Barlow',sans-serif;font-size:12px;color:rgba(255,255,255,.45)">${s.age||'—'}a · ${s.size?s.size+' cm':'—'}</div>
+              <div style="margin-top:6px;font-family:'Barlow',sans-serif;font-size:12px;color:rgba(255,255,255,.45)">${s.age||'—'}a · ${s.size?s.size+' cm':'—'} · ${(/^[dr]/i.test(s.foot||'')?'R':/^[el]/i.test(s.foot||'')?'L':/^[ab]/i.test(s.foot||'')?'B':'—')}</div>
               <div style="margin-top:6px;display:flex;gap:6px">
                 ${[['J',s.matches],['M',s.minutes],['G',s.goals_np]].map(([l,v])=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:11px"><span style="font-size:8px;color:rgba(255,255,255,.25)">${l} </span><span style="color:#00d4ff;font-weight:700">${v!=null?v:'—'}</span></span>`).join('<span style="color:rgba(255,255,255,.12);font-size:10px;margin:0 1px">·</span>')}
               </div>
