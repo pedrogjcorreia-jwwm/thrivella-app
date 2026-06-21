@@ -10015,7 +10015,7 @@ function renderPlayerID(name, league) {
                   '<div class="sim-dd-opt sim-liga-opt" data-val="__all__" style="flex:1;text-align:center;font-family:var(--font-d);font-size:9px;font-weight:700;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--accent);border-radius:3px;padding:3px 0;cursor:pointer">Todas</div>'+
                   '<div class="sim-dd-opt sim-liga-opt" data-val="__none__" style="flex:1;text-align:center;font-family:var(--font-d);font-size:9px;font-weight:700;background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--muted);border-radius:3px;padding:3px 0;cursor:pointer">Nenhuma</div>'+
                 '</div>'+
-                '<div style="max-height:92px;overflow-y:auto;overflow-x:hidden">'+_ligas.map(_lrow).join('')+'</div>'+
+                '<div style="max-height:68px;overflow-y:auto;overflow-x:hidden">'+_ligas.map(_lrow).join('')+'</div>'+
               '</div>'+
             '</div>';
           })()+
@@ -14862,7 +14862,7 @@ function shRenderPitch(formation, tabData){
 
     // Cards inside the field, stacked vertically centred on the dot
     // Rank within current league filter (local) or global
-    const rankPool = (shSelectedLeagues && shSelectedLeagues.size===1) ? PLAYERS.filter(p=>p.league===[...shSelectedLeagues][0]) : PLAYERS;
+    const rankPool = (shSelectedLeagues && shSelectedLeagues.size>0) ? PLAYERS.filter(p=>shSelectedLeagues.has(p.league)) : PLAYERS;
     const rnkSorted=[...rankPool].sort((a,b)=>activeTI(b)-activeTI(a));
     const cardW=118, gap=6.78;
     // Measure real card height once (depends on current font-size/padding CSS) instead of guessing a constant
