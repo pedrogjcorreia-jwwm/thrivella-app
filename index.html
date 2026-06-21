@@ -10056,7 +10056,7 @@ function renderPlayerID(name, league) {
   // speed colour
   function sc(key){const r=rnkL(key);return r<=3?'#00e5a0':pctL(key)>=0.5?'#00d4ff':'rgba(180,200,220,.45)';}
 
-  function mrow(lbl,val,key,inv,xoffVM,xoffR){
+  function mrow(lbl,val,key,inv,xoffVM,xoffR,valTier){
     if(val===null||val===undefined)return '';
     const r=rnkL(key,inv), pp=pctL(key);
     const isTop3=r<=3;
@@ -10078,7 +10078,7 @@ function renderPlayerID(name, league) {
       if(window._metricCols){
         return '<div style="display:grid;grid-template-columns:1fr 46px 40px 42px;align-items:center;gap:6px;padding:4px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+encodedKey+'\',\''+encodedLbl+'\',\''+encodedName+'\','+inv+',this)">'
           +'<span style="font-size:10px;font-weight:600;color:'+labelCol+';letter-spacing:.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+lbl+'</span>'
-          +'<span style="font-family:var(--font-d);font-size:14px;font-weight:800;color:'+valCol+';text-align:right;position:relative;left:'+(14+(xoffVM||0))+'px">'+v+'</span>'
+          +'<span style="font-family:var(--font-d);font-size:'+(valTier?(isTop3?'14':isAbove?'13':'12'):'14')+'px;font-weight:800;color:'+valCol+';text-align:right;position:relative;left:'+(14+(xoffVM||0))+'px">'+v+'</span>'
           +'<span style="font-family:var(--font-d);font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center;position:relative;left:'+(14+(xoffVM||0))+'px">'+_avgL+'</span>'
           +'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid '+rnkBorder+';color:'+rnkCol+';text-align:center;justify-self:center;white-space:nowrap;position:relative;left:'+(8+(xoffR||0))+'px">#'+r+'</span>'
         +'</div>';
@@ -10313,14 +10313,14 @@ function renderPlayerID(name, league) {
     '<div class="pid3-card" style="display:flex;flex-direction:column;overflow:hidden;min-height:0;background:#060c18;border-color:rgba(0,180,200,.12)">'+
       '<div style="display:flex;align-items:center;gap:5px;padding:10px 14px 6px">'+
         '<span style="font-family:var(--font-d);font-size:11px;font-weight:700;color:#e8edf2;letter-spacing:.3px">'+(window.t&&window.t('lbl_offensive')||'OFENSIVO')+'</span>'+
-        window._pidSubHead(9,4)+
+        window._pidSubHead(11,4)+
       '</div>'+
       '<div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;min-height:0;padding:0 14px 10px">'+
-      mrow(t('m_xg'),p.xg,'xg',false,9,4)+
-      mrow(t('m_shots90'),p.shots90,'shots90',false,9,4)+
-      mrow(t('m_box_touches'),p.box_touches,'box_touches',false,9,4)+
-      mrow(t('m_crosses90'),p.crosses90,'crosses90',false,9,4)+
-      mrow(t('m_crosses_pct'),p.crosses_pct,'crosses_pct',false,9,4)+
+      mrow(t('m_xg'),p.xg,'xg',false,11,4,true)+
+      mrow(t('m_shots90'),p.shots90,'shots90',false,11,4,true)+
+      mrow(t('m_box_touches'),p.box_touches,'box_touches',false,11,4,true)+
+      mrow(t('m_crosses90'),p.crosses90,'crosses90',false,11,4,true)+
+      mrow(t('m_crosses_pct'),p.crosses_pct,'crosses_pct',false,11,4,true)+
       '</div>'+
     '</div>'+
 
