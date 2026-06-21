@@ -10075,6 +10075,14 @@ function renderPlayerID(name, league) {
     const encodedLbl=encodeURIComponent(lbl);
     const encodedName=encodeURIComponent(p.name);
     const _avgL=(function(){var a=lgPlayers.filter(function(x){return x[key]!=null;});return (a.reduce(function(s,x){return s+(x[key]||0);},0)/Math.max(1,a.length)).toFixed(1);})();
+      if(window._metricCols){
+        return '<div style="display:grid;grid-template-columns:1fr 46px 40px 42px;align-items:center;gap:6px;padding:4px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+encodedKey+'\',\''+encodedLbl+'\',\''+encodedName+'\','+inv+',this)">'
+          +'<span style="font-size:10px;font-weight:600;color:'+labelCol+';letter-spacing:.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+lbl+'</span>'
+          +'<span style="font-family:var(--font-d);font-size:14px;font-weight:800;color:'+valCol+';text-align:right">'+v+'</span>'
+          +'<span style="font-family:var(--font-d);font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center">'+_avgL+'</span>'
+          +'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid '+rnkBorder+';color:'+rnkCol+';text-align:center;justify-self:center;white-space:nowrap">#'+r+'</span>'
+        +'</div>';
+      }
     return '<div style="padding:3px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+encodedKey+'\',\''+encodedLbl+'\',\''+encodedName+'\','+inv+',this)">'
       +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">'
         +'<span style="font-size:10px;font-weight:600;color:'+labelCol+';letter-spacing:.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%">'+lbl+'</span>'
@@ -10278,7 +10286,7 @@ function renderPlayerID(name, league) {
       '<div class="pid3-card" style="display:flex;flex-direction:column;overflow:hidden;min-height:0;background:#060c18;border-color:rgba(0,180,200,.12)">'+
         '<div style="display:flex;align-items:center;gap:5px;padding:10px 14px 6px;flex-shrink:0">'+
           '<span style="font-family:var(--font-d);font-size:11px;font-weight:700;color:#e8edf2;letter-spacing:.3px">'+(window.t&&window.t('lbl_physical')||'FÍSICO')+'</span>'+
-          '<div style="margin-left:auto;display:flex;align-items:center;gap:5px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;width:36px;text-align:right">Val</span><span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;padding:1px 5px;border:1px solid transparent;border-radius:3px;width:28px;text-align:center;display:inline-block">Rank</span></div>'+
+          window._pidSubHead()+
         '</div>'+
         '<div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;padding:0 14px 10px">'+
           mrow(t('m_max_speed'), p.max_speed?parseFloat(p.max_speed.toFixed(1)):null, 'max_speed')+
@@ -10297,7 +10305,7 @@ function renderPlayerID(name, league) {
           (window._metricCols?'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></svg>':'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="15" y2="20"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/></svg>')+
           '<span>'+((window._metricCols)?'BARRAS':'NUMÉRICO')+'</span>'+
         '</button>'+
-        '<div style="margin-left:auto;display:flex;align-items:center;gap:5px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;width:36px;text-align:right">Val</span><span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;padding:1px 5px;border:1px solid transparent;border-radius:3px;width:28px;text-align:center;display:inline-block">Rank</span></div>'+
+        window._pidSubHead()+
       '</div>'+
       '<div id="pid-dotmatrix-bars" style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;padding:0 14px 10px;min-height:0"></div>'+
     '</div>'+
@@ -10305,7 +10313,7 @@ function renderPlayerID(name, league) {
     '<div class="pid3-card" style="display:flex;flex-direction:column;overflow:hidden;min-height:0;background:#060c18;border-color:rgba(0,180,200,.12)">'+
       '<div style="display:flex;align-items:center;gap:5px;padding:10px 14px 6px">'+
         '<span style="font-family:var(--font-d);font-size:11px;font-weight:700;color:#e8edf2;letter-spacing:.3px">'+(window.t&&window.t('lbl_offensive')||'OFENSIVO')+'</span>'+
-        '<div style="margin-left:auto;display:flex;align-items:center;gap:5px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;width:36px;text-align:right">Val</span><span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;padding:1px 5px;border:1px solid transparent;border-radius:3px;width:28px;text-align:center;display:inline-block">Rank</span></div>'+
+        window._pidSubHead()+
       '</div>'+
       '<div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;min-height:0;padding:0 14px 10px">'+
       mrow(t('m_xg'),p.xg,'xg')+
@@ -10319,7 +10327,7 @@ function renderPlayerID(name, league) {
     '<div class="pid3-card" style="display:flex;flex-direction:column;overflow:hidden;min-height:0;background:#060c18;border-color:rgba(0,180,200,.12)">'+
       '<div style="display:flex;align-items:center;gap:5px;padding:10px 14px 6px">'+
         '<span style="font-family:var(--font-d);font-size:11px;font-weight:700;color:#e8edf2;letter-spacing:.3px">'+(window.t&&window.t('lbl_pass_def')||'PASSE & DEFESA')+'</span>'+
-        '<div style="margin-left:auto;display:flex;align-items:center;gap:5px"><span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;width:36px;text-align:right">Val</span><span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;padding:1px 5px;border:1px solid transparent;border-radius:3px;width:28px;text-align:center;display:inline-block">Rank</span></div>'+
+        window._pidSubHead()+
       '</div>'+
       '<div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;min-height:0;padding:0 14px 10px">'+
       mrow(t('m_passes_pct'),p.passes_pct,'passes_pct')+
@@ -10648,6 +10656,14 @@ function renderPlayerID(name, league) {
       const glowStyle=isTop?';box-shadow:0 0 6px rgba(0,229,160,.35)':'';
       const ek=encodeURIComponent(m.key), el2=encodeURIComponent(m.l), en=encodeURIComponent(p.name);
       const _avgD=(sorted.reduce(function(s,x){return s+(x[m.key]||0);},0)/Math.max(1,sorted.length)).toFixed(1);
+        if(window._metricCols){
+          return '<div style="display:grid;grid-template-columns:1fr 46px 40px 42px;align-items:center;gap:6px;padding:4px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+ek+'\',\''+el2+'\',\''+en+'\','+m.inv+',this)">'
+            +'<span style="font-size:10px;font-weight:600;color:'+labelCol+';letter-spacing:.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+m.l+'</span>'
+            +'<span style="font-family:var(--font-d);font-size:14px;font-weight:800;color:'+valCol+';text-align:right">'+m.raw+'</span>'
+            +'<span style="font-family:var(--font-d);font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center">'+_avgD+'</span>'
+            +'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid '+rnkBorder+';color:'+rnkCol+';text-align:center;justify-self:center;white-space:nowrap">#'+r+'</span>'
+          +'</div>';
+        }
       return '<div style="padding:3px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+ek+'\',\''+el2+'\',\''+en+'\','+m.inv+',this)">'
         +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">'
           +'<span style="font-size:10px;font-weight:600;color:'+labelCol+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%">'+m.l+'</span>'
@@ -19148,7 +19164,14 @@ function renderMobileElite(){
 </style>
 <script>
 (function(){
-  try{ window._metricCols = localStorage.getItem('thrivella_metric_cols')==='1'; }catch(e){ window._metricCols=false; }
+  window._metricCols = false;
+  window._pidSubHead = function(){
+    var L=window._lang==='en'; var s='font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase';
+    if(window._metricCols){
+      return '<div style="margin-left:auto;display:flex;align-items:center;gap:6px">'+'<span style="'+s+';width:46px;text-align:right">VAL</span>'+'<span style="'+s+';width:40px;text-align:center">'+(L?'AVG':'MÉD')+'</span>'+'<span style="'+s+';width:42px;text-align:center">RANK</span>'+'</div>';
+    }
+    return '<div style="margin-left:auto;display:flex;align-items:center;gap:5px">'+'<span style="'+s+';width:36px;text-align:right">'+(L?'VAL':'Val')+'</span>'+'<span style="'+s+';padding:1px 5px;border:1px solid transparent;border-radius:3px;width:28px;text-align:center;display:inline-block">'+(L?'RANK':'Rank')+'</span>'+'</div>';
+  };
   window.applyMetricMode = function(){
     var v=document.getElementById('view-simple');
     if(v) v.classList.toggle('metrics-cols', !!window._metricCols);
