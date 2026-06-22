@@ -18503,6 +18503,11 @@ function renderMobileElite(){
   function mrow(lbl,val,key,inv){
     if(val==null||val==='') return '';
     const c=vc(key,inv),r=rnkL(key,inv),pct=pctL(key,inv);
+    if(window._metricCols){
+      var _arr=lgP.filter(function(x){return x[key]!=null;}).map(function(x){return x[key]||0;});
+      var _avg=(_arr.reduce(function(s,x){return s+(x||0);},0)/Math.max(1,_arr.length)).toFixed(1);
+      return `<div class="mob-e-mrow" style="padding:9px 14px;cursor:pointer" onclick="showMetricTop3('${key}','${lbl}',${inv?true:false})"><div style="display:grid;grid-template-columns:1fr 34px 28px 34px;align-items:center;gap:6px"><span class="mob-e-mrow-lbl" style="color:${pct>=0.5?'rgba(255,255,255,.85)':'rgba(200,220,245,.55)'}">${lbl}</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;color:${c};text-align:right">${fv(val)}</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center">${_avg}</span><span class="mob-e-mrow-rnk" style="color:${c};border-color:${c}55;text-align:center;justify-self:center">#${r}</span></div></div>`;
+    }
     return `<div class="mob-e-mrow" style="padding:10px 14px;cursor:pointer" onclick="showMetricTop3('${key}','${lbl}',${inv?true:false})">
       <div class="mob-e-mrow-inner">
         <span class="mob-e-mrow-lbl" style="color:${pct>=0.5?'rgba(255,255,255,.85)':'rgba(200,220,245,.55)'}">${lbl}</span>
@@ -18513,6 +18518,16 @@ function renderMobileElite(){
       </div>
       <div class="mob-e-bar-wrap"><div class="mob-e-bar" style="width:${Math.round(pct*100)}%;background:${pct>=0.8?'linear-gradient(90deg,#38bdf8 70%,#00e5a0 100%)':pct>=0.5?'#38bdf8':'rgba(255,255,255,.15)'}"></div></div>
     </div>`;
+  }
+  function mobSecHdr(title, withBtn){
+    var cols=window._metricCols, EN=window._lang==='en';
+    var sub="font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase";
+    var icon = cols ? '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></svg>' : '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="15" y2="20"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/></svg>';
+    var btn = withBtn ? '<button onclick="event.stopPropagation();window.toggleMetricMode&&window.toggleMetricMode()" style="margin-left:6px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;height:17px;padding:0 5px;border-radius:4px;background:rgba(139,92,246,.16);border:1px solid rgba(139,92,246,.55);color:#c4b5fd;cursor:pointer">'+icon+'</button>' : '';
+    if(cols){
+      return '<div class="mob-e-sec-hdr" style="display:grid;grid-template-columns:1fr 34px 28px 34px;align-items:center;gap:6px">'+'<div style="display:flex;align-items:center;min-width:0;overflow:hidden"><span class="mob-e-sec-lbl" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+title+'</span>'+btn+'</div>'+'<span style="'+sub+';text-align:right">VAL</span>'+'<span style="'+sub+';text-align:center">'+(EN?'AVG':'MÉD')+'</span>'+'<span style="'+sub+';text-align:center">RANK</span>'+'</div>';
+    }
+    return '<div class="mob-e-sec-hdr"><span class="mob-e-sec-lbl">'+title+'</span>'+btn+'<div class="mob-e-sec-right"><span class="mob-e-col-lbl" style="width:36px;text-align:right">'+(EN?'VAL':'Val')+'</span><span class="mob-e-col-lbl" style="width:28px;text-align:center">'+(EN?'RANK':'Rank')+'</span></div></div>';
   }
 
   window.showMetricTop3=function(key,lbl,inv){
@@ -18982,7 +18997,7 @@ function renderMobileElite(){
 
   <!-- DESEMPENHO CHAVE -->
   <div class="mob-e-card">
-    <div class="mob-e-sec-hdr"><span class="mob-e-sec-lbl">${t('lbl_key_perf')||'Desempenho Chave'}</span><div class="mob-e-sec-right"><span class="mob-e-col-lbl" style="width:36px;text-align:right">Val</span><span class="mob-e-col-lbl" style="width:28px;text-align:center">Rank</span></div></div>
+    ${mobSecHdr(t('lbl_key_perf')||'Desempenho Chave', true)}
     ${mrow(t('m_prog_carries')||'Cond. Progressivas',p.prog_carries,'prog_carries')}
     ${mrow(t('m_drib_quality')||'Drib Quality',dribQ>0?parseFloat(dribQ.toFixed(1)):null,'_dribQ')}
     ${mrow(t('m_recep_prof')||'Recep. Profundidade',p.recpt_depth,'recpt_depth')}
@@ -18992,7 +19007,7 @@ function renderMobileElite(){
 
   <!-- OFENSIVO -->
   <div class="mob-e-card">
-    <div class="mob-e-sec-hdr"><span class="mob-e-sec-lbl">${t('lbl_offensive')||'Ofensivo'}</span><div class="mob-e-sec-right"><span class="mob-e-col-lbl" style="width:36px;text-align:right">Val</span><span class="mob-e-col-lbl" style="width:28px;text-align:center">Rank</span></div></div>
+    ${mobSecHdr(t('lbl_offensive')||'Ofensivo', false)}
     ${mrow('xG',p.xg,'xg')}
     ${mrow(t('m_shots90')||'Remates / 90',p.shots90,'shots90')}
     ${mrow(t('m_box_touches')||'Box Touches / 90',p.box_touches,'box_touches')}
@@ -19002,7 +19017,7 @@ function renderMobileElite(){
 
   <!-- PASSE & DEFESA -->
   <div class="mob-e-card">
-    <div class="mob-e-sec-hdr"><span class="mob-e-sec-lbl">${t('lbl_pass_def')||'Passe & Defesa'}</span><div class="mob-e-sec-right"><span class="mob-e-col-lbl" style="width:36px;text-align:right">Val</span><span class="mob-e-col-lbl" style="width:28px;text-align:center">Rank</span></div></div>
+    ${mobSecHdr(t('lbl_pass_def')||'Passe & Defesa', false)}
     ${mrow(t('m_passes_pct')||'% Passes Certos',p.passes_pct,'passes_pct')}
     ${mrow(t('m_box_passes')||'Box Passes / 90',p.box_passes,'box_passes')}
     ${mrow(t('m_def_duels')||'Duelos Def. / 90',p.def_duels,'def_duels')}
@@ -19012,7 +19027,7 @@ function renderMobileElite(){
 
   <!-- FÍSICO -->
   <div class="mob-e-card">
-    <div class="mob-e-sec-hdr"><span class="mob-e-sec-lbl">${t('lbl_physical')||'Físico'}</span><div class="mob-e-sec-right"><span class="mob-e-col-lbl" style="width:36px;text-align:right">Val</span><span class="mob-e-col-lbl" style="width:28px;text-align:center">Rank</span></div></div>
+    ${mobSecHdr(t('lbl_physical')||'Físico', false)}
     ${mrow(t('m_max_speed')||'Velocidade Máxima',p.max_speed?parseFloat(p.max_speed.toFixed(1)):null,'max_speed')}
     ${mrow(t('m_sprint_dist')||'Sprint Dist / 90',p.sprint_dist90?Math.round(p.sprint_dist90):null,'sprint_dist90')}
     ${mrow(t('m_sprints90')||'Sprints / 90',p.sprints90?parseFloat(p.sprints90.toFixed(1)):null,'sprints90')}
@@ -19180,7 +19195,7 @@ function renderMobileElite(){
   window.toggleMetricMode = function(){
     window._metricCols = !window._metricCols;
     try{ localStorage.setItem('thrivella_metric_cols', window._metricCols?'1':'0'); }catch(e){}
-    var _p=(typeof selectedPlayer!=='undefined' && selectedPlayer)?selectedPlayer:(window.selectedPlayer||window._pid3Player); if(_p && typeof renderPlayerID==='function'){ renderPlayerID(_p.name, _p.league); }
+    var _mc=document.getElementById('mob-elite-content'); if(_mc && _mc.offsetParent!==null && typeof renderMobilePlayerID==='function'){ renderMobilePlayerID(); return; } var _p=(typeof selectedPlayer!=='undefined' && selectedPlayer)?selectedPlayer:(window.selectedPlayer||window._pid3Player); if(_p && typeof renderPlayerID==='function'){ renderPlayerID(_p.name, _p.league); }
   };
 })();
 </script>
