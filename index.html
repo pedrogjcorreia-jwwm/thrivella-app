@@ -18908,10 +18908,10 @@ function renderMobileElite(){
   <!-- PLAYER CARD -->
   <div class="mob-e-card" style="border:none;background:transparent">
     <div style="position:relative;height:290px;overflow:hidden;background:#060c18;cursor:pointer;border-radius:8px" onclick="window._photoMenu('${p.name.replace(/'/g,"\\'")}',event)">
-      <div id="avatar-${p.name.replace(/[^a-z0-9]/gi,'_')}" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">${photo}</div>
+      <div id="avatar-${p.name.replace(/[^a-z0-9]/gi,'_')}" style="position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center">${photo}</div>
       <!-- Radial backgrounds -->
-      <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:110%;height:70%;background:radial-gradient(ellipse at 50% 20%,rgba(10,50,160,.18) 0%,rgba(5,20,80,.07) 45%,transparent 70%);pointer-events:none;z-index:1"></div>
-      <div style="position:absolute;bottom:30%;left:0;width:60%;height:40%;background:radial-gradient(ellipse at 0% 100%,rgba(0,160,180,.04) 0%,transparent 65%);pointer-events:none;z-index:1"></div>
+      <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:110%;height:100%;background:radial-gradient(ellipse at 50% 20%,rgba(10,50,160,.18) 0%,rgba(5,20,80,.07) 45%,transparent 70%);pointer-events:none;z-index:1"></div>
+      <div style="position:absolute;bottom:0;left:0;width:60%;height:60%;background:radial-gradient(ellipse at 0% 100%,rgba(0,160,180,.04) 0%,transparent 65%);pointer-events:none;z-index:1"></div>
       <div style="position:absolute;top:-4%;left:50%;transform:translateX(-50%);width:90%;padding-bottom:90%;background:radial-gradient(circle,rgba(0,200,180,.1) 0%,rgba(0,140,220,.07) 25%,rgba(0,60,160,.04) 55%,transparent 75%);pointer-events:none;z-index:1;border-radius:50%"></div>
       <!-- Concentric rings -->
       <div style="position:absolute;top:1%;left:50%;transform:translateX(-50%);width:70%;padding-bottom:70%;border-radius:50%;border:1px solid rgba(0,210,190,.1);box-shadow:0 0 14px rgba(0,210,190,.06),inset 0 0 14px rgba(0,210,190,.04);pointer-events:none;z-index:2"></div>
