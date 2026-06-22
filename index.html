@@ -10299,12 +10299,12 @@ function renderPlayerID(name, league) {
 
     /* ROW2: Desempenho Chave full width */
     '<div class="pid3-card" style="display:flex;flex-direction:column;overflow:hidden;min-height:0;background:#060c18;border-color:rgba(0,180,200,.12)">'+
-      '<div style="'+(window._metricCols?'display:grid;grid-template-columns:1fr 46px 40px 42px;align-items:center;gap:6px;padding:10px 14px 6px;flex-shrink:0':'display:flex;align-items:center;padding:10px 14px 6px;flex-shrink:0;flex-wrap:nowrap')+'">'+'<div style="display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden">'+
+      '<div style="'+(window._metricCols?'display:grid;grid-template-columns:1fr 34px 28px 34px;align-items:center;gap:6px;padding:10px 14px 6px;flex-shrink:0':'display:flex;align-items:center;padding:10px 14px 6px;flex-shrink:0;flex-wrap:nowrap')+'">'+'<div style="display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden">'+
         '<span style="font-family:var(--font-d);font-size:11px;font-weight:700;color:#e8edf2;letter-spacing:.3px;white-space:nowrap;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis">'+(window.t&&window.t('lbl_key_perf')||'DESEMPENHO CHAVE')+'</span>'+
         '<button id="pid-metric-mode-btn" onclick="event.stopPropagation();window.toggleMetricMode&&window.toggleMetricMode()" title="Alternar: barras / valor-media-rank" style="margin-left:0;display:inline-flex;align-items:center;gap:0;flex-shrink:0;height:18px;padding:0 4px;border-radius:4px;background:rgba(139,92,246,.16);border:1px solid rgba(139,92,246,.55);color:#c4b5fd;font-family:var(--font-d);font-size:8px;font-weight:800;letter-spacing:.4px;cursor:pointer">'+
           (window._metricCols?'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></svg>':'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="15" y2="20"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/></svg>')+
         '</button>'+
-        '</div>'+(window._metricCols?('<span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;text-align:right;position:relative;left:25px">VAL</span>'+'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;text-align:center;position:relative;left:25px">'+(window._lang==='en'?'AVG':'MÉD')+'</span>'+'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;text-align:center;position:relative;left:12px">RANK</span>'):window._pidSubHead(11,4))+
+        '</div>'+(window._metricCols?('<span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;text-align:right">VAL</span>'+'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;text-align:center">'+(window._lang==='en'?'AVG':'MÉD')+'</span>'+'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px;text-transform:uppercase;text-align:center">RANK</span>'):window._pidSubHead(11,4))+
       '</div>'+
       '<div id="pid-dotmatrix-bars" style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;padding:0 14px 10px;min-height:0"></div>'+
     '</div>'+
@@ -10656,11 +10656,11 @@ function renderPlayerID(name, league) {
       const ek=encodeURIComponent(m.key), el2=encodeURIComponent(m.l), en=encodeURIComponent(p.name);
       const _avgD=(sorted.reduce(function(s,x){return s+(x[m.key]||0);},0)/Math.max(1,sorted.length)).toFixed(1);
         if(window._metricCols){
-          return '<div style="display:grid;grid-template-columns:1fr 46px 40px 42px;align-items:center;gap:6px;padding:4px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+ek+'\',\''+el2+'\',\''+en+'\','+m.inv+',this)">'
+          return '<div style="display:grid;grid-template-columns:1fr 34px 28px 34px;align-items:center;gap:6px;padding:4px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+ek+'\',\''+el2+'\',\''+en+'\','+m.inv+',this)">'
             +'<span style="font-size:10px;font-weight:600;color:'+labelCol+';letter-spacing:.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+m.l+'</span>'
-            +'<span style="font-family:var(--font-d);font-size:15px;font-weight:800;color:'+valCol+';text-align:right;position:relative;left:25px">'+m.raw+'</span>'
-            +'<span style="font-family:var(--font-d);font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center;position:relative;left:25px">'+_avgD+'</span>'
-            +'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid '+rnkBorder+';color:'+rnkCol+';text-align:center;justify-self:center;white-space:nowrap;position:relative;left:12px">#'+r+'</span>'
+            +'<span style="font-family:var(--font-d);font-size:15px;font-weight:800;color:'+valCol+';text-align:right">'+m.raw+'</span>'
+            +'<span style="font-family:var(--font-d);font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center">'+_avgD+'</span>'
+            +'<span style="font-family:var(--font-d);font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid '+rnkBorder+';color:'+rnkCol+';text-align:center;justify-self:center;white-space:nowrap">#'+r+'</span>'
           +'</div>';
         }
       return '<div style="padding:3px 0;cursor:pointer" onclick="pid3ShowMetricRank(\''+ek+'\',\''+el2+'\',\''+en+'\','+m.inv+',this)">'
