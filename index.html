@@ -18910,8 +18910,8 @@ function renderMobileElite(){
     <div style="position:relative;height:290px;overflow:hidden;background:#060c18;cursor:pointer;border-radius:8px" onclick="window._photoMenu('${p.name.replace(/'/g,"\\'")}',event)">
       <div id="avatar-${p.name.replace(/[^a-z0-9]/gi,'_')}" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">${photo}</div>
       <!-- Radial backgrounds -->
-      <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:110%;height:100%;background:radial-gradient(ellipse at 50% 20%,rgba(10,50,160,.18) 0%,rgba(5,20,80,.07) 45%,transparent 70%);pointer-events:none;z-index:1"></div>
-      <div style="position:absolute;bottom:0;left:0;width:60%;height:60%;background:radial-gradient(ellipse at 0% 100%,rgba(0,160,180,.04) 0%,transparent 65%);pointer-events:none;z-index:1"></div>
+      <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:110%;height:70%;background:radial-gradient(ellipse at 50% 20%,rgba(10,50,160,.18) 0%,rgba(5,20,80,.07) 45%,transparent 70%);pointer-events:none;z-index:1"></div>
+      <div style="position:absolute;bottom:30%;left:0;width:60%;height:40%;background:radial-gradient(ellipse at 0% 100%,rgba(0,160,180,.04) 0%,transparent 65%);pointer-events:none;z-index:1"></div>
       <div style="position:absolute;top:-4%;left:50%;transform:translateX(-50%);width:90%;padding-bottom:90%;background:radial-gradient(circle,rgba(0,200,180,.1) 0%,rgba(0,140,220,.07) 25%,rgba(0,60,160,.04) 55%,transparent 75%);pointer-events:none;z-index:1;border-radius:50%"></div>
       <!-- Concentric rings -->
       <div style="position:absolute;top:1%;left:50%;transform:translateX(-50%);width:70%;padding-bottom:70%;border-radius:50%;border:1px solid rgba(0,210,190,.1);box-shadow:0 0 14px rgba(0,210,190,.06),inset 0 0 14px rgba(0,210,190,.04);pointer-events:none;z-index:2"></div>
@@ -19050,7 +19050,7 @@ function renderMobileElite(){
   <div id="mob-sim-list">${sims}</div>`;
 
   // Filter state
-  window._simState={pName:p.name,pPos:p.position,pLeague:p.league,league:'',mv:'',contract:'',age:''};
+  window._simState={pName:p.name,pPos:p.position,pLeague:p.league,league:'',leagueSet:null,mv:'',contract:'',age:''};
   
   const _allLeagues=[...new Set(PLAYERS.map(x=>x.league).filter(Boolean))].sort();
   const _simOpts={
@@ -19073,9 +19073,10 @@ function renderMobileElite(){
       btn.style.background=active?'rgba(0,212,255,.06)':'transparent';
       btn.style.fontSize='10px';
     });
+    (function(){var lb=document.getElementById('sfbtn-league');if(lb){var ls=state.leagueSet;var act,tx;if(ls==null){act=false;tx='Liga \u25be';}else if(ls.size===0){act=true;tx='Nenhuma \u2715';}else if(ls.size===1){act=true;tx=[...ls][0]+' \u2715';}else{act=true;tx=ls.size+' Ligas \u2715';}lb.textContent=tx;lb.style.color=act?'#00d4ff':'rgba(255,255,255,.55)';lb.style.background=act?'rgba(0,212,255,.06)':'transparent';lb.style.fontSize='10px';}})();
     let candidates=PLAYERS.filter(x=>x.name!==state.pName&&x.position===state.pPos);
-    if(state.league==='same') candidates=candidates.filter(x=>x.league===state.pLeague);
-    else if(state.league) candidates=candidates.filter(x=>x.league===state.league);
+    if(state.leagueSet!=null) candidates=candidates.filter(x=>state.leagueSet.has(x.league));
+    
     if(state.mv==='low') candidates=candidates.filter(x=>(x.mkt_value||0)<500000);
     if(state.mv==='mid') candidates=candidates.filter(x=>(x.mkt_value||0)>=500000&&(x.mkt_value||0)<2000000);
     if(state.mv==='high') candidates=candidates.filter(x=>(x.mkt_value||0)>=2000000);
@@ -19095,6 +19096,7 @@ function renderMobileElite(){
 
   window._simDropdown=function(key,btn){
     const ex=document.getElementById('sim-dropdown-pop');if(ex)ex.remove();
+    if(key==='league'){return window._simLeagueDropdown(btn);}
     const opts=_simOpts[key]||[];
     const pop=document.createElement('div');
     pop.id='sim-dropdown-pop';
@@ -19117,6 +19119,42 @@ function renderMobileElite(){
     function closeHandler(e){if(!pop.contains(e.target)&&e.target!==btn){pop.remove();document.removeEventListener('click',closeHandler);}}
     setTimeout(()=>document.addEventListener('click',closeHandler),10);
   };
+
+  window._simLeagueDropdown=function(btn){
+    const ex=document.getElementById('sim-dropdown-pop');if(ex)ex.remove();
+    const allLg=_allLeagues;const st=window._simState;
+    const pop=document.createElement('div');pop.id='sim-dropdown-pop';
+    const br=btn.getBoundingClientRect();
+    pop.style.cssText='position:fixed;z-index:10001;background:#0d1520;border:1px solid rgba(0,212,255,.2);border-radius:8px;overflow-y:auto;min-width:210px;max-height:300px;box-shadow:0 8px 24px rgba(0,0,0,.5)';
+    pop.style.top=(br.bottom+4)+'px';
+    pop.style.left=Math.max(8,Math.min(br.left,window.innerWidth-218))+'px';
+    function isSel(l){return st.leagueSet==null||st.leagueSet.has(l);}
+    function render(){
+      const allSel=st.leagueSet==null;const noneSel=st.leagueSet!=null&&st.leagueSet.size===0;
+      let h='<div style="display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;background:#0d1520">';
+      h+='<button data-act="all" style="flex:1;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.3px;padding:6px;border-radius:5px;cursor:pointer;border:1px solid '+(allSel?'rgba(0,212,255,.55)':'rgba(255,255,255,.12)')+';background:'+(allSel?'rgba(0,212,255,.14)':'transparent')+';color:'+(allSel?'#00d4ff':'rgba(255,255,255,.6)')+'">TODAS</button>';
+      h+='<button data-act="none" style="flex:1;font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.3px;padding:6px;border-radius:5px;cursor:pointer;border:1px solid '+(noneSel?'rgba(0,212,255,.55)':'rgba(255,255,255,.12)')+';background:'+(noneSel?'rgba(0,212,255,.14)':'transparent')+';color:'+(noneSel?'#00d4ff':'rgba(255,255,255,.6)')+'">NENHUMA</button>';
+      h+='</div>';
+      allLg.forEach(function(l){
+        const sel=isSel(l);
+        h+='<div data-lg="'+l.replace(/"/g,'&quot;')+'" style="display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.3px;border-bottom:1px solid rgba(255,255,255,.04);color:'+(sel?'#fff':'rgba(255,255,255,.5)')+'">';
+        h+='<span style="width:14px;height:14px;border-radius:3px;border:1.5px solid '+(sel?'#00d4ff':'rgba(255,255,255,.25)')+';background:'+(sel?'#00d4ff':'transparent')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;color:#04111c">'+(sel?'\u2713':'')+'</span>';
+        h+='<span>'+l+(l===st.pLeague?' \u2022':'')+'</span></div>';
+      });
+      pop.innerHTML=h;
+    }
+    render();
+    pop.addEventListener('click',function(e){
+      const ab=e.target.closest('[data-act]');
+      if(ab){const a=ab.getAttribute('data-act');if(a==='all')st.leagueSet=null;else st.leagueSet=new Set();render();window._simApply();return;}
+      const lr=e.target.closest('[data-lg]');
+      if(lr){const l=lr.getAttribute('data-lg');if(st.leagueSet==null)st.leagueSet=new Set(allLg);if(st.leagueSet.has(l))st.leagueSet.delete(l);else st.leagueSet.add(l);render();window._simApply();return;}
+    });
+    document.body.appendChild(pop);
+    function closeHandler(e){if(!pop.contains(e.target)&&e.target!==btn){pop.remove();document.removeEventListener('click',closeHandler);}}
+    setTimeout(()=>document.addEventListener('click',closeHandler),10);
+  };
+
 
   // Draw radar in Elite view
   const radarWrap=document.getElementById('mob-elite-radar-wrap');
