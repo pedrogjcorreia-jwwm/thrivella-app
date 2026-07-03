@@ -15207,8 +15207,32 @@ function shOpenSide(name, slotId){
     }
   };
 
-  function metricBox(groupKey, totalKey, totalVal, totalColor, pct, invert){
-    const g = METRIC_GROUPS[groupKey];
+  const METRIC_GROUPS_CF = {
+ off: { label:'Total Off', color:'var(--accent)', metrics:[
+  {lbl:'Golos s/pen',key:'goals_np'},{lbl:'xG',key:'xg'},{lbl:'Shots/90',key:'shots90'},
+  {lbl:'Goals/Shot%',key:'goals_per_shot'},{lbl:'Box Touches',key:'box_touches'},
+  {lbl:'Dribles/90',key:'dribles90'},{lbl:'Drible%',key:'dribles_pct'},
+  {lbl:'Off Duels/90',key:'off_duels90'},{lbl:'Off Duel%',key:'off_duels_pct'},
+  {lbl:'Header Goals',key:'header_goals'},
+ ]},
+ def: { label:'Total Def', color:'#ff5370', metrics:[
+  {lbl:'Def Duels/90',key:'def_duels'},{lbl:'Def Duel%',key:'def_duels_pct'},
+  {lbl:'Aerial Duels/90',key:'aerial_duels90'},{lbl:'Aerial%',key:'aerial_pct'},
+  {lbl:'Fouls/90',key:'fouls'},{lbl:'Yellows/90',key:'yellows'},
+ ]},
+ pass: { label:'Total Pass', color:'#4fc3f7', metrics:[
+  {lbl:'xA',key:'xa'},{lbl:'Passes/90',key:'passes90'},{lbl:'Pass%',key:'passes_pct'},
+  {lbl:'Recpt Depth',key:'recpt_depth'},{lbl:'Shot Assist',key:'shot_assist'},
+ ]},
+ phy: { label:'Physical Index', color:'#9b7fff', metrics:[
+  {lbl:'Total Dist',key:'total_dist'},{lbl:'Sprint Dist',key:'sprint_dist90'},
+  {lbl:'Max Speed',key:'max_speed'},{lbl:'Sprints/90',key:'sprints90'},
+  {lbl:'Accels/90',key:'accels90'},
+ ]}
+};
+function metricBox(groupKey, totalKey, totalVal, totalColor, pct, invert, posGroup){
+    const g = (posGroup==='CF'?METRIC_GROUPS_CF:METRIC_GROUPS)[groupKey];
+    if(!g) return '';
     const tKey = totalKey;
     const sorted = [...PLAYERS].filter(x=>x[tKey]!=null).sort((a,b)=>(b[tKey]||0)-(a[tKey]||0));
     const rnk = sorted.findIndex(x=>x.name===name)+1;
@@ -15286,10 +15310,10 @@ function shOpenSide(name, slotId){
           })()}
         </div>
       </div>
-      ${ (function(){ const _pv=p.total_physical; const _pp=_pv?Math.round(_pv/25*100):null; return metricBox('phy','total_physical',_pv?_pv.toFixed(1):null,'#9b7fff',_pp, true); })() }
-      ${ (function(){ const _v=p.total_off; return metricBox('off','total_off',_v?_v.toFixed(1):null,'var(--accent)',_v?Math.round(_v/35*100):null); })() }
-      ${ (function(){ const _v=p.total_def; return metricBox('def','total_def',_v?_v.toFixed(1):null,'#ff5370',_v?Math.round(_v/8.5*100):null); })() }
-      ${ (function(){ const _v=p.total_pass; return metricBox('pass','total_pass',_v?_v.toFixed(1):null,'#4fc3f7',_v?Math.round(_v/23.5*100):null); })() }
+      ${ (function(){ const _pv=p.total_physical; const _pp=_pv?Math.round(_pv/25*100):null; return metricBox('phy','total_physical',_pv?_pv.toFixed(1):null,'#9b7fff',_pp, true, p.position_group); })() }
+      ${ (function(){ const _v=p.total_off; return metricBox('off','total_off',_v?_v.toFixed(1):null,'var(--accent)',_v?Math.round(_v/35*100):null, p.position_group); })() }
+      ${ (function(){ const _v=p.total_def; return metricBox('def','total_def',_v?_v.toFixed(1):null,'#ff5370',_v?Math.round(_v/8.5*100):null, p.position_group); })() }
+      ${ (function(){ const _v=p.total_pass; return metricBox('pass','total_pass',_v?_v.toFixed(1):null,'#4fc3f7',_v?Math.round(_v/23.5*100):null, p.position_group); })() }
       <div class="sh-side-stat-box">
         <div class="sh-side-stat-lbl">Apps · Mins</div>
         <div class="sh-side-stat-val" style="font-size:14px">${p.matches||'—'} · ${p.minutes?p.minutes+"'":'—'}</div>
@@ -15847,10 +15871,33 @@ const SH_METRIC_GROUPS = {
   }
 };
 
+const SH_METRIC_GROUPS_CF = {
+ off: { label:'Total Off', color:'var(--accent)', metrics:[
+  {lbl:'Golos s/pen',key:'goals_np'},{lbl:'xG',key:'xg'},{lbl:'Shots/90',key:'shots90'},
+  {lbl:'Goals/Shot%',key:'goals_per_shot'},{lbl:'Box Touches',key:'box_touches'},
+  {lbl:'Dribles/90',key:'dribles90'},{lbl:'Drible%',key:'dribles_pct'},
+  {lbl:'Off Duels/90',key:'off_duels90'},{lbl:'Off Duel%',key:'off_duels_pct'},
+  {lbl:'Header Goals',key:'header_goals'},
+ ]},
+ def: { label:'Total Def', color:'#ff5370', metrics:[
+  {lbl:'Def Duels/90',key:'def_duels'},{lbl:'Def Duel%',key:'def_duels_pct'},
+  {lbl:'Aerial Duels/90',key:'aerial_duels90'},{lbl:'Aerial%',key:'aerial_pct'},
+  {lbl:'Fouls/90',key:'fouls'},{lbl:'Yellows/90',key:'yellows'},
+ ]},
+ pass: { label:'Total Pass', color:'#4fc3f7', metrics:[
+  {lbl:'xA',key:'xa'},{lbl:'Passes/90',key:'passes90'},{lbl:'Pass%',key:'passes_pct'},
+  {lbl:'Recpt Depth',key:'recpt_depth'},{lbl:'Shot Assist',key:'shot_assist'},
+ ]},
+ phy: { label:'Physical Index', color:'#9b7fff', metrics:[
+  {lbl:'Total Dist',key:'total_dist'},{lbl:'Sprint Dist',key:'sprint_dist90'},
+  {lbl:'Max Speed',key:'max_speed'},{lbl:'Sprints/90',key:'sprints90'},
+  {lbl:'Accels/90',key:'accels90'},
+ ]}
+};
 function shSideOpenMetrics(playerName, groupKey){
-  const g = SH_METRIC_GROUPS[groupKey];
-  if(!g) return;
   const p = PLAYERS.find(x=>x.name===playerName)||{};
+  const g = (p.position_group==='CF'?SH_METRIC_GROUPS_CF:SH_METRIC_GROUPS)[groupKey];
+  if(!g) return;
   const panel = document.getElementById('sh-metrics-panel');
   const title = document.getElementById('sh-metrics-title');
   const list  = document.getElementById('sh-metrics-list');
