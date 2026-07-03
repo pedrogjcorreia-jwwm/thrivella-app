@@ -53,7 +53,7 @@ Colunas principais: `id` (serial), `name, country, team, league, league_level, p
 
 `{ "position": "CF", "players": [ {…}, … ] }`. Cada jogador é um objeto com as **chaves = nomes das colunas** (com o sufixo `90`: `shots90`, `dribles90`, `accels90`, `passes90`, `sprint_dist90`, `sprints90`). O topo `position` define o `position_group`. Campos ausentes → `null` (o INSERT usa `|| null`). WIN usa crosses/prog_carries/hsr/box_passes; CF deixa esses a null e preenche os de CF.
 
-`score = total (técnico) + total_physical`. Jogadores sem físico: `total_physical = 0`, `has_physical = false`.
+**Talent Index** (valor do ranking) = `total_off + total_def + total_pass` (**só técnico**), calculado no **frontend** (não vem da BD). O **físico é um índice separado** (Physical Index = `total_physical`), não entra no Talent Index. O campo `score` da BD **tem de ser = técnico** (`total`), porque a API ordena por `score` e filtra `score IS NOT NULL`. Jogadores sem físico: `total_physical = 0`, `has_physical = false`.
 
 ---
 
