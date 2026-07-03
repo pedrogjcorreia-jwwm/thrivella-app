@@ -5478,12 +5478,12 @@ function rebuildDerivedData() {
   // ── Talent Index = OFF+DEF+PASS (max 67, equal for all) + Physical flag ──
   PLAYERS.forEach(p => {
     p.talent_index     = Math.round(((p.total_off||0)+(p.total_def||0)+(p.total_pass||0))*10)/10;
-    p.talent_index_pct = Math.round((p.talent_index/67)*1000)/10;
+    p.talent_index_pct = Math.round((p.talent_index/PMx(p.position_group,'total'))*1000)/10;
     p.has_phy          = (p.total_physical||0) > 0;
     const m = getLigaMult(p.league);
     p.liga_mult            = m;
     p.talent_index_adj     = Math.round(p.talent_index * m * 10) / 10;
-    p.talent_index_adj_pct = Math.round(p.talent_index_adj / 67 * 1000) / 10;
+    p.talent_index_adj_pct = Math.round(p.talent_index_adj / PMx(p.position_group,'total') * 1000) / 10;
   });
 
   // ── Transfer Score — pré-computado para todos os jogadores ──
@@ -5505,7 +5505,7 @@ function rebuildDerivedData() {
   const _now = new Date();
   const _tsContMatrix = [[70,62,55,35],[88,78,65,20],[100,88,72,10],[15,10,5,2]];
   PLAYERS.forEach(p => {
-    const _ti   = Math.min(100,(p.talent_index||0)/67*100)*0.25;
+    const _ti   = Math.min(100,(p.talent_index||0)/PMx(p.position_group,'total')*100)*0.25;
     const _metr = (((_tsRanks['dribles_pct']||{})[p.name]||0)*0.25
                   +((_tsRanks['prog_carries']||{})[p.name]||0)*0.25
                   +((_tsRanks['accels90']||{})[p.name]||0)*0.20
@@ -5714,7 +5714,7 @@ function toggleLigaAdjust() {
   PLAYERS.forEach(p => {
     const m = getLigaMult(p.league);
     p.talent_index_adj     = Math.round((p.talent_index||0) * m * 10) / 10;
-    p.talent_index_adj_pct = Math.round(p.talent_index_adj / 67 * 1000) / 10;
+    p.talent_index_adj_pct = Math.round(p.talent_index_adj / PMx(p.position_group,'total') * 1000) / 10;
     p.liga_mult            = m;
   });
   // AI pill button (embedded in Edit column header)
@@ -7469,11 +7469,11 @@ function renderCompare(){
 
   // ── Compare Radar (canvas, same style as player detail radars) ──────────────
   const RADAR_KEYS = [
-    {l:'Talent',    f: p => Math.round((p.talent_index||0)/67*100)},
-    {l:'Physical',  f: p => Math.round((p.total_physical||0)/25*100)},
-    {l:'Ofensivo',  f: p => Math.round((p.total_off||0)/35*100)},
-    {l:'Defensivo', f: p => Math.round((p.total_def||0)/8.5*100)},
-    {l:'Passe',     f: p => Math.round((p.total_pass||0)/23.5*100)},
+    {l:'Talent',    f: p => Math.round((p.talent_index||0)/PMx(p.position_group,'total')*100)},
+    {l:'Physical',  f: p => Math.round((p.total_physical||0)/PMx(p.position_group,'phy')*100)},
+    {l:'Ofensivo',  f: p => Math.round((p.total_off||0)/PMx(p.position_group,'off')*100)},
+    {l:'Defensivo', f: p => Math.round((p.total_def||0)/PMx(p.position_group,'def')*100)},
+    {l:'Passe',     f: p => Math.round((p.total_pass||0)/PMx(p.position_group,'pass')*100)},
   ];
 
   window._cmpLayers = {a:true, b:true, c:true, d:true, avg:true};
@@ -9156,7 +9156,7 @@ function buildCardView(p) {
     +'<div class="cv-sp-cell" style="--spa:'+spPhys.col+';--sp-bg:'+spPhys.bg+'">'
     +'<span class="cv-sp-lbl">Physical Index</span>'
     +'<span class="cv-sp-num">'+p.total_physical.toFixed(1)+'</span>'
-    +'<span style="font-family:var(--font-d);font-size:11px;color:rgba(155,127,255,.55);margin-top:1px">'+Math.round((p.total_physical||0)/25*100)+'%</span>'
+    +'<span style="font-family:var(--font-d);font-size:11px;color:rgba(155,127,255,.55);margin-top:1px">'+Math.round((p.total_physical||0)/PMx(p.position_group,'phy')*100)+'%</span>'
     +'<span class="cv-sp-rank" style="'+rb(physR)+'">#'+physR+'</span>'
     +'</div>'
     +'</div>'
@@ -9516,7 +9516,7 @@ function buildCardView(p) {
       +'</div>'
       +'<div class="sv3-sim-scores">'
       +'<div class="sv3-sim-sbox"><div class="sv3-sim-slbl">TALENT INDEX</div><div class="sv3-sim-sval" style="color:#00e5a0">'+( (x.talent_index)||0).toFixed(1)+'</div></div>'
-      +'<div class="sv3-sim-sbox"><div class="sv3-sim-slbl">PHY</div><div class="sv3-sim-sval" style="color:#9b7fff">'+x.total_physical.toFixed(1)+'</div><div style="font-family:var(--font-d);font-size:7px;color:rgba(155,127,255,0.6)">'+Math.round(x.total_physical/25*100)+'%</div></div>'
+      +'<div class="sv3-sim-sbox"><div class="sv3-sim-slbl">PHY</div><div class="sv3-sim-sval" style="color:#9b7fff">'+x.total_physical.toFixed(1)+'</div><div style="font-family:var(--font-d);font-size:7px;color:rgba(155,127,255,0.6)">'+Math.round(x.total_physical/PMx(p.position_group,'phy')*100)+'%</div></div>'
       +'</div>'
       +'<div class="sv3-sim-foot"><span class="sv3-sim-val">'+mv+'</span><span class="sv3-sim-ct">'+x.contract_end.split('-')[0]+'</span></div>'
       +'</div>';
@@ -9600,8 +9600,8 @@ function sv3Toggle(id, btn) {
     function sc_(k){ const r=rnkL_(k); return r<=3?'#00e5a0':r<=Math.ceil(lgN*.5)?'#00d4ff':'rgba(160,178,200,.5)'; }
     const mv = p.mkt_value>=1e6?'€'+(p.mkt_value/1e6).toFixed(1)+'M':p.mkt_value>=1e3?'€'+Math.round(p.mkt_value/1e3)+'K':'—';
     const ctc = p.contract_end&&new Date(p.contract_end)<new Date(Date.now()+365*24*36e5)?'#ff6b6b':'#e8edf2';
-    const tiPct = Math.round((p.talent_index||0)/67*100);
-    const phPct = Math.round((p.total_physical||0)/25*100);
+    const tiPct = Math.round((p.talent_index||0)/PMx(p.position_group,'total')*100);
+    const phPct = Math.round((p.total_physical||0)/PMx(p.position_group,'phy')*100);
     const tsPct = Math.round(p.score||0);
     const tiKey_ = ligaAdjustActive?'talent_index_adj':'talent_index';
     const tiLR = rnkL_(tiKey_);
@@ -9687,25 +9687,25 @@ function sv3Toggle(id, btn) {
     // Radar — canvas drawn as SVG inline
     function radarSVG(){
       const W=362,H=208,cx=181,cy=H/2,R=74;
-      const vals=[Math.min(1,(p.talent_index||0)/67),Math.min(1,(p.total_physical||0)/25),pctG_('total_off'),pctG_('total_def'),pctG_('total_pass')];
+      const vals=[Math.min(1,(p.talent_index||0)/PMx(p.position_group,'total')),Math.min(1,(p.total_physical||0)/PMx(p.position_group,'phy')),pctG_('total_off'),pctG_('total_def'),pctG_('total_pass')];
       const lbls=['TALENT','PHYSICAL','OFENSIVO','DEFENSIVO','PASSING'];
       // Máximos teóricos fixos (do Excel)
       const pcts=[
         Math.min(100,tiPct),
         Math.min(100,phPct),
-        Math.round((p.total_off ||0)/35   *100),
-        Math.round((p.total_def ||0)/8.5  *100),
-        Math.round((p.total_pass||0)/23.5 *100)
+        Math.round((p.total_off ||0)/PMx(p.position_group,'off')   *100),
+        Math.round((p.total_def ||0)/PMx(p.position_group,'def')  *100),
+        Math.round((p.total_pass||0)/PMx(p.position_group,'pass') *100)
       ];
       // Média da liga para o polígono tracejado
       const pl=PLAYERS.filter(x=>x.talent_index!=null);
       const avg=v=>pl.reduce((s,x)=>s+(x[v]||0),0)/Math.max(1,pl.length);
       const avgVals=[
-        Math.min(1,avg('talent_index')/67),
-        Math.min(1,avg('total_physical')/25),
-        Math.min(1,avg('total_off')/35),
-        Math.min(1,avg('total_def')/8.5),
-        Math.min(1,avg('total_pass')/23.5)
+        Math.min(1,avg('talent_index')/PMx(p.position_group,'total')),
+        Math.min(1,avg('total_physical')/PMx(p.position_group,'phy')),
+        Math.min(1,avg('total_off')/PMx(p.position_group,'off')),
+        Math.min(1,avg('total_def')/PMx(p.position_group,'def')),
+        Math.min(1,avg('total_pass')/PMx(p.position_group,'pass'))
       ];
       function radarCol(v){return v>=75?'#00e5a0':v>=50?'#00d4ff':'rgba(160,175,195,.5)';}
       function pt(i,r){const a=Math.PI*2*i/5-Math.PI/2;return[cx+r*Math.cos(a),cy+r*Math.sin(a)];}
@@ -9737,8 +9737,8 @@ function sv3Toggle(id, btn) {
       const sMv=s.mkt_value>=1e6?'€'+(s.mkt_value/1e6).toFixed(1)+'M':s.mkt_value>=1e3?'€'+Math.round(s.mkt_value/1e3)+'K':'—';
       const sMatchPct=Math.round((s.score||0)/Math.max(1,p.score||1)*100);
       const sMatchCol=sMatchPct>=75?'#00e5a0':sMatchPct>=50?'#00d4ff':'rgba(160,175,195,.6)';
-      const sTIPct=Math.min(100,Math.round((s.talent_index||0)/67*100));
-      const sPhPct=Math.min(100,Math.round((s.total_physical||0)/25*100));
+      const sTIPct=Math.min(100,Math.round((s.talent_index||0)/PMx(s.position_group,'total')*100));
+      const sPhPct=Math.min(100,Math.round((s.total_physical||0)/PMx(s.position_group,'phy')*100));
       const sCtcCol=s.contract_end&&new Date(s.contract_end)<new Date(Date.now()+365*24*36e5)?'#ff6b6b':'rgba(200,220,240,.5)';
       const sIni=s.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
       const sPhoto=window.photoCache&&photoCache[s.name]
@@ -9958,7 +9958,7 @@ function renderPlayerID(name, league) {
   const piLgP = lgP.filter(x=>x.total_physical>0);
   const piRnkReal = piLgP.length>0 ? [...piLgP].sort((a,b)=>(b.total_physical||0)-(a.total_physical||0)).findIndex(x=>x.name===p.name)+1 : 0;
   const piPct = piLgP.length>0 && p.total_physical>0 ? Math.max(0,(piLgP.length-piRnkReal)/piLgP.length) : 0; // 0=último, 1=primeiro
-  const piBarPct = p.total_physical>0 ? Math.min(1,p.total_physical/25) : 0; // para a barra visual (escala 0-25)
+  const piBarPct = p.total_physical>0 ? Math.min(1,p.total_physical/PMx(p.position_group,'phy')) : 0; // para a barra visual (escala 0-25)
   const piLR=p.total_physical>0?rnkL('total_physical'):null;
   const piCol=piPct>=0.9?'#00e5a0':piPct>=0.6?'#9b7fff':'#00d4ff';
   const piTopPct2=Math.round((1-piPct)*100);
@@ -9971,7 +9971,7 @@ function renderPlayerID(name, league) {
   const isWIN  = posGrp==='WIN' || (p.position||'').toUpperCase().split(',').some(x=>['LW','RW','LWF','RWF','LAMF','RAMF','AMF'].includes(x.trim()));
 
   // 1. TALENT INDEX (25%) — sempre raw, sem league adjust
-  const ts_ti = Math.min(100,(p.talent_index||0)/67*100) * 0.25;
+  const ts_ti = Math.min(100,(p.talent_index||0)/PMx(p.position_group,'total')*100) * 0.25;
 
   // 2. MÉTRICAS ESPECÍFICAS WIN (15%) — percentil global de cada uma
   const ts_metrics = (pctG('dribles_pct')*0.25 + pctG('prog_carries')*0.25 + pctG('accels90')*0.20 + pctG('shot_assist')*0.15 + pctG('recpt_depth')*0.15) * 100 * 0.15;
@@ -10221,9 +10221,9 @@ function renderPlayerID(name, league) {
           /* 3 SCORES */
           '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);padding:10px 0;margin-top:calc(-2mm)">'+
             (()=>{
-              const tiPct_ = Math.round(activeTI(p)/67*100);
+              const tiPct_ = Math.round(activeTI(p)/PMx(p.position_group,'total')*100);
               const items = [
-                {lbl:'PHYSICAL INDEX', val:(p.total_physical>0?Math.round(p.total_physical/25*100):'—')+'', sub:null, col:piPct>=0.7?'#00e5a0':piPct>=0.4?'#00d4ff':'rgba(160,175,195,.5)', rnkL_:piLR||'—', align:'center'},
+                {lbl:'PHYSICAL INDEX', val:(p.total_physical>0?Math.round(p.total_physical/PMx(p.position_group,'phy')*100):'—')+'', sub:null, col:piPct>=0.7?'#00e5a0':piPct>=0.4?'#00d4ff':'rgba(160,175,195,.5)', rnkL_:piLR||'—', align:'center'},
                 {lbl:'TALENT INDEX',   val:tiPct_+'', sub:null, col:tiPctL>=0.8?'#00e5a0':tiPctL>=0.5?'#00d4ff':'rgba(160,175,195,.5)', rnkL_:tiLR, align:'center'},
                 {lbl:'TRANSFER SCORE', val:(typeof tsScore==='number'?Math.round(tsScore):(tsScore||'—'))+'', sub:null, col:tsCol, rnkL_:rnkL('transfer_score'), align:'center'},
               ];
@@ -10542,22 +10542,22 @@ function renderPlayerID(name, league) {
     const hr=0, hg=212, hb=255;
 
     const axNorm = [
-      Math.min(1,Math.max(0,(p.talent_index||0)/67)),
-      Math.min(1,Math.max(0,(p.total_physical||0)/25)),
+      Math.min(1,Math.max(0,(p.talent_index||0)/PMx(p.position_group,'total'))),
+      Math.min(1,Math.max(0,(p.total_physical||0)/PMx(p.position_group,'phy'))),
       pctG('total_off'), pctG('total_def'), pctG('total_pass'),
     ];
     const lgNorm = [
-      Math.min(1,Math.max(0,(lgP.reduce((s,x)=>s+(x.talent_index||0),0)/lgP.length)/67)),
-      Math.min(1,Math.max(0,(lgP.reduce((s,x)=>s+(x.total_physical||0),0)/lgP.length)/25)),
+      Math.min(1,Math.max(0,(lgP.reduce((s,x)=>s+(x.talent_index||0),0)/lgP.length)/PMx(p.position_group,'total'))),
+      Math.min(1,Math.max(0,(lgP.reduce((s,x)=>s+(x.total_physical||0),0)/lgP.length)/PMx(p.position_group,'phy'))),
       0.5, 0.5, 0.5,
     ];
     const labels  = ['Talent','Physical','Ofensivo','Defensivo','Passing'];
     const rawVals = [
-      p.talent_index!=null   ? Math.round(p.talent_index/67*100)          : null,
-      p.total_physical>0     ? Math.round(p.total_physical/25*100)        : null,
-      p.total_off!=null      ? Math.round(p.total_off/35*100)             : null,
-      p.total_def!=null      ? Math.round(p.total_def/8.5*100)            : null,
-      p.total_pass!=null     ? Math.round(p.total_pass/23.5*100)          : null,
+      p.talent_index!=null   ? Math.round(p.talent_index/PMx(p.position_group,'total')*100)          : null,
+      p.total_physical>0     ? Math.round(p.total_physical/PMx(p.position_group,'phy')*100)        : null,
+      p.total_off!=null      ? Math.round(p.total_off/PMx(p.position_group,'off')*100)             : null,
+      p.total_def!=null      ? Math.round(p.total_def/PMx(p.position_group,'def')*100)            : null,
+      p.total_pass!=null     ? Math.round(p.total_pass/PMx(p.position_group,'pass')*100)          : null,
     ];
 
     const ang = i => (Math.PI*2*i/N) - Math.PI/2;
@@ -13468,8 +13468,8 @@ function pid3BuildSimCards(pool, p, PLAYERS_REF) {
     const dist=Math.sqrt(keys.reduce((sum,k,i)=>{const a=(p[k]||0)/maxVals[i],b=(s[k]||0)/maxVals[i];return sum+(a-b)*(a-b);},0));
     const match=Math.round(Math.max(0,100-dist*100/Math.sqrt(keys.length)*3));
     const matchCol=match>=85?'#00e5a0':match>=70?'#00d4ff':'rgba(180,195,215,.45)';
-    const tiPctVal=Math.round((s.talent_index||0)/67*100); const tiCol=tiPctVal>=75?'#00e5a0':tiPctVal>=50?'#00d4ff':'rgba(160,175,195,.45)';
-    const phyPctVal=Math.round((s.total_physical||0)/25*100); const phyCol=phyPctVal>=75?'#00e5a0':phyPctVal>=50?'#00d4ff':'rgba(160,175,195,.45)';
+    const tiPctVal=Math.round((s.talent_index||0)/PMx(s.position_group,'total')*100); const tiCol=tiPctVal>=75?'#00e5a0':tiPctVal>=50?'#00d4ff':'rgba(160,175,195,.45)';
+    const phyPctVal=Math.round((s.total_physical||0)/PMx(s.position_group,'phy')*100); const phyCol=phyPctVal>=75?'#00e5a0':phyPctVal>=50?'#00d4ff':'rgba(160,175,195,.45)';
     const bc=match>=85?'rgba(0,229,160,.15)':match>=70?'rgba(0,180,255,.12)':'rgba(255,255,255,.07)';
 
     return (
@@ -14957,7 +14957,7 @@ function shRenderPitch(formation, tabData){
       const ctYear=p.contract_end?parseInt(p.contract_end.slice(0,4)):9999;
       const ctCol=ctYear<=2026?'#ff4757':ctYear===2027?'#f59e0b':'rgba(180,200,220,.5)';
         const score=Math.round(activeTIPct(p));
-        const phyPct=p.total_physical!=null?Math.round((p.total_physical/25)*100):0;
+        const phyPct=p.total_physical!=null?Math.round((p.total_physical/PMx(p.position_group,'phy'))*100):0;
         const traPct=Math.round(p.transfer_score||0);
         const rnk=rnkSorted.findIndex(x=>x.name===name)+1;
         const footTxt=p.foot?(/^d/i.test(p.foot)?'R':'L'):'';
@@ -15207,7 +15207,9 @@ function shOpenSide(name, slotId){
     }
   };
 
-  const METRIC_GROUPS_CF = {
+  const POS_MAX = { WIN:{total:67,off:35,def:8.5,pass:23.5,phy:25}, CF:{total:32.5,off:32.5,def:8.5,pass:23.5,phy:9.5} };
+function PMx(pg,k){ return ((POS_MAX[pg]||POS_MAX.WIN)[k]) || 1; }
+const METRIC_GROUPS_CF = {
  off: { label:'Total Off', color:'var(--accent)', metrics:[
   {lbl:'Golos s/pen',key:'goals_np'},{lbl:'xG',key:'xg'},{lbl:'Shots/90',key:'shots90'},
   {lbl:'Goals/Shot%',key:'goals_per_shot'},{lbl:'Box Touches',key:'box_touches'},
@@ -15310,10 +15312,10 @@ function metricBox(groupKey, totalKey, totalVal, totalColor, pct, invert, posGro
           })()}
         </div>
       </div>
-      ${ (function(){ const _pv=p.total_physical; const _pp=_pv?Math.round(_pv/25*100):null; return metricBox('phy','total_physical',_pv?_pv.toFixed(1):null,'#9b7fff',_pp, true, p.position_group); })() }
-      ${ (function(){ const _v=p.total_off; return metricBox('off','total_off',_v?_v.toFixed(1):null,'var(--accent)',_v?Math.round(_v/35*100):null, p.position_group); })() }
-      ${ (function(){ const _v=p.total_def; return metricBox('def','total_def',_v?_v.toFixed(1):null,'#ff5370',_v?Math.round(_v/8.5*100):null, p.position_group); })() }
-      ${ (function(){ const _v=p.total_pass; return metricBox('pass','total_pass',_v?_v.toFixed(1):null,'#4fc3f7',_v?Math.round(_v/23.5*100):null, p.position_group); })() }
+      ${ (function(){ const _pv=p.total_physical; const _pp=_pv?Math.round(_pv/PMx(p.position_group,'phy')*100):null; return metricBox('phy','total_physical',_pv?_pv.toFixed(1):null,'#9b7fff',_pp, true, p.position_group); })() }
+      ${ (function(){ const _v=p.total_off; return metricBox('off','total_off',_v?_v.toFixed(1):null,'var(--accent)',_v?Math.round(_v/PMx(p.position_group,'off')*100):null, p.position_group); })() }
+      ${ (function(){ const _v=p.total_def; return metricBox('def','total_def',_v?_v.toFixed(1):null,'#ff5370',_v?Math.round(_v/PMx(p.position_group,'def')*100):null, p.position_group); })() }
+      ${ (function(){ const _v=p.total_pass; return metricBox('pass','total_pass',_v?_v.toFixed(1):null,'#4fc3f7',_v?Math.round(_v/PMx(p.position_group,'pass')*100):null, p.position_group); })() }
       <div class="sh-side-stat-box">
         <div class="sh-side-stat-lbl">Apps · Mins</div>
         <div class="sh-side-stat-val" style="font-size:14px">${p.matches||'—'} · ${p.minutes?p.minutes+"'":'—'}</div>
@@ -17628,7 +17630,7 @@ function renderMobileTable(){
   content.innerHTML = '<div style="padding:0 0 80px">'
     +players.map((p,i)=>{
       const ti  = Math.round((typeof activeTIPct==='function'?activeTIPct(p):p.talent_index_pct)||0);
-      const ph  = Math.round((p.total_physical||0)/25*100);
+      const ph  = Math.round((p.total_physical||0)/PMx(p.position_group,'phy')*100);
       const tr  = Math.round(p.transfer_score||0);
       const metV= metricKey&&p[metricKey]!=null?(+(p[metricKey])).toFixed(1):'—';
       const ctStr = fmtCt(p.contract_end);
@@ -18028,7 +18030,7 @@ function renderMobileShadowView(){
     function mobShPlayerRow(p, onPick){
       const talPct = Math.round(p.talent_index_pct||0);
       const hasPhy = (p.total_physical||0) > 0;
-      const phyPct = hasPhy ? Math.round(p.total_physical/25*100) : null;
+      const phyPct = hasPhy ? Math.round(p.total_physical/PMx(p.position_group,'phy')*100) : null;
 
       const footTxt = p.foot ? (/^d/i.test(p.foot)?'R':'L') : '';
       const ctYear = p.contract_end ? parseInt(p.contract_end.slice(0,4)) : null;
@@ -18631,12 +18633,12 @@ function renderMobileElite(){
   const tiTopPct=Math.round(tiPctL*100);
   const tiCol=tiPctL>=0.8?'#00e5a0':tiPctL>=0.5?'#00d4ff':'rgba(160,175,195,.5)';
   const tiLR=rnkL(tiKey);
-  const tiVal=Math.round((p[tiKey]||0)/67*100);
+  const tiVal=Math.round((p[tiKey]||0)/PMx(p.position_group,'total')*100);
 
   const piLgP=lgP.filter(x=>x.total_physical>0);
   const piRnk=piLgP.length>0?[...piLgP].sort((a,b)=>(b.total_physical||0)-(a.total_physical||0)).findIndex(x=>x.name===p.name)+1:0;
   const piPct=piLgP.length>0&&p.total_physical>0?Math.max(0,(piLgP.length-piRnk)/piLgP.length):0;
-  const phVal=Math.round((p.total_physical||0)/25*100);
+  const phVal=Math.round((p.total_physical||0)/PMx(p.position_group,'phy')*100);
   const phCol=piPct>=0.7?'#00e5a0':piPct>=0.4?'#9b7fff':'rgba(160,175,195,.5)';
 
   const tsScore=p.transfer_score||0;
@@ -18889,8 +18891,8 @@ function renderMobileElite(){
     const sMv=s.mkt_value>=1e6?'€'+(s.mkt_value/1e6).toFixed(1)+'M':s.mkt_value>=1e3?'€'+Math.round(s.mkt_value/1e3)+'K':'—';
     const sMatchPct=Math.round((s.score||0)/Math.max(1,ref.score||1)*100);
     const sMatchCol=sMatchPct>=75?'#00e5a0':sMatchPct>=50?'#00d4ff':'rgba(160,175,195,.6)';
-    const sTIPct=Math.min(100,Math.round((s.talent_index||0)/67*100));
-    const sPhPct=Math.min(100,Math.round((s.total_physical||0)/25*100));
+    const sTIPct=Math.min(100,Math.round((s.talent_index||0)/PMx(s.position_group,'total')*100));
+    const sPhPct=Math.min(100,Math.round((s.total_physical||0)/PMx(s.position_group,'phy')*100));
     const sCtcCol=s.contract_end&&new Date(s.contract_end)<new Date(Date.now()+365*24*36e5)?'#ff6b6b':'rgba(200,220,240,.5)';
     const sIni=(s.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
     const sPhotoId='avatar-'+s.name.replace(/[^a-z0-9]/gi,'_');
@@ -19221,18 +19223,18 @@ function renderMobileElite(){
     else{
       // fallback inline SVG radar
       const W=radarWrap.offsetWidth||350,H=220,cx=W/2,cy=H/2,R=74;
-      const vals=[Math.min(1,(p[tiKey]||0)/67),Math.min(1,(p.total_physical||0)/25),
+      const vals=[Math.min(1,(p[tiKey]||0)/PMx(p.position_group,'total')),Math.min(1,(p.total_physical||0)/PMx(p.position_group,'phy')),
         (()=>{const s=[...PLAYERS].filter(x=>x.total_off!=null).sort((a,b)=>(b.total_off||0)-(a.total_off||0));const r=s.findIndex(x=>x.name===p.name);return r<0?0:(s.length-r)/s.length;})(),
         (()=>{const s=[...PLAYERS].filter(x=>x.total_def!=null).sort((a,b)=>(b.total_def||0)-(a.total_def||0));const r=s.findIndex(x=>x.name===p.name);return r<0?0:(s.length-r)/s.length;})(),
         (()=>{const s=[...PLAYERS].filter(x=>x.total_pass!=null).sort((a,b)=>(b.total_pass||0)-(a.total_pass||0));const r=s.findIndex(x=>x.name===p.name);return r<0?0:(s.length-r)/s.length;})()
       ];
       const lbls=['TALENT','PHYSICAL','OFENSIVO','DEFENSIVO','PASSING'];
       const pcts=[Math.min(100,tiVal),Math.min(100,phVal),
-        Math.round((p.total_off||0)/35*100),
-        Math.round((p.total_def||0)/8.5*100),
-        Math.round((p.total_pass||0)/23.5*100)
+        Math.round((p.total_off||0)/PMx(p.position_group,'off')*100),
+        Math.round((p.total_def||0)/PMx(p.position_group,'def')*100),
+        Math.round((p.total_pass||0)/PMx(p.position_group,'pass')*100)
       ];
-      const avgVals=[Math.min(1,PLAYERS.reduce((s,x)=>s+(x[tiKey]||0),0)/Math.max(1,PLAYERS.length)/67),Math.min(1,PLAYERS.reduce((s,x)=>s+(x.total_physical||0),0)/Math.max(1,PLAYERS.length)/25),0.5,0.5,0.5];
+      const avgVals=[Math.min(1,PLAYERS.reduce((s,x)=>s+(x[tiKey]||0),0)/Math.max(1,PLAYERS.length)/PMx(p.position_group,'total')),Math.min(1,PLAYERS.reduce((s,x)=>s+(x.total_physical||0),0)/Math.max(1,PLAYERS.length)/PMx(p.position_group,'phy')),0.5,0.5,0.5];
       function pt(i,r){const a=Math.PI*2*i/5-Math.PI/2;return[cx+r*Math.cos(a),cy+r*Math.sin(a)];}
       let svg=`<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">`;
       [.25,.5,.75,1].forEach(f=>{const pp=[0,1,2,3,4].map(i=>pt(i,R*f));svg+=`<polygon points="${pp.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>`;});
