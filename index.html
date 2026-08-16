@@ -7861,11 +7861,7 @@ function renderCompare(){
   // Auto-trigger AI comparison
   if (pA && pB) { generateCompareAI(pA, pB); }
 
-  // Fetch photos from Wikipedia
-  if (pA) fetchWikiPhoto(pA.name);
-  if (pB) fetchWikiPhoto(pB.name);
-  if (pC) fetchWikiPhoto(pC.name);
-  if (pD) fetchWikiPhoto(pD.name);
+  // (fotos automáticas removidas a pedido do utilizador)
 }
 
 function swapCompare() {
@@ -14561,6 +14557,8 @@ function simCardClick(el) {
 }
 
 function simGoCompare(refName, candName, refLeague, candLeague) {
+  if(!refLeague && typeof selectedPlayer!=='undefined' && selectedPlayer && selectedPlayer.name===refName) refLeague = selectedPlayer.league;
+  if(!candLeague && typeof selectedPlayer!=='undefined' && selectedPlayer && selectedPlayer.name===candName) candLeague = selectedPlayer.league;
   window._cmpA = PLAYERS.find(function(x){return x.name===refName && (!refLeague || x.league===refLeague);}) || PLAYERS.find(function(x){return x.name===refName;}) || null;
   window._cmpB = PLAYERS.find(function(x){return x.name===candName && (!candLeague || x.league===candLeague);}) || PLAYERS.find(function(x){return x.name===candName;}) || null;
   selectedPlayer = window._cmpA || selectedPlayer;
@@ -18831,7 +18829,7 @@ function renderMobileShadowView(preserveData){
                 }
 
                 _shownM.forEach(function(pname, i){
-                  const p = pool.find(function(x){return x.name===pname;}) || {};
+                  const p = (function(){var _ms=pool.filter(function(x){return x.name===pname;});if(_ms.length<=1)return _ms[0]||{};var _mm=_ms.find(function(x){return (typeof shPlayerMatchesSlot==='function')&&shPlayerMatchesSlot(x,slot);});return _mm||_ms[0]||{};})();
 
                   const rnk = rankPool.filter(function(x){return x.position_group===p.position_group;}).sort(function(a,b){return activeTIfn(b)-activeTIfn(a);}).findIndex(function(x){return x.name===pname;})+1;
                   const rnkTxt = rnk>0 ? String(rnk) : '';
