@@ -7155,8 +7155,8 @@ document.addEventListener('click', e => {
   });
 });
 function renderCompare(){
-  const pA = PLAYERS.find(p => p.name === document.getElementById('cmp-a').value);
-  const pB = PLAYERS.find(p => p.name === document.getElementById('cmp-b').value);
+  const _av=document.getElementById('cmp-a').value; const pA = (window._cmpA && window._cmpA.name===_av) ? window._cmpA : PLAYERS.find(p => p.name === _av);
+  const _bv=document.getElementById('cmp-b').value; const pB = (window._cmpB && window._cmpB.name===_bv) ? window._cmpB : PLAYERS.find(p => p.name === _bv);
   const cWrap = document.getElementById('cmp-c-wrap');
   const dWrap = document.getElementById('cmp-d-wrap');
   const hasC = cWrap && cWrap.style.display !== 'none';
@@ -14039,7 +14039,8 @@ function renderSimilarPlayers(p, targetEl) {
 
     const safeN   = q.name.replace(/'/g,"\\'");
     const safeRef = p.name.replace(/'/g,"\\'");
-    const compareBtn = '<button onclick="event.stopPropagation();simGoCompare(\''+safeRef+'\',\''+safeN+'\')" '
+    const safeRefL = (p.league||'').replace(/'/g,"\\'"); const safeNL = (q.league||'').replace(/'/g,"\\'");
+    const compareBtn = '<button onclick="event.stopPropagation();simGoCompare(\''+safeRef+'\',\''+safeN+'\',\''+safeRefL+'\',\''+safeNL+'\')" '
       +'style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;'
       +'background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);border-radius:3px;'
       +'color:#00d4ff;padding:2px 7px;cursor:pointer;flex-shrink:0;align-self:center;display:inline-flex;align-items:center" '
@@ -14559,8 +14560,10 @@ function simCardClick(el) {
   }
 }
 
-function simGoCompare(refName, candName) {
-  selectedPlayer = PLAYERS.find(x=>x.name===refName) || selectedPlayer;
+function simGoCompare(refName, candName, refLeague, candLeague) {
+  window._cmpA = PLAYERS.find(function(x){return x.name===refName && (!refLeague || x.league===refLeague);}) || PLAYERS.find(function(x){return x.name===refName;}) || null;
+  window._cmpB = PLAYERS.find(function(x){return x.name===candName && (!candLeague || x.league===candLeague);}) || PLAYERS.find(function(x){return x.name===candName;}) || null;
+  selectedPlayer = window._cmpA || selectedPlayer;
   showView('compare', document.querySelector('.top-btn[onclick*="compare"]'));
   requestAnimationFrame(() => {
     const sa = document.getElementById('cmp-a');
