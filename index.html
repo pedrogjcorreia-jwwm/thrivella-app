@@ -15452,7 +15452,7 @@ function shOpenSide(name, slotId){
   }
   const panel=document.getElementById('sh-side-panel');
   panel.style.width='331px';
-  const p=PLAYERS.find(x=>x.name===name)||{};
+  const p=(function(){var ms=PLAYERS.filter(function(x){return x.name===name;});if(ms.length<=1)return ms[0]||{};if(shSideSlotId){var _f=(typeof shGetFormation==='function')?shGetFormation():null;var _sl=(_f&&SH_FORMATIONS[_f]&&SH_FORMATIONS[_f].slots||[]).find(function(s){return s.id===shSideSlotId;});if(_sl){var _m=ms.find(function(x){return shPlayerMatchesSlot(x,_sl);});if(_m)return _m;}}return ms[0]||{};})();
   const lc=(typeof LEAGUE_COLORS!=='undefined'&&LEAGUE_COLORS[p.league])||{bg:'rgba(255,255,255,.05)',border:'rgba(255,255,255,.12)',col:'var(--muted)'};
 
   // Contract colour
