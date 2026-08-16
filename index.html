@@ -16490,11 +16490,13 @@ function shApplyFilters(players) {
 // ── Shadow Compare ────────────────────────────────────────────────────────────
 let _shCmpPlayerA = null;
 let _shCmpSlotId  = null;
+let _shCmpLeagueA = null;
 
 function shOpenCompare(playerName, slotId) {
   _shCmpPlayerA = playerName;
-  try{ const _an=document.getElementById('sh-cmp-aname'); const _pa=PLAYERS.find(x=>x.name===playerName); if(_an) _an.textContent=playerName+((_pa&&_pa.team)?' — '+_pa.team:''); }catch(e){}
   _shCmpSlotId  = slotId;
+  try{ var _sl=((typeof SH_FORMATIONS!=='undefined' && SH_FORMATIONS[shGetFormation()] && SH_FORMATIONS[shGetFormation()].slots)||[]).find(function(s){return s.id===slotId;}); var _cs=PLAYERS.filter(function(x){return x.name===playerName;}); var _pa2=(_sl && _cs.length>1)?_cs.find(function(x){return shPlayerMatchesSlot(x,_sl);}):null; _shCmpLeagueA=((_pa2||_cs[0])||{}).league||null; }catch(e){ _shCmpLeagueA=null; }
+  try{ const _an=document.getElementById('sh-cmp-aname'); const _pa=PLAYERS.find(x=>x.name===playerName && (!_shCmpLeagueA||x.league===_shCmpLeagueA)); if(_an) _an.textContent=playerName+((_pa&&_pa.team)?' — '+_pa.team:''); }catch(e){}
 
   // Close metrics panel if open
   shCloseMetrics && shCloseMetrics();
@@ -16528,7 +16530,7 @@ function shCloseCompare() {
   if(panel) panel.classList.remove('open');
   const sidePan = document.getElementById('sh-side-panel');
   if(sidePan) sidePan.style.width = '331px';
-  _shCmpPlayerA = null;
+  _shCmpPlayerA = null; _shCmpLeagueA = null;
 }
 window.shCmpSearch = function(){
   const inp = document.getElementById('sh-cmp-search');
@@ -16751,7 +16753,7 @@ function shRenderCompare() {
   const cols = document.getElementById('sh-cmp-cols');
   const sel  = document.getElementById('sh-cmp-select');
   if(!cols || !sel || !_shCmpPlayerA) return;
-  const pA = PLAYERS.find(x=>x.name===_shCmpPlayerA) || null;
+  const pA = PLAYERS.find(x=>x.name===_shCmpPlayerA && (!_shCmpLeagueA||x.league===_shCmpLeagueA)) || PLAYERS.find(x=>x.name===_shCmpPlayerA) || null;
   const pB = sel.value ? (PLAYERS.find(x=>x.name===sel.value) || null) : null;
   if(!pA){ cols.innerHTML=''; return; }
   if(!pB){ cols.innerHTML = '<div style="padding:26px 18px;text-align:center;font-family:var(--font-d);font-size:12px;color:var(--muted);line-height:1.5">Procura e escolhe um jogador para comparar com <b style="color:#00e5a0">'+pA.name+'</b>.</div>'; return; }
