@@ -13564,7 +13564,7 @@ window.pid3ShowMetricRank = function(encodedKey, encodedLbl, encodedName, inv, t
               : 'rgba(200,215,235,.6)';
     const med = '<span style="font-family:var(--font-d);font-size:11.5px;font-weight:800;letter-spacing:-.2px;color:'+col+'">#'+rank+'</span>';
     const btn = isP ? '' :
-      '<button onclick="event.stopPropagation();window._pid3CloseTop3();simGoCompare('+attr(x.name)+','+attr(name)+')"'
+      '<button onclick="event.stopPropagation();window._pid3CloseTop3();simGoCompare('+attr(x.name)+','+attr(name)+','+attr(x.league)+')"'
       +' style="font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.2px;padding:3px 6px;border-radius:4px;'
       +'border:1px solid rgba(155,127,255,.5);color:#9b7fff;background:rgba(155,127,255,.15);cursor:pointer;flex-shrink:0;white-space:nowrap">Comparar</button>';
     const _box = isP
@@ -13745,7 +13745,7 @@ function pid3BuildSimCards(pool, p, PLAYERS_REF) {
               '<span style="font-family:var(--font-d);font-size:12px;font-weight:700;color:rgba(255,255,255,.75)">'+sMv+'</span>'+
               '<span style="font-family:var(--font-d);font-size:12px;font-weight:600;color:'+ctcCol+';margin-left:6px">'+sCtc+'</span>'+
             '</div>'+
-            '<button onclick="event.stopPropagation();simGoCompare(\'' + s.name.replace(/'/g,"\\'") + '\',\'' + p.name.replace(/'/g,"\\'") + '\')" '+
+            '<button onclick="event.stopPropagation();simGoCompare(\'' + s.name.replace(/'/g,"\\'") + '\',\'' + p.name.replace(/'/g,"\\'") + '\',\'' + (s.league||'').replace(/'/g,"\\'") + '\',\'' + (p.league||'').replace(/'/g,"\\'") + '\')" '+
               'style="padding:calc(5px - 0.25mm) 12px;border-radius:5px;background:rgba(110,45,200,.15);border:1px solid rgba(130,65,220,.35);color:rgba(180,130,255,.9);cursor:pointer;font-family:var(--font-d);font-size:9px;font-weight:700;white-space:nowrap">'+
               t('lbl_compare')+
             '</button>'+
@@ -14277,6 +14277,7 @@ function renderSimilarPlayers(p, targetEl) {
 
       const safeN2   = q.name.replace(/'/g,"\\'");
       const safeRef2 = p.name.replace(/'/g,"\\'");
+      const safeRefL2 = (p.league||'').replace(/'/g,"\\'"); const safeNL2 = (q.league||'').replace(/'/g,"\\'");
 
       // ── SIMILARITY BAR: ~5mm wide vertical bar, blue fill = match%, % label centred
       const simBarOpacity = (0.10 + matchPct/100 * 0.35).toFixed(3);
@@ -14321,7 +14322,7 @@ function renderSimilarPlayers(p, targetEl) {
           +'<div style="display:flex;align-items:center;gap:4px;flex-wrap:nowrap;padding-bottom:6px">'
             +'<span style="font-family:var(--font-d);font-size:10px;font-weight:700;color:#00e5a0;flex-shrink:0">'+valFmt+'</span>'
             +'<span style="font-family:var(--font-d);font-size:8px;font-weight:600;color:'+ctCol+';flex-shrink:0">'+ctFmt+'</span>'
-            +'<button onclick="event.stopPropagation();simGoCompare(\''+safeRef2+'\',\''+safeN2+'\')" '
+            +'<button onclick="event.stopPropagation();simGoCompare(\''+safeRef2+'\',\''+safeN2+'\',\''+safeRefL2+'\',\''+safeNL2+'\')" '
               +'style="font-family:var(--font-d);font-size:7px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;'
               +'background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.28);border-radius:2px;'
               +'color:#00d4ff;padding:2px 5px;cursor:pointer;flex-shrink:0" '
