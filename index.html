@@ -15214,7 +15214,7 @@ function shRenderPitch(formation, tabData){
       }
 
       colPlayers.forEach((name,pi)=>{
-        const p=PLAYERS.find(x=>x.name===name)||{};
+        const p=(function(){var ms=PLAYERS.filter(function(x){return x.name===name;});if(ms.length<=1)return ms[0]||{};var _m=ms.find(function(x){return shPlayerMatchesSlot(x,slot);});return _m||ms[0]||{};})();
         const isSelected=shSidePlayer===name;
         const card=document.createElement('div');
         const isGK = slot.tag === 'GK';
