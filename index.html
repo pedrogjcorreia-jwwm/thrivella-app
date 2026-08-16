@@ -14882,7 +14882,7 @@ function shPlayerMatchesSlot(p, slot){
   if(tag==='CF')  return pg === 'CF';
   if(tag==='CMF') return pg === 'CM';
   if(tag==='LB') return pg === 'LB';
-  if(tag==='WB' || tag==='RB') return pg === 'WB';
+  if(tag==='WB' || tag==='RB' || tag==='RWB') return pg === 'RB';
   if(tag==='CB')  return pg === 'CB';
   if(tag==='GK')  return pg === 'GK' || /\bGK\b/i.test(p.position||'');
   return false;
