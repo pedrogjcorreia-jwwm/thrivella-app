@@ -19475,7 +19475,7 @@ function renderMobileElite(){
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0">
               <div style="display:flex;gap:2px">${
                 [
-                  '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:700;color:#fff;border:1px solid rgba(130,65,220,.5);background:#6d28d9;border-radius:3px;padding:2px 6px">WIN</span>',
+                  '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:9px;font-weight:700;color:#fff;border:1px solid rgba(130,65,220,.5);background:#6d28d9;border-radius:3px;padding:2px 6px">'+(s.position_group||'')+'</span>',
                   ...(s.position||'').split(',').slice(0,2).map(x=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:#00d4ff;border:1px solid rgba(0,212,255,.35);background:rgba(0,212,255,.07);border-radius:3px;padding:2px 6px">${x.trim()}</span>`)
                 ].slice(0,3).join('')
               }</div>
