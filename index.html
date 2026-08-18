@@ -7938,6 +7938,7 @@ try {
 try{ window.photoCache = photoCache; }catch(e){}
 
 async function fetchWikiPhoto(name) {
+  return; /* auto-foto desativada — upload so manual no Player ID */
   const avatarId = 'avatar-' + name.replace(/[^a-z0-9]/gi,'_');
   const el = document.getElementById(avatarId);
   if (!el) return;
@@ -18218,6 +18219,7 @@ function renderMobileCompareView(nameA, nameB){
     const sa=document.getElementById('cmp-a'), sb=document.getElementById('cmp-b');
     if(sa) sa.value=pA.name;
     if(sb) sb.value=pB.name;
+    window._cmpA=pA; window._cmpB=pB;
     if(typeof renderCompare==='function') renderCompare();
 
     setTimeout(()=>{
