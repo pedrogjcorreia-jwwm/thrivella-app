@@ -7118,18 +7118,19 @@ function filterCmpPicker(slot) {
   }).slice(0,40);
   list.style.display = filtered.length ? 'block' : 'none';
   list.innerHTML = filtered.map(p =>
-    '<div onclick="selectCmpPlayer(\''+slot+'\',\''+p.name.replace(/'/g,"\\'")+'\')" style="padding:6px 10px;font-family:var(--font-d);font-size:11px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background=\'rgba(0,180,255,.1)\'" onmouseout="this.style.background=\'\'">' +
+    '<div onclick="selectCmpPlayer(\''+slot+'\',\''+p.name.replace(/'/g,"\\'")+'\',\''+(p.league||'').replace(/'/g,"\\'")+'\')" style="padding:6px 10px;font-family:var(--font-d);font-size:11px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background=\'rgba(0,180,255,.1)\'" onmouseout="this.style.background=\'\'">' +
       '<span style="font-weight:700;color:var(--text)">' + p.name + '</span>' +
       '<span style="color:var(--muted);font-size:9px;margin-left:6px">' + (p.position||'').split(',')[0].trim() + ' · ' + (p.team||'') + '</span>' +
     '</div>'
   ).join('');
 }
 
-function selectCmpPlayer(slot, name) {
+function selectCmpPlayer(slot, name, league) {
   const sel = document.getElementById('cmp-'+slot);
   if(sel) sel.value = name;
   const input = document.getElementById('cmp-search-'+slot);
-  const p = PLAYERS.find(x=>x.name===name);
+  const p = (league ? PLAYERS.find(x=>x.name===name && x.league===league) : null) || PLAYERS.find(x=>x.name===name);
+  if(slot==='a') window._cmpA = p; else if(slot==='b') window._cmpB = p;
   if(input && p) input.value = p.name + ' — ' + (p.team||'');
   const list = document.getElementById('cmp-list-'+slot);
   if(list) list.style.display = 'none';
