@@ -7338,12 +7338,12 @@ function renderCompare(){
 
       // ── Top: avatar centred, name below
       + '<div class="cmp-card-top">'
-      + '<div class="photo-avatar-wrap rect" style="display:inline-block;position:relative;width:110px;height:120px;border-radius:10px;overflow:hidden;background:'+col+'18;border:1.5px solid '+col+'44;cursor:pointer" onclick="openPlayerFromCompare(\''+p.name.replace(/'/g,"\\'")+'\')">'
+      + '<div class="photo-avatar-wrap rect" style="display:inline-block;position:relative;width:110px;height:120px;border-radius:10px;overflow:hidden;background:'+col+'18;border:1.5px solid '+col+'44;cursor:pointer" onclick="openPlayerFromCompare(\''+p.name.replace(/'/g,"\\'")+'\',\''+(p.league||'').replace(/'/g,"\\'")+'\')">'
       +   '<div class="cmp-avatar-rect" id="avatar-' + p.name.replace(/[^a-z0-9]/gi,'_') + '" style="width:100%;height:100%;background:'+col+'22;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:22px;font-weight:700;color:'+col+';position:relative;overflow:hidden">' + ini + '</div>'
       +   '<div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(to top,'+col+'22,transparent);pointer-events:none"></div>'
       +   '<div class="photo-upload-corner" onclick="event.stopPropagation();uploadPlayerPhoto(\'' + p.name.replace(/'/g,"\\'") + '\')"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;flex-shrink:0;margin-bottom:0.5mm;margin-left:0.1mm"><path d="M12 3v13" stroke="url(#dg)" stroke-width="2.5" stroke-linecap="round"/><path d="M6 11l6 7 6-7" stroke="url(#dg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="20" width="16" height="2" rx="1" fill="url(#dg)"/><defs><linearGradient id="dg" x1="12" y1="3" x2="12" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#a8d4ff"/><stop offset="100%" stop-color="#dceeff"/></linearGradient></defs></svg></div>'
       + '</div>'
-      + '<div class="cmp-card-name" style="color:' + col + ';margin-top:8px;cursor:pointer" onclick="openPlayerFromCompare(\''+p.name.replace(/'/g,"\\'")+'\')"> ' + p.name + '</div>'
+      + '<div class="cmp-card-name" style="color:' + col + ';margin-top:8px;cursor:pointer" onclick="openPlayerFromCompare(\''+p.name.replace(/'/g,"\\'")+'\',\''+(p.league||'').replace(/'/g,"\\'")+'\')"> ' + p.name + '</div>'
       + '<div class="cmp-card-sub" data-pos="' + (p.position||'') + '" style="margin-top:5px;display:flex;flex-wrap:wrap;gap:3px;justify-content:center">'
       + (p.position_group?'<span style="font-family:var(--font-d);font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;border:1px solid rgba(180,120,255,.4);color:rgba(200,150,255,.85);background:rgba(140,80,255,.07)">'+(p.position_group==='WIN'?'WINGER':p.position_group)+'</span>':'')
       + (p.position||'').split(',').slice(0,2).map(function(_pp){ return '<span style="font-family:var(--font-d);font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;border:1px solid rgba(0,212,255,.35);color:#00d4ff;background:rgba(0,212,255,.07)">' + _pp.trim() + '</span>'; }).join('')
@@ -8496,8 +8496,8 @@ function openTalentView() { toggleFlyout('talent'); }
 
 // ── AI COMPARE ───────────────────────────────────────────────────────────────
 // Open Player ID view from compare — click on photo or name
-function openPlayerFromCompare(name) {
-  const p = PLAYERS.find(x=>x.name===name);
+function openPlayerFromCompare(name, league) {
+  const p = (league ? PLAYERS.find(x=>x.name===name && x.league===league) : null) || PLAYERS.find(x=>x.name===name);
   if(!p) return;
   window.selectedPlayer = p;
   if(typeof mobGoToView==='function') mobGoToView('playerid');
@@ -18045,13 +18045,14 @@ function renderMobileTable(){
       const foot= p.foot==='direito'?'R':p.foot==='esquerdo'?'L':'';
       const pos1= (p.position||'').split(',')[0].trim();
       const pN  = p.name.replace(/'/g,"\\'");
+      const pL  = (p.league||'').replace(/'/g,"\\'");
 
       const col4val  = metricKey ? metV : (ctFil ? ctStr : '');
       const col4lbl  = metricKey ? metricLbl.slice(0,3).toUpperCase() : (ctFil ? 'CON' : '');
       const col4col  = metricKey ? 'rgba(255,255,255,.7)' : (ctRed?'#ff5757':'rgba(255,255,255,.15)');
       const col4size = metricKey ? '13px' : '13px';
 
-      return '<div onclick="mobGoToView(\'playerid\');window.selectedPlayer=PLAYERS.find(x=>x.name===\''+pN+'\');setTimeout(renderMobilePlayerID,50)"'
+      return '<div onclick="mobGoToView(\'playerid\');window.selectedPlayer=(PLAYERS.find(x=>x.name===\''+pN+'\' && x.league===\''+pL+'\')||PLAYERS.find(x=>x.name===\''+pN+'\'));setTimeout(renderMobilePlayerID,50)"'
         +' style="display:flex;align-items:stretch;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;overflow:hidden">'
         // rank+WIN dark blue col
         +'<div style="width:27px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:linear-gradient(180deg,#040e1c 0%,#061528 50%,#030c18 100%);border-right:1px solid rgba(0,180,255,.12)">'
@@ -19147,7 +19148,7 @@ function renderMobileElite(){
         return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)">
           <div style="font-size:18px;flex-shrink:0">${medal}</div>
           <div style="width:36px;height:44px;border-radius:5px;background:rgba(0,140,255,.08);border:1px solid rgba(0,140,255,.15);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden">${sPhoto}</div>
-          <div style="flex:1;cursor:pointer" onclick="window._closeTop3();window.selectedPlayer=PLAYERS.find(x=>x.name===${JSON.stringify(s.name)});if(window.selectedPlayer)renderMobileElite()">
+          <div style="flex:1;cursor:pointer" onclick="window._closeTop3();window.selectedPlayer=(PLAYERS.find(x=>x.name===${JSON.stringify(s.name)} && x.league===${JSON.stringify(s.league||'')})||PLAYERS.find(x=>x.name===${JSON.stringify(s.name)}));if(window.selectedPlayer)renderMobileElite()">
             <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;color:${s.name===p.name?'#00d4ff':'#e8edf2'}">${s.name}${s.name===p.name?' ★':''}</div>
             <div style="font-family:'Barlow',sans-serif;font-size:10px;color:rgba(255,255,255,.35)">${s.team||''} · ${s.league||''}</div>
           </div>
