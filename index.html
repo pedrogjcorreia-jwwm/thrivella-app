@@ -18904,7 +18904,7 @@ function renderMobileShadowView(preserveData){
                         e.stopPropagation();
                         const n=this.getAttribute('data-pname');
                         const pool2 = (typeof PLAYERS!=='undefined' && PLAYERS && PLAYERS.length) ? PLAYERS : (window.PLAYERS||[]);
-                        const pl = pool2.find(function(x){return x.name===n;});
+                        const pl = (typeof p!=='undefined' && p && p.name===n) ? p : pool2.find(function(x){return x.name===n;});
                         if(pl){
                           window.selectedPlayer = pl;
                           try{ if(typeof selectedPlayer!=='undefined') selectedPlayer = pl; }catch(_e){}
