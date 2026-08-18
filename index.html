@@ -19217,15 +19217,15 @@ function renderMobileElite(){
   const potL=potS===2?'Alto':potS===1?'Médio':'Baixo';
   const potC=potS===2?'#00e5a0':potS===1?'rgba(180,195,215,.7)':'#ff6b6b';
 
-  window._mobileCompare=function(simName,playerName){
+  window._mobileCompare=function(simName,playerName,simLeague,playerLeague){
     // Stay in mobile elite view — go to compare tab
-    window._cmpMob={pA:PLAYERS.find(x=>x.name===playerName),pB:PLAYERS.find(x=>x.name===simName)};
+    window._cmpMob={pA:(PLAYERS.find(x=>x.name===playerName && x.league===playerLeague)||PLAYERS.find(x=>x.name===playerName)),pB:(PLAYERS.find(x=>x.name===simName && x.league===simLeague)||PLAYERS.find(x=>x.name===simName))};
     mobGoToView('compare');
     setTimeout(()=>{ if(typeof mobCmpRun==='function') mobCmpRun(); },300);
   };
 
-  window._mobileCompare=function(simName,playerName){
-    window._cmpMob={pA:PLAYERS.find(x=>x.name===playerName),pB:PLAYERS.find(x=>x.name===simName)};
+  window._mobileCompare=function(simName,playerName,simLeague,playerLeague){
+    window._cmpMob={pA:(PLAYERS.find(x=>x.name===playerName && x.league===playerLeague)||PLAYERS.find(x=>x.name===playerName)),pB:(PLAYERS.find(x=>x.name===simName && x.league===simLeague)||PLAYERS.find(x=>x.name===simName))};
     mobGoToView('compare');
     setTimeout(()=>{ if(typeof mobCmpRun==='function') mobCmpRun(); },300);
   };
@@ -19448,8 +19448,9 @@ function renderMobileElite(){
     else sWhy='Perfil técnico semelhante.';
     const simName=s.name.replace(/'/g,"\\'");
     const refName=ref.name.replace(/'/g,"\\'");
+    const simLeague=(s.league||'').replace(/'/g,"\\'"); const refLeague=(ref.league||'').replace(/'/g,"\\'");
     return `<div class="mob-e-card" style="margin-bottom:6px;overflow:hidden;background:#060c18;border:1px solid rgba(255,255,255,.07);border-top:1px solid rgba(255,255,255,.1)">
-      <div style="display:flex;gap:0;padding:10px 12px;cursor:pointer;background:#060c18" onclick="window.selectedPlayer=PLAYERS.find(x=>x.name==='${simName}');if(window.selectedPlayer)renderMobileElite()">
+      <div style="display:flex;gap:0;padding:10px 12px;cursor:pointer;background:#060c18" onclick="window.selectedPlayer=(PLAYERS.find(x=>x.name==='${simName}' && x.league==='${simLeague}')||PLAYERS.find(x=>x.name==='${simName}'));if(window.selectedPlayer)renderMobileElite()">
         <!-- FOTO -->
         <div id="${sPhotoId}" style="width:94px;height:124px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-right:10px">${sPhoto}</div>
         <!-- INFO -->
@@ -19474,7 +19475,7 @@ function renderMobileElite(){
                   ...(s.position||'').split(',').slice(0,2).map(x=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:#00d4ff;border:1px solid rgba(0,212,255,.35);background:rgba(0,212,255,.07);border-radius:3px;padding:2px 6px">${x.trim()}</span>`)
                 ].slice(0,3).join('')
               }</div>
-              <button onclick="event.stopPropagation();window._mobileCompare('${simName}','${refName}');" style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;border:1px solid rgba(155,127,255,.5);color:#9b7fff;background:rgba(155,127,255,.15);cursor:pointer;letter-spacing:.5px;white-space:nowrap">Comparar</button>
+              <button onclick="event.stopPropagation();window._mobileCompare('${simName}','${refName}','${simLeague}','${refLeague}');" style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;border:1px solid rgba(155,127,255,.5);color:#9b7fff;background:rgba(155,127,255,.15);cursor:pointer;letter-spacing:.5px;white-space:nowrap">Comparar</button>
             </div>
           </div>
         </div>
