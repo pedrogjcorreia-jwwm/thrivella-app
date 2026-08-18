@@ -9680,7 +9680,7 @@ function buildCardView(p) {
     const xcol=getColor(PLAYERS.indexOf(x));
     const simC=sim>=70?'#00e5a0':sim>=55?'#ffb340':'#ff5370';
     const mv=(v=>v>=1e6?'€'+(v/1e6).toFixed(1)+'m':v>=1e3?'€'+(v/1e3).toFixed(0)+'k':'—')(x.mkt_value);
-    return '<div class="sv3-sim-card" onclick="simCardClick(this)" data-pname="'+encodeURIComponent(x.name)+'">'
+    return '<div class="sv3-sim-card" onclick="simCardClick(this)" data-pname="'+encodeURIComponent(x.name)+'" data-pleague="'+encodeURIComponent(x.league||'')+'">'
       +'<div class="sv3-sim-top">'
       +'<div class="sv3-sim-av" style="border-color:'+xcol+';color:'+xcol+';background:'+xcol+'18">'+ini+'</div>'
       +'<div class="sv3-sim-info">'
@@ -12175,8 +12175,9 @@ Usa negrito (**texto**) para realçar dados chave. Sem títulos de secção. Má
 // simCardClick updates both old and new simple view
 function simCardClickV7(el) {
   const name = decodeURIComponent(el.dataset.pname || '');
+  const league = decodeURIComponent(el.dataset.pleague || '');
   if (!name) return;
-  selectedPlayer = PLAYERS.find(p => p.name === name) || selectedPlayer;
+  selectedPlayer = (league ? PLAYERS.find(p => p.name === name && p.league === league) : null) || PLAYERS.find(p => p.name === name) || selectedPlayer;
   const sel = document.getElementById('simple-select-v7');
   if (sel) sel.value = name;
   renderSimpleViewV7(name);
@@ -13344,11 +13345,12 @@ function svBuildColChart(p, def) {
 // ── SIMPLE VIEW — ROW CLICK (usa data-pname para evitar escaping de aspas) ────
 function svRowClick(el) {
   const name = decodeURIComponent(el.dataset.pname || '');
+  const league = decodeURIComponent(el.dataset.pleague || '');
   if (!name) return;
   // Mudar o select e re-renderizar na Simple View V7
   const sel = document.getElementById('simple-select-v7');
   if (sel) sel.value = name;
-  selectedPlayer = PLAYERS.find(p => p.name === name) || selectedPlayer;
+  selectedPlayer = (league ? PLAYERS.find(p => p.name === name && p.league === league) : null) || PLAYERS.find(p => p.name === name) || selectedPlayer;
   renderSimpleViewV7(name);
 }
 
@@ -14046,7 +14048,7 @@ function renderSimilarPlayers(p, targetEl) {
     // metrics panel — always visible, no expand button
     const metricsContent = '';
 
-    return '<div class="sim-card" data-pname="'+encodeURIComponent(q.name)+'" onclick="simCardClick(this)">'
+    return '<div class="sim-card" data-pname="'+encodeURIComponent(q.name)+'" data-pleague="'+encodeURIComponent(q.league||'')+'" onclick="simCardClick(this)">'
       // ── TOP: name + match %
       +'<div class="sim-card-top">'
         +'<span class="sim-card-match" style="color:'+matchCol+';border-color:'+matchCol+'44;background:'+matchCol+'12">'+matchPct+'%</span>'
@@ -14303,7 +14305,7 @@ function renderSimilarPlayers(p, targetEl) {
         +'</div>';
 
       const cardBorder = isNew ? '1px solid rgba(255,71,87,.7)' : '1px solid rgba(255,255,255,.06)';
-      return '<div class="sim-mini-card" data-pname="'+encodeURIComponent(q.name)+'" onclick="simCardClick(this)" style="flex-direction:row;padding:0;border:'+cardBorder+';align-items:stretch;height:auto!important;min-height:0">'
+      return '<div class="sim-mini-card" data-pname="'+encodeURIComponent(q.name)+'" data-pleague="'+encodeURIComponent(q.league||'')+'" onclick="simCardClick(this)" style="flex-direction:row;padding:0;border:'+cardBorder+';align-items:stretch;height:auto!important;min-height:0">'
         // ── LEFT: content column — grows with content
         +'<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:0 8px;align-self:stretch">'
           // Row 1: name + WIN/subpos
@@ -14544,13 +14546,14 @@ function fitSimCardNames() {
 }
 function simCardClick(el) {
   const name = decodeURIComponent(el.dataset.pname || '');
+  const league = decodeURIComponent(el.dataset.pleague || '');
   if (!name) return;
   // Se estiver no Simple view, recarrega o jogador no Simple V7
   const simpleView = document.getElementById('view-simple');
   if (simpleView && simpleView.style.display !== 'none') {
     const sel = document.getElementById('simple-select-v7');
     if (sel) sel.value = name;
-    selectedPlayer = PLAYERS.find(p => p.name === name) || selectedPlayer;
+    selectedPlayer = (league ? PLAYERS.find(p => p.name === name && p.league === league) : null) || PLAYERS.find(p => p.name === name) || selectedPlayer;
     renderSimpleViewV7(name);
   } else {
     selectPlayer(name);
@@ -14655,11 +14658,12 @@ function phycPopGo(nameEnc, popId) {
   const pop = document.getElementById(popId);
   if (pop) pop.classList.remove('open');
   const name = decodeURIComponent(nameEnc);
+  const league = '';
   const simpleView = document.getElementById('view-simple');
   if (simpleView && simpleView.style.display !== 'none') {
     const sel = document.getElementById('simple-select-v7');
     if (sel) sel.value = name;
-    selectedPlayer = PLAYERS.find(p => p.name === name) || selectedPlayer;
+    selectedPlayer = (league ? PLAYERS.find(p => p.name === name && p.league === league) : null) || PLAYERS.find(p => p.name === name) || selectedPlayer;
     renderSimpleViewV7(name);
   } else {
     selectPlayer(name);
