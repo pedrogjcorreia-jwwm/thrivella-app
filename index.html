@@ -7456,7 +7456,7 @@ function renderCompare(){
     cmpRow('Passes /90', pA ? pA.passes90 : 0, pB ? pB.passes90 : 0, false, 'passes90'),
     cmpRow('% Passes Certos', pA ? pA.passes_pct : 0, pB ? pB.passes_pct : 0, false, 'passes_pct'),
     cmpRow('Assist. Remate', pA ? pA.shot_assist : 0, pB ? pB.shot_assist : 0, false, 'shot_assist'),
-  ] : (((pA&&pA.position_group==='LB')||(pB&&pB.position_group==='LB')) ? [
+  ] : (((pA&&(pA.position_group==='LB'||pA.position_group==='RB'))||(pB&&(pB.position_group==='LB'||pB.position_group==='RB'))) ? [
 
     BIG_GAP,
     // Físico
