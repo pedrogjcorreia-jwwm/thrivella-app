@@ -15549,28 +15549,26 @@ function shOpenSide(name, slotId){
  ]}
 };
 const METRIC_GROUPS_LB = {
- off: { label:'Total Off', color:'var(--accent)', metrics:[
-  {lbl:'Box Touches',key:'box_touches'},{lbl:'xG',key:'xg'},{lbl:'xA',key:'xa'},
-  {lbl:'Shots/90',key:'shots90'},{lbl:'Crosses/90',key:'crosses90'},{lbl:'Cross%',key:'crosses_pct'},
-  {lbl:'Dribles/90',key:'dribles90'},{lbl:'Drible%',key:'dribles_pct'},
-  {lbl:'Prog Carries',key:'prog_carries'},{lbl:'Recpt Depth',key:'recpt_depth'},
+ off: { label:'Desempenho Chave', color:'var(--accent)', totalKey:'total', metrics:[
+  {lbl:'Prog Carries',key:'prog_carries'},{lbl:'Cross Quality',key:'crosses90',pctKey:'crosses_pct'},
+  {lbl:'Dribble Quality',key:'dribles90',pctKey:'dribles_pct'},{lbl:'1v1 Def Quality',key:'def_duels',pctKey:'def_duels_pct'},
+  {lbl:'Adj Interceptions',key:'adj_intercept'},
  ]},
- def: { label:'Total Def', color:'#ff5370', metrics:[
-  {lbl:'Interceptions',key:'adj_intercept'},{lbl:'Def Duels/90',key:'def_duels'},{lbl:'Def Duel%',key:'def_duels_pct'},
-  {lbl:'Aerial Duels/90',key:'aerial_duels90'},{lbl:'Aerial%',key:'aerial_pct'},
-  {lbl:'Shot Int+AdjTkl',key:'shot_int_adjtackl'},
+ def: { label:'Ofensivo', color:'#ff5370', totalKey:'total_off', metrics:[
+  {lbl:'Box Touches',key:'box_touches'},{lbl:'Recpt Depth',key:'recpt_depth'},{lbl:'Shots/90',key:'shots90'},
+  {lbl:'xG',key:'xg'},{lbl:'xA',key:'xa'},
  ]},
- pass: { label:'Total Pass', color:'#4fc3f7', metrics:[
-  {lbl:'Box Passes',key:'box_passes'},{lbl:'Shot Assist',key:'shot_assist'},
-  {lbl:'Passes/90',key:'passes90'},{lbl:'Pass%',key:'passes_pct'},{lbl:'Prog Pass',key:'prog_pass'},
+ pass: { label:'Passe e Defesa', color:'#4fc3f7', totalKey:'total_pass', metrics:[
+  {lbl:'Aerial Quality',key:'aerial_duels90',pctKey:'aerial_pct'},{lbl:'Int Shots + Tackles',key:'shot_int_adjtackl'},
+  {lbl:'Passes/90',key:'passes90'},{lbl:'Shot Assist',key:'shot_assist'},{lbl:'Passes Box',key:'box_passes'},
  ]},
- phy: { label:'Physical Index', color:'#9b7fff', metrics:[
-  {lbl:'Max Speed',key:'max_speed'},{lbl:'Sprint Dist',key:'sprint_dist90'},{lbl:'HSR/90',key:'hsr90'},
-  {lbl:'Sprints/90',key:'sprints90'},{lbl:'Total Dist',key:'total_dist'},{lbl:'HSR+Sprint%',key:'hsr_sprint_pct'},
+ phy: { label:'Físico', color:'#9b7fff', totalKey:'total_physical', metrics:[
+  {lbl:'Max Speed',key:'max_speed'},{lbl:'Sprint Dist',key:'sprint_dist90'},{lbl:'Nr Sprints',key:'sprints90'},
+  {lbl:'HSR/90',key:'hsr90'},{lbl:'Total Dist',key:'total_dist'},
  ]}
 };
 function metricBox(groupKey, totalKey, totalVal, totalColor, pct, invert, posGroup){
-    const g = (posGroup==='CF'?METRIC_GROUPS_CF:(posGroup==='LB'?METRIC_GROUPS_LB:METRIC_GROUPS))[groupKey];
+    const g = (posGroup==='CF'?METRIC_GROUPS_CF:((posGroup==='LB'||posGroup==='RB')?METRIC_GROUPS_LB:METRIC_GROUPS))[groupKey];
     if(!g) return '';
     const tKey = totalKey;
     const sorted = [...PLAYERS].filter(x=>x[tKey]!=null).sort((a,b)=>(b[tKey]||0)-(a[tKey]||0));
@@ -16236,27 +16234,25 @@ const SH_METRIC_GROUPS_CF = {
 function shSideOpenMetrics(playerName, groupKey){
   const p = PLAYERS.find(x=>x.name===playerName)||{};
 const SH_METRIC_GROUPS_LB = {
- off: { label:'Total Off', color:'var(--accent)', metrics:[
-  {lbl:'Box Touches',key:'box_touches'},{lbl:'xG',key:'xg'},{lbl:'xA',key:'xa'},
-  {lbl:'Shots/90',key:'shots90'},{lbl:'Crosses/90',key:'crosses90'},{lbl:'Cross%',key:'crosses_pct'},
-  {lbl:'Dribles/90',key:'dribles90'},{lbl:'Drible%',key:'dribles_pct'},
-  {lbl:'Prog Carries',key:'prog_carries'},{lbl:'Recpt Depth',key:'recpt_depth'},
+ off: { label:'Desempenho Chave', color:'var(--accent)', totalKey:'total', metrics:[
+  {lbl:'Prog Carries',key:'prog_carries'},{lbl:'Cross Quality',key:'crosses90',pctKey:'crosses_pct'},
+  {lbl:'Dribble Quality',key:'dribles90',pctKey:'dribles_pct'},{lbl:'1v1 Def Quality',key:'def_duels',pctKey:'def_duels_pct'},
+  {lbl:'Adj Interceptions',key:'adj_intercept'},
  ]},
- def: { label:'Total Def', color:'#ff5370', metrics:[
-  {lbl:'Interceptions',key:'adj_intercept'},{lbl:'Def Duels/90',key:'def_duels'},{lbl:'Def Duel%',key:'def_duels_pct'},
-  {lbl:'Aerial Duels/90',key:'aerial_duels90'},{lbl:'Aerial%',key:'aerial_pct'},
-  {lbl:'Shot Int+AdjTkl',key:'shot_int_adjtackl'},
+ def: { label:'Ofensivo', color:'#ff5370', totalKey:'total_off', metrics:[
+  {lbl:'Box Touches',key:'box_touches'},{lbl:'Recpt Depth',key:'recpt_depth'},{lbl:'Shots/90',key:'shots90'},
+  {lbl:'xG',key:'xg'},{lbl:'xA',key:'xa'},
  ]},
- pass: { label:'Total Pass', color:'#4fc3f7', metrics:[
-  {lbl:'Box Passes',key:'box_passes'},{lbl:'Shot Assist',key:'shot_assist'},
-  {lbl:'Passes/90',key:'passes90'},{lbl:'Pass%',key:'passes_pct'},{lbl:'Prog Pass',key:'prog_pass'},
+ pass: { label:'Passe e Defesa', color:'#4fc3f7', totalKey:'total_pass', metrics:[
+  {lbl:'Aerial Quality',key:'aerial_duels90',pctKey:'aerial_pct'},{lbl:'Int Shots + Tackles',key:'shot_int_adjtackl'},
+  {lbl:'Passes/90',key:'passes90'},{lbl:'Shot Assist',key:'shot_assist'},{lbl:'Passes Box',key:'box_passes'},
  ]},
- phy: { label:'Physical Index', color:'#9b7fff', metrics:[
-  {lbl:'Max Speed',key:'max_speed'},{lbl:'Sprint Dist',key:'sprint_dist90'},{lbl:'HSR/90',key:'hsr90'},
-  {lbl:'Sprints/90',key:'sprints90'},{lbl:'Total Dist',key:'total_dist'},{lbl:'HSR+Sprint%',key:'hsr_sprint_pct'},
+ phy: { label:'Físico', color:'#9b7fff', totalKey:'total_physical', metrics:[
+  {lbl:'Max Speed',key:'max_speed'},{lbl:'Sprint Dist',key:'sprint_dist90'},{lbl:'Nr Sprints',key:'sprints90'},
+  {lbl:'HSR/90',key:'hsr90'},{lbl:'Total Dist',key:'total_dist'},
  ]}
 };
-  const g = (p.position_group==='CF'?SH_METRIC_GROUPS_CF:(p.position_group==='LB'?SH_METRIC_GROUPS_LB:SH_METRIC_GROUPS))[groupKey];
+  const g = (p.position_group==='CF'?SH_METRIC_GROUPS_CF:((p.position_group==='LB'||p.position_group==='RB')?SH_METRIC_GROUPS_LB:SH_METRIC_GROUPS))[groupKey];
   if(!g) return;
   const panel = document.getElementById('sh-metrics-panel');
   const title = document.getElementById('sh-metrics-title');
@@ -16270,7 +16266,7 @@ const SH_METRIC_GROUPS_LB = {
 
   // Total value for this group
   const totalKeys = {off:'total_off',phy:'total_physical',def:'total_def',pass:'total_pass'};
-  const tKey = totalKeys[groupKey];
+  const tKey = g.totalKey || totalKeys[groupKey];
   const tVal = p[tKey] ? p[tKey].toFixed(1) : '—';
   const tSorted = tKey ? [...PLAYERS].filter(x=>x[tKey]!=null).sort((a,b)=>(b[tKey]||0)-(a[tKey]||0)) : [];
   const tRnk = tSorted.findIndex(x=>x.name===playerName)+1;
@@ -16284,7 +16280,7 @@ const SH_METRIC_GROUPS_LB = {
     const rnk = sorted.findIndex(x=>x.name===playerName)+1;
     const avg = sorted.length ? (sorted.reduce((s,x)=>s+(x[m.key]||0),0)/sorted.length).toFixed(2) : '—';
     const rnkColor = rnk===1?'#f59e0b':rnk<=3?'#00e5a0':g.color;
-    const valFmt = typeof val==='number'?val.toFixed(val%1===0?0:2):val;
+    let valFmt = typeof val==='number'?val.toFixed(val%1===0?0:2):val; if(m.pctKey && p[m.pctKey]!=null) valFmt = valFmt + ' (' + Math.round(p[m.pctKey]) + '%)';
     // Label brightness based on rank
     // Gold/cyan/grey only — same as Simple view bars
     const avgNum = sorted.length ? sorted.reduce((s,x)=>s+(x[m.key]||0),0)/sorted.length : 0;
