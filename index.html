@@ -15648,9 +15648,9 @@ function metricBox(groupKey, totalKey, totalVal, totalColor, pct, invert, posGro
         </div>
       </div>
       ${ (function(){ const _pv=p.total_physical; const _pp=_pv?Math.round(_pv/PMx(p.position_group,'phy')*100):null; return metricBox('phy','total_physical',_pv?_pv.toFixed(1):null,'#9b7fff',_pp, true, p.position_group); })() }
-      ${ (function(){ const _v=p.total_off; return metricBox('off','total_off',_v?_v.toFixed(1):null,'var(--accent)',_v?Math.round(_v/PMx(p.position_group,'off')*100):null, p.position_group); })() }
-      ${ (function(){ const _v=p.total_def; return metricBox('def','total_def',_v?_v.toFixed(1):null,'#ff5370',_v?Math.round(_v/PMx(p.position_group,'def')*100):null, p.position_group); })() }
-      ${ (function(){ const _v=p.total_pass; return metricBox('pass','total_pass',_v?_v.toFixed(1):null,'#4fc3f7',_v?Math.round(_v/PMx(p.position_group,'pass')*100):null, p.position_group); })() }
+      ${ (function(){ const _v=p.total_off; return metricBox('off','total_off',_v?_v.toFixed(1):null,'var(--accent)',_v?Math.round(_v/PMx(p.position_group,'off')*100):null, false, p.position_group); })() }
+      ${ (function(){ const _v=p.total_def; return metricBox('def','total_def',_v?_v.toFixed(1):null,'#ff5370',_v?Math.round(_v/PMx(p.position_group,'def')*100):null, false, p.position_group); })() }
+      ${ (function(){ const _v=p.total_pass; return metricBox('pass','total_pass',_v?_v.toFixed(1):null,'#4fc3f7',_v?Math.round(_v/PMx(p.position_group,'pass')*100):null, false, p.position_group); })() }
       <div class="sh-side-stat-box">
         <div class="sh-side-stat-lbl">Apps · Mins</div>
         <div class="sh-side-stat-val" style="font-size:14px">${p.matches||'—'} · ${p.minutes?p.minutes+"'":'—'}</div>
