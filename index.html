@@ -10018,7 +10018,7 @@ function sv3Toggle(id, btn) {
         +'</div>'
         +'<div style="line-height:1.7;color:rgba(255,255,255,.6)">'+aiTxt+'</div>'
       +'</div>'
-      +C('',SH('rgba(0,220,190,.7)','DESEMPENHO CHAVE','VALOR   MÉDIA   RANK')+(p.position_group==='CF'?(mrow('Golos s/Pen',p.goals_np,'goals_np')+mrow('xG / 90',p.xg90,'xg90')+mrow('Box Touches',p.box_touches,'box_touches')+mrow('Remates / 90',p.shots90,'shots90')+mrow('Recep. Profundidade',p.recpt_depth,'recpt_depth')):(mrow('Cond. Progressivas',p.prog_carries,'prog_carries')
+      +C('',SH('rgba(0,220,190,.7)','DESEMPENHO CHAVE','VALOR   MÉDIA   RANK')+((p.position_group==='LB'||p.position_group==='RB')?(mrow('Cond. Progressivas',p.prog_carries,'prog_carries')+mrow('Cross Quality',(p.crosses90!=null?parseFloat(p.crosses90).toFixed(1)+' ('+Math.round(p.crosses_pct||0)+'%)':null),'crosses90')+mrow('Drib Quality',(p.dribles90!=null?parseFloat(p.dribles90).toFixed(1)+' ('+Math.round(p.dribles_pct||0)+'%)':null),'dribles90')+mrow('1v1 Def Quality',(p.def_duels!=null?parseFloat(p.def_duels).toFixed(1)+' ('+Math.round(p.def_duels_pct||0)+'%)':null),'def_duels')+mrow('Interceções Adj.',p.adj_intercept,'adj_intercept')):p.position_group==='CF'?(mrow('Golos s/Pen',p.goals_np,'goals_np')+mrow('xG / 90',p.xg90,'xg90')+mrow('Box Touches',p.box_touches,'box_touches')+mrow('Remates / 90',p.shots90,'shots90')+mrow('Recep. Profundidade',p.recpt_depth,'recpt_depth')):(mrow('Cond. Progressivas',p.prog_carries,'prog_carries')
         +mrow('Drib Quality',p.dribles_pct,'dribles_pct')
         +mrow('Acelerações',p.accels90,'accels90')
         +mrow('Recep. Profundidade',p.recpt_depth,'recpt_depth')
@@ -10028,14 +10028,14 @@ function sv3Toggle(id, btn) {
 
       // PÁG 3 — OFENSIVO + PASSE & DEFESA
       +'<div style="page-break-before:always;padding-top:48px"></div>'
-      +C('',SH('rgba(0,220,190,.6)','OFENSIVO','VALOR   MÉDIA   RANK')+(p.position_group==='CF'?(mrow('xA / 90',p.xa,'xa')+mrow('Dribles / 90',p.dribles90,'dribles90')+mrow('Off Duels / 90',p.off_duels90,'off_duels90')+mrow('Aerial Duels / 90',p.aerial_duels90,'aerial_duels90')+mrow('Golos de Cabeca',p.header_goals,'header_goals')):(mrow('xG',p.xg,'xg')
+      +C('',SH('rgba(0,220,190,.6)','OFENSIVO','VALOR   MÉDIA   RANK')+((p.position_group==='LB'||p.position_group==='RB')?(mrow('Box Touches',p.box_touches,'box_touches')+mrow('Recep. Profundidade',p.recpt_depth,'recpt_depth')+mrow('Remates / 90',p.shots90,'shots90')+mrow('xG',p.xg,'xg')+mrow('xA / 90',p.xa,'xa')):p.position_group==='CF'?(mrow('xA / 90',p.xa,'xa')+mrow('Dribles / 90',p.dribles90,'dribles90')+mrow('Off Duels / 90',p.off_duels90,'off_duels90')+mrow('Aerial Duels / 90',p.aerial_duels90,'aerial_duels90')+mrow('Golos de Cabeca',p.header_goals,'header_goals')):(mrow('xG',p.xg,'xg')
         +mrow('Remates / 90',p.shots90,'shots90')
         +mrow('Box Touches / 90',p.box_touches,'box_touches')
         +mrow('Cruzamentos / 90',p.crosses90,'crosses90')
         +mrow('% Cruzamentos',p.crosses_pct,'crosses_pct')
       )))
       +'<div style="height:14px"></div>'
-      +C('',SH('rgba(0,220,190,.6)','PASSE & DEFESA','VALOR   MÉDIA   RANK')+(p.position_group==='CF'?(mrow('Passes / 90',p.passes90,'passes90')+mrow('% Passes Certos',p.passes_pct,'passes_pct')+mrow('Duelos Def. / 90',p.def_duels,'def_duels')+mrow('% Duelos Ganhos',p.def_duels_pct,'def_duels_pct')+mrow('Shot Assist',p.shot_assist,'shot_assist')):(mrow('% Passes Certos',p.passes_pct,'passes_pct')
+      +C('',SH('rgba(0,220,190,.6)','PASSE & DEFESA','VALOR   MÉDIA   RANK')+((p.position_group==='LB'||p.position_group==='RB')?(mrow('Aerial Quality',(p.aerial_duels90!=null?parseFloat(p.aerial_duels90).toFixed(1)+' ('+Math.round(p.aerial_pct||0)+'%)':null),'aerial_duels90')+mrow('Int Shots + Tackles',p.shot_int_adjtackl,'shot_int_adjtackl')+mrow('Passes / 90',p.passes90,'passes90')+mrow('Shot Assist',p.shot_assist,'shot_assist')+mrow('Passes Área',p.box_passes,'box_passes')):p.position_group==='CF'?(mrow('Passes / 90',p.passes90,'passes90')+mrow('% Passes Certos',p.passes_pct,'passes_pct')+mrow('Duelos Def. / 90',p.def_duels,'def_duels')+mrow('% Duelos Ganhos',p.def_duels_pct,'def_duels_pct')+mrow('Shot Assist',p.shot_assist,'shot_assist')):(mrow('% Passes Certos',p.passes_pct,'passes_pct')
         +mrow('Box Passes / 90',p.box_passes,'box_passes')
         +mrow('Duelos Def. / 90',p.def_duels,'def_duels')
         +mrow('% Duelos Ganhos',p.def_duels_pct,'def_duels_pct')
@@ -10044,7 +10044,7 @@ function sv3Toggle(id, btn) {
 
       // PÁG 4 — FÍSICO + 1.º SIMILAR PLAYER
       +'<div style="page-break-before:always;padding-top:24px"></div>'
-      +C('',SH('rgba(0,180,255,.5)','FÍSICO','VALOR   MÉDIA   RANK')+(p.position_group==='CF'?(mrow('Velocidade Maxima',p.max_speed?p.max_speed.toFixed(1):null,'max_speed')+mrow('Sprint Dist / 90',p.sprint_dist90?Math.round(p.sprint_dist90):null,'sprint_dist90')+mrow('Sprints / 90',p.sprints90?p.sprints90.toFixed(1):null,'sprints90')+mrow('Total Dist',p.total_dist?Math.round(p.total_dist):null,'total_dist')+mrow('Aceleracoes / 90',p.accels90!=null?p.accels90.toFixed(1):null,'accels90')):(mrow('Velocidade Máxima',p.max_speed?p.max_speed.toFixed(1):null,'max_speed')
+      +C('',SH('rgba(0,180,255,.5)','FÍSICO','VALOR   MÉDIA   RANK')+((p.position_group==='LB'||p.position_group==='RB')?(mrow('Velocidade Máxima',p.max_speed,'max_speed')+mrow('Sprint Dist / 90',p.sprint_dist90,'sprint_dist90')+mrow('Sprints / 90',p.sprints90,'sprints90')+mrow('HSR / 90',p.hsr90,'hsr90')+mrow('Distância Total',p.total_dist,'total_dist')):p.position_group==='CF'?(mrow('Velocidade Maxima',p.max_speed?p.max_speed.toFixed(1):null,'max_speed')+mrow('Sprint Dist / 90',p.sprint_dist90?Math.round(p.sprint_dist90):null,'sprint_dist90')+mrow('Sprints / 90',p.sprints90?p.sprints90.toFixed(1):null,'sprints90')+mrow('Total Dist',p.total_dist?Math.round(p.total_dist):null,'total_dist')+mrow('Aceleracoes / 90',p.accels90!=null?p.accels90.toFixed(1):null,'accels90')):(mrow('Velocidade Máxima',p.max_speed?p.max_speed.toFixed(1):null,'max_speed')
         +mrow('Sprint Dist / 90',p.sprint_dist90?Math.round(p.sprint_dist90):null,'sprint_dist90')
         +mrow('Sprints / 90',p.sprints90?p.sprints90.toFixed(1):null,'sprints90')
         +mrow('HSR / 90',p.hsr90?Math.round(p.hsr90):null,'hsr90')
