@@ -16280,7 +16280,7 @@ const SH_METRIC_GROUPS_LB = {
     const rnk = sorted.findIndex(x=>x.name===playerName)+1;
     const avg = sorted.length ? (sorted.reduce((s,x)=>s+(x[m.key]||0),0)/sorted.length).toFixed(2) : '—';
     const rnkColor = rnk===1?'#f59e0b':rnk<=3?'#00e5a0':g.color;
-    let valFmt = typeof val==='number'?val.toFixed(val%1===0?0:2):val; if(m.pctKey && p[m.pctKey]!=null) valFmt = valFmt + ' (' + Math.round(p[m.pctKey]) + '%)';
+    let valFmt = typeof val==='number'?val.toFixed(val%1===0?0:2):val; if(m.pctKey && p[m.pctKey]!=null){var _psr=[...PLAYERS].filter(x=>x[m.pctKey]!=null).sort((a,b)=>(b[m.pctKey]||0)-(a[m.pctKey]||0));var _prk=_psr.findIndex(x=>x.name===playerName)+1;var _pavg=_psr.length?_psr.reduce((s,x)=>s+(x[m.pctKey]||0),0)/_psr.length:0;var _pcol=(_prk>=1&&_prk<=3)?'#f59e0b':(p[m.pctKey]>=_pavg?'#00d4ff':'rgba(255,255,255,.40)');valFmt = valFmt + ' <span style="color:'+_pcol+'">(' + Math.round(p[m.pctKey]) + '%)</span>';}
     // Label brightness based on rank
     // Gold/cyan/grey only — same as Simple view bars
     const avgNum = sorted.length ? sorted.reduce((s,x)=>s+(x[m.key]||0),0)/sorted.length : 0;
