@@ -10793,7 +10793,7 @@ function renderPlayerID(name, league) {
     const dribQ=((p.dribles90||0)*(p.dribles_pct||0)/100);
     const lp=PLAYERS.filter(x=>x.league===p.league&&x.position_group===p.position_group);
     lp.forEach(x=>{ x._dribQ=(x.dribles90||0)*(x.dribles_pct||0)/100; });
-    const metrics=(p.position_group==='CF'?[{l:'Golos s/Pen',key:'goals_np',raw:(p.goals_np!=null?p.goals_np:null),inv:false},{l:'xG / 90',key:'xg90',raw:(p.xg90!=null?parseFloat(parseFloat(p.xg90).toFixed(2)):null),inv:false},{l:'Box Touches',key:'box_touches',raw:(p.box_touches!=null?parseFloat(p.box_touches.toFixed(1)):null),inv:false},{l:'Remates / 90',key:'shots90',raw:(p.shots90!=null?parseFloat(p.shots90.toFixed(1)):null),inv:false},{l:'Recep. Profundidade',key:'recpt_depth',raw:(p.recpt_depth!=null?parseFloat(p.recpt_depth.toFixed(1)):null),inv:false}]:[
+    const metrics=((p.position_group==='LB'||p.position_group==='RB')?[{l:(window.t&&window.t('m_prog_carries')||'Cond. Progressivas'),key:'prog_carries',raw:(p.prog_carries!=null?parseFloat(p.prog_carries.toFixed(1)):null),inv:false},{l:'Cross Quality',key:'crosses90',raw:(p.crosses90!=null?parseFloat(p.crosses90).toFixed(1)+' ('+Math.round(p.crosses_pct||0)+'%)':null),inv:false},{l:'Drib Quality',key:'dribles90',raw:(p.dribles90!=null?parseFloat(p.dribles90).toFixed(1)+' ('+Math.round(p.dribles_pct||0)+'%)':null),inv:false},{l:'1v1 Def Quality',key:'def_duels',raw:(p.def_duels!=null?parseFloat(p.def_duels).toFixed(1)+' ('+Math.round(p.def_duels_pct||0)+'%)':null),inv:false},{l:'Interceções Adj.',key:'adj_intercept',raw:(p.adj_intercept!=null?parseFloat(p.adj_intercept.toFixed(1)):null),inv:false}]:p.position_group==='CF'?[{l:'Golos s/Pen',key:'goals_np',raw:(p.goals_np!=null?p.goals_np:null),inv:false},{l:'xG / 90',key:'xg90',raw:(p.xg90!=null?parseFloat(parseFloat(p.xg90).toFixed(2)):null),inv:false},{l:'Box Touches',key:'box_touches',raw:(p.box_touches!=null?parseFloat(p.box_touches.toFixed(1)):null),inv:false},{l:'Remates / 90',key:'shots90',raw:(p.shots90!=null?parseFloat(p.shots90.toFixed(1)):null),inv:false},{l:'Recep. Profundidade',key:'recpt_depth',raw:(p.recpt_depth!=null?parseFloat(p.recpt_depth.toFixed(1)):null),inv:false}]:[
       {l:t('m_prog_carries'), key:'prog_carries', raw:p.prog_carries!=null?parseFloat(p.prog_carries.toFixed(1)):null, inv:false},
       {l:t('m_drib_quality'),       key:'_dribQ',  raw:dribQ>0?parseFloat(dribQ.toFixed(1)):null, inv:false, customMax:Math.max(...lp.map(x=>x._dribQ),0.001)},
       {l:t('m_recep_prof'),key:'recpt_depth',  raw:p.recpt_depth!=null?parseFloat(p.recpt_depth.toFixed(1)):null,   inv:false},
@@ -10812,7 +10812,7 @@ function renderPlayerID(name, league) {
       const rnkBorder=isTop?'rgba(0,229,160,.4)':isAbove?'rgba(0,180,255,.3)':'rgba(255,255,255,.1)';
       const labelCol=isTop?'rgba(255,255,255,.85)':isAbove?'rgba(200,220,245,.65)':'rgba(160,178,200,.4)';
       const maxVal=m.customMax||Math.max(...sorted.map(x=>x[m.key]||0),0.001);
-      const barW=Math.min(100,(m.raw||0)/maxVal*100).toFixed(1);
+      const barW=Math.min(100,(parseFloat(m.raw)||0)/maxVal*100).toFixed(1);
       const glowStyle=isTop?';box-shadow:0 0 6px rgba(0,229,160,.35)':'';
       const ek=encodeURIComponent(m.key), el2=encodeURIComponent(m.l), en=encodeURIComponent(p.name);
       const _avgD=(sorted.filter(function(x){return x[m.key]!=null&&x[m.key]!=='';}).reduce(function(s,x){return s+(parseFloat(x[m.key])||0);},0)/Math.max(1,sorted.filter(function(x){return x[m.key]!=null&&x[m.key]!=='';}).length)).toFixed(1);
