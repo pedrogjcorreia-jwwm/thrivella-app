@@ -7386,7 +7386,7 @@ function renderCompare(){
       + plainRow('Appearances',     p.matches, pOther&&pOther.matches)
       + plainRow('Minutes played',  (p.minutes||0).toLocaleString(), pOther&&pOther.minutes)
       + plainRow('Goals (penalties)', (p.goals_np||0) + ' (' + (p.goals_np||0) + ')', pOther&&pOther.goals_np)
-      + plainRow('xG (expected goals)', p.xg ? p.xg.toFixed(2) : '—', pOther&&pOther.xg)
+      + plainRow('xG (expected goals)', p.xg90!=null ? parseFloat(p.xg90).toFixed(2) : '—', pOther&&pOther.xg90)
       + plainRow('Assists',         p.xa ? p.xa.toFixed(1) : '—', pOther&&pOther.xa)
       + plainRow('xA (expected assists)', p.xa ? p.xa.toFixed(2) : '—', pOther&&pOther.xa)
       + '</div>'
