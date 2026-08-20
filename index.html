@@ -5379,7 +5379,7 @@ async function loadPlayers() {
         'box_touches','prog_carries','accels90','passes90','passes_pct','shot_assist',
         'box_passes','box_passes_pct','recpt_depth','total_dist','hsr90','sprint_dist90',
         'max_speed','sprints90','hsr_sprint_pct','mkt_value','age','size','weight',
-        'matches','minutes','sf_rating'];
+        'matches','minutes','sf_rating','aerial_duels90','aerial_pct','shot_int_adjtackl'];
       PLAYERS = allPlayers.map(p => {
         const out = {...p};
         out.contract_end = p.contract_end ? p.contract_end.slice(0, 10) : null;
