@@ -9817,25 +9817,25 @@ function sv3Toggle(id, btn) {
     const date = new Date().toLocaleDateString('pt-PT');
 
     // metric row — exact style from Essimi: VALOR | MÉDIA | RANK in 3 boxes
-    function mrow(lbl,val,key){
+    function mrow(lbl,val,key,pctKey){
       if(val===null||val===undefined||val==='') return '';
       const c=sc_(key), r=rnkL_(key);
       const all=lgP.filter(x=>x[key]!=null);
       const avgV=(all.reduce((s,x)=>s+(x[key]||0),0)/Math.max(1,all.length)).toFixed(1);
-      const v=typeof val==='number'?parseFloat(val.toFixed(1)):val;
+      const v=typeof val==='number'?parseFloat(val.toFixed(1)):val; var pctSpan='';if(pctKey&&typeof p!=='undefined'&&p&&p[pctKey]!=null){pctSpan=' <span style="font-size:.8em;font-weight:700;color:'+sc_(pctKey)+'">('+Math.round(p[pctKey])+'%)</span>';}
       if(!window._metricCols){
         var _bv=all.map(function(x){return x[key];}); var _mn=Math.min.apply(null,_bv), _mx=Math.max.apply(null,_bv);
         var _bw=_mx>_mn?Math.max(3,Math.round(((parseFloat(v)-_mn)/(_mx-_mn))*100)):50;
         return '<div style="display:grid;grid-template-columns:1fr 1fr 42px 38.4px;align-items:center;gap:6.4px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
           +'<span style="font-size:10.4px;font-weight:700;color:rgba(200,215,235,.6);text-transform:uppercase;letter-spacing:.5px">'+lbl+'</span>'
           +'<div style="height:5px;background:rgba(255,255,255,.08);border-radius:3px;position:relative;overflow:hidden;margin-right:8px"><div style="position:absolute;left:0;top:0;bottom:0;width:'+_bw+'%;background:'+c+';border-radius:3px"></div></div>'
-          +'<span style="font-size:15px;font-weight:900;color:'+c+';text-align:right">'+v+'</span>'
+          +'<span style="font-size:15px;font-weight:900;color:'+c+';text-align:right">'+v+pctSpan+'</span>'
           +'<span style="font-size:10.4px;font-weight:700;color:'+c+';border:1.5px solid '+c+'55;padding:2.4px 8px;border-radius:4px;text-align:center">#'+r+'</span>'
         +'</div>';
       }
       return '<div style="display:grid;grid-template-columns:1fr 40px 32px 38.4px;align-items:center;gap:6.4px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
         +'<span style="font-size:10.4px;font-weight:700;color:rgba(200,215,235,.6);text-transform:uppercase;letter-spacing:.5px">'+lbl+'</span>'
-        +'<span style="font-size:17.6px;font-weight:900;color:'+c+';text-align:right">'+v+'</span>'
+        +'<span style="font-size:17.6px;font-weight:900;color:'+c+';text-align:right">'+v+pctSpan+'</span>'
         +'<span style="font-size:11.2px;color:rgba(255,255,255,.25);text-align:center">'+avgV+'</span>'
         +'<span style="font-size:10.4px;font-weight:700;color:'+c+';border:1.5px solid '+c+'55;padding:2.4px 8px;border-radius:4px;text-align:center">#'+r+'</span>'
       +'</div>';
@@ -10018,7 +10018,7 @@ function sv3Toggle(id, btn) {
         +'</div>'
         +'<div style="line-height:1.7;color:rgba(255,255,255,.6)">'+aiTxt+'</div>'
       +'</div>'
-      +C('',SH('rgba(0,220,190,.7)','DESEMPENHO CHAVE','VALOR   MÉDIA   RANK')+((p.position_group==='LB'||p.position_group==='RB')?(mrow('Cond. Progressivas',p.prog_carries,'prog_carries')+mrow('Cross Quality',(p.crosses90!=null?parseFloat(p.crosses90).toFixed(1)+' ('+Math.round(p.crosses_pct||0)+'%)':null),'crosses90')+mrow('Drib Quality',(p.dribles90!=null?parseFloat(p.dribles90).toFixed(1)+' ('+Math.round(p.dribles_pct||0)+'%)':null),'dribles90')+mrow('1v1 Def Quality',(p.def_duels!=null?parseFloat(p.def_duels).toFixed(1)+' ('+Math.round(p.def_duels_pct||0)+'%)':null),'def_duels')+mrow('Interceções Adj.',p.adj_intercept,'adj_intercept')):p.position_group==='CF'?(mrow('Golos s/Pen',p.goals_np,'goals_np')+mrow('xG / 90',p.xg90,'xg90')+mrow('Box Touches',p.box_touches,'box_touches')+mrow('Remates / 90',p.shots90,'shots90')+mrow('Recep. Profundidade',p.recpt_depth,'recpt_depth')):(mrow('Cond. Progressivas',p.prog_carries,'prog_carries')
+      +C('',SH('rgba(0,220,190,.7)','DESEMPENHO CHAVE','VALOR   MÉDIA   RANK')+((p.position_group==='LB'||p.position_group==='RB')?(mrow('Cond. Progressivas',p.prog_carries,'prog_carries')+mrow('Cross Quality',(p.crosses90!=null?parseFloat(p.crosses90).toFixed(1):null),'crosses90','crosses_pct')+mrow('Drib Quality',(p.dribles90!=null?parseFloat(p.dribles90).toFixed(1):null),'dribles90','dribles_pct')+mrow('1v1 Def Quality',(p.def_duels!=null?parseFloat(p.def_duels).toFixed(1):null),'def_duels','def_duels_pct')+mrow('Interceções Adj.',p.adj_intercept,'adj_intercept')):p.position_group==='CF'?(mrow('Golos s/Pen',p.goals_np,'goals_np')+mrow('xG / 90',p.xg90,'xg90')+mrow('Box Touches',p.box_touches,'box_touches')+mrow('Remates / 90',p.shots90,'shots90')+mrow('Recep. Profundidade',p.recpt_depth,'recpt_depth')):(mrow('Cond. Progressivas',p.prog_carries,'prog_carries')
         +mrow('Drib Quality',p.dribles_pct,'dribles_pct')
         +mrow('Acelerações',p.accels90,'accels90')
         +mrow('Recep. Profundidade',p.recpt_depth,'recpt_depth')
@@ -10035,7 +10035,7 @@ function sv3Toggle(id, btn) {
         +mrow('% Cruzamentos',p.crosses_pct,'crosses_pct')
       )))
       +'<div style="height:14px"></div>'
-      +C('',SH('rgba(0,220,190,.6)','PASSE & DEFESA','VALOR   MÉDIA   RANK')+((p.position_group==='LB'||p.position_group==='RB')?(mrow('Aerial Quality',(p.aerial_duels90!=null?parseFloat(p.aerial_duels90).toFixed(1)+' ('+Math.round(p.aerial_pct||0)+'%)':null),'aerial_duels90')+mrow('Int Shots + Tackles',p.shot_int_adjtackl,'shot_int_adjtackl')+mrow('Passes / 90',p.passes90,'passes90')+mrow('Shot Assist',p.shot_assist,'shot_assist')+mrow('Passes Área',p.box_passes,'box_passes')):p.position_group==='CF'?(mrow('Passes / 90',p.passes90,'passes90')+mrow('% Passes Certos',p.passes_pct,'passes_pct')+mrow('Duelos Def. / 90',p.def_duels,'def_duels')+mrow('% Duelos Ganhos',p.def_duels_pct,'def_duels_pct')+mrow('Shot Assist',p.shot_assist,'shot_assist')):(mrow('% Passes Certos',p.passes_pct,'passes_pct')
+      +C('',SH('rgba(0,220,190,.6)','PASSE & DEFESA','VALOR   MÉDIA   RANK')+((p.position_group==='LB'||p.position_group==='RB')?(mrow('Aerial Quality',(p.aerial_duels90!=null?parseFloat(p.aerial_duels90).toFixed(1):null),'aerial_duels90','aerial_pct')+mrow('Int Shots + Tackles',p.shot_int_adjtackl,'shot_int_adjtackl')+mrow('Passes / 90',p.passes90,'passes90')+mrow('Shot Assist',p.shot_assist,'shot_assist')+mrow('Passes Área',p.box_passes,'box_passes')):p.position_group==='CF'?(mrow('Passes / 90',p.passes90,'passes90')+mrow('% Passes Certos',p.passes_pct,'passes_pct')+mrow('Duelos Def. / 90',p.def_duels,'def_duels')+mrow('% Duelos Ganhos',p.def_duels_pct,'def_duels_pct')+mrow('Shot Assist',p.shot_assist,'shot_assist')):(mrow('% Passes Certos',p.passes_pct,'passes_pct')
         +mrow('Box Passes / 90',p.box_passes,'box_passes')
         +mrow('Duelos Def. / 90',p.def_duels,'def_duels')
         +mrow('% Duelos Ganhos',p.def_duels_pct,'def_duels_pct')
