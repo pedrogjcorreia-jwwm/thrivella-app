@@ -9826,16 +9826,16 @@ function sv3Toggle(id, btn) {
       if(!window._metricCols){
         var _bv=all.map(function(x){return x[key];}); var _mn=Math.min.apply(null,_bv), _mx=Math.max.apply(null,_bv);
         var _bw=_mx>_mn?Math.max(3,Math.round(((parseFloat(v)-_mn)/(_mx-_mn))*100)):50;
-        return '<div style="display:grid;grid-template-columns:1fr 1fr 42px 38.4px;align-items:center;gap:6.4px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
+        return '<div style="display:grid;grid-template-columns:1fr 1fr 62px 38.4px;align-items:center;gap:6.4px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
           +'<span style="font-size:10.4px;font-weight:700;color:rgba(200,215,235,.6);text-transform:uppercase;letter-spacing:.5px">'+lbl+'</span>'
           +'<div style="height:5px;background:rgba(255,255,255,.08);border-radius:3px;position:relative;overflow:hidden;margin-right:8px"><div style="position:absolute;left:0;top:0;bottom:0;width:'+_bw+'%;background:'+c+';border-radius:3px"></div></div>'
-          +'<span style="font-size:15px;font-weight:900;color:'+c+';text-align:right">'+v+pctSpan+'</span>'
+          +'<span style="font-size:14px;font-weight:900;color:'+c+';text-align:right;white-space:nowrap">'+v+pctSpan+'</span>'
           +'<span style="font-size:10.4px;font-weight:700;color:'+c+';border:1.5px solid '+c+'55;padding:2.4px 8px;border-radius:4px;text-align:center">#'+r+'</span>'
         +'</div>';
       }
-      return '<div style="display:grid;grid-template-columns:1fr 40px 32px 38.4px;align-items:center;gap:6.4px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
+      return '<div style="display:grid;grid-template-columns:1fr 60px 32px 38.4px;align-items:center;gap:6.4px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
         +'<span style="font-size:10.4px;font-weight:700;color:rgba(200,215,235,.6);text-transform:uppercase;letter-spacing:.5px">'+lbl+'</span>'
-        +'<span style="font-size:17.6px;font-weight:900;color:'+c+';text-align:right">'+v+pctSpan+'</span>'
+        +'<span style="font-size:15px;font-weight:900;color:'+c+';text-align:right;white-space:nowrap">'+v+pctSpan+'</span>'
         +'<span style="font-size:11.2px;color:rgba(255,255,255,.25);text-align:center">'+avgV+'</span>'
         +'<span style="font-size:10.4px;font-weight:700;color:'+c+';border:1.5px solid '+c+'55;padding:2.4px 8px;border-radius:4px;text-align:center">#'+r+'</span>'
       +'</div>';
@@ -9844,7 +9844,7 @@ function sv3Toggle(id, btn) {
     // section header
     function SH(col,lbl,sub){
       var _cols=window._metricCols;
-      var _grid=_cols?'1fr 40px 32px 38.4px':'1fr 1fr 42px 38.4px';
+      var _grid=_cols?'1fr 60px 32px 38.4px':'1fr 1fr 62px 38.4px';
       var _hd='font-size:7px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.5px';
       var _h=_cols
         ?'<span style="'+_hd+';text-align:right">VALOR</span><span style="'+_hd+';text-align:center">MÉDIA</span><span style="'+_hd+';text-align:center">RANK</span>'
@@ -11352,11 +11352,12 @@ function generateAITextInline(p, pdfFs) {
     return t.replace(/(\d+[.,]?\d*\s*(?:km\/h|xG|xA|m\/90|%)?)/g,'<strong style="color:rgba(255,255,255,.82)">$1</strong>');
   }
   const fs = pdfFs ? pdfFs+'px' : (isEN ? '12.8px' : '12px');
-  const lh = pdfFs && pdfFs < 10 ? '1.5' : '1.65';
+  const lh = pdfFs && pdfFs < 10 ? '1.5' : (pdfFs ? '1.65' : '1.55');
+  const _pgap = pdfFs ? '5px' : '3px';
   const pStyle0 = 'margin:0;line-height:'+lh+';font-size:'+fs+';color:rgba(255,255,255,.6);text-align:justify;text-align-last:left;text-justify:inter-word';
-  const pStyle1 = 'margin:5px 0 0;line-height:'+lh+';font-size:'+fs+';color:rgba(255,255,255,.52);text-align:justify;text-align-last:left;text-justify:inter-word';
-  const pStyle2 = 'margin:5px 0 0;line-height:'+lh+';font-size:'+fs+';color:rgba(255,255,255,.46);text-align:justify;text-align-last:left;text-justify:inter-word';
-  const pStyle3 = 'margin:5px 0 0;line-height:'+lh+';font-size:'+fs+';color:rgba(255,255,255,.4);text-align:justify;text-align-last:left;text-justify:inter-word';
+  const pStyle1 = 'margin:'+_pgap+' 0 0;line-height:'+lh+';font-size:'+fs+';color:rgba(255,255,255,.52);text-align:justify;text-align-last:left;text-justify:inter-word';
+  const pStyle2 = 'margin:'+_pgap+' 0 0;line-height:'+lh+';font-size:'+fs+';color:rgba(255,255,255,.46);text-align:justify;text-align-last:left;text-justify:inter-word';
+  const pStyle3 = 'margin:'+_pgap+' 0 0;line-height:'+lh+';font-size:'+fs+';color:rgba(255,255,255,.4);text-align:justify;text-align-last:left;text-justify:inter-word';
   return '<p style="'+pStyle0+'">'+boldFirst(perfil)+'</p>'
        + (fisico ? '<p style="'+pStyle1+'">'+boldNums(fisico)+'</p>' : '')
        + '<p style="'+pStyle2+'">'+boldFirst(transfer)+'</p>'
