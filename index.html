@@ -11245,7 +11245,7 @@ function generateAITextInline(p, pdfFs) {
       def:{pt:['Lateral sólido na fase defensiva'+(_dd?', com '+_dd+' duelos defensivos por 90'+(_ddp?' ganhos a '+_ddp+'%':'')+'':', fiável no duelo e na cobertura do corredor')+'.',
                'Defesa consistente no 1x1'+(_ddp?', e os '+_ddp+'% de duelos ganhos dizem que raramente é ultrapassado':', que fecha o flanco com regularidade')+'.',
                'Lateral com forte leitura defensiva'+(_ai?', e as '+_ai+' interceções ajustadas por 90 mostram antecipação, não apenas reacção':', que corta linhas de passe antes de o lance evoluir')+'.',
-               'Defesa-lateral que intercepta o remate'+(_si?', com '+_si+' shot interceptions por 90 a travar situações de perigo':', colocando o corpo na frente da baliza quando é preciso')+'.',
+               'Defesa-lateral que intercepta o remate'+(_si?', com '+_si+' interceções de remate por 90 a travar situações de perigo':', colocando o corpo na frente da baliza quando é preciso')+'.',
                'Lateral defensivamente competente'+(_ai?', e o registo de '+_ai+' interceções ajustadas revela um jogador que lê o jogo':', seguro nas transições defensivas')+'.'],
            en:['A full-back solid in the defensive phase'+(_dd?', with '+_dd+' defensive duels per 90'+(_ddp?' won at '+_ddp+'%':'')+'':', reliable in duels and in covering the flank')+'.',
                'A consistent 1v1 defender'+(_ddp?', and '+_ddp+'% of duels won show he is rarely beaten':', who shuts down the flank regularly')+'.',
@@ -11263,9 +11263,9 @@ function generateAITextInline(p, pdfFs) {
                'A full-back who offers constant depth'+(_rd?', with deep receptions that stretch the opposition':', exploiting the space behind defenders')+'.',
                'A full-back who adds presence inside the box'+(_bt?', and '+_bt+' box touches confirm him as an extra attacking line':', arriving in the decisive zone in support of the attack')+'.']},
       pas:{pt:['Lateral com bom critério de passe'+(_pa?', e os '+_pa+' passes por 90 mostram um jogador que participa na circulação':', fiável na construção e na saída de bola')+'.',
-               'Defesa que acrescenta na criação'+(_sa?', com '+_sa+' shot assists por 90 a revelar um passe de ruptura acima do habitual num lateral':', ligando a construção ao último terço')+'.',
+               'Defesa que acrescenta na criação'+(_sa?', com '+_sa+' passes para remate por 90 a revelar um passe de ruptura acima do habitual num lateral':', ligando a construção ao último terço')+'.',
                'Lateral que serve a área com o passe'+(_bp?', e os '+_bp+' passes para a área por 90 confirmam-no como fornecedor a partir do corredor':', procurando o companheiro na zona de finalização')+'.',
-               'Defesa-lateral com passe progressivo de qualidade'+(_sa?' ('+_sa+' shot assists/90)':'')+', que faz a bola chegar à frente com intenção.',
+               'Defesa-lateral com passe progressivo de qualidade'+(_sa?' ('+_sa+' passes para remate/90)':'')+', que faz a bola chegar à frente com intenção.',
                'Lateral participativo na posse'+(_pa?', com '+_pa+' passes por 90':'')+', que combina segurança na circulação com passes que geram perigo.'],
            en:['A full-back with good passing judgement'+(_pa?', and '+_pa+' passes per 90 show a player involved in circulation':', reliable in build-up and ball progression')+'.',
                'A defender who adds in creation'+(_sa?', with '+_sa+' shot assists per 90 revealing breaking passes above the usual for a full-back':', linking build-up to the final third')+'.',
@@ -11298,12 +11298,12 @@ function generateAITextInline(p, pdfFs) {
       var _odClose = Math.min(_sc.ofe,_sc.def) >= Math.max(_sc.ofe,_sc.def)*0.8;
       if(_bothOD && _odClose && (_p1==='ofe'||_p1==='def'||_p2==='ofe'||_p2==='def')){
         var _compl=[
-          {pt:'Lateral completo, com boas credenciais tanto na fase ofensiva como na defensiva'+(_cr&&_dd?', capaz de alimentar o ataque a partir da largura e de segurar o corredor sem desequilibrar a equipa':', que junta projecção no corredor a solidez no duelo')+'.',
-           en:'A complete full-back, with strong credentials both going forward and defending'+(_cr&&_dd?', able to feed the attack from wide and to hold the flank without unbalancing the team':', combining flank projection with duel solidity')+'.'},
-          {pt:'Lateral de dois sentidos, que resolve nas duas fases do jogo'+(_prg?', com as '+_prg+' conduções progressivas a mostrar a projecção e a base defensiva a garantir o resto':', tão útil a subir como a defender')+'.',
-           en:'A two-way full-back who delivers in both phases'+(_prg?', with '+_prg+' progressive carries showing the projection and a defensive base covering the rest':', as useful going up as defending')+'.'},
-          {pt:'Lateral equilibrado e completo, que oferece ataque e defesa em doses semelhantes'+(_ddp?', ganhando '+_ddp+'% dos duelos sem abdicar da subida':', sem sacrificar uma fase pela outra')+'.',
-           en:'A balanced, complete full-back offering attack and defence in similar measure'+(_ddp?', winning '+_ddp+'% of duels without giving up the overlap':', without sacrificing one phase for the other')+'.'}
+          {pt:'Lateral completo, forte tanto na fase ofensiva como na defensiva'+(_cr&&_dd?', capaz de alimentar o ataque a partir da largura e de segurar o corredor sem desequilibrar a equipa':', que junta projecção no corredor a solidez no duelo')+'.',
+           en:'A complete full-back, strong both going forward and defending'+(_cr&&_dd?', able to feed the attack from wide and to hold the flank without unbalancing the team':', combining flank projection with duel solidity')+'.'},
+          {pt:'Lateral moderno que combina subida no corredor com trabalho defensivo'+(_prg?', e as '+_prg+' conduções progressivas mostram a projecção sem que a base defensiva se ressinta':', tão útil a apoiar o ataque como a fechar o flanco')+'.',
+           en:'A modern full-back who combines flank overlaps with defensive work'+(_prg?', and '+_prg+' progressive carries show the projection without the defensive base suffering':', as useful supporting the attack as shutting down the flank')+'.'},
+          {pt:'Lateral forte na fase ofensiva e sólido na fase defensiva'+(_ddp?', ganhando '+_ddp+'% dos duelos sem abdicar da subida ao ataque':', que oferece ataque e defesa em doses semelhantes')+'.',
+           en:'A full-back strong going forward and solid at the back'+(_ddp?', winning '+_ddp+'% of duels without giving up the overlap':', offering attack and defence in similar measure')+'.'}
         ];
         perfil=_pk(_compl)[isEN?'en':'pt'];
       } else {
