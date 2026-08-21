@@ -8589,33 +8589,50 @@ function generateCompareAI(pA, pB) {
     const _lgName=perfL.league;
     const _lc2=(typeof LEAGUE_CONFIG!=='undefined'&&LEAGUE_CONFIG[perfL.league])?LEAGUE_CONFIG[perfL.league]:null;
     const _lvl2=_lc2?(_lc2.level||1):1;
-    const _tier2=_lvl2>=3?' — num campeonato de escalão inferior':(_lvl2===2?' — num campeonato de 2.º escalão':'');
-    const _poolF=(pp,k)=>PLAYERS.filter(x=>(x.position_group==='LB'||x.position_group==='RB')&&x.league===pp.league&&x[k]!=null);
-    const _rankF=(pp,k)=>{const L=_poolF(pp,k);if(pp[k]==null||!L.length)return 999;return [...L].sort((a,b)=>(b[k]||0)-(a[k]||0)).findIndex(x=>x.name===pp.name)+1;};
-    const _pctF=(pp,k)=>{const L=_poolF(pp,k);if(pp[k]==null||!L.length)return 0;const r=[...L].sort((a,b)=>(b[k]||0)-(a[k]||0)).findIndex(x=>x.name===pp.name)+1;return r>0?(L.length-r)/L.length:0;};
-    const _n=(k,d)=>perfL[k]!=null?parseFloat(perfL[k]).toFixed(d==null?1:d):null;
-    const _cr=_n('crosses90'), _pc=_n('prog_carries'), _dd=_n('def_duels'), _ai=_n('adj_intercept'), _si=_n('shot_int_adjtackl',2), _pp=_n('prog_pass'), _sa=_n('shot_assist');
-    const _ddp=perfL.def_duels_pct!=null?Math.round(perfL.def_duels_pct):null;
-    const _crR=_rankF(perfL,'crosses90'), _pcR=_rankF(perfL,'prog_carries'), _ddR=_rankF(perfL,'def_duels'), _siR=_rankF(perfL,'shot_int_adjtackl'), _ppR=_rankF(perfL,'prog_pass');
-    const _ofLead=(_crR===1?1:0)+(_pcR===1?1:0);
-    const _dfLead=(_ddR===1?1:0)+(_siR===1?1:0);
-    const _ofList=[_cr?_cr+' cruzamentos/90':null,_pc?_pc+' conduções progressivas':null].filter(Boolean);
-    const _dfList=[_dd?_dd+' duelos defensivos/90':null,_si?_si+' interceções de remate/90':null,_ai?_ai+' interceções ajustadas/90':null].filter(Boolean);
-    const _ofJoin=_ofList.length>1?(_ofList.slice(0,-1).join(', ')+' e '+_ofList[_ofList.length-1]):(_ofList[0]||'');
-    const _dfJoin=_dfList.length>1?(_dfList.slice(0,-1).join(', ')+' e '+_dfList[_dfList.length-1]):(_dfList[0]||'');
+    const _tier2=_lvl2>=3?' — num escalão inferior':(_lvl2===2?' — num 2.º escalão':'');
+    const _f=(x,k,d)=>x[k]!=null?parseFloat(x[k]).toFixed(d==null?1:d):null;
+    // Percentis por dimensão para cada jogador (dentro do grupo LB/RB)
+    const _fbPool=(k)=>PLAYERS.filter(x=>(x.position_group==='LB'||x.position_group==='RB')&&x[k]!=null);
+    const _pctFB=(x,k)=>{const L=_fbPool(k);if(x[k]==null||!L.length)return 0;const r=[...L].sort((a,b)=>(b[k]||0)-(a[k]||0)).findIndex(y=>y.name===x.name)+1;return r>0?(L.length-r)/L.length:0;};
+    const _ofScore=(x)=>(_pctFB(x,'crosses90')+_pctFB(x,'prog_carries')+_pctFB(x,'dribles90'))/3;
+    const _dfScore=(x)=>(_pctFB(x,'def_duels')+_pctFB(x,'adj_intercept')+_pctFB(x,'shot_int_adjtackl'))/3;
+    const _paScore=(x)=>(_pctFB(x,'prog_pass')+_pctFB(x,'shot_assist')+_pctFB(x,'box_passes'))/3;
+    const _ofA=_ofScore(pA),_ofB=_ofScore(pB),_dfA=_dfScore(pA),_dfB=_dfScore(pB),_paA=_paScore(pA),_paB=_paScore(pB);
+    // Quem manda em cada fase
+    const _atk = _ofA>_ofB?pA:pB, _def = _dfA>_dfB?pA:pB, _pas = _paA>_paB?pA:pB;
+    const _atkGap=Math.abs(_ofA-_ofB), _defGap=Math.abs(_dfA-_dfB);
+    // Frase 1 — o retrato de contraste
     let _s1;
-    const _bothStrong=(_pctF(perfL,'crosses90')>=0.65||_pctF(perfL,'prog_carries')>=0.65)&&(_pctF(perfL,'def_duels')>=0.65||_pctF(perfL,'shot_int_adjtackl')>=0.65||_pctF(perfL,'adj_intercept')>=0.65);
-    if(_bothStrong){ _s1='Lateral completo: '+bn(perfL.name)+' impõe-se na '+_lgName+_tier2+' tanto a atacar'+(_ofJoin?' ('+_ofJoin+')':'')+' como a defender'+(_dfJoin?' ('+_dfJoin+')':'')+'.'; }
-    else if(_ofLead>=1||_ofJoin&&(_crR<=3||_pcR<=3)){ _s1=bn(perfL.name)+' é dos laterais mais influentes no ataque na '+_lgName+_tier2+(_ofJoin?', com '+_ofJoin:'')+'.'; }
-    else if(_dfLead>=1||(_ddR<=3||_siR<=3)){ _s1=bn(perfL.name)+' é uma das referências defensivas entre os laterais da '+_lgName+_tier2+(_dfJoin?', com '+_dfJoin:'')+'.'; }
-    else { _s1=bn(perfL.name)+' apresenta um registo equilibrado entre as duas fases na '+_lgName+_tier2+((_ofJoin||_dfJoin)?', com '+(_ofJoin||_dfJoin):'')+'.'; }
+    if(_atk.name!==_def.name){
+      // perfis opostos: um ataca, outro defende
+      _s1='Dois perfis de lateral em contraste: '+bn(_atk.name)+' vive o jogo mais alto, na projecção pelo corredor, enquanto '+bn(_def.name)+' é a referência defensiva, mais forte no duelo e na leitura do lance.';
+    } else if(_atkGap<0.12 && _defGap<0.12){
+      _s1='Dois laterais de perfil semelhante e nível aproximado: '+bn(perfL.name)+' e '+bn(perfO.name)+' cobrem o corredor de forma parecida, e a escolha entre eles joga-se nos detalhes.';
+    } else {
+      _s1=bn(_atk.name)+' é o mais completo dos dois neste confronto, superior tanto a subir como a equilibrar defensivamente, e '+bn(perfO.name===_atk.name?perfL.name:perfO.name)+' fica um passo atrás no impacto global.';
+    }
+    // Frase 2 — interpretação táctica do ataque, com um número que a ancore
     let _s2='';
-    if(_ddp!=null){ const _gan=_ddp>=55; _s2=' Ganha '+_ddp+'% dos duelos defensivos, '+(_gan?'um valor sólido para a posição.':'margem onde pode crescer.'); }
+    const _crA=_f(pA,'crosses90'),_crB=_f(pB,'crosses90'),_ppA=_f(pA,'prog_pass'),_ppB=_f(pB,'prog_pass');
+    if(_atk.name!==_def.name){
+      const _crWin=_f(_atk,'crosses90'), _pcWin=_f(_atk,'prog_carries');
+      _s2=' No último terço, '+bn(_atk.name)+(_crWin?' entrega mais a partir da linha ('+_crWin+' cruzamentos/90'+(_pcWin?' e '+_pcWin+' conduções progressivas':'')+')':' pisa mais o último terço')+', um lateral pensado para dar largura e amplitude ao ataque.';
+    } else {
+      const _crWin=_f(_atk,'crosses90');
+      _s2=' A distinguir os dois no ataque, '+bn(_atk.name)+(_crWin?' leva vantagem no volume ofensivo ('+_crWin+' cruzamentos/90)':' leva vantagem no volume ofensivo')+', enquanto '+bn(_atk.name===pA.name?pB.name:pA.name)+' assume um papel mais contido.';
+    }
+    // Frase 3 — a fase defensiva / passe, o outro lado da moeda
     let _s3='';
-    if(_pctF(perfL,'prog_pass')>=0.7) _s3=' Na saída de bola distingue-se pelo passe progressivo'+(_pp?' ('+_pp+' passes progressivos/90)':'')+', ligando a defesa ao ataque.';
-    else if(_pctF(perfL,'crosses90')>=0.7) _s3=' Alimenta a área a partir da linha'+(_cr?' ('+_cr+' cruzamentos/90)':'')+', vivendo o corredor em profundidade.';
-    else if(_pctF(perfL,'shot_assist')>=0.7) _s3=' Acrescenta na criação com o passe de ruptura'+(_sa?' ('+_sa+' passes para remate/90)':'')+', acima do habitual num lateral.';
-    p2='<strong style="color:#fff">'+_s1+'</strong>'+_s2+_s3+' No confronto directo, '+bn(perfL.name)+' leva a melhor sobre '+bn(perfO.name)+' nas métricas-chave de lateral. ';
+    const _ddWin=_f(_def,'def_duels'), _ddpWin=_def.def_duels_pct!=null?Math.round(_def.def_duels_pct):null, _siWin=_f(_def,'shot_int_adjtackl',2);
+    if(_atk.name!==_def.name){
+      _s3=' Atrás, '+bn(_def.name)+' oferece mais garantias'+(_ddWin?' ('+_ddWin+' duelos defensivos/90'+(_ddpWin?' ganhos a '+_ddpWin+'%':'')+')':'')+', o tipo de lateral que segura o corredor quando a equipa não tem bola.';
+      // passe progressivo como desempate extra
+      if(_pas.name && (_paA>0||_paB>0) && Math.abs(_paA-_paB)>=0.15){ const _ppWin=_f(_pas,'prog_pass'); _s3+=' Na saída de bola, '+bn(_pas.name)+' é quem mais liga defesa e ataque'+(_ppWin?' ('+_ppWin+' passes progressivos/90)':'')+'.'; }
+    } else {
+      _s3=' Defensivamente, '+bn(_def.name)+(_ddWin?' volta a levar a melhor ('+_ddWin+' duelos defensivos/90'+(_ddpWin?', '+_ddpWin+'% ganhos':'')+')':' é o mais seguro')+', confirmando-se como a opção mais fiável sem bola.';
+    }
+    p2='<strong style="color:#fff">'+_s1+'</strong>'+_s2+_s3+' ';
+
   } else { p2 = `${bn(perfL.name)} ${pA.position_group==='CF'?'domina nas métricas-chave de finalização e presença de área':'domina nas métricas de criação e progressão'}: ${hlL.slice(0,3).join(', ')||'superioridade individual clara'}. `;
   if(lgPctXg!=null&&lgPctXg>=70) p2+=`O xG de <b>${perfL.xg}</b> coloca-o no top <b>${100-lgPctXg}%</b> da ${perfL.league} — estes números refletem consistência real, não acidente. `;
   else if(lgPctXa!=null&&lgPctXa>=70) p2+=`O xA de <b>${perfL.xa}</b> posiciona-o no top <b>${100-lgPctXa}%</b> da ${perfL.league} — estes números refletem consistência real, não acidente. `;
@@ -8625,8 +8642,8 @@ function generateCompareAI(pA, pB) {
   if(better('prog_carries')?.name===perfO.name && perfO.prog_carries) hlO.push(`<b>${parseFloat(perfO.prog_carries).toFixed(1)}</b> conduções prog./90`);
   if(better('dribles90')?.name===perfO.name && perfO.dribles90) hlO.push(`<b>${parseFloat(perfO.dribles90).toFixed(1)}</b> dribles/90`);
   if(better('shot_assist')?.name===perfO.name && perfO.shot_assist) hlO.push(`<b>${parseFloat(perfO.shot_assist).toFixed(1)}</b> assistências para remate/90`);
-  }  if(hlO.length) p2+=`${bn(perfO.name)} destaca-se com ${hlO.slice(0,2).join(' e ')}, sendo relevante em sistemas que exigem amplitude e envolvimento directo no jogo.`;
-  else p2+=`${bn(perfO.name)} fica aquém nas métricas de criação directa, embora possa afirmar-se noutros contextos táticos.`;
+  }  if(!_isFBcmp){ if(hlO.length) p2+=`${bn(perfO.name)} destaca-se com ${hlO.slice(0,2).join(' e ')}, sendo relevante em sistemas que exigem amplitude e envolvimento directo no jogo.`;
+  else p2+=`${bn(perfO.name)} fica aquém nas métricas de criação directa, embora possa afirmar-se noutros contextos táticos.`; }
   if(isTopLeague(perfL)&&!isTopLeague(perfO)) p2+=` Vale referir que ${bn(perfL.name)} produz estes números na ${perfL.league}, reconhecidamente mais exigente.`;
   else if(isTopLeague(perfO)&&!isTopLeague(perfL)) p2+=` Note-se que ${bn(perfO.name)} opera na ${perfO.league}, liga de maior nível competitivo.`;
 
@@ -8651,10 +8668,37 @@ function generateCompareAI(pA, pB) {
   const tiL=tiA>tiB?pA:pB, tiO=tiA>tiB?pB:pA;
   // Short name (last name or abbreviated)
   function shortN(p){ const parts=p.name.trim().split(' '); return parts.length>1?parts[0][0]+'. '+parts.slice(1).join(' '):p.name; }
-  let p4 = `${bn(shortN(tiL))}${tiL.talent_index_pct?` com <b>percentil ${Math.round(tiL.talent_index_pct)}</b>`:''} lidera o Talent Index — `;
+  let p4;
+  if(_isFBcmp){
+    // Recomendação contextualizada por tipo de equipa/sistema
+    const _fbP=(k)=>PLAYERS.filter(x=>(x.position_group==='LB'||x.position_group==='RB')&&x[k]!=null);
+    const _pF=(x,k)=>{const L=_fbP(k);if(x[k]==null||!L.length)return 0;const r=[...L].sort((a,b)=>(b[k]||0)-(a[k]||0)).findIndex(y=>y.name===x.name)+1;return r>0?(L.length-r)/L.length:0;};
+    const _atkOf=(x)=>(_pF(x,'crosses90')+_pF(x,'prog_carries')+_pF(x,'dribles90'))/3;
+    const _defOf=(x)=>(_pF(x,'def_duels')+_pF(x,'adj_intercept')+_pF(x,'shot_int_adjtackl'))/3;
+    const _atkMore = _atkOf(pA)>_atkOf(pB)?pA:pB;
+    const _defMore = _defOf(pA)>_defOf(pB)?pA:pB;
+    const _younger = (pA.age||99)<(pB.age||99)?pA:pB;
+    const _cheaper = (pA.mkt_value||0)>0&&(pB.mkt_value||0)>0 ? ((pA.mkt_value<pB.mkt_value)?pA:pB) : null;
+    if(_atkMore.name!==_defMore.name){
+      p4 = `A decisão depende do que a equipa precisa no corredor. `;
+      p4 += `Para um bloco que ataca e quer o lateral a dar largura e a chegar à linha, ${bn(_atkMore.name)} é a aposta mais natural. `;
+      p4 += `Para uma equipa que defende mais baixo e precisa de segurança no um-para-um, ${bn(_defMore.name)} oferece mais garantias. `;
+      if(_cheaper) p4 += `No plano financeiro, ${bn(_cheaper.name)} representa o investimento mais contido${_cheaper.name===_younger.name?' e é ainda o mais novo dos dois, o que reforça a margem de valorização':''}.`;
+      else if(_younger) p4 += `${bn(_younger.name)}, mais novo, é o que oferece maior margem de progressão.`;
+    } else {
+      const _fav=_atkMore;
+      p4 = `${bn(_fav.name)} é o mais equilibrado dos dois e a escolha mais segura para a generalidade dos sistemas, por resolver bem nas duas fases do corredor. `;
+      p4 += `${bn(_fav.name===pA.name?pB.name:pA.name)} pode ainda assim ser a opção certa num contexto táctico específico ou como alternativa de menor custo`;
+      p4 += _cheaper&&_cheaper.name!==_fav.name?`, sobretudo pelo valor de mercado mais acessível.`:`.`;
+    }
+    if(ctExpA||ctExpB){ const _exp=ctExpA?pA:pB; p4+=` Atenção ao contrato de ${bn(_exp.name)}, a expirar — uma janela de mercado que pode inclinar a decisão.`; }
+  } else {
+  p4 = `${bn(shortN(tiL))}${tiL.talent_index_pct?` com <b>percentil ${Math.round(tiL.talent_index_pct)}</b>`:''} lidera o Talent Index — `;
   if ((ctExpA&&tiL.name===pA.name)||(ctExpB&&tiL.name===pB.name)) p4+=`e com o contrato a expirar, a janela para o contratar raramente será mais favorável. `;
   else p4+=`um indicador que agrega técnica, físico e impacto coletivo. `;
   p4+=`${bn(shortN(tiO))}${tiO.talent_index_pct?` com <b>percentil ${Math.round(tiO.talent_index_pct)}</b>`:''} é a escolha certa para quem privilegia ${votesA<votesB?'criatividade e presença na área':'velocidade e intensidade off-ball'} — dependendo do sistema, pode ser igualmente decisivo.`;
+  }
+
 
 
   // ── Render — pid3-ai-card design ────────────────────────────────────────────
