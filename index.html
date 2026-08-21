@@ -11348,8 +11348,29 @@ function generateAITextInline(p, pdfFs) {
         perfil=_pk(_compl)[isEN?'en':'pt'];
       } else {
       perfil=_pk(V[_p1][isEN?'en':'pt']);
-      if(_duplo) perfil+=(isEN?' To that he adds '+C[_p2].en+'.':' A isso junta '+C[_p2].pt+'.');
-      else if(_sc[_ord[4]]<=0.15){
+      // Segunda dimensão: métrica concreta que a comprove
+      var _segMet={
+        ofe:(_cr?_cr+(isEN?' crosses/90':' cruzamentos/90'):(_prg?_prg+(isEN?' progressive carries/90':' conduções progressivas/90'):(_dr?_dr+(isEN?' dribbles/90':' dribles/90'):null))),
+        def:(_ddp?_ddp+(isEN?'% of duels won':'% de duelos ganhos'):(_ai?_ai+(isEN?' adjusted interceptions/90':' interceções ajustadas/90'):(_si?_si+(isEN?' shot interceptions/90':' interceções de remate/90'):null))),
+        are:(_bt?_bt+(isEN?' box touches/90':' toques na área/90'):(_rd?_rd+(isEN?' deep receptions/90':' recepções em profundidade/90'):null)),
+        pas:(_sa?_sa+(isEN?' shot assists/90':' passes para remate/90'):(_pa?_pa+(isEN?' passes/90':' passes/90'):(_bp?_bp+(isEN?' passes into the box/90':' passes para a área/90'):null))),
+        fis:null
+      };
+      var _segTxt={
+        ofe:{pt:' Acrescenta ainda perigo pelo corredor',en:' He also adds danger down the flank'},
+        def:{pt:' Complementa com solidez na fase defensiva',en:' He complements it with defensive solidity'},
+        are:{pt:' Junta presença na zona de finalização',en:' He adds presence in the finishing zone'},
+        pas:{pt:' Contribui também na criação com o passe',en:' He also contributes in creation with his passing'},
+        fis:{pt:' Sustenta tudo isto com um bom suporte físico',en:' He sustains all of this with a strong physical base'}
+      };
+      if(_duplo){
+        var _m2=_segMet[_p2];
+        perfil+=(isEN?' To that he adds '+C[_p2].en+(_m2?' ('+_m2+')':'')+'.':' A isso junta '+C[_p2].pt+(_m2?' ('+_m2+')':'')+'.');
+      } else {
+        // sem duplo: acrescenta na mesma a 2.ª dimensão mais forte, com métrica, para dar corpo
+        var _m2b=_segMet[_p2];
+        if(_m2b){ perfil+=(_segTxt[_p2][isEN?'en':'pt'])+(isEN?' ('+_m2b+').':' ('+_m2b+').'); }
+        if(_sc[_ord[4]]<=0.15){
         var _fraco={ofe:{pt:'Ofensivamente, porém, não é ainda uma referência na liga.',en:'Offensively, however, he is not yet a reference in the league.'},
                     def:{pt:'Na fase defensiva, contudo, fica aquém dos melhores do corredor.',en:'In the defensive phase, though, he falls short of the best in his position.'},
                     are:{pt:'A presença na área é, ainda assim, um capítulo a desenvolver.',en:'Box presence remains, however, an area to develop.'},
@@ -11360,6 +11381,7 @@ function generateAITextInline(p, pdfFs) {
       }
       }
     }
+    }
     perfil='<strong style="color:rgba(255,255,255,.82)">'+perfil+'</strong>';
 
   } else {
@@ -11367,7 +11389,7 @@ function generateAITextInline(p, pdfFs) {
     else if(top('def_duels',.7)) perfil=isEN?'A box-to-box midfielder with a strong defensive component who covers space and recovers possession.':'M\xe9dio box-to-box com forte componente defensiva, que cobre espa\xe7o e recupera bola.';
     else perfil=isEN?'A midfielder with a balanced profile between organisation and transition.':'M\xe9dio com perfil equilibrado entre a organiza\xe7\xe3o e a transi\xe7\xe3o.';
   }
-  const sprintRepeat=top('sprints90',.7);    const _hasPhy = p.max_speed!=null && p.sprint_dist90!=null && p.total_physical!=null;    let fisico='';    if(_hasPhy){      const _phyPool=PLAYERS.filter(x=>x.position_group===p.position_group&&x.max_speed!=null&&x.sprint_dist90!=null);      const _phyLgPool=PLAYERS.filter(x=>x.position_group===p.position_group&&x.league===p.league&&x.max_speed!=null&&x.sprint_dist90!=null);      const _pctIn=(pool,k)=>{if(!pool.length)return 0;const r=[...pool].sort((a,b)=>(b[k]||0)-(a[k]||0)).findIndex(x=>x.name===p.name)+1;return r>0?(pool.length-r)/pool.length:0;};      const _physG=(_pctIn(_phyPool,'max_speed')+_pctIn(_phyPool,'sprint_dist90'))/2;      const _physL=(_pctIn(_phyLgPool,'max_speed')+_pctIn(_phyLgPool,'sprint_dist90'))/2;      const _spd=f1(p.max_speed);      const _spr=Math.round(p.sprint_dist90||0);      const _sprN=(p.sprints90!=null?Math.round(p.sprints90):null);      const _sprTxt=(_sprN!=null?(isEN?' across '+_sprN+' sprints per 90':' num total de '+_sprN+' sprints por 90'):'');      const _repeat=sprintRepeat?(isEN?', with repeated high-intensity effort capacity':', com capacidade de repetição de esforço de alta intensidade'):'';      if(_physG>=0.85){        const _topX=Math.max(1,100-Math.round(_physG*100));        fisico=isEN?'Athletically, he ranks top '+_topX+'% in the database. He reaches a top speed of '+_spd+' km/h and '+_spr+'m/90 of sprint distance'+_sprTxt+' — among the most explosive profiles on the platform'+_repeat+'.':'Do ponto de vista atlético, é top '+_topX+'% global. Atinge velocidade máxima de '+_spd+' km/h e distância em sprint de '+_spr+'m/90'+_sprTxt+' — entre os mais explosivos da plataforma'+_repeat+'.';      } else if(_physL>=0.80){        const _topXL=Math.max(1,100-Math.round(_physL*100));        fisico=isEN?'Athletically, he ranks top '+_topXL+'% in his league. He reaches a top speed of '+_spd+' km/h and '+_spr+'m/90 of sprint distance'+_sprTxt+' — among the most explosive in his league'+_repeat+'.':'Do ponto de vista atlético, é top '+_topXL+'% na sua liga. Atinge velocidade máxima de '+_spd+' km/h e distância em sprint de '+_spr+'m/90'+_sprTxt+' — entre os mais explosivos da sua liga'+_repeat+'.';      } else {        fisico=isEN?'Athletically, he records a top speed of '+_spd+' km/h and '+_spr+'m/90 of sprint distance'+_sprTxt+'.':'Do ponto de vista atlético, regista velocidade máxima de '+_spd+' km/h e distância em sprint de '+_spr+'m/90'+_sprTxt+'.';      }    } else if(isFB){
+  const sprintRepeat=top('sprints90',.7);    const _hasPhy = p.max_speed!=null && p.sprint_dist90!=null && p.total_physical!=null;    let fisico='';    if(_hasPhy){      const _phyPool=PLAYERS.filter(x=>x.position_group===p.position_group&&x.max_speed!=null&&x.sprint_dist90!=null);      const _phyLgPool=PLAYERS.filter(x=>x.position_group===p.position_group&&x.league===p.league&&x.max_speed!=null&&x.sprint_dist90!=null);      const _pctIn=(pool,k)=>{if(!pool.length)return 0;const r=[...pool].sort((a,b)=>(b[k]||0)-(a[k]||0)).findIndex(x=>x.name===p.name)+1;return r>0?(pool.length-r)/pool.length:0;};      const _physG=(_pctIn(_phyPool,'max_speed')+_pctIn(_phyPool,'sprint_dist90'))/2;      const _physL=(_pctIn(_phyLgPool,'max_speed')+_pctIn(_phyLgPool,'sprint_dist90'))/2;      const _spd=f1(p.max_speed);      const _spr=Math.round(p.sprint_dist90||0);      const _sprN=(p.sprints90!=null?Math.round(p.sprints90):null);      const _sprTxt=(_sprN!=null?(isEN?' across '+_sprN+' sprints per 90':' num total de '+_sprN+' sprints por 90'):'');      const _repeat=sprintRepeat?(isEN?', with repeated high-intensity effort capacity':', com capacidade de repetição de esforço de alta intensidade'):'';      if(_physG>=0.85){        const _topX=Math.max(1,100-Math.round(_physG*100));        fisico=isEN?'Athletically, he ranks top '+_topX+'% in the database. He reaches a top speed of '+_spd+' km/h and '+_spr+'m/90 of sprint distance'+_sprTxt+' — among the most explosive profiles on the platform'+_repeat+'.':'Do ponto de vista atlético, é top '+_topX+'% global. Atinge velocidade máxima de '+_spd+' km/h e distância em sprint de '+_spr+'m/90'+_sprTxt+' — entre os mais explosivos da plataforma'+_repeat+'.';      } else if(_physL>=0.80){        const _topXL=Math.max(1,100-Math.round(_physL*100));        fisico=isEN?'Athletically, he ranks top '+_topXL+'% in his league. He reaches a top speed of '+_spd+' km/h and '+_spr+'m/90 of sprint distance'+_sprTxt+' — among the most explosive in his league'+_repeat+'.':'Do ponto de vista atlético, é top '+_topXL+'% na sua liga. Atinge velocidade máxima de '+_spd+' km/h e distância em sprint de '+_spr+'m/90'+_sprTxt+' — entre os mais explosivos da sua liga'+_repeat+'.';      } else {        const _hsr=(p.hsr90!=null?Math.round(p.hsr90):null);        const _hsrTxt=(_hsr!=null?(isEN?', plus '+_hsr+'m of high-speed running per 90':', a que soma '+_hsr+'m de corrida em alta velocidade por 90'):'');        const _phL2=Math.round(_physL*100);        const _phTxt=(_phL2>=55?(isEN?' — a solid athletic output for the position':' — um registo atlético sólido para a posição'):(_phL2>0&&_phL2<40?(isEN?' — an area with room to grow':' — uma área com margem para crescer'):''));        fisico=isEN?'Athletically, he records a top speed of '+_spd+' km/h and '+_spr+'m/90 of sprint distance'+_sprTxt+_hsrTxt+_phTxt+'.':'Do ponto de vista atlético, regista velocidade máxima de '+_spd+' km/h e distância em sprint de '+_spr+'m/90'+_sprTxt+_hsrTxt+_phTxt+'.';      }    } else if(isFB){
       // Sem dados físicos (liga sem tracking) — parágrafo alternativo para manter consistência
       var _fbStrong=[];
       if(top('crosses90',.7)||top('prog_carries',.7)) _fbStrong.push(isEN?'projection down the flank':'projecção pelo corredor');
@@ -11381,7 +11403,15 @@ function generateAITextInline(p, pdfFs) {
       } else {
         fisico=isEN?'His league does not provide physical tracking, which limits a complete read of his athletic profile — an aspect to confirm in live viewings.':'A liga onde joga não disponibiliza dados físicos, o que limita uma leitura completa do perfil atlético — um aspecto a confirmar em observação ao vivo.';
       }
-    }    const transferStrong=[];  if(p.position_group==='CF'){  if(top('goals_np',.7)) transferStrong.push(isEN?'non-penalty finishing':'finalização sem penálti');  if(top('xg90',.7)) transferStrong.push(isEN?'xG volume per 90':'volume de xG por 90');  if(top('box_touches',.7)) transferStrong.push(isEN?'box presence':'presença de área');  if(top('shots90',.7)) transferStrong.push(isEN?'shot volume':'volume de remate');  if(top('recpt_depth',.7)) transferStrong.push(isEN?'receiving in depth':'recepção em profundidade');  } else {
+    }    const transferStrong=[];  if(p.position_group==='CF'){  if(top('goals_np',.7)) transferStrong.push(isEN?'non-penalty finishing':'finalização sem penálti');  if(top('xg90',.7)) transferStrong.push(isEN?'xG volume per 90':'volume de xG por 90');  if(top('box_touches',.7)) transferStrong.push(isEN?'box presence':'presença de área');  if(top('shots90',.7)) transferStrong.push(isEN?'shot volume':'volume de remate');  if(top('recpt_depth',.7)) transferStrong.push(isEN?'receiving in depth':'recepção em profundidade');  } else if(isFB){
+  if(top('prog_carries',.7)) transferStrong.push(isEN?'progressive ball-carrying':'progressão com bola');
+  if(top('crosses90',.7)) transferStrong.push(isEN?'crossing volume from wide':'volume de cruzamento pela ala');
+  if(top('prog_pass',.7)) transferStrong.push(isEN?'progressive passing':'passe progressivo');
+  if(top('def_duels',.7)||top('def_duels_pct',.7)) transferStrong.push(isEN?'1v1 defending':'duelo defensivo no um-para-um');
+  if(top('shot_int_adjtackl',.7)||top('adj_intercept',.7)) transferStrong.push(isEN?'interception and shot-blocking reading':'leitura de interceção e corte de remate');
+  if(top('dribles_pct',.7)) transferStrong.push(isEN?'dribble efficiency':'eficiência no drible');
+  if(top('shot_assist',.7)||top('box_passes',.7)) transferStrong.push(isEN?'final-third passing':'passe no último terço');
+  } else {
   if(top('prog_carries',.75)) transferStrong.push(isEN?'progressive ball-carrying under pressure':'progress\xe3o com bola sob press\xe3o');
   if(top('dribles_pct',.7)) transferStrong.push(isEN?'dribble efficiency':'efici\xeancia no drible');
   if(top('accels90',.75)) transferStrong.push(isEN?'explosive acceleration':'explosividade em acelera\xe7\xe3o');
