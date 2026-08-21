@@ -5379,7 +5379,7 @@ async function loadPlayers() {
         'box_touches','prog_carries','accels90','passes90','passes_pct','shot_assist',
         'box_passes','box_passes_pct','recpt_depth','total_dist','hsr90','sprint_dist90',
         'max_speed','sprints90','hsr_sprint_pct','mkt_value','age','size','weight',
-        'matches','minutes','sf_rating','aerial_duels90','aerial_pct','shot_int_adjtackl'];
+        'matches','minutes','sf_rating','aerial_duels90','aerial_pct','shot_int_adjtackl','prog_pass'];
       PLAYERS = allPlayers.map(p => {
         const out = {...p};
         out.contract_end = p.contract_end ? p.contract_end.slice(0, 10) : null;
@@ -7428,7 +7428,7 @@ function renderCompare(){
     GAP,
     scoreRow('TOTAL OFENSIVO', pA ? pA.total_off : 0, pB ? pB.total_off : 0, 'var(--green)'),
     GAP,
-    cmpRow('xG', pA ? pA.xg : 0, pB ? pB.xg : 0, false, 'xg'),
+    cmpRow('xG', pA ? pA.xg90 : 0, pB ? pB.xg90 : 0, false, 'xg90'),
     cmpRow('xA', pA ? pA.xa : 0, pB ? pB.xa : 0, false, 'xa'),
     cmpRow('Golos s/Pen', pA ? pA.goals_np||0 : 0, pB ? pB.goals_np||0 : 0, false, 'goals_np'),
     cmpRow('xG /90', pA ? pA.xg90 : 0, pB ? pB.xg90 : 0, false, 'xg90'),
@@ -7473,7 +7473,7 @@ function renderCompare(){
     scoreRow('TOTAL OFENSIVO', pA ? pA.total_off : 0, pB ? pB.total_off : 0, 'var(--green)'),
     GAP,
     cmpRow('Box Touches', pA ? pA.box_touches : 0, pB ? pB.box_touches : 0, false, 'box_touches'),
-    cmpRow('xG', pA ? pA.xg : 0, pB ? pB.xg : 0, false, 'xg'),
+    cmpRow('xG', pA ? pA.xg90 : 0, pB ? pB.xg90 : 0, false, 'xg90'),
     cmpRow('xA', pA ? pA.xa : 0, pB ? pB.xa : 0, false, 'xa'),
     cmpRow('Remates /90', pA ? pA.shots90 : 0, pB ? pB.shots90 : 0, false, 'shots90'),
     cmpRow('Cruzamentos /90', pA ? pA.crosses90 : 0, pB ? pB.crosses90 : 0, false, 'crosses90'),
@@ -7517,7 +7517,7 @@ function renderCompare(){
     GAP,
     scoreRow('TOTAL OFENSIVO', pA ? pA.total_off : 0, pB ? pB.total_off : 0, 'var(--green)'),
     GAP,
-    cmpRow('xG', pA ? pA.xg : 0, pB ? pB.xg : 0, false, 'xg'),
+    cmpRow('xG', pA ? pA.xg90 : 0, pB ? pB.xg90 : 0, false, 'xg90'),
     cmpRow('xA', pA ? pA.xa : 0, pB ? pB.xa : 0, false, 'xa'),
     cmpRow('Golos (np)', pA ? pA.goals_np||0 : 0, pB ? pB.goals_np||0 : 0, false, 'goals_np'),
     cmpRow('Remates /90', pA ? pA.shots90 : 0, pB ? pB.shots90 : 0, false, 'shots90'),
