@@ -11134,6 +11134,7 @@ function generateAITextInline(p, pdfFs) {
   const pos=(p.position||'').toUpperCase();
   const isW=pos.includes('W')||pos.includes('LW')||pos.includes('RW')||pos.includes('WF')||pos.includes('AML')||pos.includes('AMR');
   const isFwd=pos.includes('CF')||pos.includes('ST');
+  const isFB=(p.position_group==='LB'||p.position_group==='RB');
   const age=p.age||0;
   const mv=p.mkt_value>=1e6?'\u20ac'+(p.mkt_value/1e6).toFixed(1)+'M':p.mkt_value>=1e3?'\u20ac'+Math.round(p.mkt_value/1e3)+'K':null;
   const tiPct=Math.round((()=>{const _pool=PLAYERS.filter(x=>x.position_group===p.position_group&&x.talent_index!=null);if(!_pool.length)return 0;const _rk=[..._pool].sort((a,b)=>(b.talent_index||0)-(a.talent_index||0)).findIndex(x=>x.name===p.name)+1;return _rk>0?(_pool.length-_rk)/_pool.length:0;})()*100);
@@ -11210,6 +11211,117 @@ function generateAITextInline(p, pdfFs) {
     if(top('xg',.8)&&top('box_touches',.7)) perfil=isEN?'A box striker whose influence concentrates in the final third, combining intelligent movement with clinical finishing.':'Avan\xe7ado de \xe1rea, e a sua influ\xeancia concentra-se dentro do \xfaltimo ter\xe7o, com intelig\xeancia de movimento e efici\xeancia de finaliza\xe7\xe3o.';
     else if(top('xa',.7)) perfil=isEN?'A link-up forward who complements the goal threat with above-average combination play.':'Ponta-de-lan\xe7a associativo, que complementa a amea\xe7a de golo com uma liga\xe7\xe3o acima da m\xe9dia.';
     else perfil=isEN?'A reference forward who balances direct threat with collective participation.':'Avan\xe7ado com perfil de refer\xeancia, que equilibra amea\xe7a directa com participa\xe7\xe3o no jogo colectivo.';
+  } else if(isFB){
+    const _pc=(k)=>p[k]==null?0:pctL2(k);
+    const _n1=(k,d)=>p[k]!=null?parseFloat(p[k]).toFixed(d==null?1:d):null;
+    const _sc={
+      ofe:(_pc('prog_carries')*1.1+_pc('dribles90')*0.9+_pc('shots90')*0.7+_pc('crosses90')*1.0)/3.7,
+      def:(_pc('def_duels')*1.1+_pc('adj_intercept')*1.0+_pc('shot_int_adjtackl')*1.0)/3.1,
+      are:(_pc('box_touches')*1.0+_pc('shots90')*0.8+_pc('recpt_depth')*1.0)/2.8,
+      pas:(_pc('passes90')*0.9+_pc('shot_assist')*1.1+_pc('box_passes')*1.1)/3.1,
+      fis:(_pc('max_speed')*1.0+_pc('sprint_dist90')*1.0+_pc('hsr90')*1.0)/3.0
+    };
+    const _ord=Object.keys(_sc).sort((a,b)=>_sc[b]-_sc[a]);
+    const _p1=_ord[0], _p2=_ord[1];
+    const _duplo=_sc[_p1]>0.001 && _sc[_p2]>=_sc[_p1]*0.82 && _sc[_p2]>=0.55;
+    let _h=0; const _nm=p.name||''; for(let _i=0;_i<_nm.length;_i++) _h=(_h*31+_nm.charCodeAt(_i))>>>0;
+    const _vseed=(_h+['ofe','def','are','pas','fis'].indexOf(_p2)*5+(_duplo?2:0)+Math.round((_sc[_p1]||0)*7))>>>0;
+    const _pk=(a)=>a[_vseed%a.length];
+    const _prg=_n1('prog_carries'), _dr=_n1('dribles90'), _dp=_n1('dribles_pct',0), _sh=_n1('shots90'),
+          _cr=_n1('crosses90'), _cp=_n1('crosses_pct',0), _dd=_n1('def_duels'), _ddp=_n1('def_duels_pct',0),
+          _ai=_n1('adj_intercept'), _si=_n1('shot_int_adjtackl',2), _bt=_n1('box_touches'),
+          _rd=_n1('recpt_depth'), _pa=_n1('passes90',0), _sa=_n1('shot_assist'), _bp=_n1('box_passes');
+    const V={
+      ofe:{pt:['Lateral de forte projecção ofensiva'+(_prg?', e as '+_prg+' conduções progressivas por 90 mostram que é ele a levar a equipa para a frente':', que assume o corredor e transporta a bola com critério')+'.',
+               'Defesa-lateral que ataca o espaço'+(_cr?', com '+_cr+' cruzamentos por 90 a alimentar a área a partir da linha':', e procura a zona de finalização como se fosse um extremo')+'.',
+               'Lateral de perfil moderno, muito presente no último terço'+(_dr?' ('+_dr+' dribles/90)':'')+', que rompe pelo flanco em vez de se limitar a apoiar.',
+               'Lateral que transforma o corredor em arma ofensiva'+(_cr?', com '+_cr+' cruzamentos/90'+(_cp?' e '+_cp+'% de acerto':'')+'':', combinando profundidade e entrega')+'.',
+               'Defesa que soma metros para a frente'+(_prg?', e as '+_prg+' conduções progressivas confirmam-no como primeira fase de construção em movimento':', assumindo a subida sempre que a equipa recupera')+'.'],
+           en:['A full-back with strong attacking projection'+(_prg?', and '+_prg+' progressive carries per 90 show he is the one driving the team forward':', who takes over the flank and carries the ball with judgement')+'.',
+               'A full-back who attacks space'+(_cr?', with '+_cr+' crosses per 90 feeding the box from the line':', seeking the finishing zone like a winger')+'.',
+               'A modern full-back, heavily present in the final third'+(_dr?' ('+_dr+' dribbles/90)':'')+', breaking down the flank rather than just supporting.',
+               'A full-back who turns the flank into an attacking weapon'+(_cr?', with '+_cr+' crosses/90'+(_cp?' and '+_cp+'% accuracy':'')+'':', combining depth and delivery')+'.',
+               'A defender who gains ground forward'+(_prg?', and '+_prg+' progressive carries confirm him as a first phase of build-up in motion':', taking on the overlap whenever the team wins the ball')+'.']},
+      def:{pt:['Lateral sólido na fase defensiva'+(_dd?', com '+_dd+' duelos defensivos por 90'+(_ddp?' ganhos a '+_ddp+'%':'')+'':', fiável no duelo e na cobertura do corredor')+'.',
+               'Defesa consistente no 1x1'+(_ddp?', e os '+_ddp+'% de duelos ganhos dizem que raramente é ultrapassado':', que fecha o flanco com regularidade')+'.',
+               'Lateral com forte leitura defensiva'+(_ai?', e as '+_ai+' interceções ajustadas por 90 mostram antecipação, não apenas reacção':', que corta linhas de passe antes de o lance evoluir')+'.',
+               'Defesa-lateral que intercepta o remate'+(_si?', com '+_si+' shot interceptions por 90 a travar situações de perigo':', colocando o corpo na frente da baliza quando é preciso')+'.',
+               'Lateral defensivamente competente'+(_ai?', e o registo de '+_ai+' interceções ajustadas revela um jogador que lê o jogo':', seguro nas transições defensivas')+'.'],
+           en:['A full-back solid in the defensive phase'+(_dd?', with '+_dd+' defensive duels per 90'+(_ddp?' won at '+_ddp+'%':'')+'':', reliable in duels and in covering the flank')+'.',
+               'A consistent 1v1 defender'+(_ddp?', and '+_ddp+'% of duels won show he is rarely beaten':', who shuts down the flank regularly')+'.',
+               'A full-back with strong defensive reading'+(_ai?', and '+_ai+' adjusted interceptions per 90 show anticipation, not just reaction':', cutting passing lanes before the play develops')+'.',
+               'A full-back who intercepts the shot'+(_si?', with '+_si+' shot interceptions per 90 stopping dangerous situations':', putting his body in front of goal when needed')+'.',
+               'A defensively competent full-back'+(_ai?', and '+_ai+' adjusted interceptions reveal a player who reads the game':', secure in defensive transitions')+'.']},
+      are:{pt:['Lateral que chega bem à área'+(_bt?', com '+_bt+' toques na área por 90 a dizer onde termina as subidas':', aparecendo na zona de finalização com regularidade')+'.',
+               'Defesa que ataca a profundidade'+(_rd?', e a recepção em profundidade coloca-o alto no terreno como uma opção real de ataque':', ganhando as costas da linha adversária')+'.',
+               'Lateral com presença ofensiva na área'+(_sh?' ('+_sh+' remates/90)':'')+', que não se limita a cruzar mas também aparece para finalizar.',
+               'Defesa-lateral que oferece profundidade constante'+(_rd?', com recepções em profundidade que esticam a equipa adversária':', explorando o espaço nas costas dos defensores')+'.',
+               'Lateral que soma presença dentro da área'+(_bt?', e os '+_bt+' toques na área confirmam-no como mais uma linha de ataque':', chegando à zona de decisão em apoio ao ataque')+'.'],
+           en:['A full-back who arrives well in the box'+(_bt?', with '+_bt+' box touches per 90 showing where his runs end':', appearing in the finishing zone regularly')+'.',
+               'A defender who attacks depth'+(_rd?', and deep receptions place him high up the pitch as a genuine attacking option':', getting in behind the opposition line')+'.',
+               'A full-back with attacking presence in the box'+(_sh?' ('+_sh+' shots/90)':'')+', who does not just cross but also arrives to finish.',
+               'A full-back who offers constant depth'+(_rd?', with deep receptions that stretch the opposition':', exploiting the space behind defenders')+'.',
+               'A full-back who adds presence inside the box'+(_bt?', and '+_bt+' box touches confirm him as an extra attacking line':', arriving in the decisive zone in support of the attack')+'.']},
+      pas:{pt:['Lateral com bom critério de passe'+(_pa?', e os '+_pa+' passes por 90 mostram um jogador que participa na circulação':', fiável na construção e na saída de bola')+'.',
+               'Defesa que acrescenta na criação'+(_sa?', com '+_sa+' shot assists por 90 a revelar um passe de ruptura acima do habitual num lateral':', ligando a construção ao último terço')+'.',
+               'Lateral que serve a área com o passe'+(_bp?', e os '+_bp+' passes para a área por 90 confirmam-no como fornecedor a partir do corredor':', procurando o companheiro na zona de finalização')+'.',
+               'Defesa-lateral com passe progressivo de qualidade'+(_sa?' ('+_sa+' shot assists/90)':'')+', que faz a bola chegar à frente com intenção.',
+               'Lateral participativo na posse'+(_pa?', com '+_pa+' passes por 90':'')+', que combina segurança na circulação com passes que geram perigo.'],
+           en:['A full-back with good passing judgement'+(_pa?', and '+_pa+' passes per 90 show a player involved in circulation':', reliable in build-up and ball progression')+'.',
+               'A defender who adds in creation'+(_sa?', with '+_sa+' shot assists per 90 revealing breaking passes above the usual for a full-back':', linking build-up to the final third')+'.',
+               'A full-back who serves the box with his passing'+(_bp?', and '+_bp+' passes into the box per 90 confirm him as a supplier from the flank':', looking for team-mates in the finishing zone')+'.',
+               'A full-back with quality progressive passing'+(_sa?' ('+_sa+' shot assists/90)':'')+', getting the ball forward with intent.',
+               'A full-back involved in possession'+(_pa?', with '+_pa+' passes per 90':'')+', combining safe circulation with passes that create danger.']},
+      fis:{pt:['Lateral de forte suporte físico, capaz de repetir subidas e recuperações ao longo dos 90 minutos.',
+               'Defesa com motor para o corredor, que sustenta ida e volta sem quebra evidente de rendimento.',
+               'Lateral fisicamente exigente, com capacidade de repetição de esforços de alta intensidade típica da posição.',
+               'Defesa-lateral que assenta o jogo na componente atlética, cobrindo o flanco em toda a sua extensão.',
+               'Lateral de perfil atlético, com velocidade e resistência para viver o corredor de ponta a ponta.'],
+           en:['A full-back with strong physical support, able to repeat overlaps and recoveries across the 90 minutes.',
+               'A defender with an engine for the flank, sustaining up-and-down work without an obvious drop-off.',
+               'A physically demanding full-back, with the high-intensity repeatability typical of the position.',
+               'A full-back who bases his game on the athletic component, covering the whole length of the flank.',
+               'An athletic full-back, with the speed and stamina to live the flank end to end.']}
+    };
+    const C={ofe:{pt:'uma projecção ofensiva que dá largura e profundidade à equipa',en:'attacking projection that gives the team width and depth'},
+             def:{pt:'uma base defensiva fiável no duelo e na antecipação',en:'a reliable defensive base in duels and anticipation'},
+             are:{pt:'uma presença na área que o aproxima do momento de finalização',en:'a box presence that brings him close to the finishing moment'},
+             pas:{pt:'um passe que acrescenta na criação a partir do corredor',en:'passing that adds to creation from the flank'},
+             fis:{pt:'um suporte físico que sustenta o ida-e-volta do corredor',en:'physical support that sustains the up-and-down of the flank'}};
+    const _temDados=['prog_carries','crosses90','def_duels','adj_intercept','shot_int_adjtackl','passes90','box_passes'].filter(k=>p[k]!=null).length>=3;
+    if(!_temDados){
+      perfil=isEN?'A full-back whose sample of available data is too thin to define a dominant profile.':'Lateral cuja amostra de dados disponíveis é insuficiente para definir um perfil dominante.';
+    } else if(_sc[_p1]<=0.02){
+      perfil=isEN?'A full-back with a balanced profile, without one clearly dominant dimension against his league peers.':'Lateral de perfil equilibrado, sem uma dimensão claramente dominante face aos pares da liga.';
+    } else {
+      var _bothOD = _sc.ofe>=0.62 && _sc.def>=0.62;
+      var _odClose = Math.min(_sc.ofe,_sc.def) >= Math.max(_sc.ofe,_sc.def)*0.8;
+      if(_bothOD && _odClose && (_p1==='ofe'||_p1==='def'||_p2==='ofe'||_p2==='def')){
+        var _compl=[
+          {pt:'Lateral completo, com boas credenciais tanto na fase ofensiva como na defensiva'+(_cr&&_dd?', capaz de alimentar o ataque a partir da largura e de segurar o corredor sem desequilibrar a equipa':', que junta projecção no corredor a solidez no duelo')+'.',
+           en:'A complete full-back, with strong credentials both going forward and defending'+(_cr&&_dd?', able to feed the attack from wide and to hold the flank without unbalancing the team':', combining flank projection with duel solidity')+'.'},
+          {pt:'Lateral de dois sentidos, que resolve nas duas fases do jogo'+(_prg?', com as '+_prg+' conduções progressivas a mostrar a projecção e a base defensiva a garantir o resto':', tão útil a subir como a defender')+'.',
+           en:'A two-way full-back who delivers in both phases'+(_prg?', with '+_prg+' progressive carries showing the projection and a defensive base covering the rest':', as useful going up as defending')+'.'},
+          {pt:'Lateral equilibrado e completo, que oferece ataque e defesa em doses semelhantes'+(_ddp?', ganhando '+_ddp+'% dos duelos sem abdicar da subida':', sem sacrificar uma fase pela outra')+'.',
+           en:'A balanced, complete full-back offering attack and defence in similar measure'+(_ddp?', winning '+_ddp+'% of duels without giving up the overlap':', without sacrificing one phase for the other')+'.'}
+        ];
+        perfil=_pk(_compl)[isEN?'en':'pt'];
+      } else {
+      perfil=_pk(V[_p1][isEN?'en':'pt']);
+      if(_duplo) perfil+=(isEN?' To that he adds '+C[_p2].en+'.':' A isso junta '+C[_p2].pt+'.');
+      else if(_sc[_ord[4]]<=0.15){
+        var _fraco={ofe:{pt:'Ofensivamente, porém, não é ainda uma referência na liga.',en:'Offensively, however, he is not yet a reference in the league.'},
+                    def:{pt:'Na fase defensiva, contudo, fica aquém dos melhores do corredor.',en:'In the defensive phase, though, he falls short of the best in his position.'},
+                    are:{pt:'A presença na área é, ainda assim, um capítulo a desenvolver.',en:'Box presence remains, however, an area to develop.'},
+                    pas:{pt:'O passe é a faceta com mais margem de evolução.',en:'Passing is the facet with the most room to grow.'},
+                    fis:{pt:'A componente física é o aspecto onde pode dar outro salto.',en:'The physical component is where he can take another step.'}};
+        var _wk=_ord[4];
+        if(_fraco[_wk]) perfil+=' '+_fraco[_wk][isEN?'en':'pt'];
+      }
+      }
+    }
+    perfil='<strong style="color:rgba(255,255,255,.82)">'+perfil+'</strong>';
+
   } else {
     if(top('passes_pct',.75)&&top('shot_assist',.65)) perfil=isEN?'A build-up and creation midfielder who organises play and ends sequences with shot-generating passes.':'M\xe9dio de constru\xe7\xe3o e cria\xe7\xe3o, e organiza o jogo e termina as sequ\xeancias com passes que geram remate.';
     else if(top('def_duels',.7)) perfil=isEN?'A box-to-box midfielder with a strong defensive component who covers space and recovers possession.':'M\xe9dio box-to-box com forte componente defensiva, que cobre espa\xe7o e recupera bola.';
@@ -12044,15 +12156,13 @@ function renderSimpleViewV7(name, league) {
   // Novo layout: scroll natural — sem cálculo de altura forçada
   window._sv7ResizeMain = function() {};
   requestAnimationFrame(() => { window._sv7ResizeMain && window._sv7ResizeMain(); });
-  // Generate AI Scout using local engine
+  // Generate AI Scout using local engine (unificado — mesma lógica por posição)
   setTimeout(() => {
-    generateAIReportSimple(p.name, p.league, aiBarOut, aiBarEl);
+    const _aiHtml = (typeof generateAITextInline === 'function') ? generateAITextInline(p) : '';
+    if (aiBarOut && _aiHtml) { aiBarOut.innerHTML = _aiHtml; if (aiBarEl) aiBarEl.classList.add('has-content'); }
     // Also populate inline AI column
     const inlineEl = document.getElementById('sv7-ai-inline-text');
-    if (inlineEl) {
-      const aiText = generateAITextInline(p);
-      if (aiText) inlineEl.innerHTML = aiText;
-    }
+    if (inlineEl && _aiHtml) inlineEl.innerHTML = _aiHtml;
   }, 100);
 }
 
@@ -12070,6 +12180,7 @@ async function generateAIScoutV7(playerName, position) {
   const aiBarOut   = document.getElementById('sv7-ai-bar-out');
   const aiBarBtn   = document.getElementById('sv7-ai-scout-btn');
   const aiBarLabel = document.getElementById('sv7-ai-bar-label');
+  const aiBar      = document.getElementById('sv7-ai-bar');
   if (!aiBarOut) return;
 
   // use cache
@@ -12077,104 +12188,25 @@ async function generateAIScoutV7(playerName, position) {
     aiBarOut.innerHTML = aiCache[playerName];
     if (aiBarBtn)   aiBarBtn.style.display = 'none';
     if (aiBarLabel) aiBarLabel.style.display = '';
+    if (aiBar)      aiBar.classList.add('has-content');
     return;
   }
 
-  if (aiBarBtn)   { aiBarBtn.classList.add('loading'); aiBarBtn.textContent = '⏳ A analisar…'; }
-  if (aiBarLabel) { aiBarLabel.style.display = 'none'; }
-  aiBarOut.innerHTML = '<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>A analisar...</span></div>';
-
-  const avg = (mk) => (PLAYERS.reduce((s,x)=>s+(x[mk]||0),0)/PLAYERS.length).toFixed(2);
-  const rank = (mk, inv) => {
-    const sorted = [...PLAYERS].sort((a,b)=>inv?(a[mk]||0)-(b[mk]||0):(b[mk]||0)-(a[mk]||0));
-    return sorted.findIndex(x=>x.name===playerName)+1;
-  };
-  const total = PLAYERS.length;
-
-  const prompt = `És um scout de futebol profissional especializado em análise de dados. Analisa este jogador de forma crítica e objetiva em português europeu.
-
-JOGADOR: ${p.name}
-CLUBE: ${p.team} | LIGA: ${p.league}
-POSIÇÃO: ${position} | IDADE: ${p.age} anos | PÉ: ${p.foot}
-ALTURA: ${p.size>0?p.size+'cm':'n/d'} | PESO: ${p.weight>0?p.weight+'kg':'n/d'}
-JOGOS: ${p.matches} | MINUTOS: ${p.minutes} | VALOR: ${p.mkt_value>0?'€'+(p.mkt_value/1000000).toFixed(1)+'M':'n/d'}
-FIM CONTRATO: ${p.contract_end}
-
-MÉTRICAS DEFENSIVAS (ranking /${total}):
-- Duelos def./90: ${p.def_duels} (média: ${avg('def_duels')}) | rank #${rank('def_duels')}
-- % Duelos ganhos: ${p.def_duels_pct}% (média: ${avg('def_duels_pct')}%) | rank #${rank('def_duels_pct')}
-- Interceções adj./90: ${p.adj_intercept} (média: ${avg('adj_intercept')}) | rank #${rank('adj_intercept')}
-- Faltas/90: ${p.fouls} (média: ${avg('fouls')}) | rank #${rank('fouls',true)}
-- Amarelos/90: ${p.yellows} (média: ${avg('yellows')}) | rank #${rank('yellows',true)}
-
-MÉTRICAS OFENSIVAS (ranking /${total}):
-- xG total: ${p.xg} (média: ${avg('xg')}) | rank #${rank('xg')}
-- xA total: ${p.xa} (média: ${avg('xa')}) | rank #${rank('xa')}
-- Dribles/90: ${p.dribles90} (média: ${avg('dribles90')}) | rank #${rank('dribles90')}
-- % Dribles: ${p.dribles_pct}% (média: ${avg('dribles_pct')}%) | rank #${rank('dribles_pct')}
-- Box touches/90: ${p.box_touches} (média: ${avg('box_touches')}) | rank #${rank('box_touches')}
-
-MÉTRICAS DE PASSE (ranking /${total}):
-- Passes/90: ${p.passes90} (média: ${avg('passes90')}) | rank #${rank('passes90')}
-- % Passes certos: ${p.passes_pct}% (média: ${avg('passes_pct')}%) | rank #${rank('passes_pct')}
-- Shot assists/90: ${p.shot_assist} (média: ${avg('shot_assist')}) | rank #${rank('shot_assist')}
-
-DADOS FÍSICOS (ranking /${total}):
-- Velocidade máxima: ${p.max_speed} km/h (média: ${avg('max_speed')} km/h) | rank #${rank('max_speed')}
-- HSR/90: ${Math.round(p.hsr90)}m (média: ${avg('hsr90')}m) | rank #${rank('hsr90')}
-- Sprint dist./90: ${Math.round(p.sprint_dist90)}m | rank #${rank('sprint_dist90')}
-- Sprints/90: ${p.sprints90} | rank #${rank('sprints90')}
-
-SCORES TOTAIS:
-- Talent Index: ${(p.talent_index||0).toFixed(1)} (${(p.talent_index_pct||0)}%) | rank #${rank('talent_index')}/${total}
-- Ofensivo: ${p.total_off.toFixed(1)} | Defensivo: ${p.total_def.toFixed(1)}
-- Passe: ${p.total_pass.toFixed(1)} | Físico: ${p.total_physical.toFixed(1)}
-
-Faz uma análise em 3 parágrafos curtos e diretos em português europeu:
-1. Perfil geral e pontos fortes/fracos para a posição ${position}.
-2. Destaque ofensivo e físico (velocidade, sprint, HSR vs média da liga).
-3. Avaliação final: valor de mercado, contrato, potencial de contratação.
-Usa negrito (**texto**) para realçar dados chave. Sem títulos de secção. Máximo 120 palavras por parágrafo.`;
-
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    if (!response.ok) {
-      const err = await response.json().catch(()=>({}));
-      throw new Error((err.error&&err.error.message) || 'API error ' + response.status);
-    }
-    const data = await response.json();
-    const raw = (data.content||[]).map(c=>c.text||'').join('');
-    // format markdown bold
-    const html = raw
-      .split('\n\n').filter(Boolean)
-      .map(para => '<p>'+para.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')+'</p>')
-      .join('');
+    // Motor local unificado (mesma lógica por posição do mobile) — sem API
+    const html = (typeof generateAITextInline === 'function') ? generateAITextInline(p) : '';
+    if (!html) throw new Error('sem análise disponível');
     aiCache[playerName] = html;
-    const aiBarOut2   = document.getElementById('sv7-ai-bar-out');
-    const aiBarBtn2   = document.getElementById('sv7-ai-scout-btn');
-    const aiBarLabel2 = document.getElementById('sv7-ai-bar-label');
-    const aiBar2      = document.getElementById('sv7-ai-bar');
-    if (aiBarOut2)   aiBarOut2.innerHTML = html;
-    if (aiBarBtn2)   { aiBarBtn2.style.display = 'none'; aiBarBtn2.classList.remove('loading'); }
-    if (aiBarLabel2) aiBarLabel2.style.display = '';
-    if (aiBar2)      aiBar2.classList.add('has-content');
+    if (aiBarOut)   aiBarOut.innerHTML = html;
+    if (aiBarBtn)   { aiBarBtn.style.display = 'none'; aiBarBtn.classList.remove('loading'); }
+    if (aiBarLabel) aiBarLabel.style.display = '';
+    if (aiBar)      aiBar.classList.add('has-content');
   } catch(e) {
-    const aiBarOut2 = document.getElementById('sv7-ai-bar-out');
-    const aiBarBtn2 = document.getElementById('sv7-ai-scout-btn');
-    if (aiBarOut2) aiBarOut2.innerHTML = '<p style="color:#ff5370">Erro: ' + (e&&e.message||e) + '</p>';
-    if (aiBarBtn2) { aiBarBtn2.textContent = '▶ AI Scout'; aiBarBtn2.classList.remove('loading'); aiBarBtn2.style.display = ''; }
+    if (aiBarOut) aiBarOut.innerHTML = '<p style="color:#ff5370">Erro: ' + (e&&e.message||e) + '</p>';
+    if (aiBarBtn) { aiBarBtn.textContent = '▶ AI Scout'; aiBarBtn.classList.remove('loading'); aiBarBtn.style.display = ''; }
   }
 }
 
-// simCardClick updates both old and new simple view
 function simCardClickV7(el) {
   const name = decodeURIComponent(el.dataset.pname || '');
   const league = decodeURIComponent(el.dataset.pleague || '');
@@ -12525,80 +12557,24 @@ async function cvAIReport(playerName, position, pkey) {
   const p = PLAYERS.find(x => x.name === playerName);
   if (!p) return;
 
-  outEl.innerHTML = '<div class="cv-ai-thinking"><div class="cv-ai-dot"></div><div class="cv-ai-dot"></div><div class="cv-ai-dot"></div><span style="font-family:var(--font-d);font-size:9px;letter-spacing:1px;text-transform:uppercase">A analisar...</span></div>';
-
-  // ordenar métricas para mostrar os destaques
-  const n = PLAYERS.length;
-  const rnkOf = key => [...PLAYERS].sort((a,b)=>(b[key]||0)-(a[key]||0)).findIndex(x=>x.name===p.name)+1;
-
-  const isEN = window._lang === 'en';
-  const prompt = isEN
-    ? `You are an expert football scout. Write a concise qualitative assessment of ${p.name} (${position}, ${p.age} years old, ${p.team}, ${p.league}).
-
-Key metrics (ranked among ${n} players):
-- Talent Index: ${(p.talent_index||0).toFixed(1)} (${(p.talent_index_pct||0)}%) | Rank #${rnkOf('talent_index')}
-- xG: ${p.xg?.toFixed(2)} | xA: ${p.xa?.toFixed(2)} | Goals: ${p.goals_np||0}
-- Dribbles/90: ${p.dribles90?.toFixed(2)} (${rnkOf('dribles90')}th) | Dribble%: ${p.dribles_pct?.toFixed(1)}%
-- Passes/90: ${p.passes90?.toFixed(1)} | Pass%: ${p.passes_pct?.toFixed(1)}%
-- Def. duels/90: ${p.def_duels?.toFixed(2)} | Duel%: ${p.def_duels_pct?.toFixed(1)}%
-- Max speed: ${p.max_speed?.toFixed(1)} km/h (${rnkOf('max_speed')}th) | HSR/90: ${Math.round(p.hsr90||0)}m
-- Physical: ${p.total_physical?.toFixed(1)} (${rnkOf('total_physical')}th)
-- Contract until: ${p.contract_end} | Value: ${p.mkt_value>=1e6?'€'+(p.mkt_value/1e6).toFixed(1)+'M':p.mkt_value>=1e3?'€'+(p.mkt_value/1e3).toFixed(0)+'K':'—'}
-
-Write 3 direct sentences in English:
-1. The biggest strength based on rankings.
-2. The main limitation or area to improve.
-3. Scout profile: type of system where he fits and market value.
-No titles, no bullets. Maximum 70 words total.`
-    : `És um scout de futebol especialista. Faz uma avaliação qualitativa concisa de ${p.name} (${position}, ${p.age} anos, ${p.team}, ${p.league}).
-
-Métricas principais (ranking entre ${n} jogadores):
-- Talent Index: ${(p.talent_index||0).toFixed(1)} (${(p.talent_index_pct||0)}%) | Rank #${rnkOf('talent_index')}
-- xG: ${p.xg?.toFixed(2)} | xA: ${p.xa?.toFixed(2)} | Golos: ${p.goals_np||0}
-- Dribles/90: ${p.dribles90?.toFixed(2)} (${rnkOf('dribles90')}º) | %Dribles: ${p.dribles_pct?.toFixed(1)}%
-- Passes/90: ${p.passes90?.toFixed(1)} | %Passes: ${p.passes_pct?.toFixed(1)}%
-- Duelos def./90: ${p.def_duels?.toFixed(2)} | %Duelos: ${p.def_duels_pct?.toFixed(1)}%
-- Vel. Máxima: ${p.max_speed?.toFixed(1)} km/h (${rnkOf('max_speed')}º) | HSR/90: ${Math.round(p.hsr90||0)}m
-- Físico total: ${p.total_physical?.toFixed(1)} (${rnkOf('total_physical')}º)
-- Contrato até: ${p.contract_end} | Valor: ${p.mkt_value>=1e6?'€'+(p.mkt_value/1e6).toFixed(1)+'M':p.mkt_value>=1e3?'€'+(p.mkt_value/1e3).toFixed(0)+'K':'—'}
-
-Escreve 3 frases directas em português europeu:
-1. O maior ponto forte com base nos rankings.
-2. A principal limitação ou área a melhorar.
-3. Perfil de scout: tipo de sistema onde encaixa e valor de mercado.
-Sem títulos, sem bullets. Máximo 70 palavras total.`;
-
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:250,messages:[{role:'user',content:prompt}]})
-    });
-    const data = await res.json();
-    const text = data.content?.map(b=>b.text||'').join('') || '';
-    if (!text) throw new Error('empty');
-    const html = '<p style="margin:0;line-height:1.75">'+text.trim().replace(/\n\n/g,'</p><p style="margin:8px 0 0;line-height:1.75">').replace(/\n/g,' ')+'</p>';
+    // Motor local unificado (mesma lógica por posição — isW/isFwd/isFB/…)
+    const html = (typeof generateAITextInline === 'function') ? generateAITextInline(p) : '';
+    if (!html) throw new Error('sem análise disponível');
     cvAICache[playerName] = html;
     outEl.innerHTML = html;
-    // Guardar em storage persistente
     try { await window.storage.set(storageKey, html); } catch(e) {}
   } catch(e) {
     outEl.dataset.pname=playerName; outEl.dataset.ppos=position; outEl.dataset.ppkey=pkey;
     outEl.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:2px 0">'
       +'<svg width="14" height="14" viewBox="0 0 16 16" fill="rgba(255,71,87,.6)"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/></svg>'
-      +'<span style="font-family:var(--font-b);font-size:11px;color:rgba(255,71,87,.7)">Sem ligação à API.</span>'
+      +'<span style="font-family:var(--font-b);font-size:11px;color:rgba(255,71,87,.7)">Sem análise disponível.</span>'
       +'<button onclick="cvAIReport(this.closest(\'.cv-ai-span-out\').dataset.pname,this.closest(\'.cv-ai-span-out\').dataset.ppos,this.closest(\'.cv-ai-span-out\').dataset.ppkey)" '
       +'style="font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;background:rgba(255,71,87,.12);border:1px solid rgba(255,71,87,.35);border-radius:3px;color:rgba(255,71,87,.8);padding:3px 10px;cursor:pointer;transition:all .15s" '
       +'onmouseover="this.style.background=\'rgba(255,71,87,.22)\'" onmouseout="this.style.background=\'rgba(255,71,87,.12)\'">↺ Retry</button>'
       +'</div>';
   }
 }
-
-// auto-trigger quando renderSimpleView carrega um jogador
-
-// ── SIMPLE VIEW — METRIC CLICK (inline scrolldown panel) ─────────────────────
-let _svChartInst = null;
-let _svActiveRow = null;
-let _svActivePanel = null;
 
 function svClosePanel(btn) {
   if (_svActivePanel) {
