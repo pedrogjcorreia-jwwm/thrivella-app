@@ -5364,7 +5364,7 @@ async function loadPlayers() {
       const limit = 500;
 
       while (true) {
-        const res = await fetch(`${API_URL}/players?limit=${limit}&offset=${offset}&sort=score&dir=desc`);
+        const res = await fetch(`${API_URL}/players?limit=${limit}&offset=${offset}&sort=score&dir=desc`, {cache:'no-store'});
         const data = await res.json();
         const batch = data.players || [];
         allPlayers = allPlayers.concat(batch);
