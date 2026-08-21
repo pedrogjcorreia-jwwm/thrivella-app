@@ -11132,9 +11132,9 @@ function generateAITextInline(p, pdfFs) {
   function top(k,thr){return pctL2(k)>=thr;}
   function f1(v){return v!=null?parseFloat(v.toFixed(1)):null;}
   const pos=(p.position||'').toUpperCase();
-  const isW=pos.includes('W')||pos.includes('LW')||pos.includes('RW')||pos.includes('WF')||pos.includes('AML')||pos.includes('AMR');
-  const isFwd=pos.includes('CF')||pos.includes('ST');
   const isFB=(p.position_group==='LB'||p.position_group==='RB');
+  const isW=!isFB&&(pos.includes('W')||pos.includes('LW')||pos.includes('RW')||pos.includes('WF')||pos.includes('AML')||pos.includes('AMR'));
+  const isFwd=!isFB&&(pos.includes('CF')||pos.includes('ST'));
   const age=p.age||0;
   const mv=p.mkt_value>=1e6?'\u20ac'+(p.mkt_value/1e6).toFixed(1)+'M':p.mkt_value>=1e3?'\u20ac'+Math.round(p.mkt_value/1e3)+'K':null;
   const tiPct=Math.round((()=>{const _pool=PLAYERS.filter(x=>x.position_group===p.position_group&&x.talent_index!=null);if(!_pool.length)return 0;const _rk=[..._pool].sort((a,b)=>(b.talent_index||0)-(a.talent_index||0)).findIndex(x=>x.name===p.name)+1;return _rk>0?(_pool.length-_rk)/_pool.length:0;})()*100);
@@ -11297,13 +11297,19 @@ function generateAITextInline(p, pdfFs) {
       var _bothOD = _sc.ofe>=0.62 && _sc.def>=0.62;
       var _odClose = Math.min(_sc.ofe,_sc.def) >= Math.max(_sc.ofe,_sc.def)*0.8;
       if(_bothOD && _odClose && (_p1==='ofe'||_p1==='def'||_p2==='ofe'||_p2==='def')){
+        var _ofMet = _cr?_cr+' cruzamentos/90':(_prg?_prg+' conduções progressivas/90':(_dr?_dr+' dribles/90':''));
+        var _ofMetEn = _cr?_cr+' crosses/90':(_prg?_prg+' progressive carries/90':(_dr?_dr+' dribbles/90':''));
+        var _dfMet = (_ddp?_ddp+'% de duelos ganhos':(_ai?_ai+' interceções ajustadas/90':(_si?_si+' interceções de remate/90':'')));
+        var _dfMetEn = (_ddp?_ddp+'% of duels won':(_ai?_ai+' adjusted interceptions/90':(_si?_si+' shot interceptions/90':'')));
+        var _prova = (_ofMet&&_dfMet)?(', com '+_ofMet+' à frente e '+_dfMet+' atrás'):(_ofMet?', com '+_ofMet+' no ataque':(_dfMet?', com '+_dfMet+' na defesa':''));
+        var _provaEn = (_ofMetEn&&_dfMetEn)?(', with '+_ofMetEn+' going forward and '+_dfMetEn+' at the back'):(_ofMetEn?', with '+_ofMetEn+' in attack':(_dfMetEn?', with '+_dfMetEn+' in defence':''));
         var _compl=[
-          {pt:'Lateral completo, forte tanto na fase ofensiva como na defensiva'+(_cr&&_dd?', capaz de alimentar o ataque a partir da largura e de segurar o corredor sem desequilibrar a equipa':', que junta projecção no corredor a solidez no duelo')+'.',
-           en:'A complete full-back, strong both going forward and defending'+(_cr&&_dd?', able to feed the attack from wide and to hold the flank without unbalancing the team':', combining flank projection with duel solidity')+'.'},
-          {pt:'Lateral moderno que combina subida no corredor com trabalho defensivo'+(_prg?', e as '+_prg+' conduções progressivas mostram a projecção sem que a base defensiva se ressinta':', tão útil a apoiar o ataque como a fechar o flanco')+'.',
-           en:'A modern full-back who combines flank overlaps with defensive work'+(_prg?', and '+_prg+' progressive carries show the projection without the defensive base suffering':', as useful supporting the attack as shutting down the flank')+'.'},
-          {pt:'Lateral forte na fase ofensiva e sólido na fase defensiva'+(_ddp?', ganhando '+_ddp+'% dos duelos sem abdicar da subida ao ataque':', que oferece ataque e defesa em doses semelhantes')+'.',
-           en:'A full-back strong going forward and solid at the back'+(_ddp?', winning '+_ddp+'% of duels without giving up the overlap':', offering attack and defence in similar measure')+'.'}
+          {pt:'Lateral completo, forte tanto na fase ofensiva como na defensiva'+_prova+'.',
+           en:'A complete full-back, strong both going forward and defending'+_provaEn+'.'},
+          {pt:'Lateral moderno que combina subida no corredor com trabalho defensivo'+_prova+'.',
+           en:'A modern full-back who combines flank overlaps with defensive work'+_provaEn+'.'},
+          {pt:'Lateral forte na fase ofensiva e sólido na fase defensiva'+_prova+'.',
+           en:'A full-back strong going forward and solid at the back'+_provaEn+'.'}
         ];
         perfil=_pk(_compl)[isEN?'en':'pt'];
       } else {
