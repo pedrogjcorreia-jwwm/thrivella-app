@@ -8531,6 +8531,14 @@ function generateCompareAI(pA, pB) {
     return a > b ? pA : (b > a ? pB : null);
   }
   function fmtMv(p) { return p.mkt_value>=1e6?'€'+(p.mkt_value/1e6).toFixed(1)+'M':p.mkt_value>=1e3?'€'+Math.round(p.mkt_value/1e3)+'K':'—'; }
+  // ── Força relativa das ligas (contexto essencial na comparação) ──
+  const _ligaMult=(p)=>{ try { return (typeof getLigaMult==='function')?getLigaMult(p.league):((typeof LEAGUE_DIFFICULTY!=='undefined'&&LEAGUE_DIFFICULTY[p.league])||1.0); } catch(e){ return 1.0; } };
+  const _difA=_ligaMult(pA), _difB=_ligaMult(pB);
+  const _ligaGap=Math.abs(_difA-_difB);
+  const _strongerLg=_difA>_difB?pA:pB, _weakerLg=_difA>_difB?pB:pA;
+  // gap significativo de liga: uma joga num patamar claramente superior
+  const _ligaMismatch=_ligaGap>=0.12;
+  const _ligaHuge=_ligaGap>=0.22;
   function boldF(t) { const s=t.split(' '); return '<strong>'+s[0]+'</strong> '+s.slice(1).join(' '); }
   function boldN(t) { return t.replace(/(\d+\.?\d*)/g,'<strong>$1</strong>'); }
 
@@ -8603,7 +8611,10 @@ function generateCompareAI(pA, pB) {
     const _atkGap=Math.abs(_ofA-_ofB), _defGap=Math.abs(_dfA-_dfB);
     // Frase 1 — o retrato de contraste
     let _s1;
-    if(_atk.name!==_def.name){
+    if(_ligaMismatch){
+      // Números não comparáveis directamente: uma liga é bem mais forte
+      _s1='Antes de ler os números, um aviso de contexto: '+bn(_strongerLg.name)+' compete na '+_strongerLg.league+', muito acima da '+_weakerLg.league+' de '+bn(_weakerLg.name)+', pelo que os registos deste último surgem inflacionados por um adversário mais fraco.';
+    } else if(_atk.name!==_def.name){
       // perfis opostos: um ataca, outro defende
       _s1='Dois perfis de lateral em contraste: '+bn(_atk.name)+' vive o jogo mais alto, na projecção pelo corredor, enquanto '+bn(_def.name)+' é a referência defensiva, mais forte no duelo e na leitura do lance.';
     } else if(_atkGap<0.12 && _defGap<0.12){
@@ -8614,7 +8625,10 @@ function generateCompareAI(pA, pB) {
     // Frase 2 — interpretação táctica do ataque, com um número que a ancore
     let _s2='';
     const _crA=_f(pA,'crosses90'),_crB=_f(pB,'crosses90'),_ppA=_f(pA,'prog_pass'),_ppB=_f(pB,'prog_pass');
-    if(_atk.name!==_def.name){
+    if(_ligaMismatch){
+      const _crS=_f(_strongerLg,'crosses90'), _pcS=_f(_strongerLg,'prog_carries');
+      _s2=' Mesmo assim, vale olhar para o que cada um faz: '+bn(_strongerLg.name)+(_crS?' produz '+_crS+' cruzamentos/90'+(_pcS?' e '+_pcS+' conduções progressivas':'')+' contra defesas de topo':' mantém boa produção ofensiva num contexto exigente')+', o que dá outro peso aos seus números.';
+    } else if(_atk.name!==_def.name){
       const _crWin=_f(_atk,'crosses90'), _pcWin=_f(_atk,'prog_carries');
       _s2=' No último terço, '+bn(_atk.name)+(_crWin?' entrega mais a partir da linha ('+_crWin+' cruzamentos/90'+(_pcWin?' e '+_pcWin+' conduções progressivas':'')+')':' pisa mais o último terço')+', um lateral pensado para dar largura e amplitude ao ataque.';
     } else {
@@ -8624,7 +8638,10 @@ function generateCompareAI(pA, pB) {
     // Frase 3 — a fase defensiva / passe, o outro lado da moeda
     let _s3='';
     const _ddWin=_f(_def,'def_duels'), _ddpWin=_def.def_duels_pct!=null?Math.round(_def.def_duels_pct):null, _siWin=_f(_def,'shot_int_adjtackl',2);
-    if(_atk.name!==_def.name){
+    if(_ligaMismatch){
+      const _ddW=_f(_weakerLg,'def_duels');
+      _s3=' '+bn(_weakerLg.name)+' apresenta números aparentemente fortes'+(_ddW?' ('+_ddW+' duelos defensivos/90)':'')+', mas conseguidos num contexto menos competitivo — só uma mudança de liga confirmaria se se sustentam a outro nível.';
+    } else if(_atk.name!==_def.name){
       _s3=' Atrás, '+bn(_def.name)+' oferece mais garantias'+(_ddWin?' ('+_ddWin+' duelos defensivos/90'+(_ddpWin?' ganhos a '+_ddpWin+'%':'')+')':'')+', o tipo de lateral que segura o corredor quando a equipa não tem bola.';
       // passe progressivo como desempate extra
       if(_pas.name && (_paA>0||_paB>0) && Math.abs(_paA-_paB)>=0.15){ const _ppWin=_f(_pas,'prog_pass'); _s3+=' Na saída de bola, '+bn(_pas.name)+' é quem mais liga defesa e ataque'+(_ppWin?' ('+_ppWin+' passes progressivos/90)':'')+'.'; }
@@ -8670,7 +8687,6 @@ function generateCompareAI(pA, pB) {
   function shortN(p){ const parts=p.name.trim().split(' '); return parts.length>1?parts[0][0]+'. '+parts.slice(1).join(' '):p.name; }
   let p4;
   if(_isFBcmp){
-    // Recomendação contextualizada por tipo de equipa/sistema
     const _fbP=(k)=>PLAYERS.filter(x=>(x.position_group==='LB'||x.position_group==='RB')&&x[k]!=null);
     const _pF=(x,k)=>{const L=_fbP(k);if(x[k]==null||!L.length)return 0;const r=[...L].sort((a,b)=>(b[k]||0)-(a[k]||0)).findIndex(y=>y.name===x.name)+1;return r>0?(L.length-r)/L.length:0;};
     const _atkOf=(x)=>(_pF(x,'crosses90')+_pF(x,'prog_carries')+_pF(x,'dribles90'))/3;
@@ -8678,20 +8694,32 @@ function generateCompareAI(pA, pB) {
     const _atkMore = _atkOf(pA)>_atkOf(pB)?pA:pB;
     const _defMore = _defOf(pA)>_defOf(pB)?pA:pB;
     const _younger = (pA.age||99)<(pB.age||99)?pA:pB;
-    const _cheaper = (pA.mkt_value||0)>0&&(pB.mkt_value||0)>0 ? ((pA.mkt_value<pB.mkt_value)?pA:pB) : null;
-    if(_atkMore.name!==_defMore.name){
-      p4 = `A decisão depende do que a equipa precisa no corredor. `;
-      p4 += `Para um bloco que ataca e quer o lateral a dar largura e a chegar à linha, ${bn(_atkMore.name)} é a aposta mais natural. `;
-      p4 += `Para uma equipa que defende mais baixo e precisa de segurança no um-para-um, ${bn(_defMore.name)} oferece mais garantias. `;
-      if(_cheaper) p4 += `No plano financeiro, ${bn(_cheaper.name)} representa o investimento mais contido${_cheaper.name===_younger.name?' e é ainda o mais novo dos dois, o que reforça a margem de valorização':''}.`;
-      else if(_younger) p4 += `${bn(_younger.name)}, mais novo, é o que oferece maior margem de progressão.`;
+    const _older = (pA.age||0)>(pB.age||0)?pA:pB;
+    const _ageGap = Math.abs((pA.age||0)-(pB.age||0));
+    if(_ligaMismatch){
+      // A força da liga domina a leitura — números não são comparáveis de forma directa
+      p4 = `Antes de tudo, o contexto competitivo pesa: ${bn(_strongerLg.name)} produz os seus números na ${_strongerLg.league}, um patamar bem mais exigente do que a ${_weakerLg.league} de ${bn(_weakerLg.name)}. `;
+      if(_ligaHuge){
+        p4 += `A diferença de nível é grande o suficiente para que os registos de ${bn(_weakerLg.name)}, por mais fortes que pareçam, não se traduzam automaticamente ao subir de escalão. `;
+        p4 += `Para qualquer projecto competitivo, ${bn(_strongerLg.name)} é a escolha mais fiável — o desempenho está validado contra adversários de outro calibre.`;
+      } else {
+        p4 += `${bn(_strongerLg.name)} parte assim em vantagem, com produção testada num contexto superior; ${bn(_weakerLg.name)} só entra na conversa se o objectivo for uma aposta de menor risco financeiro num patamar mais modesto.`;
+      }
+      if(_ageGap>=4) p4 += ` A idade reforça a leitura: ${bn(_younger.name)}, mais novo (${_younger.age} vs ${_older.age}), oferece ainda margem de progressão, enquanto ${bn(_older.name)} está já numa fase mais avançada da carreira.`;
+    } else if(_atkMore.name!==_defMore.name){
+      // Mesmo patamar de liga, perfis opostos
+      p4 = `Em ligas de exigência semelhante, a decisão depende do que a equipa precisa no corredor. `;
+      p4 += `Para um bloco que ataca e quer o lateral a dar largura e a chegar à linha, ${bn(_atkMore.name)} encaixa melhor. `;
+      p4 += `Para uma equipa que defende mais baixo e precisa de segurança no um-para-um, ${bn(_defMore.name)} dá mais garantias. `;
+      if(_ageGap>=4) p4 += `${bn(_younger.name)}, mais novo, é o que reúne maior margem de valorização.`;
     } else {
+      // Mesmo patamar, perfis semelhantes
       const _fav=_atkMore;
-      p4 = `${bn(_fav.name)} é o mais equilibrado dos dois e a escolha mais segura para a generalidade dos sistemas, por resolver bem nas duas fases do corredor. `;
-      p4 += `${bn(_fav.name===pA.name?pB.name:pA.name)} pode ainda assim ser a opção certa num contexto táctico específico ou como alternativa de menor custo`;
-      p4 += _cheaper&&_cheaper.name!==_fav.name?`, sobretudo pelo valor de mercado mais acessível.`:`.`;
+      p4 = `Com ligas de nível aproximado, ${bn(_fav.name)} surge como a opção mais completa e a escolha mais segura para a generalidade dos sistemas, por resolver bem nas duas fases do corredor. `;
+      p4 += `${bn(_fav.name===pA.name?pB.name:pA.name)} pode ainda assim justificar-se num contexto táctico específico`;
+      p4 += (_ageGap>=4?`, com a idade a favorecer ${bn(_younger.name)} numa óptica de futuro.`:`.`);
     }
-    if(ctExpA||ctExpB){ const _exp=ctExpA?pA:pB; p4+=` Atenção ao contrato de ${bn(_exp.name)}, a expirar — uma janela de mercado que pode inclinar a decisão.`; }
+    if(ctExpA||ctExpB){ const _exp=ctExpA?pA:pB; p4+=` Nota de mercado: o contrato de ${bn(_exp.name)} está a expirar, o que pode abrir uma janela de negociação.`; }
   } else {
   p4 = `${bn(shortN(tiL))}${tiL.talent_index_pct?` com <b>percentil ${Math.round(tiL.talent_index_pct)}</b>`:''} lidera o Talent Index — `;
   if ((ctExpA&&tiL.name===pA.name)||(ctExpB&&tiL.name===pB.name)) p4+=`e com o contrato a expirar, a janela para o contratar raramente será mais favorável. `;
