@@ -10868,12 +10868,14 @@ function renderPlayerID(name, league) {
       ? ['talent_index','total_physical','xg90','box_touches','goals_np']
       : ['talent_index','total_physical','total_off','total_def','total_pass'];
     const _posPoolR = PLAYERS.filter(x=>x.position_group===p.position_group);
+    // Valor a comparar por eixo: TALENT INDEX usa league adjustment (activeTIPct); os outros totais usam o valor bruto
+    const _axValOf=(x,k)=>{ if(k==='talent_index'){ return (typeof activeTIPct==='function'?activeTIPct(x):(x.talent_index||0)); } return x[k]; };
     const _axAbove = _axKeys.map(k=>{
-      const pl=_posPoolR.filter(x=>x[k]!=null);
-      if(!pl.length||p[k]==null) return {above:false,top3:false};
-      const avg=pl.reduce((s,x)=>s+(x[k]||0),0)/pl.length;
-      const rank=[...pl].sort((a,b)=>(b[k]||0)-(a[k]||0)).findIndex(x=>x.name===p.name)+1;
-      return {above:(p[k]||0)>=avg, top3:(rank>=1&&rank<=3)};
+      const pl=_posPoolR.filter(x=>_axValOf(x,k)!=null);
+      if(!pl.length||_axValOf(p,k)==null) return {above:false,top3:false};
+      const avg=pl.reduce((s,x)=>s+(_axValOf(x,k)||0),0)/pl.length;
+      const rank=[...pl].sort((a,b)=>(_axValOf(b,k)||0)-(_axValOf(a,k)||0)).findIndex(x=>x.name===p.name)+1;
+      return {above:(_axValOf(p,k)||0)>=avg, top3:(rank>=1&&rank<=3)};
     });
     // Dots
     axNorm.map((v,i)=>pt(R*v,i)).forEach(([x,y],i)=>{
