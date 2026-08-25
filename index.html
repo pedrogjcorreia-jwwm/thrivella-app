@@ -10817,7 +10817,7 @@ function renderPlayerID(name, league) {
     ];
     const labels  = p.position_group==='CF'?['Talent','Physical','xG/90','Box T.','Golos']:['Talent','Physical','Ofensivo','Defensivo','Passing'];
     const rawVals = [
-      p.talent_index!=null   ? (typeof activeTI==='function'?parseFloat(activeTI(p).toFixed(1)):Math.round(p.talent_index*10)/10)          : null,
+      p.talent_index!=null   ? Math.round(typeof activeTIPct==='function'?activeTIPct(p):(p.talent_index_pct||0))          : null,
       p.total_physical>0     ? Math.round(PHYV(p)/PMx(p.position_group,'phy')*100)        : null,
       ...(p.position_group==='CF'?[p.xg90!=null?parseFloat(p.xg90.toFixed(2)):null,p.box_touches!=null?parseFloat(p.box_touches.toFixed(2)):null,p.goals_np!=null?parseFloat(p.goals_np.toFixed(2)):null]:[p.total_off!=null      ? Math.round(p.total_off/PMx(p.position_group,'off')*100)             : null,
       p.total_def!=null      ? Math.round(p.total_def/PMx(p.position_group,'def')*100)            : null,
