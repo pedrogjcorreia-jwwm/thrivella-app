@@ -11547,9 +11547,10 @@ function renderSimpleViewV7(name, league) {
 
   selectedPlayer = p;
 
-  const avgOf = key => PLAYERS.reduce((s,x)=>s+(x[key]||0),0)/PLAYERS.length;
+  const _posPool = PLAYERS.filter(x => x.position_group === p.position_group);
+  const avgOf = key => { const _pl = _posPool.filter(x => x[key]!=null); return _pl.length ? _pl.reduce((s,x)=>s+(x[key]||0),0)/_pl.length : 0; };
   function rnk(key,inv){
-    const s=[...PLAYERS].sort((a,b)=>inv?(a[key]||0)-(b[key]||0):(b[key]||0)-(a[key]||0));
+    const s=[..._posPool].sort((a,b)=>inv?(a[key]||0)-(b[key]||0):(b[key]||0)-(a[key]||0));
     return s.findIndex(x=>x.name===p.name)+1;
   }
   function rs(r){ return r===1?'st':r===2?'nd':r===3?'rd':'th'; }
@@ -12175,9 +12176,9 @@ function renderSimpleViewV7(name, league) {
     // 6 axes: Off, Dribles, ProgC, Accel, Pass, Def
     // Compute percentiles (0-1) for each
     function pct(key, inv) {
-      const sorted = [...PLAYERS].sort((a,b) => inv ? (a[key]||0)-(b[key]||0) : (b[key]||0)-(a[key]||0));
+      const sorted = [..._posPool].sort((a,b) => inv ? (a[key]||0)-(b[key]||0) : (b[key]||0)-(a[key]||0));
       const r = sorted.findIndex(x=>x.name===p.name);
-      return r < 0 ? 0 : (PLAYERS.length - r) / PLAYERS.length;
+      return r < 0 ? 0 : (_posPool.length - r) / _posPool.length;
     }
     const axes = [
       { key:'total_off',    label:'Ofensivo', inv:false },
@@ -12197,7 +12198,7 @@ function renderSimpleViewV7(name, league) {
     const avgPts = axes.map((a,i) => {
       const angle = (Math.PI*2*i/axes.length) - Math.PI/2;
       const av = avgOf(a.key);
-      const mx = Math.max(...PLAYERS.map(x=>x[a.key]||0));
+      const mx = Math.max(..._posPool.map(x=>x[a.key]||0));
       const dist = mx > 0 ? (av/mx) * r0 : 0;
       return { x: cx + dist*Math.cos(angle), y: cy + dist*Math.sin(angle) };
     });
