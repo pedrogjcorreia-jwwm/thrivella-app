@@ -7631,13 +7631,13 @@ function renderCompare(){
   // ── Compare Radar (canvas, same style as player detail radars) ──────────────
   const _cmpIsCF = (pA&&pA.position_group==='CF')||(pB&&pB.position_group==='CF');
   const RADAR_KEYS = _cmpIsCF ? [
-    {l:'Talent',    key:'talent_index',  f: p => Math.round((p.talent_index||0)/PMx(p.position_group,'total')*100)},
+    {l:'Talent',    key:'talent_index',  f: p => Math.round(typeof activeTIPct==='function'?activeTIPct(p):((p.talent_index||0)/PMx(p.position_group,'total')*100))},
     {l:'Physical',  key:'total_physical', f: p => Math.round(PHYV(p)/PMx(p.position_group,'phy')*100)},
     {l:'xG/90',     key:'xg90',           f: p => p.xg90!=null?parseFloat(p.xg90.toFixed(2)):0},
     {l:'Box T.',    key:'box_touches',    f: p => p.box_touches!=null?parseFloat(p.box_touches.toFixed(2)):0},
     {l:'Golos',     key:'goals_np',       f: p => p.goals_np!=null?p.goals_np:0},
   ] : [
-    {l:'Talent',    f: p => Math.round((p.talent_index||0)/PMx(p.position_group,'total')*100)},
+    {l:'Talent',    f: p => Math.round(typeof activeTIPct==='function'?activeTIPct(p):((p.talent_index||0)/PMx(p.position_group,'total')*100))},
     {l:'Physical',  f: p => Math.round(PHYV(p)/PMx(p.position_group,'phy')*100)},
     {l:'Ofensivo',  f: p => Math.round((p.total_off||0)/PMx(p.position_group,'off')*100)},
     {l:'Defensivo', f: p => Math.round((p.total_def||0)/PMx(p.position_group,'def')*100)},
@@ -10806,12 +10806,12 @@ function renderPlayerID(name, league) {
     const hr=0, hg=212, hb=255;
 
     const _rvMax=(k)=>{const pool=PLAYERS.filter(x=>x.position_group===p.position_group&&x[k]!=null);if(!pool.length)return 0;const mx=Math.max(...pool.map(x=>x[k]));return mx>0?Math.min(1,(p[k]||0)/mx):0;};    const _rMean=(k)=>{const pool=PLAYERS.filter(x=>x.position_group===p.position_group&&x[k]!=null);if(!pool.length)return 0;const mx=Math.max(...pool.map(x=>x[k]));const mean=pool.reduce((a,b)=>a+(b[k]||0),0)/pool.length;return mx>0?Math.min(1,mean/mx):0;};    const axNorm = [
-      Math.min(1,Math.max(0,(p.talent_index||0)/PMx(p.position_group,'total'))),
+      Math.min(1,Math.max(0,(typeof activeTIPct==='function'?activeTIPct(p):((p.talent_index||0)/PMx(p.position_group,'total')*100))/100)),
       Math.min(1,Math.max(0,PHYV(p)/PMx(p.position_group,'phy'))),
       ...(p.position_group==='CF'?[_rvMax('xg90'),_rvMax('box_touches'),_rvMax('goals_np')]:[pctG('total_off'),pctG('total_def'),pctG('total_pass')]),
     ];
     const lgNorm = [
-      Math.min(1,Math.max(0,(lgP.reduce((s,x)=>s+(x.talent_index||0),0)/lgP.length)/PMx(p.position_group,'total'))),
+      Math.min(1,Math.max(0,((lgP.reduce((s,x)=>s+(x.talent_index||0),0)/lgP.length)*(ligaAdjustActive?(getLigaMult(p.league)||1):1))/PMx(p.position_group,'total'))),
       Math.min(1,Math.max(0,(lgP.reduce((s,x)=>s+(x.total_physical||0),0)/lgP.length)/PMx(p.position_group,'phy'))),
       ...(p.position_group==='CF'?[_rMean('xg90'),_rMean('box_touches'),_rMean('goals_np')]:[0.5,0.5,0.5]),
     ];
@@ -12002,7 +12002,7 @@ function renderSimpleViewV7(name, league) {
   </div>`;
 
   // ── BARRA LATERAL de 5 totais — bolas de futebol que acendem por percentil ──
-  function totalSideBar(lbl, val, key, accentCol, isScore, isHighlight) {
+  function totalSideBar(lbl, val, key, accentCol, isScore, isHighlight, pctOverride) {
     const r2   = rnk(key);
     const N    = PLAYERS.length;
     const av2  = avgOf(key);
@@ -12066,10 +12066,10 @@ function renderSimpleViewV7(name, league) {
         </div>
       </div>
       <div class="sv7-tsb-body" style="margin-bottom:4px;margin-top:-1px">
-        <span class="sv7-tsb-val" style="color:${valCol};font-size:${valSize};text-shadow:0 0 10px ${valCol}88">${val.toFixed(1)}</span>
-        ${key==="score"||key==="talent_index"?`<span style="font-family:var(--font-d);font-size:9px;color:rgba(255,255,255,.4);margin-left:2px">${Math.round(val/67*100)}%</span>`:''}
+        <span class="sv7-tsb-val" style="color:${valCol};font-size:${valSize};text-shadow:0 0 10px ${valCol}88">${pctOverride!=null?String(pctOverride):val.toFixed(1)}</span>
+        ${(key==="score"||key==="talent_index")&&pctOverride!=null?`<span style="font-family:var(--font-d);font-size:9px;color:rgba(255,255,255,.4);margin-left:2px">%</span>`:''}
         ${key==="total_physical"?`<span style="font-family:var(--font-d);font-size:9px;color:rgba(155,127,255,.5);margin-left:2px">${Math.round(val/25*100)}%</span>`:''}
-        <span class="sv7-tsb-avg-lbl">ø ${av2.toFixed(1)}</span>
+        <span class="sv7-tsb-avg-lbl">ø ${pctOverride!=null?Math.round(PLAYERS.reduce((s,x)=>s+(typeof activeTIPct==='function'?activeTIPct(x):(x.talent_index||0)),0)/PLAYERS.length)+'%':av2.toFixed(1)}</span>
       </div>
       <div class="sv7-tsb-blocks" style="gap:3px;align-items:center">${balls}</div>
     </div>`;
@@ -12142,7 +12142,7 @@ function renderSimpleViewV7(name, league) {
 
   // Sidebar com 5 totais empilhados
   const totalsSidebar = `<div class="sv7-totals-sidebar">
-    ${totalSideBar('TALENT INDEX',    (p.talent_index||0),          'score',          scoreCol,  true,  true)}
+    ${totalSideBar('TALENT INDEX',    (p.talent_index||0),          'talent_index',          scoreCol,  true,  true, (typeof activeTIPct==='function'?Math.round(activeTIPct(p)):null))}
     ${totalSideBar('PHYSICAL INDEX', p.total_physical, 'total_physical', '#9b7fff', false, true)}
     ${totalSideBar('TOTAL OFF',      p.total_off,      'total_off',      '#00d4ff', false, false)}
     ${totalSideBar('TOTAL DEF',      p.total_def,      'total_def',      '#ff5370', false, false)}
@@ -12977,7 +12977,7 @@ function renderSv7Radar(p) {
 
   // ── 3. Círculo central — Score ──────────────────────────────────────────────
   const scoreAvg  = avgOf('score');
-  const scoreAbove = (p.talent_index||0) >= (PLAYERS.reduce((s,x)=>s+(x.talent_index||0),0)/PLAYERS.length);
+  const scoreAbove = (typeof activeTIPct==='function'?activeTIPct(p):(p.talent_index||0)) >= (PLAYERS.reduce((s,x)=>s+(typeof activeTIPct==='function'?activeTIPct(x):(x.talent_index||0)),0)/PLAYERS.length);
   const scoreCol  = scoreAbove ? '#00e5a0' : '#ff5370';
   const scoreRgb  = scoreAbove ? '0,229,160' : '255,83,112';
   const scoreRank = [...PLAYERS].sort((a,b)=>b.score-a.score).findIndex(x=>x.name===p.name)+1;
@@ -13017,7 +13017,7 @@ function renderSv7Radar(p) {
   ctx.shadowColor  = scoreCol;
   ctx.shadowBlur   = SIZE * 0.04;
   ctx.fillStyle    = scoreCol;
-  ctx.fillText((p.talent_index||0).toFixed(1), cx, cy + SIZE * 0.012);
+  ctx.fillText(String(typeof activeTIPct==='function'?Math.round(activeTIPct(p)):Math.round(p.talent_index||0)), cx, cy + SIZE * 0.012);
   ctx.shadowBlur   = 0;
 
   // Rank
