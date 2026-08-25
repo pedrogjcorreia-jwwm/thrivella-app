@@ -7644,7 +7644,7 @@ function renderCompare(){
     {l:'Passe',     f: p => Math.round((p.total_pass||0)/PMx(p.position_group,'pass')*100)},
   ];
   function _cmpAxisShape(k, p){
-    if(_cmpIsCF && k.key){
+    if(_cmpIsCF && k.key && k.key!=='talent_index'){
       const pg = p.position_group;
       const pool = PLAYERS.filter(x=>x.position_group===pg && x[k.key]!=null);
       if(!pool.length) return 0;
