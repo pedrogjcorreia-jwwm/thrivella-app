@@ -5591,6 +5591,19 @@ function rebuildDerivedData() {
     p.transfer_score = Math.max(0, Math.min(90, Math.round(_ts)));
   });  
 
+  // ── Cor uniforme do Transfer Score (por POSIÇÃO): top3=verde, acima da média=azul, abaixo=cinza ──
+  // Transfer Score NÃO tem league adjustment — compara-se o valor bruto dentro da posição.
+  window.tsColorFor = function(p){
+    if(!p) return 'rgba(160,178,200,.6)';
+    const pool = PLAYERS.filter(x=>x.position_group===p.position_group && x.transfer_score!=null);
+    if(!pool.length || p.transfer_score==null) return 'rgba(160,178,200,.6)';
+    const avg = pool.reduce((s,x)=>s+(x.transfer_score||0),0)/pool.length;
+    const rank = [...pool].sort((a,b)=>(b.transfer_score||0)-(a.transfer_score||0)).findIndex(x=>x.name===p.name)+1;
+    if(rank>=1 && rank<=3) return '#00e5a0';        // top 3 na posição → verde
+    if((p.transfer_score||0) >= avg) return '#00d4ff'; // acima da média → azul
+    return 'rgba(160,178,200,.6)';                   // abaixo da média → cinza
+  };
+
   // Rebuild ALL_LEAGUES — only leagues in LEAGUE_CONFIG
   const lm = {};
   PLAYERS.forEach(p => {
@@ -6314,7 +6327,8 @@ function renderTable(){
     const tsAbove=(p.transfer_score||0)>=tsAvg;
     const tsTop3=metricRanks['transfer_score']?.top3.has(p.name);
     const tsBarW=Math.min(100,p.transfer_score||0);
-    const tsBarCol=tsTop3?'linear-gradient(to right,#f59e0b 70%,#fff 100%)':tsAbove?'#f59e0b':'rgba(255,255,255,.2)';
+    const _tsC=window.tsColorFor?window.tsColorFor(p):(tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(160,178,200,.6)');
+    const tsBarCol=_tsC==='#00e5a0'?'linear-gradient(to right,#00e5a0 70%,#fff 100%)':_tsC;
     const tsWrapExtra=tsTop3?'box-shadow:0 0 8px rgba(245,158,11,.55)':'';
     const sel=selectedPlayer&&selectedPlayer.name===p.name;
     return`<tr class="${hl}${rank%2===0?' row-even':' row-odd'}${sel?' row-selected':''}" draggable="true" data-player="${p.name.replace(/"/g,'&quot;')}"
@@ -6367,7 +6381,7 @@ function renderTable(){
           : `<div style="font-family:var(--font-d);font-size:11px;color:rgba(255,255,255,.15)">—</div>`}
       </td>
       <td style="text-align:center;padding:0 12px;background:rgba(0,6,14,.6);border-right:1px solid rgba(255,255,255,.05)">
-        <div class="td-score-num" style="color:${tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.2)'}">${p.transfer_score!=null?p.transfer_score:'\u2014'}</div>
+        <div class="td-score-num" style="color:${window.tsColorFor?window.tsColorFor(p):(tsTop3?'#00e5a0':tsAbove?'#00d4ff':'rgba(255,255,255,.2)')}">${p.transfer_score!=null?p.transfer_score:'\u2014'}</div>
         <div class="td-score-sub">TRA</div>
       </td>
       <td class="td-contract" style="width:120px">${(()=>{
@@ -19351,7 +19365,7 @@ function renderMobileElite(){
   const phCol=piPct>=0.7?'#00e5a0':piPct>=0.4?'#00d4ff':'rgba(160,175,195,.5)';
 
   const tsScore=p.transfer_score||0;
-  const tsCol=tsScore>=75?'#00e5a0':tsScore>=50?'#00d4ff':'rgba(160,178,200,.6)';
+  const tsCol=window.tsColorFor?window.tsColorFor(p):(tsScore>=75?'#00e5a0':tsScore>=50?'#00d4ff':'rgba(160,178,200,.6)');
 
   // ── Load all photos from localStorage immediately ──
   try{const saved=JSON.parse(localStorage.getItem('scoutpro_photos')||'{}');
