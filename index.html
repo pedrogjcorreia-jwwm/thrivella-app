@@ -12013,15 +12013,15 @@ function renderSimpleViewV7(name, league) {
     // Percentil (0-100): rank 1 = 100%, rank N = 0%
     const percentile = Math.round(((N - r2) / (N - 1)) * 100);
 
-    // Value colour — ALWAYS gold/cyan/neutral, never accentCol (avoids purple etc.)
-    const valCol = isGold ? '#f59e0b' : (percentile>=70?'#00e5a0':percentile>=40?'#00d4ff':'#ff5370');
+    // Cor do valor: top 3 = verde | acima da média = azul | abaixo da média = cinza
+    const valCol = isGold ? '#00e5a0' : (above ? '#00d4ff' : 'rgba(160,175,195,.5)');
 
     // Card bg — Score/Physical get a slightly lighter navy to stand out
     const cardBg     = isHighlight ? 'rgba(0,30,60,.75)' : 'rgba(0,20,40,.55)';
-    const cardBorder = above ? (isGold ? 'rgba(245,158,11,.5)' : 'rgba(0,212,255,.35)') : 'rgba(255,71,87,.3)';
-    const rnkBg = above ? '#00d4ff1a' : 'rgba(255,255,255,.05)';
-    const rnkBd = above ? '#00d4ff33' : 'rgba(255,255,255,.1)';
-    const rnkCo = isGold ? '#f59e0b' : above ? '#00d4ff' : 'rgba(255,255,255,.3)';
+    const cardBorder = isGold ? 'rgba(0,229,160,.5)' : (above ? 'rgba(0,212,255,.35)' : 'rgba(160,175,195,.2)');
+    const rnkBg = isGold ? 'rgba(0,229,160,.1)' : (above ? '#00d4ff1a' : 'rgba(255,255,255,.05)');
+    const rnkBd = isGold ? 'rgba(0,229,160,.25)' : (above ? '#00d4ff33' : 'rgba(255,255,255,.1)');
+    const rnkCo = isGold ? '#00e5a0' : above ? '#00d4ff' : 'rgba(255,255,255,.3)';
 
     const pid = 'tsb-' + key;
     const top3pl = [...PLAYERS].sort((a,b)=>(b[key]||0)-(a[key]||0)).slice(0,3);
