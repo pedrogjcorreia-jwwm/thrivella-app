@@ -10863,9 +10863,22 @@ function renderPlayerID(name, league) {
     ctx.fillStyle=g;ctx.fill();
     ctx.save();ctx.shadowColor='rgba(0,212,255,.5)';ctx.shadowBlur=10;ctx.strokeStyle=accent;ctx.lineWidth=1.8;ctx.lineJoin='round';ctx.stroke();ctx.restore();
 
+    // Dots — cor por comparação com a MÉDIA DA POSIÇÃO: abaixo=cinza, acima=azul, top3=verde
+    const _axKeys = (p.position_group==='CF')
+      ? ['talent_index','total_physical','xg90','box_touches','goals_np']
+      : ['talent_index','total_physical','total_off','total_def','total_pass'];
+    const _posPoolR = PLAYERS.filter(x=>x.position_group===p.position_group);
+    const _axAbove = _axKeys.map(k=>{
+      const pl=_posPoolR.filter(x=>x[k]!=null);
+      if(!pl.length||p[k]==null) return {above:false,top3:false};
+      const avg=pl.reduce((s,x)=>s+(x[k]||0),0)/pl.length;
+      const rank=[...pl].sort((a,b)=>(b[k]||0)-(a[k]||0)).findIndex(x=>x.name===p.name)+1;
+      return {above:(p[k]||0)>=avg, top3:(rank>=1&&rank<=3)};
+    });
     // Dots
     axNorm.map((v,i)=>pt(R*v,i)).forEach(([x,y],i)=>{
-      const dc=axNorm[i]>=.7?'#00e5a0':axNorm[i]>=.4?accent:'#e05555';
+      const _st=_axAbove[i]||{above:false,top3:false};
+      const dc=_st.top3?'#00e5a0':(_st.above?accent:'rgba(160,175,195,.55)');
       ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle=dc;ctx.lineWidth=1.4;ctx.stroke();
     });
 
@@ -10875,8 +10888,8 @@ function renderPlayerID(name, league) {
     // Labels
     axNorm.forEach((v,i)=>{
       const a=ang(i), lx=cx+(R+28)*Math.cos(a), ly=cy+(R+28)*Math.sin(a);
-      const above = axNorm[i] >= lgNorm[i];
-      const col = axNorm[i]>=0.70?'#00e5a0':axNorm[i]>=0.40?accent:'#e05555';
+      const _st=(_axAbove[i]||{above:false,top3:false});
+      const col = _st.top3?'#00e5a0':(_st.above?accent:'rgba(160,175,195,.55)');
       ctx.textAlign='center';ctx.textBaseline='middle';
       ctx.font='700 10px "Barlow Condensed",sans-serif';ctx.fillStyle='rgba(255,255,255,.9)';
       ctx.fillText(labels[i].toUpperCase(),lx,ly-8);
