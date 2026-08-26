@@ -7559,6 +7559,41 @@ function renderCompare(){
     cmpRow('Passes /90', pA ? pA.passes90 : 0, pB ? pB.passes90 : 0, false, 'passes90'),
     cmpRow('% Passes Certos', pA ? pA.passes_pct : 0, pB ? pB.passes_pct : 0, false, 'passes_pct'),
     cmpRow('Progressive Pass', pA ? pA.prog_pass : 0, pB ? pB.prog_pass : 0, false, 'prog_pass'),
+  ] : (((pA&&pA.position_group==='CB')||(pB&&pB.position_group==='CB')) ? [
+
+    BIG_GAP,
+    // Físico
+    scoreRow('TOTAL FÍSICO', pA ? pA.total_physical : 0, pB ? pB.total_physical : 0, 'var(--purple)'),
+    GAP,
+    cmpRow('Vel. Máxima (km/h)', pA ? pA.max_speed : 0, pB ? pB.max_speed : 0, false, 'max_speed'),
+    cmpRow('Sprint Dist /90 (m)', pA ? pA.sprint_dist90 : 0, pB ? pB.sprint_dist90 : 0, false, 'sprint_dist90'),
+    cmpRow('Sprints /90', pA ? pA.sprints90 : 0, pB ? pB.sprints90 : 0, false, 'sprints90'),
+    cmpRow('Acelerações /90', pA ? pA.accels90 : 0, pB ? pB.accels90 : 0, false, 'accels90'),
+    // Ofensivo
+    GAP,
+    scoreRow('TOTAL OFENSIVO', pA ? pA.total_off : 0, pB ? pB.total_off : 0, 'var(--green)'),
+    GAP,
+    cmpRow('Conduções Prog.', pA ? pA.prog_carries : 0, pB ? pB.prog_carries : 0, false, 'prog_carries'),
+    // Defensivo
+    GAP,
+    scoreRow('TOTAL DEFENSIVO', pA ? pA.total_def : 0, pB ? pB.total_def : 0, 'var(--red)'),
+    GAP,
+    cmpRow('Duelos Def. /90', pA ? pA.def_duels : 0, pB ? pB.def_duels : 0, false, 'def_duels'),
+    cmpRow('% Duelos Ganhos', pA ? pA.def_duels_pct : 0, pB ? pB.def_duels_pct : 0, false, 'def_duels_pct'),
+    cmpRow('Aerial Duels /90', pA ? pA.aerial_duels90 : 0, pB ? pB.aerial_duels90 : 0, false, 'aerial_duels90'),
+    cmpRow('% Aerial Duels', pA ? pA.aerial_pct : 0, pB ? pB.aerial_pct : 0, false, 'aerial_pct'),
+    cmpRow('Shot Int + AdjTkl', pA ? pA.shot_int_adjtackl : 0, pB ? pB.shot_int_adjtackl : 0, false, 'shot_int_adjtackl'),
+    cmpRow('Interceções Adj.', pA ? pA.adj_intercept : 0, pB ? pB.adj_intercept : 0, false, 'adj_intercept'),
+    cmpRow('Faltas /90', pA ? pA.fouls : 0, pB ? pB.fouls : 0, true, 'fouls'),
+    // Passe
+    GAP,
+    scoreRow('TOTAL PASSE', pA ? pA.total_pass : 0, pB ? pB.total_pass : 0, 'var(--accent)'),
+    GAP,
+    cmpRow('Passes /90', pA ? pA.passes90 : 0, pB ? pB.passes90 : 0, false, 'passes90'),
+    cmpRow('% Passes Certos', pA ? pA.passes_pct : 0, pB ? pB.passes_pct : 0, false, 'passes_pct'),
+    cmpRow('Passes 1/3 Final', pA ? pA.passes_final_third : 0, pB ? pB.passes_final_third : 0, false, 'passes_final_third'),
+    cmpRow('Progressive Pass', pA ? pA.prog_pass : 0, pB ? pB.prog_pass : 0, false, 'prog_pass'),
+    cmpRow('% Progressive Pass', pA ? pA.prog_pass_pct : 0, pB ? pB.prog_pass_pct : 0, false, 'prog_pass_pct'),
   ] : [
 
     BIG_GAP,
@@ -7606,7 +7641,7 @@ function renderCompare(){
     cmpRow('Assist. Remate', pA ? pA.shot_assist : 0, pB ? pB.shot_assist : 0, false, 'shot_assist'),
     cmpRow('Box Passes', pA ? pA.box_passes : 0, pB ? pB.box_passes : 0, false, 'box_passes'),
     cmpRow('% Box Passes', pA ? pA.box_passes_pct : 0, pB ? pB.box_passes_pct : 0, false, 'box_passes_pct'),
-  ])).join('');
+  ]))).join('');
 
   // compact card for C and D
   function compactCard(p, col) {
@@ -8635,7 +8670,9 @@ function generateCompareAI(pA, pB) {
   // Score each player on the 5 key metrics
   const _isFBcmp = (pA.position_group==='LB'||pA.position_group==='RB');
   const keyMetrics = _isFBcmp ? ['prog_carries','crosses90','def_duels','shot_int_adjtackl','prog_pass']
-    : pA.position_group==='CF' ? ['goals_np','xg90','box_touches','shots90','recpt_depth'] : ['prog_carries','dribles90','accels90','recpt_depth','shot_assist'];
+    : pA.position_group==='CF' ? ['goals_np','xg90','box_touches','shots90','recpt_depth']
+    : pA.position_group==='CB' ? ['def_duels','aerial_duels90','shot_int_adjtackl','adj_intercept','prog_pass']
+    : ['prog_carries','dribles90','accels90','recpt_depth','shot_assist'];
   const votesA = keyMetrics.filter(k=>{ const b=better(k); return b&&b.name===pA.name; }).length;
   const votesB = keyMetrics.filter(k=>{ const b=better(k); return b&&b.name===pB.name; }).length;
   const perfL = votesA>=votesB?pA:pB, perfO = votesA>=votesB?pB:pA;
