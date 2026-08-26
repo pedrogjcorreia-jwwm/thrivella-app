@@ -15747,8 +15747,28 @@ const METRIC_GROUPS_LB = {
   {lbl:'HSR/90',key:'hsr90'},{lbl:'Total Dist',key:'total_dist'},
  ]}
 };
+const METRIC_GROUPS_CB = {
+ off: { label:'Desempenho Chave', color:'var(--accent)', totalKey:'total', metrics:[
+  {lbl:'1v1 Def Quality',key:'def_duels',pctKey:'def_duels_pct'},{lbl:'Aerial Quality',key:'aerial_duels90',pctKey:'aerial_pct'},
+  {lbl:'Int Shots + Tackles',key:'shot_int_adjtackl'},{lbl:'Adj Interceptions',key:'adj_intercept'},
+  {lbl:'Prog Passes',key:'prog_pass',pctKey:'prog_pass_pct'},
+ ]},
+ def: { label:'Defesa', color:'#ff5370', totalKey:'total_def', metrics:[
+  {lbl:'Def Duels/90',key:'def_duels',pctKey:'def_duels_pct'},{lbl:'Aerial Duels/90',key:'aerial_duels90',pctKey:'aerial_pct'},
+  {lbl:'Int Shots + Tackles',key:'shot_int_adjtackl'},{lbl:'Adj Interceptions',key:'adj_intercept'},
+  {lbl:'Fouls/90',key:'fouls'},
+ ]},
+ pass: { label:'Construção', color:'#4fc3f7', totalKey:'total_pass', metrics:[
+  {lbl:'Passes/90',key:'passes90',pctKey:'passes_pct'},{lbl:'Passes 1/3 Final',key:'passes_final_third'},
+  {lbl:'Prog Passes',key:'prog_pass',pctKey:'prog_pass_pct'},{lbl:'Prog Carries',key:'prog_carries'},
+ ]},
+ phy: { label:'Físico', color:'#9b7fff', totalKey:'total_physical', metrics:[
+  {lbl:'Max Speed',key:'max_speed'},{lbl:'Sprint Dist',key:'sprint_dist90'},{lbl:'Nr Sprints',key:'sprints90'},
+  {lbl:'Accelerations',key:'accels90'},
+ ]}
+};
 function metricBox(groupKey, totalKey, totalVal, totalColor, pct, invert, posGroup){
-    const g = (posGroup==='CF'?METRIC_GROUPS_CF:((posGroup==='LB'||posGroup==='RB')?METRIC_GROUPS_LB:METRIC_GROUPS))[groupKey];
+    const g = (posGroup==='CF'?METRIC_GROUPS_CF:(posGroup==='CB'?METRIC_GROUPS_CB:((posGroup==='LB'||posGroup==='RB')?METRIC_GROUPS_LB:METRIC_GROUPS)))[groupKey];
     if(!g) return '';
     const tKey = totalKey;
     const sorted = [...PLAYERS].filter(x=>x[tKey]!=null).sort((a,b)=>(b[tKey]||0)-(a[tKey]||0));
@@ -16432,7 +16452,27 @@ const SH_METRIC_GROUPS_LB = {
   {lbl:'HSR/90',key:'hsr90'},{lbl:'Total Dist',key:'total_dist'},
  ]}
 };
-  const g = (p.position_group==='CF'?SH_METRIC_GROUPS_CF:((p.position_group==='LB'||p.position_group==='RB')?SH_METRIC_GROUPS_LB:SH_METRIC_GROUPS))[groupKey];
+const SH_METRIC_GROUPS_CB = {
+ off: { label:'Desempenho Chave', color:'var(--accent)', totalKey:'total', metrics:[
+  {lbl:'1v1 Def Quality',key:'def_duels',pctKey:'def_duels_pct'},{lbl:'Aerial Quality',key:'aerial_duels90',pctKey:'aerial_pct'},
+  {lbl:'Int Shots + Tackles',key:'shot_int_adjtackl'},{lbl:'Adj Interceptions',key:'adj_intercept'},
+  {lbl:'Prog Passes',key:'prog_pass',pctKey:'prog_pass_pct'},
+ ]},
+ def: { label:'Defesa', color:'#ff5370', totalKey:'total_def', metrics:[
+  {lbl:'Def Duels/90',key:'def_duels',pctKey:'def_duels_pct'},{lbl:'Aerial Duels/90',key:'aerial_duels90',pctKey:'aerial_pct'},
+  {lbl:'Int Shots + Tackles',key:'shot_int_adjtackl'},{lbl:'Adj Interceptions',key:'adj_intercept'},
+  {lbl:'Fouls/90',key:'fouls'},
+ ]},
+ pass: { label:'Construção', color:'#4fc3f7', totalKey:'total_pass', metrics:[
+  {lbl:'Passes/90',key:'passes90',pctKey:'passes_pct'},{lbl:'Passes 1/3 Final',key:'passes_final_third'},
+  {lbl:'Prog Passes',key:'prog_pass',pctKey:'prog_pass_pct'},{lbl:'Prog Carries',key:'prog_carries'},
+ ]},
+ phy: { label:'Físico', color:'#9b7fff', totalKey:'total_physical', metrics:[
+  {lbl:'Max Speed',key:'max_speed'},{lbl:'Sprint Dist',key:'sprint_dist90'},{lbl:'Nr Sprints',key:'sprints90'},
+  {lbl:'Accelerations',key:'accels90'},
+ ]}
+};
+  const g = (p.position_group==='CF'?SH_METRIC_GROUPS_CF:(p.position_group==='CB'?SH_METRIC_GROUPS_CB:((p.position_group==='LB'||p.position_group==='RB')?SH_METRIC_GROUPS_LB:SH_METRIC_GROUPS)))[groupKey];
   if(!g) return;
   const panel = document.getElementById('sh-metrics-panel');
   const title = document.getElementById('sh-metrics-title');
