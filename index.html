@@ -5593,14 +5593,33 @@ function rebuildDerivedData() {
 
   // ── Cor uniforme do Transfer Score (por POSIÇÃO): top3=verde, acima da média=azul, abaixo=cinza ──
   // Transfer Score NÃO tem league adjustment — compara-se o valor bruto dentro da posição.
+  // Cache por posição: média + set de top3 do transfer_score, calculado UMA vez por conjunto de PLAYERS.
+  window._tsCache = null;
+  window._tsCacheLen = -1;
+  window._tsBuildCache = function(){
+    const cache = {};
+    const byPos = {};
+    for(const x of PLAYERS){
+      if(x.transfer_score==null) continue;
+      (byPos[x.position_group] = byPos[x.position_group] || []).push(x);
+    }
+    for(const pg in byPos){
+      const pool = byPos[pg];
+      const sum = pool.reduce((s,x)=>s+(x.transfer_score||0),0);
+      const avg = sum/pool.length;
+      const top3 = new Set([...pool].sort((a,b)=>(b.transfer_score||0)-(a.transfer_score||0)).slice(0,3).map(x=>x.name));
+      cache[pg] = { avg, top3 };
+    }
+    window._tsCache = cache;
+    window._tsCacheLen = PLAYERS.length;
+  };
   window.tsColorFor = function(p){
-    if(!p) return 'rgba(160,178,200,.6)';
-    const pool = PLAYERS.filter(x=>x.position_group===p.position_group && x.transfer_score!=null);
-    if(!pool.length || p.transfer_score==null) return 'rgba(160,178,200,.6)';
-    const avg = pool.reduce((s,x)=>s+(x.transfer_score||0),0)/pool.length;
-    const rank = [...pool].sort((a,b)=>(b.transfer_score||0)-(a.transfer_score||0)).findIndex(x=>x.name===p.name)+1;
-    if(rank>=1 && rank<=3) return '#00e5a0';        // top 3 na posição → verde
-    if((p.transfer_score||0) >= avg) return '#00d4ff'; // acima da média → azul
+    if(!p || p.transfer_score==null) return 'rgba(160,178,200,.6)';
+    if(!window._tsCache || window._tsCacheLen !== PLAYERS.length) window._tsBuildCache();
+    const c = window._tsCache[p.position_group];
+    if(!c) return 'rgba(160,178,200,.6)';
+    if(c.top3.has(p.name)) return '#00e5a0';        // top 3 na posição → verde
+    if((p.transfer_score||0) >= c.avg) return '#00d4ff'; // acima da média → azul
     return 'rgba(160,178,200,.6)';                   // abaixo da média → cinza
   };
 
@@ -5882,7 +5901,12 @@ function scoreColor(s){return s>=53.6?'var(--green)':s>=43.5?'var(--amber)':'var
 function contractColor(d){if(!d)return 'var(--muted)';const y=parseInt(d.split('-')[0]);return y<=2026?'var(--red)':y<=2027?'var(--amber)':'var(--green)'}
 function getHighlight(p){
   const yr=parseInt((p.contract_end||'2099').split('-')[0]);
-  const avg=PLAYERS.reduce((s,x)=>s+activeTI(x),0)/PLAYERS.length;
+  if(window._tiAvgCache==null || window._tiAvgCacheLen!==PLAYERS.length || window._tiAvgCacheAdj!==ligaAdjustActive){
+    window._tiAvgCache=PLAYERS.reduce((s,x)=>s+activeTI(x),0)/PLAYERS.length;
+    window._tiAvgCacheLen=PLAYERS.length;
+    window._tiAvgCacheAdj=ligaAdjustActive;
+  }
+  const avg=window._tiAvgCache;
   const above=activeTI(p)>avg;
   if(p.age<23&&above&&yr>=2027)return'hl-pink';
   if(p.age>=23&&p.age<=26&&above&&yr===2026)return'hl-yellow';
