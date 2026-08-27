@@ -11223,26 +11223,19 @@ function renderPlayerID(name, league) {
     // Ajuste automático: reduz a letra até o texto caber na altura do card (evita corte da última linha)
     const fitAI=()=>{
       try{
-        const card=aiEl.closest('.pid3-ai-card');
         let fs=13.3, lh=1.42;
         aiEl.style.fontSize=fs+'px'; aiEl.style.lineHeight=lh;
-        const overflowing=()=>{
-          if(aiEl.scrollHeight>aiEl.clientHeight+1) return true;
-          if(card){
-            const cr=card.getBoundingClientRect(), br=aiEl.getBoundingClientRect();
-            if(br.top+aiEl.scrollHeight > cr.bottom-6) return true;
-          }
-          return false;
-        };
-        console.log('[fitAI] card=',card?Math.round(card.getBoundingClientRect().height):'?','body.clientH=',aiEl.clientHeight,'body.scrollH=',aiEl.scrollHeight,'overflow=',overflowing());
+        void aiEl.offsetHeight;
+        const _before=aiEl.scrollHeight;
         let guard=0;
-        while(overflowing() && fs>9.0 && guard<60){
-          fs-=0.25; if(lh>1.28) lh-=0.008;
+        while(aiEl.scrollHeight>aiEl.clientHeight+1 && fs>9.0 && guard<60){
+          fs-=0.25; if(lh>1.30) lh-=0.006;
           aiEl.style.fontSize=fs.toFixed(2)+'px'; aiEl.style.lineHeight=lh.toFixed(3);
+          void aiEl.offsetHeight;
           guard++;
         }
-        console.log('[fitAI] resultado: fs=',fs.toFixed(2),'guard=',guard);
-      }catch(e){ console.log('[fitAI] erro',e); }
+        console.log('[fitAI2] clientH=',aiEl.clientHeight,'scrollH antes=',_before,'scrollH depois=',aiEl.scrollHeight,'fs final=',fs.toFixed(2),'guard=',guard);
+      }catch(e){ console.log('[fitAI2] erro',e); }
     };
     window._fitAI=fitAI;
     // correr já e repetir depois do sistema de layout (150ms) aplicar as alturas guardadas
