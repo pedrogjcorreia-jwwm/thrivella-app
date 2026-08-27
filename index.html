@@ -11228,20 +11228,21 @@ function renderPlayerID(name, league) {
         aiEl.style.fontSize=fs+'px'; aiEl.style.lineHeight=lh;
         const overflowing=()=>{
           if(aiEl.scrollHeight>aiEl.clientHeight+1) return true;
-          // segurança extra: se o body ultrapassa o fundo do card
           if(card){
             const cr=card.getBoundingClientRect(), br=aiEl.getBoundingClientRect();
             if(br.top+aiEl.scrollHeight > cr.bottom-6) return true;
           }
           return false;
         };
+        console.log('[fitAI] card=',card?Math.round(card.getBoundingClientRect().height):'?','body.clientH=',aiEl.clientHeight,'body.scrollH=',aiEl.scrollHeight,'overflow=',overflowing());
         let guard=0;
         while(overflowing() && fs>9.0 && guard<60){
           fs-=0.25; if(lh>1.28) lh-=0.008;
           aiEl.style.fontSize=fs.toFixed(2)+'px'; aiEl.style.lineHeight=lh.toFixed(3);
           guard++;
         }
-      }catch(e){}
+        console.log('[fitAI] resultado: fs=',fs.toFixed(2),'guard=',guard);
+      }catch(e){ console.log('[fitAI] erro',e); }
     };
     window._fitAI=fitAI;
     // correr já e repetir depois do sistema de layout (150ms) aplicar as alturas guardadas
