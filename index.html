@@ -11715,8 +11715,8 @@ function generateAITextInline(p, pdfFs) {
            en:'A complete centre-back, as reliable defending as he is building'+_prova+'.'},
           {pt:'Defesa-central moderno que junta solidez defensiva e qualidade na saída de bola'+_prova+'.',
            en:'A modern centre-back combining defensive solidity with quality in build-up'+_prova+'.'},
-          {pt:'Central que fecha a baliza e ainda inicia o ataque'+_prova+', um perfil de duas faces.',
-           en:'A centre-back who locks the goal and also starts the attack'+_prova+', a two-sided profile.'}
+          {pt:'Central de perfil moderno, seguro a defender e influente na primeira fase de construção'+_prova+'.',
+           en:'A modern-profile centre-back, secure in defence and influential in the first phase of build-up'+_prova+'.'}
         ];
         perfil=_pk(_compl)[isEN?'en':'pt'];
         // reforço com a 3ª dimensão (aéreo ou físico), com métrica
@@ -11825,9 +11825,17 @@ function generateAITextInline(p, pdfFs) {
   function boldNums(t){
     return t.replace(/(\d+[.,]?\d*\s*(?:km\/h|xG|xA|m\/90|%)?)/g,'<strong style="color:rgba(255,255,255,.82)">$1</strong>');
   }
-  const fs = pdfFs ? pdfFs+'px' : (isEN ? '12.8px' : '12px');
-  const lh = pdfFs && pdfFs < 10 ? '1.5' : '1.5';
-  const _pgap = '4px';
+  // Comprimento total do texto (sem tags) para escalar a fonte: textos longos (ex.: extremos com dados completos) ficam ligeiramente menores para caberem no card
+  const _totalLen = ((perfil||'')+(fisico||'')+(transfer||'')+(mercadoPart1||'')+(mercadoPart2||'')).replace(/<[^>]+>/g,'').length;
+  let _fsBase = isEN ? 12.8 : 12, _lhBase = 1.5, _gapBase = 4;
+  if(!pdfFs){
+    if(_totalLen>860){ _fsBase = isEN?11.4:10.7; _lhBase = 1.36; _gapBase = 3; }
+    else if(_totalLen>760){ _fsBase = isEN?11.9:11.2; _lhBase = 1.42; _gapBase = 3; }
+    else if(_totalLen>640){ _fsBase = isEN?12.3:11.6; _lhBase = 1.46; _gapBase = 4; }
+  }
+  const fs = pdfFs ? pdfFs+'px' : _fsBase+'px';
+  const lh = pdfFs && pdfFs < 10 ? '1.5' : (''+_lhBase);
+  const _pgap = _gapBase+'px';
   const pStyle0 = 'margin:0;line-height:'+lh+';font-size:'+fs+';color:rgba(255,255,255,.6);text-align:justify;text-align-last:left;text-justify:inter-word';
   const pStyle1 = 'margin:'+_pgap+' 0 0;line-height:'+lh+';font-size:'+fs+';color:rgba(255,255,255,.52);text-align:justify;text-align-last:left;text-justify:inter-word';
   const pStyle2 = 'margin:'+_pgap+' 0 0;line-height:'+lh+';font-size:'+fs+';color:rgba(255,255,255,.46);text-align:justify;text-align-last:left;text-justify:inter-word';
