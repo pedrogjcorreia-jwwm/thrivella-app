@@ -4162,7 +4162,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   font-family:var(--font-d); font-size:11px; font-weight:700;
   letter-spacing:.4px; color:#e8edf2;
 }
-.pid3-ai-body{ flex:1; margin-top:calc(-2px + 1mm); line-height:1.42; font-size:13.3px; }
+.pid3-ai-body{ flex:1; min-height:0; margin-top:calc(-2px + 1mm); line-height:1.42; font-size:13.3px; }
 .pid3-ai-item{
   display:flex; gap:7px; margin-bottom:7px; align-items:flex-start;
 }
@@ -11221,23 +11221,43 @@ function renderPlayerID(name, league) {
     const txt=generateAITextInline(p);if(!txt)return;
     aiEl.innerHTML=txt;
     // Ajuste automático: reduz a letra até o texto caber na altura do card (evita corte da última linha)
-    try{
-      const fit=()=>{
+    const fitAI=()=>{
+      try{
+        const card=aiEl.closest('.pid3-ai-card');
         let fs=13.3, lh=1.42;
         aiEl.style.fontSize=fs+'px'; aiEl.style.lineHeight=lh;
-        // margem de 1px para tolerância de arredondamento
+        const overflowing=()=>{
+          if(aiEl.scrollHeight>aiEl.clientHeight+1) return true;
+          // segurança extra: se o body ultrapassa o fundo do card
+          if(card){
+            const cr=card.getBoundingClientRect(), br=aiEl.getBoundingClientRect();
+            if(br.top+aiEl.scrollHeight > cr.bottom-6) return true;
+          }
+          return false;
+        };
         let guard=0;
-        while(aiEl.scrollHeight>aiEl.clientHeight+1 && fs>10.0 && guard<40){
-          fs-=0.3; if(lh>1.30) lh-=0.01;
+        while(overflowing() && fs>9.0 && guard<60){
+          fs-=0.25; if(lh>1.28) lh-=0.008;
           aiEl.style.fontSize=fs.toFixed(2)+'px'; aiEl.style.lineHeight=lh.toFixed(3);
           guard++;
         }
-      };
-      fit();
-      // reajustar quando o card é redimensionado pelo utilizador
-      if(window.ResizeObserver && !aiEl._fitRO){
-        aiEl._fitRO=new ResizeObserver(()=>{ fit(); });
-        aiEl._fitRO.observe(aiEl);
+      }catch(e){}
+    };
+    window._fitAI=fitAI;
+    // correr já e repetir depois do sistema de layout (150ms) aplicar as alturas guardadas
+    fitAI();
+    setTimeout(fitAI,200);
+    setTimeout(fitAI,450);
+    // reajustar quando o card é redimensionado pelo utilizador (observa só o card, não o body, para evitar loops)
+    try{
+      if(window.ResizeObserver){
+        const card=aiEl.closest('.pid3-ai-card');
+        if(card){
+          if(card._fitRO) card._fitRO.disconnect();
+          let _raf=0;
+          card._fitRO=new ResizeObserver(()=>{ cancelAnimationFrame(_raf); _raf=requestAnimationFrame(fitAI); });
+          card._fitRO.observe(card);
+        }
       }
     }catch(e){}
   },120);
