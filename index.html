@@ -11220,6 +11220,26 @@ function renderPlayerID(name, league) {
     if(!aiEl||typeof generateAITextInline!=='function')return;
     const txt=generateAITextInline(p);if(!txt)return;
     aiEl.innerHTML=txt;
+    // Ajuste automático: reduz a letra até o texto caber na altura do card (evita corte da última linha)
+    try{
+      const fit=()=>{
+        let fs=13.3, lh=1.42;
+        aiEl.style.fontSize=fs+'px'; aiEl.style.lineHeight=lh;
+        // margem de 1px para tolerância de arredondamento
+        let guard=0;
+        while(aiEl.scrollHeight>aiEl.clientHeight+1 && fs>10.0 && guard<40){
+          fs-=0.3; if(lh>1.30) lh-=0.01;
+          aiEl.style.fontSize=fs.toFixed(2)+'px'; aiEl.style.lineHeight=lh.toFixed(3);
+          guard++;
+        }
+      };
+      fit();
+      // reajustar quando o card é redimensionado pelo utilizador
+      if(window.ResizeObserver && !aiEl._fitRO){
+        aiEl._fitRO=new ResizeObserver(()=>{ fit(); });
+        aiEl._fitRO.observe(aiEl);
+      }
+    }catch(e){}
   },120);
 
   /* ── Drag & Resize system ── */
