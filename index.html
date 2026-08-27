@@ -7568,7 +7568,7 @@ function renderCompare(){
     cmpRow('Vel. Máxima (km/h)', pA ? pA.max_speed : 0, pB ? pB.max_speed : 0, false, 'max_speed'),
     cmpRow('Sprint Dist /90 (m)', pA ? pA.sprint_dist90 : 0, pB ? pB.sprint_dist90 : 0, false, 'sprint_dist90'),
     cmpRow('Sprints /90', pA ? pA.sprints90 : 0, pB ? pB.sprints90 : 0, false, 'sprints90'),
-    cmpRow('Acelerações /90', pA ? pA.accels90 : 0, pB ? pB.accels90 : 0, false, 'accels90'),
+    cmpRow('High Accel', pA ? pA.accels90 : 0, pB ? pB.accels90 : 0, false, 'accels90'),
     // Ofensivo
     GAP,
     scoreRow('TOTAL OFENSIVO', pA ? pA.total_off : 0, pB ? pB.total_off : 0, 'var(--green)'),
@@ -15163,7 +15163,56 @@ function shAutoFillTab(tabId, players, sortFn){
   const used=new Set();
   const existing=shData[tabId]||{};
   const data={};
+
+  // ── Distribuição especial dos slots CB (centrais) ──
+  // Slots CB da formação, ordenados por posição no campo (esquerda->direita via x)
+  const cbSlots = formation.slots.filter(sl=>shEffTag(sl)==='CB' && !(existing[sl.id] && existing[sl.id]._manual));
+  if(cbSlots.length>=2){
+    // identificar LCB / CB central / RCB pelo label
+    const lcb = cbSlots.find(sl=>/LCB/i.test(sl.label));
+    const rcb = cbSlots.find(sl=>/RCB/i.test(sl.label));
+    const ccb = cbSlots.find(sl=>/^CB$/i.test(sl.label));
+    // quantos por posição: 1 liga -> 2, multi/all -> 3
+    const perSlot = (shSelectedLeagues.size===1) ? 2 : 3;
+    // pool de CB ordenado (respeita filtros de manual já usados)
+    const isLeft = p => /^e/i.test(p.foot||''); // 'esquerdo'
+    const pool = players.filter(p=>p.position_group==='CB' && !used.has(p.name)).sort(sortFn);
+    // ordem de destino alternada, começando no RCB
+    const order = ccb ? [rcb, ccb, lcb] : [rcb, lcb];
+    const totalNeeded = perSlot * cbSlots.length;
+    // buckets por slot
+    const buckets = {}; cbSlots.forEach(sl=>buckets[sl.id]=[]);
+    // 1) LCB: prioridade a canhotos (por ranking) até encher o LCB
+    if(lcb){
+      const lefties = pool.filter(isLeft);
+      for(const p of lefties){
+        if(buckets[lcb.id].length>=perSlot) break;
+        buckets[lcb.id].push(p.name); used.add(p.name);
+      }
+    }
+    // 2) resto distribuído em ordem alternada (RCB, [CB], LCB, ...) pulando slots já cheios
+    let placed = Object.values(buckets).reduce((s,a)=>s+a.length,0);
+    let oi=0;
+    for(const p of pool){
+      if(used.has(p.name)) continue;
+      if(placed>=totalNeeded) break;
+      // achar o próximo slot na ordem com espaço
+      let guard=0, target=null;
+      while(guard<order.length){
+        const cand=order[oi%order.length]; oi++;
+        if(cand && buckets[cand.id].length<perSlot){ target=cand; break; }
+        guard++;
+      }
+      if(!target) break;
+      buckets[target.id].push(p.name); used.add(p.name); placed++;
+    }
+    // gravar
+    cbSlots.forEach(sl=>{ data[sl.id]={players:buckets[sl.id],cur:0}; });
+  }
+
   formation.slots.forEach(slot=>{
+    // já preenchido (CB tratado acima)
+    if(data[slot.id]) return;
     // preserve manual
     if(existing[slot.id] && existing[slot.id]._manual){
       data[slot.id]=existing[slot.id];
