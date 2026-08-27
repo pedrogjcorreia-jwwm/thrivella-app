@@ -11351,6 +11351,7 @@ function generateAITextInline(p, pdfFs) {
   function f1(v){return v!=null?parseFloat(v.toFixed(1)):null;}
   const pos=(p.position||'').toUpperCase();
   const isFB=(p.position_group==='LB'||p.position_group==='RB');
+  const isCB=(p.position_group==='CB');
   const isW=!isFB&&(pos.includes('W')||pos.includes('LW')||pos.includes('RW')||pos.includes('WF')||pos.includes('AML')||pos.includes('AMR'));
   const isFwd=!isFB&&(pos.includes('CF')||pos.includes('ST'));
   const age=p.age||0;
@@ -11580,6 +11581,139 @@ function generateAITextInline(p, pdfFs) {
       }
       }
     }
+    }
+    perfil='<strong style="color:rgba(255,255,255,.82)">'+perfil+'</strong>';
+
+  } else if(isCB){
+    const _pc=(k)=>p[k]==null?0:pctL2(k);
+    const _n1=(k,d)=>p[k]!=null?parseFloat(p[k]).toFixed(d==null?1:d):null;
+    // Dimensões do central: defesa pura, jogo aéreo, construção/passe, físico
+    const _sc={
+      def:(_pc('def_duels')*1.1+_pc('def_duels_pct')*1.0+_pc('adj_intercept')*1.0+_pc('shot_int_adjtackl')*1.0)/4.1,
+      are:(_pc('aerial_duels90')*1.1+_pc('aerial_pct')*1.0)/2.1,
+      pas:(_pc('passes90')*0.9+_pc('passes_pct')*0.8+_pc('prog_pass')*1.1+_pc('prog_pass_pct')*1.0+_pc('prog_carries')*0.9+_pc('passes_final_third')*0.9)/5.6,
+      fis:(_pc('max_speed')*1.0+_pc('sprint_dist90')*1.0+_pc('sprints90')*1.0)/3.0
+    };
+    const _ord=Object.keys(_sc).sort((a,b)=>_sc[b]-_sc[a]);
+    const _p1=_ord[0], _p2=_ord[1];
+    const _duplo=_sc[_p1]>0.001 && _sc[_p2]>=_sc[_p1]*0.82 && _sc[_p2]>=0.55;
+    let _h=0; const _nm=p.name||''; for(let _i=0;_i<_nm.length;_i++) _h=(_h*31+_nm.charCodeAt(_i))>>>0;
+    const _vseed=(_h+['def','are','pas','fis'].indexOf(_p2)*5+(_duplo?2:0)+Math.round((_sc[_p1]||0)*7))>>>0;
+    const _pk=(a)=>a[_vseed%a.length];
+    // valores concretos
+    const _dd=_n1('def_duels'), _ddp=_n1('def_duels_pct',0), _ai=_n1('adj_intercept'), _si=_n1('shot_int_adjtackl',2),
+          _ad=_n1('aerial_duels90'), _adp=_n1('aerial_pct',0), _pa=_n1('passes90',0), _pap=_n1('passes_pct',0),
+          _pp=_n1('prog_pass'), _ppp=_n1('prog_pass_pct',0), _pf=_n1('passes_final_third'), _prg=_n1('prog_carries'),
+          _ms=_n1('max_speed'), _sd=_n1('sprint_dist90',0);
+    // Defesa (defensivo puro) vs Construção (ball-playing)
+    const _defScore=(_sc.def*1.0+_sc.are*0.7);
+    const _pasScore=_sc.pas;
+    const V={
+      def:{pt:['Central de vocação defensiva pura'+(_ddp?', com '+_ddp+'% de duelos defensivos ganhos a atestar a fiabilidade no 1x1':', que domina o duelo e raramente é ultrapassado')+'.',
+               'Defesa-central sólido na marcação'+(_dd?', com '+_dd+' duelos defensivos por 90 a mostrar o volume de trabalho na área':', que impõe presença física e ganha o corpo-a-corpo')+'.',
+               'Central de leitura apurada'+(_ai?', e as '+_ai+' interceções ajustadas por 90 revelam antecipação em vez de reacção':', que corta a linha de passe antes de o lance se tornar perigoso')+'.',
+               'Defesa-central que fecha o coração da defesa'+(_si?', com '+_si+' interceções de remate/tackle por 90 a travar o perigo à entrada da área':', bloqueando remates e cruzamentos com timing')+'.',
+               'Central agressivo na recuperação'+(_dd?', e os '+_dd+' duelos defensivos/90 confirmam-no como primeira barreira da equipa':', sempre pronto a sair na cobertura e a limpar a área')+'.'],
+           en:['A centre-back of pure defensive vocation'+(_ddp?', with '+_ddp+'% of defensive duels won attesting his reliability in 1v1':', dominating the duel and rarely being beaten')+'.',
+               'A centre-back solid in his marking'+(_dd?', with '+_dd+' defensive duels per 90 showing his workload in the box':', imposing physical presence and winning the battle')+'.',
+               'A centre-back with sharp reading'+(_ai?', and '+_ai+' adjusted interceptions per 90 reveal anticipation rather than reaction':', cutting the passing lane before the move turns dangerous')+'.',
+               'A centre-back who locks the heart of the defence'+(_si?', with '+_si+' shot/tackle interceptions per 90 stopping danger at the edge of the box':', blocking shots and crosses with timing')+'.',
+               'An aggressive centre-back in recovery'+(_dd?', and '+_dd+' defensive duels/90 confirm him as the team\u2019s first barrier':', always ready to cover and clear the area')+'.']},
+      are:{pt:['Central dominante no jogo aéreo'+(_adp?', com '+_adp+'% de duelos aéreos ganhos a mandar na área em ambas as balizas':', que ganha a bola alta com naturalidade')+'.',
+               'Defesa forte pelo alto'+(_ad?', com '+_ad+' duelos aéreos por 90 a evidenciar o domínio na disputa de bolas paradas':', imbatível na disputa aérea')+'.',
+               'Central que resolve pelo ar'+(_adp?' ('+_adp+'% aéreo ganho)':'')+', uma referência nos cantos e livres nas duas áreas.',
+               'Defesa-central de forte presença aérea'+(_ad?', com '+_ad+' duelos aéreos/90':'')+', que transforma a bola alta numa vantagem defensiva e ofensiva.'],
+           en:['A centre-back dominant in the air'+(_adp?', with '+_adp+'% of aerial duels won ruling the box at both ends':', who wins the high ball naturally')+'.',
+               'A defender strong in the air'+(_ad?', with '+_ad+' aerial duels per 90 highlighting his dominance on set pieces':', unbeatable in the aerial contest')+'.',
+               'A centre-back who settles things in the air'+(_adp?' ('+_adp+'% aerials won)':'')+', a reference on corners and free kicks in both boxes.',
+               'A centre-back with strong aerial presence'+(_ad?', with '+_ad+' aerial duels/90':'')+', turning the high ball into a defensive and attacking advantage.']},
+      pas:{pt:['Central construtor, um ball-playing defender'+(_ppp?', com '+_ppp+'% de passes progressivos certos a mostrar critério na primeira fase':', que inicia o jogo com bola e quebra linhas a partir de trás')+'.',
+               'Defesa-central de saída de bola limpa'+(_pp?', com '+_pp+' passes progressivos por 90 a fazer avançar a equipa desde a defesa':', confortável a receber sob pressão e a encontrar o passe')+'.',
+               'Central moderno que joga a construir'+(_pap?' ('+_pap+'% de acerto no passe)':'')+', mais próximo de um primeiro médio do que de um destruidor.',
+               'Defesa que transporta e distribui'+(_prg?', com '+_prg+' conduções progressivas por 90 a partir a pressão com bola nos pés':', que assume a responsabilidade de dar o primeiro passe de ataque')+'.',
+               'Ball-playing central back'+(_pf?', com '+_pf+' passes para o último terço por 90 a ligar defesa e meio-campo':', que privilegia a posse e a progressão em vez do simples alívio')+'.'],
+           en:['A ball-playing centre-back'+(_ppp?', with '+_ppp+'% of progressive passes completed showing judgement in the first phase':', who starts play with the ball and breaks lines from the back')+'.',
+               'A centre-back with clean build-up'+(_pp?', with '+_pp+' progressive passes per 90 moving the team forward from defence':', comfortable receiving under pressure and finding the pass')+'.',
+               'A modern centre-back who plays to build'+(_pap?' ('+_pap+'% pass accuracy)':'')+', closer to a first midfielder than to a destroyer.',
+               'A defender who carries and distributes'+(_prg?', with '+_prg+' progressive carries per 90 breaking the press with the ball at his feet':', taking responsibility for the first pass of the attack')+'.',
+               'A ball-playing central defender'+(_pf?', with '+_pf+' passes into the final third per 90 linking defence and midfield':', favouring possession and progression over the simple clearance')+'.']},
+      fis:{pt:['Central de forte suporte atlético'+(_ms?', com '+_ms+' km/h de velocidade máxima a dar-lhe margem para defender espaço nas costas':', rápido a cobrir a profundidade e a corrigir o posicionamento')+'.',
+               'Defesa-central que defende bem o espaço'+(_sd?', com '+_sd+' m de distância em sprint por 90 a sustentar uma linha alta':', com a mobilidade para jogar adiantado sem sofrer a profundidade')+'.',
+               'Central atlético, à vontade a defender em campo aberto'+(_ms?' ('+_ms+' km/h)':'')+', o que lhe permite acompanhar avançados velozes.',
+               'Defesa de boa capacidade física, que combina corpo e velocidade para dominar o duelo e a corrida.'],
+           en:['A centre-back with strong athletic support'+(_ms?', with '+_ms+' km/h top speed giving him margin to defend the space in behind':', quick to cover depth and correct his positioning')+'.',
+               'A centre-back who defends space well'+(_sd?', with '+_sd+' m of sprint distance per 90 sustaining a high line':', with the mobility to play high without being exposed in behind')+'.',
+               'An athletic centre-back, comfortable defending in open field'+(_ms?' ('+_ms+' km/h)':'')+', able to track quick forwards.',
+               'A defender with good physical capacity, combining body and speed to dominate the duel and the race.']}
+    };
+    const C={def:{pt:'uma base defensiva fiável no duelo e na antecipação',en:'a reliable defensive base in duels and anticipation'},
+             are:{pt:'um domínio aéreo que manda nas duas áreas',en:'aerial dominance that rules both boxes'},
+             pas:{pt:'uma saída de bola que faz a equipa jogar a partir de trás',en:'build-up play that makes the team play from the back'},
+             fis:{pt:'um suporte físico que lhe permite defender o espaço',en:'physical support that lets him defend space'}};
+    const _temDados=['def_duels','def_duels_pct','adj_intercept','shot_int_adjtackl','aerial_duels90','passes90','prog_pass'].filter(k=>p[k]!=null).length>=3;
+    if(!_temDados){
+      perfil=isEN?'A centre-back whose sample of available data is too thin to define a dominant profile.':'Defesa-central cuja amostra de dados disponíveis é insuficiente para definir um perfil dominante.';
+    } else if(_sc[_p1]<=0.02){
+      perfil=isEN?'A centre-back with a balanced profile, without one clearly dominant dimension against his league peers.':'Defesa-central de perfil equilibrado, sem uma dimensão claramente dominante face aos pares da liga.';
+    } else {
+      // Central completo: forte na defesa/aéreo E na construção
+      var _bothDP = _defScore>=0.60 && _pasScore>=0.60;
+      var _dpClose = Math.min(_defScore,_pasScore) >= Math.max(_defScore,_pasScore)*0.8;
+      if(_bothDP && _dpClose){
+        var _dfMet = (_ddp?_ddp+(isEN?'% of duels won':'% de duelos ganhos'):(_ai?_ai+(isEN?' adjusted interceptions/90':' interceções ajustadas/90'):(_ad?_ad+(isEN?' aerial duels/90':' duelos aéreos/90'):'')));
+        var _paMet = (_pp?_pp+(isEN?' progressive passes/90':' passes progressivos/90'):(_ppp?_ppp+(isEN?'% progressive passes':'% de passes progressivos'):(_prg?_prg+(isEN?' progressive carries/90':' conduções progressivas/90'):'')));
+        var _prova = (_dfMet&&_paMet)?(isEN?', with '+_dfMet+' at the back and '+_paMet+' coming out':', com '+_dfMet+' atrás e '+_paMet+' na saída'):(_dfMet?(isEN?', with '+_dfMet+' at the back':', com '+_dfMet+' atrás'):(_paMet?(isEN?', with '+_paMet+' in build-up':', com '+_paMet+' na construção'):''));
+        var _compl=[
+          {pt:'Central completo, tão fiável a defender como a construir'+_prova+'.',
+           en:'A complete centre-back, as reliable defending as he is building'+_prova+'.'},
+          {pt:'Defesa-central moderno que junta solidez defensiva e qualidade na saída de bola'+_prova+'.',
+           en:'A modern centre-back combining defensive solidity with quality in build-up'+_prova+'.'},
+          {pt:'Central que fecha a baliza e ainda inicia o ataque'+_prova+', um perfil de duas faces.',
+           en:'A centre-back who locks the goal and also starts the attack'+_prova+', a two-sided profile.'}
+        ];
+        perfil=_pk(_compl)[isEN?'en':'pt'];
+        // reforço com a 3ª dimensão (aéreo ou físico), com métrica
+        var _extraMet3={
+          are:(_adp?_adp+(isEN?'% aerials won':'% aéreos ganhos'):(_ad?_ad+(isEN?' aerial duels/90':' duelos aéreos/90'):null)),
+          fis:(_ms?_ms+(isEN?' km/h top speed':' km/h de velocidade máxima'):null)
+        };
+        var _ord3=['are','fis'].filter(d=>d!==_p1&&d!==_p2).sort((a,b)=>(_sc[b]||0)-(_sc[a]||0));
+        var _d3=_ord3[0]; var _m3=_d3?_extraMet3[_d3]:null;
+        var _t3={
+          are:{pt:' Acrescenta ainda domínio no jogo aéreo',en:' He also adds aerial dominance'},
+          fis:{pt:' Sustenta tudo com um bom suporte físico',en:' He sustains it all with a strong physical base'}
+        };
+        if(_d3&&_m3&&(_sc[_d3]||0)>=0.5){ perfil+=_t3[_d3][isEN?'en':'pt']+' ('+_m3+').'; }
+      } else {
+        perfil=_pk(V[_p1][isEN?'en':'pt']);
+        var _segMet={
+          def:(_ddp?_ddp+(isEN?'% of duels won':'% de duelos ganhos'):(_ai?_ai+(isEN?' adjusted interceptions/90':' interceções ajustadas/90'):(_si?_si+(isEN?' shot interceptions/90':' interceções de remate/90'):null))),
+          are:(_adp?_adp+(isEN?'% aerials won':'% aéreos ganhos'):(_ad?_ad+(isEN?' aerial duels/90':' duelos aéreos/90'):null)),
+          pas:(_pp?_pp+(isEN?' progressive passes/90':' passes progressivos/90'):(_ppp?_ppp+(isEN?'% progressive passes':'% de passes progressivos'):(_prg?_prg+(isEN?' progressive carries/90':' conduções progressivas/90'):null))),
+          fis:(_ms?_ms+(isEN?' km/h top speed':' km/h de velocidade máxima'):null)
+        };
+        var _segTxt={
+          def:{pt:' Complementa com solidez na fase defensiva',en:' He complements it with defensive solidity'},
+          are:{pt:' Junta domínio no jogo aéreo',en:' He adds aerial dominance'},
+          pas:{pt:' Contribui também na saída de bola',en:' He also contributes in build-up'},
+          fis:{pt:' Sustenta tudo isto com um bom suporte físico',en:' He sustains all of this with a strong physical base'}
+        };
+        if(_duplo){
+          var _m2=_segMet[_p2];
+          perfil+=(isEN?' To that he adds '+C[_p2].en+(_m2?' ('+_m2+')':'')+'.':' A isso junta '+C[_p2].pt+(_m2?' ('+_m2+')':'')+'.');
+        } else {
+          var _m2b=_segMet[_p2];
+          if(_m2b){ perfil+=(_segTxt[_p2][isEN?'en':'pt'])+' ('+_m2b+').'; }
+          if(_sc[_ord[3]]<=0.15){
+            var _fraco={def:{pt:'Na fase defensiva pura, contudo, fica aquém dos melhores centrais da liga.',en:'In pure defending, though, he falls short of the league\u2019s best centre-backs.'},
+                        are:{pt:'O jogo aéreo é, ainda assim, um capítulo a desenvolver.',en:'The aerial game remains, however, an area to develop.'},
+                        pas:{pt:'A saída de bola é a faceta com mais margem de evolução.',en:'Build-up is the facet with the most room to grow.'},
+                        fis:{pt:'A componente física é o aspecto onde pode dar outro salto.',en:'The physical component is where he can take another step.'}};
+            var _wk=_ord[3];
+            if(_fraco[_wk]) perfil+=' '+_fraco[_wk][isEN?'en':'pt'];
+          }
+        }
+      }
     }
     perfil='<strong style="color:rgba(255,255,255,.82)">'+perfil+'</strong>';
 
