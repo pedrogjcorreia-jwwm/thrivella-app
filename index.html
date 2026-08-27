@@ -4162,7 +4162,7 @@ input[type=range]{accent-color:var(--accent);width:100%;max-width:100%;box-sizin
   font-family:var(--font-d); font-size:11px; font-weight:700;
   letter-spacing:.4px; color:#e8edf2;
 }
-.pid3-ai-body{ flex:1; min-height:0; margin-top:calc(-2px + 1mm); line-height:1.42; font-size:13.3px; }
+.pid3-ai-body{ flex:1; min-height:0; margin-top:calc(-2px + 1mm); }
 .pid3-ai-item{
   display:flex; gap:7px; margin-bottom:7px; align-items:flex-start;
 }
@@ -11220,40 +11220,6 @@ function renderPlayerID(name, league) {
     if(!aiEl||typeof generateAITextInline!=='function')return;
     const txt=generateAITextInline(p);if(!txt)return;
     aiEl.innerHTML=txt;
-    // Ajuste automático: reduz a letra até o texto caber na altura do card (evita corte da última linha)
-    const fitAI=()=>{
-      try{
-        let fs=13.3, lh=1.42;
-        aiEl.style.fontSize=fs+'px'; aiEl.style.lineHeight=lh;
-        void aiEl.offsetHeight;
-        const _before=aiEl.scrollHeight;
-        let guard=0;
-        while(aiEl.scrollHeight>aiEl.clientHeight+1 && fs>9.0 && guard<60){
-          fs-=0.25; if(lh>1.30) lh-=0.006;
-          aiEl.style.fontSize=fs.toFixed(2)+'px'; aiEl.style.lineHeight=lh.toFixed(3);
-          void aiEl.offsetHeight;
-          guard++;
-        }
-        console.log('[fitAI2] clientH=',aiEl.clientHeight,'scrollH antes=',_before,'scrollH depois=',aiEl.scrollHeight,'fs final=',fs.toFixed(2),'guard=',guard);
-      }catch(e){ console.log('[fitAI2] erro',e); }
-    };
-    window._fitAI=fitAI;
-    // correr já e repetir depois do sistema de layout (150ms) aplicar as alturas guardadas
-    fitAI();
-    setTimeout(fitAI,200);
-    setTimeout(fitAI,450);
-    // reajustar quando o card é redimensionado pelo utilizador (observa só o card, não o body, para evitar loops)
-    try{
-      if(window.ResizeObserver){
-        const card=aiEl.closest('.pid3-ai-card');
-        if(card){
-          if(card._fitRO) card._fitRO.disconnect();
-          let _raf=0;
-          card._fitRO=new ResizeObserver(()=>{ cancelAnimationFrame(_raf); _raf=requestAnimationFrame(fitAI); });
-          card._fitRO.observe(card);
-        }
-      }
-    }catch(e){}
   },120);
 
   /* ── Drag & Resize system ── */
@@ -11860,8 +11826,8 @@ function generateAITextInline(p, pdfFs) {
     return t.replace(/(\d+[.,]?\d*\s*(?:km\/h|xG|xA|m\/90|%)?)/g,'<strong style="color:rgba(255,255,255,.82)">$1</strong>');
   }
   const fs = pdfFs ? pdfFs+'px' : (isEN ? '12.8px' : '12px');
-  const lh = pdfFs && pdfFs < 10 ? '1.5' : '1.65';
-  const _pgap = '5px';
+  const lh = pdfFs && pdfFs < 10 ? '1.5' : '1.5';
+  const _pgap = '4px';
   const pStyle0 = 'margin:0;line-height:'+lh+';font-size:'+fs+';color:rgba(255,255,255,.6);text-align:justify;text-align-last:left;text-justify:inter-word';
   const pStyle1 = 'margin:'+_pgap+' 0 0;line-height:'+lh+';font-size:'+fs+';color:rgba(255,255,255,.52);text-align:justify;text-align-last:left;text-justify:inter-word';
   const pStyle2 = 'margin:'+_pgap+' 0 0;line-height:'+lh+';font-size:'+fs+';color:rgba(255,255,255,.46);text-align:justify;text-align-last:left;text-justify:inter-word';
