@@ -15475,6 +15475,34 @@ function shRenderPitch(formation, tabData){
       baseDot.title=(slot.id==='lm')?'Trocar LB / LW':'Trocar RB / RW';
       baseDot.onclick=function(e){ e.stopPropagation(); shToggleSlotMode(slot.id); };
     }
+    // LCB: clicar no badge busca o melhor central CANHOTO disponível e coloca na pool do LCB
+    if(!shEditMode && shEffTag(slot)==='CB' && /LCB/i.test(slot.label)){
+      baseDot.style.cursor='pointer';
+      baseDot.title='Adicionar melhor canhoto ao LCB';
+      baseDot.onclick=function(e){
+        e.stopPropagation();
+        const league=shGetLeague();
+        let tabPlayers=shFilterPlayers(league);
+        if(shCurrentTab==='contract') tabPlayers=tabPlayers.filter(p=>p.contract_end&&(p.contract_end.includes('2025')||p.contract_end.includes('2026')));
+        if(shCurrentTab==='u23') tabPlayers=tabPlayers.filter(p=>(p.age||99)<=23);
+        const allUsed=new Set(Object.values(shData[shCurrentTab]||{}).flatMap(s=>s.players||[]));
+        const isLeft=p=>/^e/i.test(p.foot||''); // 'esquerdo'
+        const pool=tabPlayers
+          .filter(p=>p.position_group==='CB' && isLeft(p) && !allUsed.has(p.name))
+          .sort((a,b)=>activeTI(b)-activeTI(a));
+        if(pool.length>0){
+          if(!shData[shCurrentTab]) shData[shCurrentTab]={};
+          if(!shData[shCurrentTab][slot.id]) shData[shCurrentTab][slot.id]={players:[],cur:0};
+          shData[shCurrentTab][slot.id].players.push(pool[0].name);
+          shData[shCurrentTab][slot.id]._manual=true;
+          shData[shCurrentTab][slot.id].cur=shData[shCurrentTab][slot.id].players.length-1;
+          try{ if(typeof shSave==='function') shSave(); }catch(e){}
+          shRenderPitch(SH_FORMATIONS[shGetFormation()], shData[shCurrentTab]);
+        } else {
+          alert('Não há mais centrais canhotos disponíveis.');
+        }
+      };
+    }
 
         // Normal card
     if(!hasPlayers){
