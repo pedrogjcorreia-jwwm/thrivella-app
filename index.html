@@ -8719,12 +8719,13 @@ function generateCompareAI(pA, pB) {
   const keyMetrics = _isFBcmp ? ['prog_carries','crosses90','def_duels','shot_int_adjtackl','prog_pass']
     : pA.position_group==='CF' ? ['goals_np','xg90','box_touches','shots90','recpt_depth']
     : pA.position_group==='CB' ? ['def_duels','aerial_duels90','shot_int_adjtackl','adj_intercept','prog_pass']
+    : pA.position_group==='DM' ? ['def_duels','tackles_poss','adj_intercept','prog_pass','passes_final_third']
     : ['prog_carries','dribles90','accels90','recpt_depth','shot_assist'];
   const votesA = keyMetrics.filter(k=>{ const b=better(k); return b&&b.name===pA.name; }).length;
   const votesB = keyMetrics.filter(k=>{ const b=better(k); return b&&b.name===pB.name; }).length;
   const perfL = votesA>=votesB?pA:pB, perfO = votesA>=votesB?pB:pA;
   // Build highlight list for leader — value bold, label normal
-  const hlL=[];  if(_isFBcmp){  if(better('prog_carries')?.name===perfL.name && perfL.prog_carries) hlL.push(`<b>${parseFloat(perfL.prog_carries).toFixed(1)}</b> conduções prog./90`);  if(better('crosses90')?.name===perfL.name && perfL.crosses90) { const pct = perfL.crosses_pct ? ` (<b>${Math.round(perfL.crosses_pct)}%</b> suc.)` : ''; hlL.push(`<b>${parseFloat(perfL.crosses90).toFixed(1)}</b> cruzamentos/90${pct}`); }  if(better('def_duels')?.name===perfL.name && perfL.def_duels) { const pct = perfL.def_duels_pct ? ` (<b>${Math.round(perfL.def_duels_pct)}%</b> ganhos)` : ''; hlL.push(`<b>${parseFloat(perfL.def_duels).toFixed(1)}</b> duelos def./90${pct}`); }  if(better('shot_int_adjtackl')?.name===perfL.name && perfL.shot_int_adjtackl) hlL.push(`<b>${parseFloat(perfL.shot_int_adjtackl).toFixed(2)}</b> interceções de remate/90`);  if(better('prog_pass')?.name===perfL.name && perfL.prog_pass) hlL.push(`<b>${parseFloat(perfL.prog_pass).toFixed(1)} passes progressivos/90</b>`);} else if(pA.position_group==='CB'){  if(better('def_duels')?.name===perfL.name && perfL.def_duels) { const pct = perfL.def_duels_pct ? ` (<b>${Math.round(perfL.def_duels_pct)}%</b> ganhos)` : ''; hlL.push(`<b>${parseFloat(perfL.def_duels).toFixed(1)}</b> duelos def./90${pct}`); }  if(better('aerial_duels90')?.name===perfL.name && perfL.aerial_duels90) { const pct = perfL.aerial_pct ? ` (<b>${Math.round(perfL.aerial_pct)}%</b> ganhos)` : ''; hlL.push(`<b>${parseFloat(perfL.aerial_duels90).toFixed(1)}</b> duelos aéreos/90${pct}`); }  if(better('shot_int_adjtackl')?.name===perfL.name && perfL.shot_int_adjtackl) hlL.push(`<b>${parseFloat(perfL.shot_int_adjtackl).toFixed(2)}</b> interceções remate+tackle/90`);  if(better('adj_intercept')?.name===perfL.name && perfL.adj_intercept) hlL.push(`<b>${parseFloat(perfL.adj_intercept).toFixed(1)}</b> interceções ajustadas/90`);  if(better('prog_pass')?.name===perfL.name && perfL.prog_pass) { const pct = perfL.prog_pass_pct ? ` (<b>${Math.round(perfL.prog_pass_pct)}%</b>)` : ''; hlL.push(`<b>${parseFloat(perfL.prog_pass).toFixed(1)}</b> passes progressivos/90${pct}`); }} else if(pA.position_group==='CF'){  if(better('goals_np')?.name===perfL.name && perfL.goals_np) hlL.push(`<b>${perfL.goals_np}</b> golos s/ penálti`);  if(better('xg90')?.name===perfL.name && perfL.xg90) hlL.push(`<b>${parseFloat(perfL.xg90).toFixed(2)}</b> xG/90`);  if(better('box_touches')?.name===perfL.name && perfL.box_touches) hlL.push(`<b>${parseFloat(perfL.box_touches).toFixed(2)}</b> toques na área/90`);  if(better('shots90')?.name===perfL.name && perfL.shots90) hlL.push(`<b>${parseFloat(perfL.shots90).toFixed(1)}</b> remates/90`);  if(better('recpt_depth')?.name===perfL.name && perfL.recpt_depth) hlL.push(`<b>${parseFloat(perfL.recpt_depth).toFixed(1)} recepções em profundidade</b>`);} else {
+  const hlL=[];  if(_isFBcmp){  if(better('prog_carries')?.name===perfL.name && perfL.prog_carries) hlL.push(`<b>${parseFloat(perfL.prog_carries).toFixed(1)}</b> conduções prog./90`);  if(better('crosses90')?.name===perfL.name && perfL.crosses90) { const pct = perfL.crosses_pct ? ` (<b>${Math.round(perfL.crosses_pct)}%</b> suc.)` : ''; hlL.push(`<b>${parseFloat(perfL.crosses90).toFixed(1)}</b> cruzamentos/90${pct}`); }  if(better('def_duels')?.name===perfL.name && perfL.def_duels) { const pct = perfL.def_duels_pct ? ` (<b>${Math.round(perfL.def_duels_pct)}%</b> ganhos)` : ''; hlL.push(`<b>${parseFloat(perfL.def_duels).toFixed(1)}</b> duelos def./90${pct}`); }  if(better('shot_int_adjtackl')?.name===perfL.name && perfL.shot_int_adjtackl) hlL.push(`<b>${parseFloat(perfL.shot_int_adjtackl).toFixed(2)}</b> interceções de remate/90`);  if(better('prog_pass')?.name===perfL.name && perfL.prog_pass) hlL.push(`<b>${parseFloat(perfL.prog_pass).toFixed(1)} passes progressivos/90</b>`);} else if(pA.position_group==='CB'){  if(better('def_duels')?.name===perfL.name && perfL.def_duels) { const pct = perfL.def_duels_pct ? ` (<b>${Math.round(perfL.def_duels_pct)}%</b> ganhos)` : ''; hlL.push(`<b>${parseFloat(perfL.def_duels).toFixed(1)}</b> duelos def./90${pct}`); }  if(better('aerial_duels90')?.name===perfL.name && perfL.aerial_duels90) { const pct = perfL.aerial_pct ? ` (<b>${Math.round(perfL.aerial_pct)}%</b> ganhos)` : ''; hlL.push(`<b>${parseFloat(perfL.aerial_duels90).toFixed(1)}</b> duelos aéreos/90${pct}`); }  if(better('shot_int_adjtackl')?.name===perfL.name && perfL.shot_int_adjtackl) hlL.push(`<b>${parseFloat(perfL.shot_int_adjtackl).toFixed(2)}</b> interceções remate+tackle/90`);  if(better('adj_intercept')?.name===perfL.name && perfL.adj_intercept) hlL.push(`<b>${parseFloat(perfL.adj_intercept).toFixed(1)}</b> interceções ajustadas/90`);  if(better('prog_pass')?.name===perfL.name && perfL.prog_pass) { const pct = perfL.prog_pass_pct ? ` (<b>${Math.round(perfL.prog_pass_pct)}%</b>)` : ''; hlL.push(`<b>${parseFloat(perfL.prog_pass).toFixed(1)}</b> passes progressivos/90${pct}`); }} else if(pA.position_group==='DM'){  if(better('def_duels')?.name===perfL.name && perfL.def_duels) { const pct = perfL.def_duels_pct ? ` (<b>${Math.round(perfL.def_duels_pct)}%</b> ganhos)` : ''; hlL.push(`<b>${parseFloat(perfL.def_duels).toFixed(1)}</b> duelos def./90${pct}`); }  if(better('tackles_poss')?.name===perfL.name && perfL.tackles_poss) hlL.push(`<b>${parseFloat(perfL.tackles_poss).toFixed(1)}</b> desarmes+recuperações/90`);  if(better('adj_intercept')?.name===perfL.name && perfL.adj_intercept) hlL.push(`<b>${parseFloat(perfL.adj_intercept).toFixed(1)}</b> interceções ajustadas/90`);  if(better('prog_pass')?.name===perfL.name && perfL.prog_pass) { const pct = perfL.prog_pass_pct ? ` (<b>${Math.round(perfL.prog_pass_pct)}%</b>)` : ''; hlL.push(`<b>${parseFloat(perfL.prog_pass).toFixed(1)}</b> passes progressivos/90${pct}`); }  if(better('passes_final_third')?.name===perfL.name && perfL.passes_final_third) hlL.push(`<b>${parseFloat(perfL.passes_final_third).toFixed(1)}</b> passes último terço/90`);} else if(pA.position_group==='CF'){  if(better('goals_np')?.name===perfL.name && perfL.goals_np) hlL.push(`<b>${perfL.goals_np}</b> golos s/ penálti`);  if(better('xg90')?.name===perfL.name && perfL.xg90) hlL.push(`<b>${parseFloat(perfL.xg90).toFixed(2)}</b> xG/90`);  if(better('box_touches')?.name===perfL.name && perfL.box_touches) hlL.push(`<b>${parseFloat(perfL.box_touches).toFixed(2)}</b> toques na área/90`);  if(better('shots90')?.name===perfL.name && perfL.shots90) hlL.push(`<b>${parseFloat(perfL.shots90).toFixed(1)}</b> remates/90`);  if(better('recpt_depth')?.name===perfL.name && perfL.recpt_depth) hlL.push(`<b>${parseFloat(perfL.recpt_depth).toFixed(1)} recepções em profundidade</b>`);} else {
   if(better('prog_carries')?.name===perfL.name && perfL.prog_carries) hlL.push(`<b>${parseFloat(perfL.prog_carries).toFixed(1)}</b> conduções prog./90`);
   if(better('dribles90')?.name===perfL.name && perfL.dribles90) {
     const pct = perfL.dribles_pct ? ` (<b>${Math.round(perfL.dribles_pct)}%</b> suc.)` : '';
@@ -8791,6 +8792,55 @@ function generateCompareAI(pA, pB) {
       _s3=' Defensivamente, '+bn(_def.name)+(_ddWin?' volta a levar a melhor ('+_ddWin+' duelos defensivos/90'+(_ddpWin?', '+_ddpWin+'% ganhos':'')+')':' é o mais seguro')+', confirmando-se como a opção mais fiável sem bola.';
     }
     p2='<strong style="color:#fff">'+_s1+'</strong>'+_s2+_s3+' ';
+
+  } else if(pA.position_group==='DM'){
+    const _f=(x,k,d)=>x[k]!=null?parseFloat(x[k]).toFixed(d==null?1:d):null;
+    const _dmPool=(k)=>PLAYERS.filter(x=>x.position_group==='DM'&&x[k]!=null);
+    const _pctDM=(x,k)=>{const L=_dmPool(k);if(x[k]==null||!L.length)return 0;const r=[...L].sort((a,b)=>(b[k]||0)-(a[k]||0)).findIndex(y=>y.name===x.name)+1;return r>0?(L.length-r)/L.length:0;};
+    const _dfScore=(x)=>(_pctDM(x,'def_duels')+_pctDM(x,'def_duels_pct')+_pctDM(x,'tackles_poss')+_pctDM(x,'adj_intercept'))/4;
+    const _paScore=(x)=>(_pctDM(x,'passes90')+_pctDM(x,'passes_pct')+_pctDM(x,'prog_pass')+_pctDM(x,'prog_pass_pct')+_pctDM(x,'passes_final_third'))/5;
+    const _fiScore=(x)=>(_pctDM(x,'total_dist')+_pctDM(x,'hsr90'))/2;
+    const _dfA=_dfScore(pA),_dfB=_dfScore(pB),_paA=_paScore(pA),_paB=_paScore(pB),_fiA=_fiScore(pA),_fiB=_fiScore(pB);
+    const _def=_dfA>_dfB?pA:pB, _pas=_paA>_paB?pA:pB, _fis=_fiA>_fiB?pA:pB;
+    const _dfGap=Math.abs(_dfA-_dfB), _paGap=Math.abs(_paA-_paB);
+    // Classificar cada jogador: defensivo puro / de posse / completo
+    const _tipo=(dScore,pScore)=>{ const D=dScore>=0.6, P=pScore>=0.6; if(D&&P) return 'completo'; if(P&&!D) return 'posse'; if(D&&!P) return 'defensivo'; return 'equilibrado'; };
+    const _tA=_tipo(_dfA,_paA), _tB=_tipo(_dfB,_paB);
+    let _s1;
+    if(_ligaMismatch){
+      _s1='Antes de ler os números, um aviso de contexto: '+bn(_strongerLg.name)+' compete na '+_strongerLg.league+', bem acima da '+_weakerLg.league+' de '+bn(_weakerLg.name)+', pelo que os registos deste último surgem inflacionados por um contexto mais fraco.';
+    } else if(_tA!==_tB && (_tA==='posse'||_tB==='posse') && (_tA==='defensivo'||_tB==='defensivo')){
+      const _bp=_tA==='posse'?pA:pB, _pd=_tA==='defensivo'?pA:pB;
+      _s1='Dois perfis de médio em contraste: '+bn(_bp.name)+' é um médio de posse, que organiza e faz a equipa jogar a partir de trás, enquanto '+bn(_pd.name)+' é um recuperador puro, mais forte no duelo, no desarme e na leitura do lance.';
+    } else if(_tA==='completo'&&_tB==='completo'){
+      _s1='Dois médios completos: tanto '+bn(perfL.name)+' como '+bn(perfO.name)+' juntam solidez defensiva a qualidade na construção, e a escolha entre eles joga-se nos detalhes.';
+    } else if(_dfGap<0.12 && _paGap<0.12){
+      _s1='Dois médios de perfil semelhante e nível aproximado: '+bn(perfL.name)+' e '+bn(perfO.name)+' protegem o meio-campo de forma parecida, e a decisão está nos pormenores.';
+    } else {
+      _s1=bn(perfL.name)+' é o mais completo dos dois neste confronto, superior tanto a recuperar como a construir, e '+bn(perfO.name)+' fica um passo atrás no impacto global.';
+    }
+    // Frase 2 — vertente defensiva com número
+    let _s2='';
+    const _ddWin=_f(_def,'def_duels'), _ddpWin=_f(_def,'def_duels_pct',0), _tkWin=_f(_def,'tackles_poss'), _aiWin=_f(_def,'adj_intercept');
+    if(_ligaMismatch){
+      const _ddS=_f(_strongerLg,'def_duels'), _tkS=_f(_strongerLg,'tackles_poss');
+      _s2=' Ainda assim, vale olhar para o que cada um faz: '+bn(_strongerLg.name)+(_ddS?' regista '+_ddS+' duelos defensivos/90'+(_tkS?' e '+_tkS+' desarmes+recuperações/90':'')+' num contexto exigente':' mantém boa solidez num contexto exigente')+', o que dá outro peso aos seus números.';
+    } else {
+      _s2=' Sem bola, '+bn(_def.name)+' é a referência'+(_ddWin?' ('+_ddWin+' duelos def./90'+(_ddpWin?', '+_ddpWin+'% ganhos':'')+')':'')+(_tkWin?', e recupera mais posse ('+_tkWin+' desarmes+recuperações/90)':(_aiWin?', e lê melhor o lance ('+_aiWin+' interceções ajustadas/90)':''))+', confirmando-se como a opção mais fiável na contenção.';
+    }
+    // Frase 3 — construção com número
+    let _s3='';
+    const _ppWin=_f(_pas,'prog_pass'), _pppWin=_f(_pas,'prog_pass_pct',0), _pfWin=_f(_pas,'passes_final_third');
+    if(!_ligaMismatch){
+      _s3=' Na construção, '+bn(_pas.name)+(_ppWin?' é o mais influente ('+_ppWin+' passes progressivos/90'+(_pppWin?', '+_pppWin+'% certos':'')+')':(_pfWin?' alimenta mais o ataque ('+_pfWin+' passes último terço/90)':' assume a organização'))+', dando à equipa uma primeira fase mais fiável.';
+    }
+    // Frase 4 — motor físico (raio de ação/intensidade), só se houver diferença clara
+    let _s4='';
+    if(!_ligaMismatch && Math.abs(_fiA-_fiB)>=0.2 && (_fis.total_dist!=null||_fis.hsr90!=null)){
+      const _tdWin=_f(_fis,'total_dist',0), _hsWin=_f(_fis,'hsr90',0);
+      _s4=' No plano físico, '+bn(_fis.name)+' cobre mais terreno'+(_tdWin?' ('+_tdWin+' m/90':'')+(_hsWin?', '+_hsWin+' m em alta intensidade':'')+((_tdWin||_hsWin)?')':'')+', dando maior raio de ação e intensidade à equipa.';
+    }
+    p2='<strong style="color:#fff">'+_s1+'</strong>'+_s2+_s3+_s4+' ';
 
   } else if(pA.position_group==='CB'){
     const _f=(x,k,d)=>x[k]!=null?parseFloat(x[k]).toFixed(d==null?1:d):null;
