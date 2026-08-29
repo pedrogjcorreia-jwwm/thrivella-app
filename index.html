@@ -10748,7 +10748,7 @@ function renderPlayerID(name, league) {
           window._pidSubHead(11,4)+
         '</div>'+
         '<div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;padding:0 14px 10px">'+
-          ((p.position_group==='LB'||p.position_group==='RB')?(mrow('Velocidade Máxima',p.max_speed!=null?parseFloat(p.max_speed).toFixed(1):null,'max_speed',false,11,4)+mrow('Sprint Dist / 90',p.sprint_dist90!=null?Math.round(p.sprint_dist90):null,'sprint_dist90',false,11,4)+mrow('Sprints / 90',p.sprints90!=null?parseFloat(p.sprints90).toFixed(1):null,'sprints90',false,11,4)+mrow('HSR / 90',p.hsr90!=null?Math.round(p.hsr90):null,'hsr90',false,11,4)+mrow('Distância Total',p.total_dist!=null?Math.round(p.total_dist):null,'total_dist',false,11,4)):p.position_group==='DM'?(mrow('Velocidade Máxima',p.max_speed!=null?parseFloat(p.max_speed).toFixed(1):null,'max_speed',false,11,4)+mrow('Distância Total',p.total_dist!=null?Math.round(p.total_dist):null,'total_dist',false,11,4)+mrow('Sprint Dist / 90',p.sprint_dist90!=null?Math.round(p.sprint_dist90):null,'sprint_dist90',false,11,4)+mrow('HSR / 90',p.hsr90!=null?Math.round(p.hsr90):null,'hsr90',false,11,4)+mrow('% Sprint + HSR',p.hsr_sprint_pct!=null?parseFloat(p.hsr_sprint_pct).toFixed(1):null,'hsr_sprint_pct',false,11,4)):p.position_group==='CB'?(mrow('Velocidade Máxima',p.max_speed!=null?parseFloat(p.max_speed).toFixed(1):null,'max_speed',false,11,4)+mrow('Sprint Dist / 90',p.sprint_dist90!=null?Math.round(p.sprint_dist90):null,'sprint_dist90',false,11,4)+mrow('Sprints / 90',p.sprints90!=null?parseFloat(p.sprints90).toFixed(1):null,'sprints90',false,11,4)+mrow('High Accelerations',p.accels90!=null?parseFloat(p.accels90).toFixed(1):null,'accels90',false,11,4)):p.position_group==='CF'?(mrow(t('m_max_speed'),p.max_speed?parseFloat(p.max_speed).toFixed(1):null,'max_speed',false,11,4)+mrow(t('m_sprint_dist'),p.sprint_dist90?Math.round(p.sprint_dist90):null,'sprint_dist90',false,11,4)+mrow(t('m_sprints90'),p.sprints90?parseFloat(p.sprints90).toFixed(1):null,'sprints90',false,11,4)+mrow('Total Dist',p.total_dist?Math.round(p.total_dist):null,'total_dist',false,11,4)+mrow(t('m_accels90'),p.accels90!=null?parseFloat(p.accels90).toFixed(1):null,'accels90',false,11,4)):(mrow(t('m_max_speed'), p.max_speed?parseFloat(p.max_speed).toFixed(1):null, 'max_speed',false,11,4)+
+          ((p.position_group==='LB'||p.position_group==='RB')?(mrow('Velocidade Máxima',p.max_speed!=null?parseFloat(p.max_speed).toFixed(1):null,'max_speed',false,11,4)+mrow('Sprint Dist / 90',p.sprint_dist90!=null?Math.round(p.sprint_dist90):null,'sprint_dist90',false,11,4)+mrow('Sprints / 90',p.sprints90!=null?parseFloat(p.sprints90).toFixed(1):null,'sprints90',false,11,4)+mrow('HSR / 90',p.hsr90!=null?Math.round(p.hsr90):null,'hsr90',false,11,4)+mrow('Distância Total',p.total_dist!=null?Math.round(p.total_dist):null,'total_dist',false,11,4)):p.position_group==='DM'?(mrow('Velocidade Máxima',p.max_speed!=null?parseFloat(p.max_speed).toFixed(1):null,'max_speed',false,11,4)+mrow('Distância Total',p.total_dist!=null?Math.round(p.total_dist):null,'total_dist',false,11,4)+mrow('HSR / 90',p.hsr90!=null?Math.round(p.hsr90):null,'hsr90',false,11,4)+mrow('% Sprint + HSR',p.hsr_sprint_pct!=null?parseFloat(p.hsr_sprint_pct).toFixed(1):null,'hsr_sprint_pct',false,11,4)):p.position_group==='CB'?(mrow('Velocidade Máxima',p.max_speed!=null?parseFloat(p.max_speed).toFixed(1):null,'max_speed',false,11,4)+mrow('Sprint Dist / 90',p.sprint_dist90!=null?Math.round(p.sprint_dist90):null,'sprint_dist90',false,11,4)+mrow('Sprints / 90',p.sprints90!=null?parseFloat(p.sprints90).toFixed(1):null,'sprints90',false,11,4)+mrow('High Accelerations',p.accels90!=null?parseFloat(p.accels90).toFixed(1):null,'accels90',false,11,4)):p.position_group==='CF'?(mrow(t('m_max_speed'),p.max_speed?parseFloat(p.max_speed).toFixed(1):null,'max_speed',false,11,4)+mrow(t('m_sprint_dist'),p.sprint_dist90?Math.round(p.sprint_dist90):null,'sprint_dist90',false,11,4)+mrow(t('m_sprints90'),p.sprints90?parseFloat(p.sprints90).toFixed(1):null,'sprints90',false,11,4)+mrow('Total Dist',p.total_dist?Math.round(p.total_dist):null,'total_dist',false,11,4)+mrow(t('m_accels90'),p.accels90!=null?parseFloat(p.accels90).toFixed(1):null,'accels90',false,11,4)):(mrow(t('m_max_speed'), p.max_speed?parseFloat(p.max_speed).toFixed(1):null, 'max_speed',false,11,4)+
           mrow(t('m_sprint_dist'), p.sprint_dist90?Math.round(p.sprint_dist90):null, 'sprint_dist90',false,11,4)+
           mrow(t('m_sprints90'), p.sprints90?parseFloat(p.sprints90).toFixed(1):null, 'sprints90',false,11,4)+
           mrow(t('m_hsr90'), p.hsr90?Math.round(p.hsr90):null, 'hsr90',false,11,4)+
@@ -11441,10 +11441,11 @@ function generateAITextInline(p, pdfFs) {
   function pctG(k){if(p[k]==null)return 0;const _r=rG(k),_n=_cntG(k);return _r>0?(_n-_r)/_n:0;}
   function pctL2(k){if(p[k]==null)return 0;const _r=rL(k),_n=_cntL(k);return _r>0?(_n-_r)/_n:0;}
   function top(k,thr){return pctL2(k)>=thr;}
-  function f1(v){return v!=null?parseFloat(v.toFixed(1)):null;}
+  function f1(v){return v!=null?parseFloat(parseFloat(v).toFixed(1)):null;}
   const pos=(p.position||'').toUpperCase();
   const isFB=(p.position_group==='LB'||p.position_group==='RB');
   const isCB=(p.position_group==='CB');
+  const isDM=(p.position_group==='DM');
   const isW=!isFB&&(pos.includes('W')||pos.includes('LW')||pos.includes('RW')||pos.includes('WF')||pos.includes('AML')||pos.includes('AMR'));
   const isFwd=!isFB&&(pos.includes('CF')||pos.includes('ST'));
   const age=p.age||0;
@@ -11674,6 +11675,122 @@ function generateAITextInline(p, pdfFs) {
       }
       }
     }
+    }
+    perfil='<strong style="color:rgba(255,255,255,.82)">'+perfil+'</strong>';
+
+  } else if(isDM){
+    const _pc=(k)=>p[k]==null?0:pctL2(k);
+    const _n1=(k,d)=>p[k]!=null?parseFloat(p[k]).toFixed(d==null?1:d):null;
+    // Dimensões do médio defensivo: defesa, construção/passe, físico
+    const _sc={
+      def:(_pc('def_duels')*1.1+_pc('def_duels_pct')*1.0+_pc('tackles_poss')*1.1+_pc('adj_intercept')*1.1+_pc('aerial_duels90')*0.7+_pc('aerial_pct')*0.6)/5.6,
+      pas:(_pc('passes90')*0.9+_pc('passes_pct')*0.9+_pc('prog_pass')*1.1+_pc('prog_pass_pct')*1.0+_pc('passes_final_third')*1.0+_pc('shot_assist')*0.8)/5.7,
+      fis:(_pc('max_speed')*0.8+_pc('total_dist')*1.1+_pc('hsr90')*1.1+_pc('sprint_dist90')*0.9)/3.9
+    };
+    const _ord=Object.keys(_sc).sort((a,b)=>_sc[b]-_sc[a]);
+    const _p1=_ord[0], _p2=_ord[1];
+    const _duplo=_sc[_p1]>0.001 && _sc[_p2]>=_sc[_p1]*0.82 && _sc[_p2]>=0.55;
+    let _h=0; const _nm=p.name||''; for(let _i=0;_i<_nm.length;_i++) _h=(_h*31+_nm.charCodeAt(_i))>>>0;
+    const _vseed=(_h+['def','pas','fis'].indexOf(_p2)*5+(_duplo?2:0)+Math.round((_sc[_p1]||0)*7))>>>0;
+    const _pk=(a)=>a[_vseed%a.length];
+    // valores concretos
+    const _dd=_n1('def_duels'), _ddp=_n1('def_duels_pct',0), _tk=_n1('tackles_poss'), _ai=_n1('adj_intercept'),
+          _ad=_n1('aerial_duels90'), _adp=_n1('aerial_pct',0), _pa=_n1('passes90',0), _pap=_n1('passes_pct',0),
+          _pp=_n1('prog_pass'), _ppp=_n1('prog_pass_pct',0), _pf=_n1('passes_final_third'), _sa=_n1('shot_assist'),
+          _prg=_n1('prog_carries'), _xg=_n1('xg',2), _ms=_n1('max_speed'), _td=_n1('total_dist',0), _hsr=_n1('hsr90',0);
+    // Defesa vs Construção
+    const _defScore=_sc.def;
+    const _pasScore=_sc.pas;
+    const V={
+      def:{pt:['Médio defensivo de vocação recuperadora'+(_ddp?', com '+_ddp+'% de duelos defensivos ganhos a atestar a fiabilidade no 1x1':', que domina o duelo e trava o adversário antes do perigo')+'.',
+               'Trinco sólido na recuperação'+(_tk?', com '+_tk+' desarmes + recuperações de posse por 90 a mostrar o volume defensivo':', que impõe presença e rouba a bola no meio-campo')+'.',
+               'Médio de leitura apurada'+(_ai?', e as '+_ai+' interceções ajustadas por 90 revelam antecipação em vez de reacção':', que corta a linha de passe antes de o lance crescer')+'.',
+               'Médio defensivo que protege a defesa'+(_dd?', com '+_dd+' duelos defensivos por 90 a evidenciar o trabalho de contenção':', sempre pronto a fechar o espaço à frente dos centrais')+'.'],
+           en:['A ball-winning defensive midfielder'+(_ddp?', with '+_ddp+'% of defensive duels won attesting his reliability in 1v1':', dominating the duel and stopping the opponent before danger')+'.',
+               'A solid holding midfielder in recovery'+(_tk?', with '+_tk+' tackles + possession wins per 90 showing his defensive volume':', imposing presence and stealing the ball in midfield')+'.',
+               'A midfielder with sharp reading'+(_ai?', and '+_ai+' adjusted interceptions per 90 reveal anticipation rather than reaction':', cutting the passing lane before the move grows')+'.',
+               'A defensive midfielder who shields the defence'+(_dd?', with '+_dd+' defensive duels per 90 highlighting his screening work':', always ready to close the space in front of the centre-backs')+'.']},
+      pas:{pt:['Médio defensivo de posse, um organizador a partir de trás'+(_ppp?', com '+_ppp+'% de passes progressivos certos a mostrar critério na construção':', que dita o ritmo e quebra linhas com o passe')+'.',
+               'Trinco de saída de bola limpa'+(_pp?', com '+_pp+' passes progressivos por 90 a fazer avançar a equipa desde o meio-campo':', confortável a receber sob pressão e a encontrar o passe')+'.',
+               'Médio-centro que joga a construir'+(_pap?' ('+_pap+'% de acerto no passe)':'')+', mais próximo de um regista do que de um simples destruidor.',
+               'Distribuidor que liga defesa e ataque'+(_pf?', com '+_pf+' passes para o último terço por 90 a alimentar o jogo ofensivo':', que privilegia a posse e a progressão em vez do simples alívio')+'.'],
+           en:['A possession-based defensive midfielder, an organiser from deep'+(_ppp?', with '+_ppp+'% of progressive passes completed showing judgement in build-up':', who dictates the tempo and breaks lines with his passing')+'.',
+               'A holding midfielder with clean distribution'+(_pp?', with '+_pp+' progressive passes per 90 moving the team forward from midfield':', comfortable receiving under pressure and finding the pass')+'.',
+               'A central midfielder who plays to build'+(_pap?' ('+_pap+'% pass accuracy)':'')+', closer to a deep-lying playmaker than to a mere destroyer.',
+               'A distributor who links defence and attack'+(_pf?', with '+_pf+' passes into the final third per 90 feeding the attack':', favouring possession and progression over the simple clearance')+'.']},
+      fis:{pt:['Médio de raio de ação alargado'+(_td?', com '+_td+' m de distância total por 90 a cobrir todo o meio-campo':', que cobre uma enorme fatia de terreno em cada jogo')+'.',
+               'Trinco de forte intensidade'+(_hsr?', com '+_hsr+' m de corrida de alta intensidade por 90 a sustentar a pressão alta':', incansável na pressão e nas transições')+'.',
+               'Médio atlético de motor inesgotável'+(_td?' ('+_td+' m percorridos/90)':'')+', que garante presença em ambas as áreas.',
+               'Médio de boa capacidade física, que combina resistência e ritmo para dominar o meio-campo box-to-box.'],
+           en:['A midfielder with a wide range of action'+(_td?', with '+_td+' m of total distance per 90 covering the whole midfield':', covering a huge share of ground every game')+'.',
+               'A holding midfielder of strong intensity'+(_hsr?', with '+_hsr+' m of high-speed running per 90 sustaining a high press':', tireless in pressing and transitions')+'.',
+               'An athletic midfielder with a relentless engine'+(_td?' ('+_td+' m covered/90)':'')+', guaranteeing presence in both boxes.',
+               'A midfielder with good physical capacity, combining stamina and pace to dominate the box-to-box role.']}
+    };
+    const C={def:{pt:'uma base defensiva fiável no duelo e na antecipação',en:'a reliable defensive base in duels and anticipation'},
+             pas:{pt:'uma construção que faz a equipa jogar a partir de trás',en:'build-up play that makes the team play from deep'},
+             fis:{pt:'um motor físico que cobre todo o meio-campo',en:'a physical engine that covers the whole midfield'}};
+    const _temDados=['def_duels','def_duels_pct','tackles_poss','adj_intercept','passes90','prog_pass','passes_final_third'].filter(k=>p[k]!=null).length>=3;
+    if(!_temDados){
+      perfil=isEN?'A defensive midfielder whose sample of available data is too thin to define a dominant profile.':'Médio defensivo cuja amostra de dados disponíveis é insuficiente para definir um perfil dominante.';
+    } else if(_sc[_p1]<=0.02){
+      perfil=isEN?'A defensive midfielder with a balanced profile, without one clearly dominant dimension against his league peers.':'Médio defensivo de perfil equilibrado, sem uma dimensão claramente dominante face aos pares da liga.';
+    } else {
+      // Médio completo: forte na defesa E na construção
+      var _bothDP = _defScore>=0.60 && _pasScore>=0.60;
+      var _dpClose = Math.min(_defScore,_pasScore) >= Math.max(_defScore,_pasScore)*0.8;
+      if(_bothDP && _dpClose){
+        var _dfMet = (_ddp?_ddp+(isEN?'% of duels won':'% de duelos ganhos'):(_tk?_tk+(isEN?' tackles+recoveries/90':' desarmes+recuperações/90'):(_ai?_ai+(isEN?' adjusted interceptions/90':' interceções ajustadas/90'):'')));
+        var _paMet = (_pp?_pp+(isEN?' progressive passes/90':' passes progressivos/90'):(_ppp?_ppp+(isEN?'% progressive passes':'% de passes progressivos'):(_pf?_pf+(isEN?' passes into the final third/90':' passes para o último terço/90'):'')));
+        var _prova = (_dfMet&&_paMet)?(isEN?', with '+_dfMet+' when defending and '+_paMet+' in build-up':', com '+_dfMet+' a defender e '+_paMet+' na construção'):(_dfMet?(isEN?', with '+_dfMet+' when defending':', com '+_dfMet+' a defender'):(_paMet?(isEN?', with '+_paMet+' in build-up':', com '+_paMet+' na construção'):''));
+        // Completo + finalizador (xG e conduções progressivas altos)
+        var _finish = (_pc('xg')>=0.60 && _pc('prog_carries')>=0.60);
+        var _complBase=[
+          {pt:'Médio defensivo completo, tão fiável a recuperar como a construir'+_prova+'.',
+           en:'A complete defensive midfielder, as reliable winning the ball as building play'+_prova+'.'},
+          {pt:'Trinco moderno que junta solidez defensiva e qualidade na saída de bola'+_prova+'.',
+           en:'A modern holding midfielder combining defensive solidity with quality in build-up'+_prova+'.'},
+          {pt:'Médio-centro de perfil moderno, seguro a defender e influente na organização do jogo'+_prova+'.',
+           en:'A modern-profile central midfielder, secure in defence and influential in organising play'+_prova+'.'}
+        ];
+        perfil=_pk(_complBase)[isEN?'en':'pt'];
+        if(_finish){
+          var _finMet=(_prg?_prg+(isEN?' progressive carries/90':' conduções progressivas/90'):null);
+          perfil+=(isEN?' On top of that, he carries the ball forward'+(_finMet?' ('+_finMet+')':'')+' and adds a goal threat, capable of driving play and finishing moves.':' A isso soma capacidade de carregar o jogo'+(_finMet?' ('+_finMet+')':'')+' e presença ofensiva, capaz de conduzir e finalizar jogadas.');
+        } else {
+          // reforço físico se raio de ação/intensidade altos
+          if((_sc.fis||0)>=0.6 && (_td||_hsr)){
+            var _fisMet=(_td?_td+(isEN?' m total distance/90':' m de distância total/90'):(_hsr?_hsr+(isEN?' m HSR/90':' m de HSR/90'):null));
+            perfil+=(isEN?' He backs it with a wide range of action and intensity'+(_fisMet?' ('+_fisMet+')':'')+'.':' Sustenta-o com um raio de ação alargado e muita intensidade'+(_fisMet?' ('+_fisMet+')':'')+'.');
+          }
+        }
+      } else {
+        perfil=_pk(V[_p1][isEN?'en':'pt']);
+        var _segMet={
+          def:(_ddp?_ddp+(isEN?'% of duels won':'% de duelos ganhos'):(_tk?_tk+(isEN?' tackles+recoveries/90':' desarmes+recuperações/90'):(_ai?_ai+(isEN?' adjusted interceptions/90':' interceções ajustadas/90'):null))),
+          pas:(_pp?_pp+(isEN?' progressive passes/90':' passes progressivos/90'):(_ppp?_ppp+(isEN?'% progressive passes':'% de passes progressivos'):(_pf?_pf+(isEN?' passes into the final third/90':' passes último terço/90'):null))),
+          fis:(_td?_td+(isEN?' m total distance/90':' m de distância total/90'):(_hsr?_hsr+(isEN?' m HSR/90':' m de HSR/90'):null))
+        };
+        var _segTxt={
+          def:{pt:' Complementa com solidez na fase defensiva',en:' He complements it with defensive solidity'},
+          pas:{pt:' Contribui também na construção do jogo',en:' He also contributes in build-up'},
+          fis:{pt:' Sustenta tudo com um forte motor físico',en:' He sustains it all with a strong physical engine'}
+        };
+        if(_duplo){
+          var _m2=_segMet[_p2];
+          perfil+=(isEN?' To that he adds '+C[_p2].en+(_m2?' ('+_m2+')':'')+'.':' A isso junta '+C[_p2].pt+(_m2?' ('+_m2+')':'')+'.');
+        } else {
+          var _m2b=_segMet[_p2];
+          if(_m2b){ perfil+=(_segTxt[_p2][isEN?'en':'pt'])+' ('+_m2b+').'; }
+          if(_sc[_ord[2]]<=0.15){
+            var _fraco={def:{pt:'Na fase defensiva pura, contudo, fica aquém dos melhores médios da liga.',en:'In pure defending, though, he falls short of the league\u2019s best midfielders.'},
+                        pas:{pt:'A construção de jogo é a faceta com mais margem de evolução.',en:'Build-up is the facet with the most room to grow.'},
+                        fis:{pt:'A componente física é o aspecto onde pode dar outro salto.',en:'The physical component is where he can take another step.'}};
+            var _wk=_ord[2];
+            if(_fraco[_wk]) perfil+=' '+_fraco[_wk][isEN?'en':'pt'];
+          }
+        }
+      }
     }
     perfil='<strong style="color:rgba(255,255,255,.82)">'+perfil+'</strong>';
 
@@ -20251,7 +20368,7 @@ function renderMobileElite(){
   <!-- FÍSICO -->
   <div class="mob-e-card">
     ${mobSecHdr(t('lbl_physical')||'Físico', false)}
-    ${(p.position_group==='LB'||p.position_group==='RB')?(mrow('Velocidade Máxima',p.max_speed,'max_speed',false)+mrow('Sprint Dist / 90',(p.sprint_dist90!=null?Math.round(p.sprint_dist90):null),'sprint_dist90',false)+mrow('Sprints / 90',p.sprints90,'sprints90',false)+mrow('HSR / 90',(p.hsr90!=null?Math.round(p.hsr90):null),'hsr90',false)+mrow('Distância Total',(p.total_dist!=null?Math.round(p.total_dist):null),'total_dist',false)):p.position_group==='DM'?(mrow('Velocidade Máxima',p.max_speed!=null?parseFloat(p.max_speed).toFixed(1):null,'max_speed',false)+mrow('Distância Total',(p.total_dist!=null?Math.round(p.total_dist):null),'total_dist',false)+mrow('Sprint Dist / 90',(p.sprint_dist90!=null?Math.round(p.sprint_dist90):null),'sprint_dist90',false)+mrow('HSR / 90',(p.hsr90!=null?Math.round(p.hsr90):null),'hsr90',false)+mrow('% Sprint + HSR',p.hsr_sprint_pct!=null?parseFloat(p.hsr_sprint_pct).toFixed(1):null,'hsr_sprint_pct',false)):p.position_group==='CB'?(mrow('Velocidade Máxima',p.max_speed!=null?parseFloat(p.max_speed).toFixed(1):null,'max_speed',false)+mrow('Sprint Dist / 90',p.sprint_dist90!=null?Math.round(p.sprint_dist90):null,'sprint_dist90',false)+mrow('Sprints / 90',p.sprints90!=null?parseFloat(p.sprints90).toFixed(1):null,'sprints90',false)+mrow('High Accelerations',p.accels90!=null?parseFloat(p.accels90).toFixed(1):null,'accels90',false)):p.position_group==='CF'?(mrow('Velocidade Maxima',p.max_speed?parseFloat(p.max_speed).toFixed(1):null,'max_speed')+mrow('Sprint Dist / 90',p.sprint_dist90?Math.round(p.sprint_dist90):null,'sprint_dist90')+mrow('Sprints / 90',p.sprints90?parseFloat(p.sprints90).toFixed(1):null,'sprints90')+mrow('Total Dist',p.total_dist?Math.round(p.total_dist):null,'total_dist')+mrow('Aceleracoes / 90',p.accels90!=null?parseFloat(p.accels90).toFixed(1):null,'accels90')):(mrow(t('m_max_speed')||'Velocidade Máxima',p.max_speed?parseFloat(p.max_speed).toFixed(1):null,'max_speed')+mrow(t('m_sprint_dist')||'Sprint Dist / 90',p.sprint_dist90?Math.round(p.sprint_dist90):null,'sprint_dist90')+mrow(t('m_sprints90')||'Sprints / 90',p.sprints90?parseFloat(p.sprints90).toFixed(1):null,'sprints90')+mrow(t('m_hsr90')||'HSR / 90',p.hsr90?Math.round(p.hsr90):null,'hsr90')+mrow(t('m_accels90')||'Acelerações / 90',p.accels90!=null?parseFloat(p.accels90).toFixed(1):null,'accels90'))}
+    ${(p.position_group==='LB'||p.position_group==='RB')?(mrow('Velocidade Máxima',p.max_speed,'max_speed',false)+mrow('Sprint Dist / 90',(p.sprint_dist90!=null?Math.round(p.sprint_dist90):null),'sprint_dist90',false)+mrow('Sprints / 90',p.sprints90,'sprints90',false)+mrow('HSR / 90',(p.hsr90!=null?Math.round(p.hsr90):null),'hsr90',false)+mrow('Distância Total',(p.total_dist!=null?Math.round(p.total_dist):null),'total_dist',false)):p.position_group==='DM'?(mrow('Velocidade Máxima',p.max_speed!=null?parseFloat(p.max_speed).toFixed(1):null,'max_speed',false)+mrow('Distância Total',(p.total_dist!=null?Math.round(p.total_dist):null),'total_dist',false)+mrow('HSR / 90',(p.hsr90!=null?Math.round(p.hsr90):null),'hsr90',false)+mrow('% Sprint + HSR',p.hsr_sprint_pct!=null?parseFloat(p.hsr_sprint_pct).toFixed(1):null,'hsr_sprint_pct',false)):p.position_group==='CB'?(mrow('Velocidade Máxima',p.max_speed!=null?parseFloat(p.max_speed).toFixed(1):null,'max_speed',false)+mrow('Sprint Dist / 90',p.sprint_dist90!=null?Math.round(p.sprint_dist90):null,'sprint_dist90',false)+mrow('Sprints / 90',p.sprints90!=null?parseFloat(p.sprints90).toFixed(1):null,'sprints90',false)+mrow('High Accelerations',p.accels90!=null?parseFloat(p.accels90).toFixed(1):null,'accels90',false)):p.position_group==='CF'?(mrow('Velocidade Maxima',p.max_speed?parseFloat(p.max_speed).toFixed(1):null,'max_speed')+mrow('Sprint Dist / 90',p.sprint_dist90?Math.round(p.sprint_dist90):null,'sprint_dist90')+mrow('Sprints / 90',p.sprints90?parseFloat(p.sprints90).toFixed(1):null,'sprints90')+mrow('Total Dist',p.total_dist?Math.round(p.total_dist):null,'total_dist')+mrow('Aceleracoes / 90',p.accels90!=null?parseFloat(p.accels90).toFixed(1):null,'accels90')):(mrow(t('m_max_speed')||'Velocidade Máxima',p.max_speed?parseFloat(p.max_speed).toFixed(1):null,'max_speed')+mrow(t('m_sprint_dist')||'Sprint Dist / 90',p.sprint_dist90?Math.round(p.sprint_dist90):null,'sprint_dist90')+mrow(t('m_sprints90')||'Sprints / 90',p.sprints90?parseFloat(p.sprints90).toFixed(1):null,'sprints90')+mrow(t('m_hsr90')||'HSR / 90',p.hsr90?Math.round(p.hsr90):null,'hsr90')+mrow(t('m_accels90')||'Acelerações / 90',p.accels90!=null?parseFloat(p.accels90).toFixed(1):null,'accels90'))}
   </div>
 
   <!-- SIMILAR PLAYERS -->
