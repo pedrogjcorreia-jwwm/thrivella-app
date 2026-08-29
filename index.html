@@ -11857,17 +11857,15 @@ function generateAITextInline(p, pdfFs) {
         }
       }
     }
-    // Referência sempre presente à capacidade aérea (boa/mediana/fraca) — importante para o médio defensivo
-    if(p.aerial_duels90!=null || p.aerial_pct!=null){
-      var _arSc=(_pc('aerial_duels90')+_pc('aerial_pct'))/2;
-      var _arLvl = _arSc>=0.62 ? 'boa' : (_arSc>=0.38 ? 'mediana' : 'fraca');
-      var _arMet = (_adp?_adp+(isEN?'% of aerial duels won':'% de duelos aéreos ganhos'):(_ad?_ad+(isEN?' aerial duels/90':' duelos aéreos/90'):null));
-      var _arFrase = {
-        boa:{pt:' No jogo aéreo, é um ponto forte',en:' In the air, he is a strong asset'},
-        mediana:{pt:' No jogo aéreo, cumpre a um nível médio',en:' In the air, he performs at an average level'},
-        fraca:{pt:' O jogo aéreo é uma fragilidade a ter em conta',en:' The aerial game is a weakness to bear in mind'}
-      };
-      perfil+=_arFrase[_arLvl][isEN?'en':'pt']+(_arMet?' ('+_arMet+')':'')+'.';
+    // Jogo aéreo: só salientar quando é muito bom em AMBAS as métricas (nº duelos E % sucesso) ou abaixo da média em AMBAS
+    if(p.aerial_duels90!=null && p.aerial_pct!=null){
+      var _arVol=_pc('aerial_duels90'), _arWin=_pc('aerial_pct');
+      var _arMetBoth = (_ad&&_adp) ? (_ad+(isEN?' aerial duels/90 won at ':' duelos aéreos/90 e ')+_adp+(isEN?'%':'% ganhos')) : (_adp?_adp+(isEN?'% aerial duels won':'% de duelos aéreos ganhos'):(_ad?_ad+(isEN?' aerial duels/90':' duelos aéreos/90'):null));
+      if(_arVol>=0.62 && _arWin>=0.62){
+        perfil+=(isEN?' In the air he is a genuine strong point'+(_arMetBoth?' ('+_arMetBoth+')':'')+'.':' No jogo aéreo é um ponto verdadeiramente forte'+(_arMetBoth?' ('+_arMetBoth+')':'')+'.');
+      } else if(_arVol<0.40 && _arWin<0.40){
+        perfil+=(isEN?' The aerial game is a clear weakness'+(_arMetBoth?' ('+_arMetBoth+')':'')+'.':' O jogo aéreo é um ponto fraco evidente'+(_arMetBoth?' ('+_arMetBoth+')':'')+'.');
+      }
     }
     perfil='<strong style="color:rgba(255,255,255,.82)">'+perfil+'</strong>';
 
@@ -12002,16 +12000,15 @@ function generateAITextInline(p, pdfFs) {
         }
       }
     }
-    // Referência sempre presente à capacidade aérea (boa/mediana/fraca), exceto quando o aéreo já é o traço dominante
-    if(_p1!=='are' && (p.aerial_duels90!=null || p.aerial_pct!=null)){
-      var _arLvl = _sc.are>=0.62 ? 'boa' : (_sc.are>=0.38 ? 'mediana' : 'fraca');
-      var _arMet = (_adp?_adp+(isEN?'% of aerial duels won':'% de duelos aéreos ganhos'):(_ad?_ad+(isEN?' aerial duels/90':' duelos aéreos/90'):null));
-      var _arFrase = {
-        boa:{pt:' No jogo aéreo, é um ponto forte',en:' In the air, he is a strong asset'},
-        mediana:{pt:' No jogo aéreo, cumpre a um nível médio',en:' In the air, he performs at an average level'},
-        fraca:{pt:' O jogo aéreo é uma fragilidade a ter em conta',en:' The aerial game is a weakness to bear in mind'}
-      };
-      perfil+=_arFrase[_arLvl][isEN?'en':'pt']+(_arMet?' ('+_arMet+')':'')+'.';
+    // Jogo aéreo: só salientar quando é muito bom em AMBAS as métricas (nº duelos E % sucesso) ou abaixo da média em AMBAS
+    if(_p1!=='are' && (p.aerial_duels90!=null && p.aerial_pct!=null)){
+      var _arVol=_pc('aerial_duels90'), _arWin=_pc('aerial_pct');
+      var _arMetBoth = (_ad&&_adp) ? (_ad+(isEN?' aerial duels/90 won at ':' duelos aéreos/90 e ')+_adp+(isEN?'%':'% ganhos')) : (_adp?_adp+(isEN?'% aerial duels won':'% de duelos aéreos ganhos'):(_ad?_ad+(isEN?' aerial duels/90':' duelos aéreos/90'):null));
+      if(_arVol>=0.62 && _arWin>=0.62){
+        perfil+=(isEN?' In the air he is a genuine strong point'+(_arMetBoth?' ('+_arMetBoth+')':'')+'.':' No jogo aéreo é um ponto verdadeiramente forte'+(_arMetBoth?' ('+_arMetBoth+')':'')+'.');
+      } else if(_arVol<0.40 && _arWin<0.40){
+        perfil+=(isEN?' The aerial game is a clear weakness'+(_arMetBoth?' ('+_arMetBoth+')':'')+'.':' O jogo aéreo é um ponto fraco evidente'+(_arMetBoth?' ('+_arMetBoth+')':'')+'.');
+      }
     }
     perfil='<strong style="color:rgba(255,255,255,.82)">'+perfil+'</strong>';
 
