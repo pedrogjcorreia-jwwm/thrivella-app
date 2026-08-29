@@ -10150,7 +10150,7 @@ function sv3Toggle(id, btn) {
       Object.assign(photoCache, saved);
     } catch(e) {}
     // Also load individual keys for similar players
-    PLAYERS.filter(x=>x.name!==p.name&&x.position===p.position).slice(0,3).forEach(s=>{
+    PLAYERS.filter(x=>x.name!==p.name&&x.position_group===p.position_group).slice(0,3).forEach(s=>{
       if(!photoCache[s.name]){
         try { const ls=localStorage.getItem('photo_'+s.name); if(ls) photoCache[s.name]=ls; } catch(e){}
       }
@@ -10240,7 +10240,7 @@ function sv3Toggle(id, btn) {
       return s+'</svg>';
     }
 
-    const simsArr=PLAYERS.filter(x=>x.name!==p.name&&x.position===p.position).slice(0,3).map(s=>{
+    const simsArr=PLAYERS.filter(x=>x.name!==p.name&&x.position_group===p.position_group).slice(0,3).map(s=>{
       const sMv=s.mkt_value>=1e6?'€'+(s.mkt_value/1e6).toFixed(1)+'M':s.mkt_value>=1e3?'€'+Math.round(s.mkt_value/1e3)+'K':'—';
       const sMatchPct=Math.round((s.score||0)/Math.max(1,p.score||1)*100);
       const sMatchCol=sMatchPct>=75?'#00e5a0':sMatchPct>=50?'#00d4ff':'rgba(160,175,195,.6)';
@@ -19956,7 +19956,7 @@ function renderMobileElite(){
     if(window._metricCols){
       var _arr=lgP.filter(function(x){return x[key]!=null&&x[key]!=='';}).map(function(x){return parseFloat(x[key])||0;});
       var _avg=(_arr.reduce(function(s,x){return s+x;},0)/Math.max(1,_arr.length)).toFixed(1);
-      return `<div class="mob-e-mrow" style="padding:9px 14px;cursor:pointer" onclick="showMetricTop3('${key}','${lbl}',${inv?true:false})"><div style="display:grid;grid-template-columns:1fr 34px 28px 34px;align-items:center;gap:6px"><span class="mob-e-mrow-lbl" style="color:${pct>=0.5?'rgba(255,255,255,.85)':'rgba(200,220,245,.55)'}">${lbl}</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;color:${c};text-align:right;white-space:nowrap">${fv(val)}${pctSpan}</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center">${_avg}</span><span class="mob-e-mrow-rnk" style="color:${c};border-color:${c}55;text-align:center;justify-self:center">#${r}</span></div></div>`;
+      return `<div class="mob-e-mrow" style="padding:9px 14px;cursor:pointer" onclick="showMetricTop3('${key}','${lbl}',${inv?true:false})"><div style="display:grid;grid-template-columns:1fr 54px 26px 30px;align-items:center;gap:5px"><span class="mob-e-mrow-lbl" style="color:${pct>=0.5?'rgba(255,255,255,.85)':'rgba(200,220,245,.55)'}">${lbl}</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;color:${c};text-align:right;white-space:nowrap">${fv(val)}${pctSpan}</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,.34);text-align:center">${_avg}</span><span class="mob-e-mrow-rnk" style="color:${c};border-color:${c}55;text-align:center;justify-self:center">#${r}</span></div></div>`;
     }
     return `<div class="mob-e-mrow" style="padding:10px 14px;cursor:pointer" onclick="showMetricTop3('${key}','${lbl}',${inv?true:false})">
       <div class="mob-e-mrow-inner">
@@ -19975,7 +19975,7 @@ function renderMobileElite(){
     var icon = cols ? '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></svg>' : '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="15" y2="20"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/></svg>';
     var btn = withBtn ? '<button onclick="event.stopPropagation();window.toggleMetricMode&&window.toggleMetricMode()" style="margin-left:6px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;height:17px;padding:0 5px;border-radius:4px;background:rgba(139,92,246,.16);border:1px solid rgba(139,92,246,.55);color:#c4b5fd;cursor:pointer">'+icon+'</button>' : '';
     if(cols){
-      return '<div class="mob-e-sec-hdr" style="display:grid;grid-template-columns:1fr 34px 28px 34px;align-items:center;gap:6px">'+'<div style="display:flex;align-items:center;min-width:0;overflow:hidden"><span class="mob-e-sec-lbl" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+title+'</span>'+btn+'</div>'+'<span style="'+sub+';text-align:right">VAL</span>'+'<span style="'+sub+';text-align:center">'+(EN?'AVG':'MÉD')+'</span>'+'<span style="'+sub+';text-align:center">RANK</span>'+'</div>';
+      return '<div class="mob-e-sec-hdr" style="display:grid;grid-template-columns:1fr 54px 26px 30px;align-items:center;gap:5px">'+'<div style="display:flex;align-items:center;min-width:0;overflow:hidden"><span class="mob-e-sec-lbl" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+title+'</span>'+btn+'</div>'+'<span style="'+sub+';text-align:right">VAL</span>'+'<span style="'+sub+';text-align:center">'+(EN?'AVG':'MÉD')+'</span>'+'<span style="'+sub+';text-align:center">RANK</span>'+'</div>';
     }
     return '<div class="mob-e-sec-hdr"><span class="mob-e-sec-lbl">'+title+'</span>'+btn+'<div class="mob-e-sec-right"><span class="mob-e-col-lbl" style="width:36px;text-align:right">'+(EN?'VAL':'Val')+'</span><span class="mob-e-col-lbl" style="width:28px;text-align:center">'+(EN?'RANK':'Rank')+'</span></div></div>';
   }
@@ -20044,7 +20044,7 @@ function renderMobileElite(){
     Object.keys(saved).forEach(k=>{if(saved[k]&&saved[k]!=='DELETE')window.photoCache[k]=saved[k];else if(saved[k]==='DELETE')delete window.photoCache[k];});
   }catch(e){}
   // Also try individual keys
-  const _simNames=PLAYERS.filter(x=>x.name!==p.name&&x.position===p.position)
+  const _simNames=PLAYERS.filter(x=>x.name!==p.name&&x.position_group===p.position_group)
     .sort((a,b)=>(b.talent_index||0)-(a.talent_index||0)).slice(0,4).map(x=>x.name);
   [p.name,..._simNames].forEach(name=>{
     const lv=localStorage.getItem('photo_'+name);
@@ -20349,7 +20349,7 @@ function renderMobileElite(){
       </div>
     </div>`;
   };
-  const sims=PLAYERS.filter(x=>x.name!==p.name&&x.position===p.position)
+  const sims=PLAYERS.filter(x=>x.name!==p.name&&x.position_group===p.position_group)
     .sort((a,b)=>(b.talent_index||0)-(a.talent_index||0))
     .slice(0,4).map(s=>window._renderSimCard(s,p)).join('');
 
