@@ -7261,7 +7261,7 @@ function renderCompare(){
     const maxV = metricKey && _maxVals[metricKey] ? _maxVals[metricKey] : Math.max(...allNums, 0.001);
     const pct = n => Math.min(100,(n/maxV)*100).toFixed(1);
     const wins = n => inverse ? n===best : n===best;
-    const disp = (v,isN) => isN ? (Number.isInteger(v)?v:parseFloat(v.toFixed(2))) : (v||'—');
+    const disp = (v,isN) => { if(isN){ const _n=parseFloat(v); return Number.isInteger(_n)?_n:parseFloat(_n.toFixed(2)); } return (v||'—'); };
 
     // Always show A and B. C and D as extra stacked bars if present.
     const aWins=wins(aNum), bWins=wins(bNum);
@@ -7271,7 +7271,8 @@ function renderCompare(){
     const wcA=(!tie&&aWins&&pA)?' winner':'', wcB=(!tie&&bWins&&pB)?' winner':'';
     const fA=(!tie&&aWins&&pA)?CMP_FILLS[0]:'rgba(255,255,255,0.12)';
     const fB=(!tie&&bWins&&pB)?CMP_FILLS[1]:'rgba(255,255,255,0.12)';
-    const dA=disp(valA, typeof valA==='number'), dB=disp(valB, typeof valB==='number');
+    const _isNum=(x)=>x!=null&&x!==''&&!isNaN(parseFloat(x));
+    const dA=disp(valA, _isNum(valA)), dB=disp(valB, _isNum(valB));
 
     // Left side bars: A on top, C below (if present)
     const leftBars = `<div style="display:flex;flex-direction:column;gap:2px">
@@ -7566,9 +7567,11 @@ function renderCompare(){
     scoreRow('TOTAL FÍSICO', pA ? pA.total_physical : 0, pB ? pB.total_physical : 0, 'var(--purple)'),
     GAP,
     cmpRow('Vel. Máxima (km/h)', pA ? pA.max_speed : 0, pB ? pB.max_speed : 0, false, 'max_speed'),
+    cmpRow('Total Distance (m)', pA ? Math.round(pA.total_dist) : 0, pB ? Math.round(pB.total_dist) : 0, false, 'total_dist'),
     cmpRow('Sprint Dist /90 (m)', pA ? Math.round(pA.sprint_dist90) : 0, pB ? Math.round(pB.sprint_dist90) : 0, false, 'sprint_dist90'),
     cmpRow('HSR /90 (m)', pA ? Math.round(pA.hsr90) : 0, pB ? Math.round(pB.hsr90) : 0, false, 'hsr90'),
     cmpRow('Nr HSR /90', pA ? pA.nr_hsr90 : 0, pB ? pB.nr_hsr90 : 0, false, 'nr_hsr90'),
+    cmpRow('% Sprint + HSR', pA ? pA.hsr_sprint_pct : 0, pB ? pB.hsr_sprint_pct : 0, false, 'hsr_sprint_pct'),
     // Defensivo
     GAP,
     scoreRow('TOTAL DEFENSIVO', pA ? pA.total_def : 0, pB ? pB.total_def : 0, 'var(--red)'),
