@@ -5540,7 +5540,13 @@ function rebuildDerivedData() {
       if(p.xa!=null && p.xa90==null) p.xa90=(_winTot&&_m90)?Math.round(p.xa/_m90*1000)/1000:p.xa;
     }
     if(p.position_group !== 'WIN'){
-      if(p.xg != null && p.xg90 == null){ p.xg90 = p.xg; p.xg = (p.minutes ? Math.round(p.xg * p.minutes/90 * 100)/100 : p.xg); }
+      if(p.position_group === 'DM'){
+        // No DM o xg/xa vêm já como TOTAL de época; deriva-se o /90 por divisão e mantém-se o total
+        if(p.xg != null && p.xg90 == null){ const _m90=p.minutes?p.minutes/90:null; p.xg90 = _m90 ? Math.round(p.xg/_m90*1000)/1000 : p.xg; }
+        if(p.xa != null && p.xa90 == null){ const _m90=p.minutes?p.minutes/90:null; p.xa90 = _m90 ? Math.round(p.xa/_m90*1000)/1000 : p.xa; }
+      } else {
+        if(p.xg != null && p.xg90 == null){ p.xg90 = p.xg; p.xg = (p.minutes ? Math.round(p.xg * p.minutes/90 * 100)/100 : p.xg); }
+      }
       if(p.aerial_pct != null && p.aerial_duels_pct == null) p.aerial_duels_pct = p.aerial_pct;
       if((p.goals == null) && p.goals_np != null) p.goals = p.goals_np;
       if(p.position && p.pos2nd == null){ p.pos2nd = (''+p.position).split(',').map(x=>x.trim()).filter(Boolean); }
@@ -10559,7 +10565,7 @@ function renderPlayerID(name, league) {
   const photoBg=photoCache[p.name]&&photoCache[p.name]!=='DELETE'?'background-image:url('+photoCache[p.name]+');background-size:cover;background-position:top center;':'';
 
   // Similar players
-  const simPool=PLAYERS.filter(x=>x.name!==p.name&&x.position===p.position).sort((a,b)=>(b.talent_index||0)-(a.talent_index||0));
+  const simPool=PLAYERS.filter(x=>x.name!==p.name&&x.position_group===p.position_group).sort((a,b)=>(b.talent_index||0)-(a.talent_index||0));
 
   const photoHtml=photoBg
     ?'<img src="'+photoCache[p.name]+'" style="position:absolute;inset:0;bottom:160px;width:100%;height:calc(100% - 160px);object-fit:cover;object-position:top center;display:block">'
