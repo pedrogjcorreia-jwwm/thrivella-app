@@ -11540,8 +11540,9 @@ function generateAITextInline(p, pdfFs) {
   const isFB=(p.position_group==='LB'||p.position_group==='RB');
   const isCB=(p.position_group==='CB');
   const isDM=(p.position_group==='DM');
-  const isW=!isFB&&(pos.includes('W')||pos.includes('LW')||pos.includes('RW')||pos.includes('WF')||pos.includes('AML')||pos.includes('AMR'));
-  const isFwd=!isFB&&(pos.includes('CF')||pos.includes('ST'));
+  const isCM=(p.position_group==='CM');
+  const isW=!isFB&&!isCB&&!isDM&&!isCM&&(pos.includes('W')||pos.includes('LW')||pos.includes('RW')||pos.includes('WF')||pos.includes('AML')||pos.includes('AMR'));
+  const isFwd=!isFB&&!isCB&&!isDM&&!isCM&&(pos.includes('CF')||pos.includes('ST'));
   const age=p.age||0;
   const mv=p.mkt_value>=1e6?'\u20ac'+(p.mkt_value/1e6).toFixed(1)+'M':p.mkt_value>=1e3?'\u20ac'+Math.round(p.mkt_value/1e3)+'K':null;
   const tiPct=Math.round((()=>{const _pool=PLAYERS.filter(x=>x.position_group===p.position_group&&x.talent_index!=null);if(!_pool.length)return 0;const _rk=[..._pool].sort((a,b)=>(b.talent_index||0)-(a.talent_index||0)).findIndex(x=>x.name===p.name)+1;return _rk>0?(_pool.length-_rk)/_pool.length:0;})()*100);
@@ -11769,6 +11770,123 @@ function generateAITextInline(p, pdfFs) {
       }
       }
     }
+    }
+    perfil='<strong style="color:rgba(255,255,255,.82)">'+perfil+'</strong>';
+
+  } else if(isCM){
+    const _pc=(k)=>p[k]==null?0:pctL2(k);
+    const _n1=(k,d)=>p[k]!=null?parseFloat(p[k]).toFixed(d==null?1:d):null;
+    // Dimensões do médio-centro: ofensivo (chegada+finalização), passe/ligação, físico. Defesa como componente secundária (duelos físicos e interceções, pouco peso ao aéreo).
+    const _sc={
+      off:(_pc('prog_carries')*1.1+_pc('box_touches')*1.1+_pc('shots90')*1.0+_pc('xg')*1.0+_pc('dribles90')*0.8+_pc('dribles_pct')*0.6)/5.6,
+      pas:(_pc('passes90')*0.8+_pc('passes_pct')*0.8+_pc('prog_pass')*1.1+_pc('passes_final_third')*1.0+_pc('passes_final_third_pct')*0.8+_pc('key_passes')*1.1+_pc('xa')*0.9)/6.5,
+      fis:(_pc('max_speed')*0.8+_pc('total_dist')*1.1+_pc('hsr90')*1.1+_pc('sprint_dist90')*0.9)/3.9
+    };
+    // Score defensivo (secundário): duelos físicos e interceções pesam, aéreo pouco
+    const _defScore=(_pc('def_duels')*1.1+_pc('def_duels_pct')*0.9+_pc('tackles_poss')*1.1+_pc('adj_intercept')*1.1+_pc('aerial_duels90')*0.35+_pc('aerial_pct')*0.3)/4.85;
+    const _ord=Object.keys(_sc).sort((a,b)=>_sc[b]-_sc[a]);
+    const _p1=_ord[0], _p2=_ord[1];
+    const _duplo=_sc[_p1]>0.001 && _sc[_p2]>=_sc[_p1]*0.82 && _sc[_p2]>=0.55;
+    let _h=0; const _nm=p.name||''; for(let _i=0;_i<_nm.length;_i++) _h=(_h*31+_nm.charCodeAt(_i))>>>0;
+    const _vseed=(_h+['off','pas','fis'].indexOf(_p2)*5+(_duplo?2:0)+Math.round((_sc[_p1]||0)*7))>>>0;
+    const _pk=(a)=>a[_vseed%a.length];
+    // valores concretos
+    const _prg=_n1('prog_carries'), _bt=_n1('box_touches'), _sh=_n1('shots90'), _xg=_n1('xg',2), _xa=_n1('xa',2),
+          _dr=_n1('dribles90'), _drp=_n1('dribles_pct',0), _pa=_n1('passes90',0), _pap=_n1('passes_pct',0),
+          _pp=_n1('prog_pass'), _pf=_n1('passes_final_third'), _pfp=_n1('passes_final_third_pct',0), _kp=_n1('key_passes'),
+          _dd=_n1('def_duels'), _ddp=_n1('def_duels_pct',0), _tk=_n1('tackles_poss'), _ai=_n1('adj_intercept'),
+          _ms=_n1('max_speed'), _td=_n1('total_dist',0), _hsr=_n1('hsr90',0);
+    const V={
+      off:{pt:['Médio-centro com forte projeção ofensiva'+(_prg?', com '+_prg+' conduções progressivas por 90 a carregar o jogo para a frente':', sempre pronto a conduzir e a acelerar o jogo')+'.',
+               'Médio de chegada à área'+(_bt?', com '+_bt+' toques na área por 90 a mostrar a presença ofensiva':', que ataca o espaço e surge na zona de finalização')+'.',
+               'Médio-centro de perfil ofensivo'+(_sh?', com '+_sh+' remates por 90'+(_xg&&parseFloat(_xg)>0?' e '+_xg+' de xG a confirmar o faro de golo':'')+'':', que procura a baliza e a chegada ao último terço')+'.',
+               'Médio box-to-box com pendor atacante'+(_prg?', com '+_prg+' conduções progressivas/90':'')+', que dá profundidade e ameaça ofensiva à equipa.'],
+           en:['A central midfielder with strong attacking thrust'+(_prg?', with '+_prg+' progressive carries per 90 driving play forward':', always ready to carry and speed up the game')+'.',
+               'A box-crashing midfielder'+(_bt?', with '+_bt+' box touches per 90 showing his attacking presence':', attacking the space and arriving in the finishing zone')+'.',
+               'An attack-minded central midfielder'+(_sh?', with '+_sh+' shots per 90'+(_xg&&parseFloat(_xg)>0?' and '+_xg+' xG confirming his goal threat':'')+'':', looking for goal and for the final third')+'.',
+               'A box-to-box midfielder with an attacking lean'+(_prg?', with '+_prg+' progressive carries/90':'')+', giving the team depth and a goal threat.']},
+      pas:{pt:['Médio de passe e ligação'+(_pp?', com '+_pp+' passes progressivos por 90 a fazer a equipa progredir':', que dita o ritmo e liga os setores')+'.',
+               'Médio-centro criativo'+(_kp?', com '+_kp+' passes-chave por 90 a criar oportunidades':', com visão para o último passe')+'.',
+               'Organizador de meio-campo'+(_pf?', com '+_pf+' passes para o último terço por 90 a alimentar o ataque':', que privilegia a posse e a construção')+'.',
+               'Médio de saída limpa'+(_pap?' ('+_pap+'% de acerto no passe)':'')+', mais um cérebro de ligação do que um finalizador.'],
+           en:['A passing and link-up midfielder'+(_pp?', with '+_pp+' progressive passes per 90 moving the team up the pitch':', dictating tempo and linking the lines')+'.',
+               'A creative central midfielder'+(_kp?', with '+_kp+' key passes per 90 creating chances':', with vision for the final ball')+'.',
+               'A midfield organiser'+(_pf?', with '+_pf+' passes into the final third per 90 feeding the attack':', favouring possession and build-up')+'.',
+               'A clean-distribution midfielder'+(_pap?' ('+_pap+'% pass accuracy)':'')+', more of a link-up brain than a finisher.']},
+      fis:{pt:['Médio de grande abrangência de campo'+(_td?', com '+_td+' m de distância total por 90 a cobrir todo o meio-campo':', que percorre uma enorme fatia de terreno')+'.',
+               'Médio de forte intensidade'+(_hsr?', com '+_hsr+' m de corrida de alta intensidade por 90':', incansável nas transições e no apoio aos dois momentos')+'.',
+               'Médio atlético box-to-box'+(_td?' ('+_td+' m percorridos/90)':'')+', que garante presença nas duas áreas.',
+               'Médio de motor inesgotável, que combina volume de corrida e ritmo para ligar defesa e ataque.'],
+           en:['A midfielder with a wide range of action'+(_td?', with '+_td+' m of total distance per 90 covering the whole midfield':', covering a huge share of ground')+'.',
+               'A high-intensity midfielder'+(_hsr?', with '+_hsr+' m of high-speed running per 90':', tireless in transitions and in supporting both phases')+'.',
+               'An athletic box-to-box midfielder'+(_td?' ('+_td+' m covered/90)':'')+', guaranteeing presence in both boxes.',
+               'A midfielder with a relentless engine, combining running volume and pace to link defence and attack.']}
+    };
+    const C={off:{pt:'uma ameaça ofensiva com chegada e finalização',en:'an attacking threat with arrival and finishing'},
+             pas:{pt:'uma construção e criação que faz a equipa jogar',en:'build-up and creation that makes the team play'},
+             fis:{pt:'um motor físico que cobre todo o meio-campo',en:'a physical engine covering the whole midfield'}};
+    const _temDados=['prog_carries','box_touches','shots90','passes90','prog_pass','key_passes'].filter(k=>p[k]!=null).length>=3;
+    if(!_temDados){
+      perfil=isEN?'A central midfielder whose sample of available data is too thin to define a dominant profile.':'Médio-centro cuja amostra de dados disponíveis é insuficiente para definir um perfil dominante.';
+    } else if(_sc[_p1]<=0.02){
+      perfil=isEN?'A central midfielder with a balanced profile, without one clearly dominant dimension against his league peers.':'Médio-centro de perfil equilibrado, sem uma dimensão claramente dominante face aos pares da liga.';
+    } else {
+      // Perfil ofensivo/falso extremo: dribble quality + box touches + remates + golos + key passes + velocidade
+      var _drQ=(_pc('dribles90')>=0.62 && _pc('dribles_pct')>=0.55);
+      var _ofAtk=(_pc('box_touches')>=0.60 && _pc('shots90')>=0.60 && _pc('xg')>=0.55);
+      var _fastCreator=(_drQ && _ofAtk && _pc('key_passes')>=0.55 && _pc('max_speed')>=0.55);
+      // Goleador: chegada (box touches) + remates + xG altos
+      var _goalThreat=(_pc('box_touches')>=0.60 && _pc('shots90')>=0.58 && _pc('xg')>=0.58);
+      if(_fastCreator){
+        var _mFC=[]; if(_dr)_mFC.push(_dr+(isEN?' dribbles/90 at '+_drp+'%':' dribles/90 a '+_drp+'%')); if(_kp)_mFC.push(_kp+(isEN?' key passes/90':' passes-chave/90')); if(_sh)_mFC.push(_sh+(isEN?' shots/90':' remates/90'));
+        var _mFCtxt=_mFC.length?(isEN?' ('+_mFC.slice(0,2).join(', ')+')':' ('+_mFC.slice(0,2).join(', ')+')'):'';
+        perfil=(isEN?'A markedly attacking central midfielder — combining dribbling quality, box arrival, shooting and creation'+_mFCtxt+(_ms?', backed by a top speed of '+_ms+' km/h':'')+'. Profile suited to an attacking-midfield or false-winger role if his secondary positions allow it.'
+                    :'Médio-centro de vocação claramente ofensiva — junta qualidade no drible, chegada à área, remate e criação'+_mFCtxt+(_ms?', apoiado numa velocidade máxima de '+_ms+' km/h':'')+'. Perfil talhado para médio ofensivo ou falso extremo, caso as posições secundárias o permitam.');
+      } else if(_p1==='off'){
+        perfil=_pk(V.off[isEN?'en':'pt']);
+        // Se junta chegada + remates + xG -> reforço de finalização
+        if(_goalThreat){
+          var _gm=(_bt?_bt+(isEN?' box touches/90':' toques na área/90'):null); var _gm2=(_xg&&parseFloat(_xg)>0?_xg+(isEN?' xG':' de xG'):null);
+          perfil+=(isEN?' The blend of box arrival, shooting'+(_gm2?' and '+_gm2:'')+' points to a midfielder who can add goals to his game.':' A combinação de chegada à área, remate'+(_gm2?' e '+_gm2:'')+' aponta para um médio capaz de acrescentar golos ao seu jogo.');
+        } else {
+          // Não tem chegada muito desenvolvida -> mais de passe e ligação
+          var _lm=(_pp?_pp+(isEN?' progressive passes/90':' passes progressivos/90'):(_kp?_kp+(isEN?' key passes/90':' passes-chave/90'):null));
+          perfil+=(isEN?' Without a strong finishing dimension, he leans towards a passing and link-up role'+(_lm?' ('+_lm+')':'')+'.':' Sem uma dimensão de finalização muito desenvolvida, pende para um papel de passe e ligação'+(_lm?' ('+_lm+')':'')+'.');
+        }
+      } else {
+        perfil=_pk(V[_p1][isEN?'en':'pt']);
+        // detalhe da dimensão dominante
+        var _detP1={
+          off:(function(){var a=[]; if(_bt)a.push(_bt+(isEN?' box touches/90':' toques na área/90')); if(_sh)a.push(_sh+(isEN?' shots/90':' remates/90')); if(_prg&&a.length<2)a.push(_prg+(isEN?' progressive carries/90':' conduções progressivas/90')); return a.slice(0,2);})(),
+          pas:(function(){var a=[]; if(_kp)a.push(_kp+(isEN?' key passes/90':' passes-chave/90')); if(_pf)a.push(_pf+(isEN?' passes into the final third/90':' passes último terço/90')); if(_pp&&a.length<2)a.push(_pp+(isEN?' progressive passes/90':' passes progressivos/90')); return a.slice(0,2);})(),
+          fis:(function(){var a=[]; if(_td)a.push(_td+(isEN?' m total distance/90':' m de distância total/90')); if(_hsr)a.push(_hsr+(isEN?' m HSR/90':' m de HSR/90')); return a.slice(0,2);})()
+        };
+        var _dl=_detP1[_p1];
+        if(_dl&&_dl.length){
+          var _detTxt={
+            off:{pt:' A ameaça ofensiva confirma-se nos números',en:' The attacking threat shows in the numbers'},
+            pas:{pt:' A qualidade de passe reflete-se nos registos',en:' His passing quality shows in the numbers'},
+            fis:{pt:' O motor físico traduz-se em presença constante',en:' The physical engine translates into constant presence'}
+          };
+          perfil+=_detTxt[_p1][isEN?'en':'pt']+' ('+_dl.join(', ')+').';
+        }
+      }
+      // Segunda dimensão (se duplo) ou complemento
+      if(_duplo && _p1!=='off'){
+        perfil+=(isEN?' To that he adds '+C[_p2].en+'.':' A isso junta '+C[_p2].pt+'.');
+      }
+      // Componente defensiva: duelos físicos e interceções (pouco aéreo)
+      if(_defScore>=0.62){
+        var _dm=(_tk?_tk+(isEN?' tackles+recoveries/90':' desarmes+recuperações/90'):(_ai?_ai+(isEN?' adjusted interceptions/90':' interceções ajustadas/90'):(_dd?_dd+(isEN?' defensive duels/90':' duelos defensivos/90'):null)));
+        perfil+=(isEN?' Defensively he pulls his weight in the physical duel and the interception'+(_dm?' ('+_dm+')':'')+'.':' Defensivamente dá o seu contributo no duelo físico e na interceção'+(_dm?' ('+_dm+')':'')+'.');
+      } else if(_defScore<0.30){
+        perfil+=(isEN?' The defensive side, in physical duels and ball recovery, is the area with the most room to grow.':' A vertente defensiva, no duelo físico e na recuperação, é a área com mais margem para crescer.');
+      }
+      // Abrangência física de campo (se não for a dimensão dominante mas for boa)
+      if(_p1!=='fis' && _sc.fis>=0.6 && (_td||_hsr)){
+        var _fm=(_td?_td+(isEN?' m total distance/90':' m de distância total/90'):(_hsr?_hsr+(isEN?' m HSR/90':' m de HSR/90'):null));
+        perfil+=(isEN?' His physical range across the pitch is also worth noting'+(_fm?' ('+_fm+')':'')+'.':' A abrangência física ao longo do campo é também de salientar'+(_fm?' ('+_fm+')':'')+'.');
+      }
     }
     perfil='<strong style="color:rgba(255,255,255,.82)">'+perfil+'</strong>';
 
