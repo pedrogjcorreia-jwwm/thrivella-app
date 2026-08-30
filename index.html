@@ -15454,7 +15454,7 @@ const SH_FORMATIONS = {
     {id:'lw', label:'LW',  tag:'WIN',side:'L', x:9.4,  y:28.3},
     {id:'cf', label:'CF',  tag:'CF', side:null, x:50,   y:4.2},
     {id:'rw', label:'RW',  tag:'WIN',side:'R', x:90.6, y:28.3},
-    {id:'lc', label:'DM',  tag:'CMF',side:null, x:35.9, y:56},
+    {id:'lc', label:'DM',  tag:'DM',side:null, x:35.9, y:56},
     {id:'rc', label:'CM',  tag:'CMF',side:null, x:63.7, y:41.1},
     {id:'lw2',label:'LB',  tag:'LB', side:'L', x:8,    y:61},
     {id:'rw2',label:'RWB', tag:'WB', side:'R', x:92,   y:61},
@@ -15467,7 +15467,7 @@ const SH_FORMATIONS = {
     {id:'lw', label:'LW',  tag:'WIN',side:'L', x:12,y:12},
     {id:'cf', label:'CF',  tag:'CF', side:null,x:50,y:9},
     {id:'rw', label:'RW',  tag:'WIN',side:'R', x:88,y:12},
-    {id:'lc', label:'DM',  tag:'CMF',side:null,x:25,y:37},
+    {id:'lc', label:'DM',  tag:'DM',side:null,x:25,y:37},
     {id:'cm', label:'CM',  tag:'CMF',side:null,x:50,y:33},
     {id:'rc', label:'RCM', tag:'CMF',side:null,x:75,y:37},
     {id:'lb', label:'LB',  tag:'LB', side:null,x:13,y:63},
@@ -15480,7 +15480,7 @@ const SH_FORMATIONS = {
     {id:'cf1',label:'CF',  tag:'CF', side:null,x:37,y:9},
     {id:'cf2',label:'CF',  tag:'CF', side:null,x:63,y:9},
     {id:'lm', label:'LM',  tag:'WIN',side:'L', x:8, y:34},
-    {id:'lc', label:'DM',  tag:'CMF',side:null,x:37,y:38},
+    {id:'lc', label:'DM',  tag:'DM',side:null,x:37,y:38},
     {id:'rc', label:'CM',  tag:'CMF',side:null,x:63,y:38},
     {id:'rm', label:'RM',  tag:'WIN',side:'R', x:92,y:34},
     {id:'lb', label:'LB',  tag:'LB', side:null,x:13,y:63},
@@ -15493,7 +15493,7 @@ const SH_FORMATIONS = {
     {id:'cf1',label:'CF',  tag:'CF', side:null,x:37,y:9},
     {id:'cf2',label:'CF',  tag:'CF', side:null,x:63,y:9},
     {id:'lm', label:'LB',  tag:'LB', side:'L', x:8, y:32},
-    {id:'lc', label:'DM',  tag:'CMF',side:null,x:30,y:38},
+    {id:'lc', label:'DM',  tag:'DM',side:null,x:30,y:38},
     {id:'cm', label:'CM',  tag:'CMF',side:null,x:50,y:34},
     {id:'rc', label:'RCM', tag:'CMF',side:null,x:70,y:38},
     {id:'rm', label:'RB',  tag:'RB', side:'R', x:92,y:32},
@@ -15645,6 +15645,7 @@ function shPlayerMatchesSlot(p, slot){
   if(tag==='WIN') return pg === 'WIN';
   if(pg === 'WIN') return false;
   if(tag==='CF')  return pg === 'CF';
+  if(tag==='DM')  return pg === 'DM';
   if(tag==='CMF') return pg === 'CM';
   if(tag==='LB') return pg === 'LB';
   if(tag==='WB' || tag==='RB' || tag==='RWB') return pg === 'RB';
