@@ -7587,6 +7587,7 @@ function renderCompare(){
     cmpRow('Box Touches', pA ? pA.box_touches : 0, pB ? pB.box_touches : 0, false, 'box_touches'),
     cmpRow('Conduções Prog.', pA ? pA.prog_carries : 0, pB ? pB.prog_carries : 0, false, 'prog_carries'),
     cmpRow('xG', pA ? pA.xg : 0, pB ? pB.xg : 0, false, 'xg'),
+    cmpRow('xA', pA ? pA.xa : 0, pB ? pB.xa : 0, false, 'xa'),
     // Defensivo
     GAP,
     scoreRow('TOTAL DEFENSIVO', pA ? pA.total_def : 0, pB ? pB.total_def : 0, 'var(--red)'),
@@ -7608,7 +7609,6 @@ function renderCompare(){
     cmpRow('Passes 1/3 Final', pA ? pA.passes_final_third : 0, pB ? pB.passes_final_third : 0, false, 'passes_final_third'),
     cmpRow('% Passes 1/3 Final', pA ? pA.passes_final_third_pct : 0, pB ? pB.passes_final_third_pct : 0, false, 'passes_final_third_pct'),
     cmpRow('Progressive Pass', pA ? pA.prog_pass : 0, pB ? pB.prog_pass : 0, false, 'prog_pass'),
-    cmpRow('xA', pA ? pA.xa : 0, pB ? pB.xa : 0, false, 'xa'),
   ] : (((pA&&pA.position_group==='DM')||(pB&&pB.position_group==='DM')) ? [
 
     BIG_GAP,
