@@ -19064,7 +19064,7 @@ function renderMobileTable(){
   const fSep = '<span style="width:1px;height:16px;background:rgba(0,212,255,.2);margin:0 2px;flex-shrink:0"></span>';
 
   const prev = {
-    pos:    getRkVal('mob-f-pos'),
+    pos:    getRkVal('mob-f-pos')||'CM',
     sort:   getRkVal('mob-f-sort')||'talent_index_pct',
     age:    getRkVal('mob-f-age'),
     ct:     getRkVal('mob-f-ct'),
@@ -19074,7 +19074,7 @@ function renderMobileTable(){
   if(filterBar){
     filterBar.style.minHeight='52px';
     const leagueOpts = [['','Todas'],...leagues.map(l=>[l,l.length>12?l.slice(0,12)+'...':l])];
-    const posOpts = [['','Todas'],['RB','RB'],['CB','CB'],['LB','LB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']];
+    const posOpts = [['CB','CB'],['LB','LB'],['RB','RB'],['DM','DM'],['CM','CM'],['WIN','WIN'],['CF','CF']];
     const sortOpts = [['talent_index_pct','Talent'],['total_physical','Physical'],['score','Transfer']];
     const ageOpts = [['','Todas'],['u21','Sub-21'],['u23','Sub-23'],['u25','Sub-25'],['2529','25-29'],['30p','30+']];
     const ctOpts = [['','Todos'],['exp','A expirar'],[String(currYear),'Fim '+currYear],[String(currYear+1),'Fim '+(currYear+1)],[String(currYear+2),'Fim '+(currYear+2)]];
@@ -19114,7 +19114,7 @@ function renderMobileTable(){
   }
 
   const leagueSel = window._mobLeagueSel || new Set();
-  const posFil    = getRkVal('mob-f-pos');
+  const posFil    = getRkVal('mob-f-pos')||'CM';
   const sortKey   = getRkVal('mob-f-sort')||'talent_index_pct';
   const ageFil    = getRkVal('mob-f-age');
   const ctFil     = getRkVal('mob-f-ct');
