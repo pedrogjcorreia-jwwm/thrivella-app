@@ -11881,13 +11881,43 @@ function generateAITextInline(p, pdfFs) {
     } else if(_sc[_p1]<=0.02){
       perfil=isEN?'A central midfielder with a balanced profile, without one clearly dominant dimension against his league peers.':'Médio-centro de perfil equilibrado, sem uma dimensão claramente dominante face aos pares da liga.';
     } else {
+      // PRIORIDADE MÁXIMA: contributo direto para golo. xG e xA altos = médio decisivo/criador de golos (futebol é golos)
+      var _xgP=_pc('xg'), _xaP=_pc('xa');
+      var _goalCreator=(_xgP>=0.72 && _xaP>=0.72);       // decisivo pelas duas vias (finaliza e assiste)
+      var _pureFinisher=(_xgP>=0.80 && _xaP<0.72);        // sobretudo golo
+      var _purePlaymaker=(_xaP>=0.80 && _xgP<0.72);       // sobretudo assistência/criação de golo
       // Perfil ofensivo/falso extremo: dribble quality + box touches + remates + golos + key passes + velocidade
       var _drQ=(_pc('dribles90')>=0.62 && _pc('dribles_pct')>=0.55);
       var _ofAtk=(_pc('box_touches')>=0.60 && _pc('shots90')>=0.60 && _pc('xg')>=0.55);
       var _fastCreator=(_drQ && _ofAtk && _pc('key_passes')>=0.55 && _pc('max_speed')>=0.55);
       // Goleador: chegada (box touches) + remates + xG altos
       var _goalThreat=(_pc('box_touches')>=0.60 && _pc('shots90')>=0.58 && _pc('xg')>=0.58);
-      if(_fastCreator){
+      if(_goalCreator || _pureFinisher || _purePlaymaker){
+        var _xgN=_n1('xg',2), _xaN=_n1('xa',2);
+        var _base;
+        if(_goalCreator){
+          _base=(isEN?'A goal-creating midfielder, decisive in the final third both as a finisher and as a provider'+((_xgN||_xaN)?' ('+[_xgN?_xgN+' xG':null,_xaN?_xaN+' xA':null].filter(Boolean).join(', ')+')':'')+'.'
+                     :'Médio criador de golos, decisivo no último terço tanto a finalizar como a assistir'+((_xgN||_xaN)?' ('+[_xgN?_xgN+' de xG':null,_xaN?_xaN+' de xA':null].filter(Boolean).join(', ')+')':'')+'.');
+        } else if(_pureFinisher){
+          _base=(isEN?'A goalscoring midfielder who arrives to finish, one of the biggest goal threats for the position'+(_xgN?' ('+_xgN+' xG)':'')+'.'
+                     :'Médio goleador, que chega para finalizar e é uma das maiores ameaças de golo para a posição'+(_xgN?' ('+_xgN+' de xG)':'')+'.');
+        } else {
+          _base=(isEN?'A chance-creating midfielder, a genuine provider who sets up goals for others'+(_xaN?' ('+_xaN+' xA)':'')+'.'
+                     :'Médio criativo de excelência, um verdadeiro fornecedor que cria golos para os companheiros'+(_xaN?' ('+_xaN+' de xA)':'')+'.');
+        }
+        perfil=_base;
+        // Só DEPOIS falar da mecânica de passe/construção
+        var _passMet=[]; if(_kp)_passMet.push(_kp+(isEN?' key passes/90':' passes-chave/90')); if(_pp)_passMet.push(_pp+(isEN?' progressive passes/90':' passes progressivos/90')); if(_pf&&_passMet.length<2)_passMet.push(_pf+(isEN?' passes into the final third/90':' passes último terço/90'));
+        if(_passMet.length){
+          perfil+=(isEN?' He backs the numbers with quality distribution ('+_passMet.slice(0,2).join(', ')+'), linking build-up to the final act.'
+                       :' Sustenta os números com qualidade na distribuição ('+_passMet.slice(0,2).join(', ')+'), ligando a construção ao ato final.');
+        }
+        // reforço ofensivo adicional (chegada/remate) se também tiver
+        if(_goalThreat && _pureFinisher!==true){
+          var _thm=(_bt?_bt+(isEN?' box touches/90':' toques na área/90'):null);
+          if(_thm) perfil+=(isEN?' His box arrival ('+_thm+') adds another layer to his attacking output.':' A chegada à área ('+_thm+') acrescenta outra camada à sua produção ofensiva.');
+        }
+      } else if(_fastCreator){
         var _mFC=[]; if(_dr)_mFC.push(_dr+(isEN?' dribbles/90 at '+_drp+'%':' dribles/90 a '+_drp+'%')); if(_kp)_mFC.push(_kp+(isEN?' key passes/90':' passes-chave/90')); if(_sh)_mFC.push(_sh+(isEN?' shots/90':' remates/90'));
         var _mFCtxt=_mFC.length?(isEN?' ('+_mFC.slice(0,2).join(', ')+')':' ('+_mFC.slice(0,2).join(', ')+')'):'';
         perfil=(isEN?'A markedly attacking central midfielder — combining dribbling quality, box arrival, shooting and creation'+_mFCtxt+(_ms?', backed by a top speed of '+_ms+' km/h':'')+'. Profile suited to an attacking-midfield or false-winger role if his secondary positions allow it.'
